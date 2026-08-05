@@ -7,6 +7,15 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div id="intro-screen" class="intro-screen" aria-hidden="true">
+    <div class="intro-card">
+      <span class="intro-badge">SRMVEC</span>
+      <h1>Department of CSE</h1>
+      <p>Loading portal experience…</p>
+      <span class="intro-loader" aria-hidden="true"></span>
+    </div>
+  </div>
+  <div class="site-shell">
 
   <!-- Top Institutional Bar -->
   <div class="top-bar">
@@ -178,5 +187,20 @@
     </div>
   </footer>
 
+  </div>
+  <script>
+    (function () {
+      const seen = sessionStorage.getItem("srmvec_intro_shown") === "1";
+      const body = document.body;
+      if (!seen) {
+        window.setTimeout(function () {
+          body.classList.add("site-loaded");
+          sessionStorage.setItem("srmvec_intro_shown", "1");
+        }, 900);
+      } else {
+        body.classList.add("site-loaded");
+      }
+    }());
+  </script>
 </body>
 </html>
