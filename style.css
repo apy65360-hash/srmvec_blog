@@ -1,14 +1,14 @@
 /* --- TECH COLOR PALETTE & VARIABLES --- */
 :root {
-  --primary-navy: #3b82f6;
-  --accent-gold: #22d3ee;
-  --dark-red: #22d3ee;
-  --bg-light: #0b1020;
-  --text-dark: #e6edf8;
-  --text-muted: #94a3b8;
-  --border-color: #253454;
-  --surface: #121a2f;
-  --white: #e6edf8;
+  --primary-navy: #8B5CF6;
+  --accent-gold: #06B6D4;
+  --dark-red: #8B5CF6;
+  --bg-light: #0F0A1F;
+  --text-dark: #F3F0FF;
+  --text-muted: #A78BFA;
+  --border-color: #2E2150;
+  --surface: #1B1235;
+  --white: #F3F0FF;
 }
 
 * {
@@ -34,7 +34,7 @@ body.is-loading {
   z-index: 1000;
   display: grid;
   place-items: center;
-  background: radial-gradient(circle at top, #182646 0%, var(--bg-light) 60%);
+  background: radial-gradient(circle at top, #2A1D49 0%, var(--bg-light) 60%);
   transition: opacity 0.45s ease, visibility 0.45s ease;
 }
 
@@ -170,7 +170,7 @@ a:hover {
   padding: 0.4rem 0.8rem;
   border: 1px solid var(--border-color);
   font-size: 0.85rem;
-  background: #0f172b;
+  background: #1B1235;
   color: var(--text-dark);
 }
 
@@ -240,7 +240,7 @@ a:hover {
 }
 
 .dropdown-menu a:hover {
-  background: #1a2743;
+  background: #2E2150;
   color: var(--primary-navy);
   text-decoration: none;
 }
@@ -251,7 +251,7 @@ a:hover {
 
 /* --- TICKER ANNOUNCEMENT BAR --- */
 .ticker-bar {
-  background: #0f172b;
+  background: #1B1235;
   border-bottom: 1px solid var(--border-color);
   font-family: sans-serif;
   font-size: 0.85rem;
@@ -283,7 +283,7 @@ a:hover {
 
 .featured-slider {
   position: relative;
-  background: #090f1f;
+  background: #0F0A1F;
   border: 1px solid var(--border-color);
 }
 
