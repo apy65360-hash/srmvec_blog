@@ -126,18 +126,59 @@ a:hover {
   flex-wrap: wrap;
 }
 
-.nav-list a {
+.nav-list > a,
+.nav-dropdown > a {
   color: var(--white);
   padding: 0.75rem 1rem;
   font-size: 0.9rem;
   font-weight: 600;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: block;
 }
 
-.nav-list a:hover, .nav-list a.active {
+.nav-list > a:hover,
+.nav-list > a.active,
+.nav-dropdown:hover > a {
   background: var(--accent-gold);
   color: var(--primary-navy);
   text-decoration: none;
+}
+
+.nav-dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 220px;
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  z-index: 10;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 0.65rem 0.9rem;
+  color: var(--primary-navy);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.85rem;
+}
+
+.dropdown-menu a:last-child {
+  border-bottom: none;
+}
+
+.dropdown-menu a:hover {
+  background: var(--bg-light);
+  color: var(--primary-navy);
+  text-decoration: none;
+}
+
+.nav-dropdown:hover .dropdown-menu {
+  display: block;
 }
 
 /* --- TICKER ANNOUNCEMENT BAR --- */
