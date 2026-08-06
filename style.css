@@ -1,14 +1,14 @@
 /* --- TECH COLOR PALETTE & VARIABLES --- */
 :root {
-  --primary-navy: #8B5CF6;
-  --accent-gold: #06B6D4;
-  --dark-red: #8B5CF6;
-  --bg-light: #0F0A1F;
-  --text-dark: #F3F0FF;
-  --text-muted: #A78BFA;
-  --border-color: #2E2150;
-  --surface: #1B1235;
-  --white: #F3F0FF;
+  --primary-navy: #2563EB;
+  --accent-gold: #0EA5E9;
+  --dark-red: #2563EB;
+  --bg-light: #F8FAFC;
+  --text-dark: #0F172A;
+  --text-muted: #475569;
+  --border-color: #CBD5E1;
+  --surface: #E2E8F0;
+  --white: #0F172A;
 }
 
 * {
@@ -170,7 +170,7 @@ a:hover {
   padding: 0.4rem 0.8rem;
   border: 1px solid var(--border-color);
   font-size: 0.85rem;
-  background: #1B1235;
+  background: #E2E8F0;
   color: var(--text-dark);
 }
 
@@ -240,7 +240,7 @@ a:hover {
 }
 
 .dropdown-menu a:hover {
-  background: #2E2150;
+  background: #CBD5E1;
   color: var(--primary-navy);
   text-decoration: none;
 }
@@ -251,7 +251,7 @@ a:hover {
 
 /* --- TICKER ANNOUNCEMENT BAR --- */
 .ticker-bar {
-  background: #1B1235;
+  background: #E2E8F0;
   border-bottom: 1px solid var(--border-color);
   font-family: sans-serif;
   font-size: 0.85rem;
@@ -283,7 +283,7 @@ a:hover {
 
 .featured-slider {
   position: relative;
-  background: #0F0A1F;
+  background: #F8FAFC;
   border: 1px solid var(--border-color);
 }
 
