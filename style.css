@@ -17,12 +17,19 @@
   padding: 0;
 }
 
-body {
-  font-family: 'Georgia', 'Times New Roman', serif, system-ui;
-  background-color: var(--bg-light);
-  color: var(--text-dark);
-  line-height: 1.5;
+h1, h2, h3, .blog-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
+
+/* Apply Inter for clean reading on body text */
+body {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
 
 body.is-loading {
   overflow: hidden;
@@ -107,7 +114,7 @@ a:hover {
 /* --- SOCIAL SIDEBAR --- */
 .social-sidebar {
   position: fixed;
-  right: 1rem;
+  left: 1rem;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
@@ -140,6 +147,22 @@ a:hover {
 .social-link.youtube { background: #FF0000; }
 .social-link.linkedin { background: #0A66C2; }
 .social-link.instagram { background: linear-gradient(135deg, #F58529, #DD2A7B, #8134AF, #515BD4); }
+
+.social-location-card {
+  margin-top: 0.25rem;
+  max-width: 220px;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--text-dark);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  box-shadow: 0 6px 12px rgba(15, 23, 42, 0.1);
+}
+
+.social-location-card strong { display: block; margin-bottom: 0.25rem; color: var(--primary-navy); }
+
+.social-link.location { background: #0EA5E9; }
 
 /* --- TOP INSTITUTIONAL BAR --- */
 .top-bar {
