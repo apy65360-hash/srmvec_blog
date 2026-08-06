@@ -6,7 +6,16 @@
   <title>Department of Computer Science & Engineering | SRMVEC</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="is-loading">
+
+  <div class="intro-screen" id="introScreen" role="status" aria-live="polite">
+    <div class="intro-content">
+      <p class="intro-kicker">SRMVEC CSE</p>
+      <h2>Welcome</h2>
+    </div>
+  </div>
+
+  <div class="site-shell">
 
   <!-- Top Institutional Bar -->
   <div class="top-bar">
@@ -181,6 +190,17 @@
       </div>
     </div>
   </footer>
+
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      window.setTimeout(() => {
+        document.body.classList.add('intro-done');
+        document.body.classList.remove('is-loading');
+      }, 850);
+    });
+  </script>
 
 </body>
 </html>
