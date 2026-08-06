@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upcoming Events</title>
+  
+  <!-- Font Imports -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      padding: 40px 20px;
+      color: #1e293b;
+    }
+
+    .events-section {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Section Header Styling */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px dashed #cbd5e1;
+      border-left: 5px solid #2563eb;
+      background: repeating-linear-gradient(
+        45deg,
+        #ffffff,
+        #ffffff 10px,
+        #f1f5f9 10px,
+        #f1f5f9 20px
+      );
+      padding: 12px 20px;
+      border-radius: 4px;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #5b21b6; /* Purple title accent */
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      background-color: #ffffff;
+      padding: 2px 8px;
+    }
+
+    .view-calendar {
+      color: #1e3a8a;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      background-color: #ffffff;
+      padding: 4px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+
+    .view-calendar:hover {
+      background-color: #f1f5f9;
+    }
+
+    /* Carousel Wrapper & Buttons */
+    .carousel-wrapper {
+      position: relative;
+    }
+
+    .nav-btn {
+      position: absolute;
+      top: 38%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      background-color: #eab308; /* Yellow navigation arrow buttons */
+      color: #000;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      z-index: 10;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .nav-btn:hover {
+      background-color: #facc15;
+      transform: translateY(-50%) scale(1.08);
+    }
+
+    .prev-btn { left: -15px; }
+    .next-btn { right: -15px; }
+
+    /* Horizontal Sliding Track */
+    .events-carousel {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      padding-bottom: 15px;
+      scrollbar-width: none; /* Hide scrollbar Firefox */
+    }
+
+    .events-carousel::-webkit-scrollbar {
+      display: none; /* Hide scrollbar Chrome/Safari */
+    }
+
+    /* Event Card Item */
+    .event-card {
+      min-width: 320px;
+      max-width: 320px;
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .poster-container {
+      width: 100%;
+      height: 420px;
+      overflow: hidden;
+      background-color: #0f172a;
+    }
+
+    .poster-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Card Details Footer */
+    .card-footer {
+      display: flex;
+      padding: 16px;
+      gap: 16px;
+      align-items: center;
+      background-color: #ffffff;
+    }
+
+    .date-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      background-color: #f1f5f9;
+      border-radius: 8px;
+      min-width: 55px;
+    }
+
+    .date-badge .day {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #1d4ed8;
+      line-height: 1;
+    }
+
+    .date-badge .month {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .details-content {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .category-tag {
+      align-self: flex-start;
+      background-color: #f1f5f9;
+      color: #475569;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .event-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.25;
+    }
+  </style>
+</head>
+<body>
+
+  <section class="events-section">
+    
+    <!-- Top Header -->
+    <div class="section-header">
+      <h2 class="section-title">Upcoming Events</h2>
+      <a href="#" class="view-calendar">View all events &rarr;</a>
+    </div>
+
+    <!-- Carousel Container -->
+    <div class="carousel-wrapper">
+      <button class="nav-btn prev-btn" id="prevBtn">&#10094;</button>
+      
+      <div class="events-carousel" id="eventTrack">
+        
+        <!-- Card 1 -->
+        <div class="event-card">
+          <div class="poster-container">
+            <img src="poster1.jpg" alt="AI WEBINAR" />
+          </div>
+          <div class="card-footer">
+            <div class="date-badge">
+              <span class="day">16</span>
+              <span class="month">AUG</span>
+            </div>
+            <div class="details-content">
+              <span class="category-tag">Seminar</span>
+              <h3 class="event-title">AI WEBINAR</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="event-card">
+          <div class="poster-container">
+            <img src="poster2.jpg" alt="CYBORGS'26" />
+          </div>
+          <div class="card-footer">
+            <div class="date-badge">
+              <span class="day">17</span>
+              <span class="month">AUG</span>
+            </div>
+            <div class="details-content">
+              <span class="category-tag">Symposium</span>
+              <h3 class="event-title">CYBORGS'26</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="event-card">
+          <div class="poster-container">
+            <img src="poster3.jpg" alt="International tech conference 2026" />
+          </div>
+          <div class="card-footer">
+            <div class="date-badge">
+              <span class="day">19</span>
+              <span class="month">SEP</span>
+            </div>
+            <div class="details-content">
+              <span class="category-tag">Conference</span>
+              <h3 class="event-title">International tech conference 2026</h3>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <button class="nav-btn next-btn" id="nextBtn">&#10095;</button>
+    </div>
+
+  </section>
+
+  <!-- JavaScript for Navigation Buttons -->
+  <script>
+    const track = document.getElementById('eventTrack');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // Amount to scroll on button click (card width + gap)
+    const scrollAmount = 340; 
+
+    nextBtn.addEventListener('click', () => {
+      track.scrollBy({
+        left: scrollAmount,
+        behavior: 'smooth'
+      });
+    });
+
+    prevBtn.addEventListener('click', () => {
+      track.scrollBy({
+        left: -scrollAmount,
+        behavior: 'smooth'
+      });
+    });
+  </script>
+
+</body>
+</html>

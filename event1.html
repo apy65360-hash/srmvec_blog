@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" data-variant="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Playing Event Poster Slider</title>
+  <style>
+    :root {
+      --page: #0f172a;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --font-body: Arial, sans-serif;
+      --fs-base: 16px;
+      --fs-sm: 14px;
+      --fs-xs: 12px;
+      --fs-lg: 18px;
+      --fs-2xl: 32px;
+      --fw-display: 700;
+      --fw-semibold: 600;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --surface: #111827;
+      --surface-2: #1f2937;
+      --surface-accent: #0b1220;
+      --border: #334155;
+      --border-strong: #475569;
+      --brand-text: #60a5fa;
+      --ring: rgba(96, 165, 250, 0.35);
+      --radius: 14px;
+      --radius-lg: 20px;
+      --shadow-1: 0 2px 8px rgba(0,0,0,0.18);
+      --shadow-2: 0 10px 30px rgba(0,0,0,0.22);
+      --shadow-3: 0 14px 40px rgba(0,0,0,0.3);
+      --lh-body: 1.5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--page);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: var(--fs-base);
+      line-height: var(--lh-body);
+    }
+
+    .page-wrapper {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .site-header {
+      text-align: center;
+      padding: var(--space-8) var(--space-4);
+      background: var(--surface-accent);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .site-header h1 {
+      margin: 0 0 var(--space-2) 0;
+      font-size: var(--fs-2xl);
+      font-weight: var(--fw-display);
+      color: var(--text);
+    }
+
+    .site-header p {
+      margin: 0;
+      font-size: var(--fs-sm);
+      color: var(--text-muted);
+    }
+
+    .container {
+      flex: 1;
+      padding: var(--space-8) var(--space-4);
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .carousel-wrapper {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: var(--space-4);
+      align-items: center;
+      margin-bottom: var(--space-6);
+    }
+
+    .carousel-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border: 2px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      border-radius: var(--radius);
+      transition: all 200ms ease;
+      flex-shrink: 0;
+      padding: 0;
+      font-size: inherit;
+      font-family: inherit;
+    }
+
+    .carousel-btn:hover {
+      background: var(--surface-2);
+      border-color: var(--brand-text);
+    }
+
+    .carousel-btn:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--ring);
+    }
+
+    .carousel-btn svg {
+      stroke: currentColor;
+    }
+
+    .carousel-container {
+      width: 100%;
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      box-shadow: var(--shadow-2);
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+      width: fit-content;
+    }
+
+    .poster-card {
+      flex: 0 0 calc(50% - var(--space-2));
+      min-width: 0;
+      background: var(--surface-2);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-1);
+      transition: transform 200ms ease, box-shadow 200ms ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .poster-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-3);
+    }
+
+    .poster-image {
+      width: 100%;
+      height: 240px;
+      background: linear-gradient(135deg, hsl(280, 60%, 50%), hsl(320, 60%, 50%));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      font-size: var(--fs-sm);
+    }
+
+    .poster-info {
+      padding: var(--space-3);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .poster-info h3 {
+      margin: 0 0 var(--space-2) 0;
+      font-size: var(--fs-lg);
+      font-weight: var(--fw-semibold);
+      color: var(--text);
+    }
+
+    .poster-meta {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      font-size: var(--fs-sm);
+      color: var(--text-muted);
+    }
+
+    .poster-meta span {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+
+    .carousel-controls {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--brand-text);
+      animation: progress 5s linear forwards;
+    }
+
+    @keyframes progress {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+
+    .status-text {
+      font-size: var(--fs-xs);
+      color: var(--text-muted);
+      white-space: nowrap;
+      min-width: 140px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <header class="site-header">
+      <h1>Upcoming Events</h1>
+      <p>Explore our calendar of community events and programs</p>
+    </header>
+
+    <main class="container">
+      <div class="carousel-wrapper">
+        <button class="carousel-btn carousel-btn-prev" id="prevBtn" aria-label="Previous events">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <div class="carousel-container" id="carouselContainer">
+          <div class="carousel-track" id="carouselTrack"></div>
+        </div>
+
+        <button class="carousel-btn carousel-btn-next" id="nextBtn" aria-label="Next events">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <div class="carousel-controls">
+        <div class="progress-bar" id="progressBar">
+          <div class="progress-fill"></div>
+        </div>
+        <span class="status-text" id="statusText">Auto advancing in 5s</span>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const EVENTS = [
+      { id: 1, title: "National Technical Symposium: TechVista 2026", date: "July 15", time: "9:30 AM", venue: "Central Auditorium" },
+      { id: 2, title: "International Conference on Artificial Intelligence & ML", date: "July 18", time: "9:00 AM", venue: "Tech Convention Hall" },
+      { id: 3, title: "Hackathon: 24-Hour CodeSprint", date: "July 22", time: "10:00 AM", venue: "Innovation Lab 3" },
+      { id: 4, title: "Web3 & Blockchain Developers Summit", date: "July 25", time: "10:30 AM", venue: "Main Seminar Complex" },
+      { id: 5, title: "Cloud Computing & DevOps Workshop", date: "July 29", time: "11:00 AM", venue: "CS Computer Lab 1" },
+      { id: 6, title: "Cybersecurity & Ethical Hacking Symposium", date: "August 1", time: "9:30 AM", venue: "Cyber Research Center" },
+      { id: 7, title: "IEEE International Conference on Data Engineering", date: "August 5", time: "9:00 AM", venue: "Virtual & Campus Auditorium" },
+      { id: 8, title: "Open Source Software & Algorithmic Challenge", date: "August 8", time: "10:00 AM", venue: "Software Engineering Block" }
+    ];
+
+    let currentIndex = 0;
+    let autoPlayTimer = null;
+    let isHovering = false;
+
+    const track = document.getElementById("carouselTrack");
+    const container = document.getElementById("carouselContainer");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const progressBar = document.getElementById("progressBar");
+    const statusText = document.getElementById("statusText");
+
+    function renderPoster(event) {
+      const card = document.createElement("div");
+      card.className = "poster-card";
+      card.innerHTML = `
+        <div class="poster-image"><span>Event Poster</span></div>
+        <div class="poster-info">
+          <h3>${event.title}</h3>
+          <div class="poster-meta">
+            <span>📅 ${event.date}</span>
+            <span>⏰ ${event.time}</span>
+            <span>📍 ${event.venue}</span>
+          </div>
+        </div>
+      `;
+      return card;
+    }
+
+    function updateCarouselPosition() {
+      const itemWidth = track.children[0]?.offsetWidth || 0;
+      const gap = 16;
+      track.style.transform = `translateX(-${(itemWidth + gap) * currentIndex}px)`;
+    }
+
+    function initCarousel() {
+      track.innerHTML = "";
+      EVENTS.forEach(event => track.appendChild(renderPoster(event)));
+      updateCarouselPosition();
+    }
+
+    function resetProgressBar() {
+      progressBar.innerHTML = '<div class="progress-fill"></div>';
+    }
+
+    function startAutoPlay() {
+      if (autoPlayTimer) clearTimeout(autoPlayTimer);
+      resetProgressBar();
+      if (!isHovering) {
+        autoPlayTimer = setTimeout(() => advance(), 5000);
+      }
+    }
+
+    function advance() {
+      currentIndex = (currentIndex + 1) % EVENTS.length;
+      updateCarouselPosition();
+      startAutoPlay();
+    }
+
+    function goBack() {
+      currentIndex = (currentIndex - 1 + EVENTS.length) % EVENTS.length;
+      updateCarouselPosition();
+      startAutoPlay();
+    }
+
+    prevBtn.addEventListener("click", goBack);
+    nextBtn.addEventListener("click", advance);
+
+    container.addEventListener("mouseenter", () => {
+      isHovering = true;
+      if (autoPlayTimer) clearTimeout(autoPlayTimer);
+      statusText.textContent = "Paused";
+    });
+
+    container.addEventListener("mouseleave", () => {
+      isHovering = false;
+      statusText.textContent = "Auto advancing in 5s";
+      startAutoPlay();
+    });
+
+    window.addEventListener("resize", updateCarouselPosition);
+    initCarousel();
+    startAutoPlay();
+  </script>
+</body>
+</html>
