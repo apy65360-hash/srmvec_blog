@@ -1,13 +1,14 @@
-/* --- INSTITUTIONAL COLOR PALETTE & VARIABLES --- */
+/* --- TECH COLOR PALETTE & VARIABLES --- */
 :root {
-  --primary-navy: #002147;       /* Classic institutional deep blue */
-  --accent-gold: #c59b27;         /* Academic gold trim */
-  --dark-red: #800000;            /* Highlight red for badges/announcements */
-  --bg-light: #f4f6f9;            /* Clean off-white background */
-  --text-dark: #222222;
-  --text-muted: #555555;
-  --border-color: #dddddd;
-  --white: #ffffff;
+  --primary-navy: #3b82f6;
+  --accent-gold: #22d3ee;
+  --dark-red: #22d3ee;
+  --bg-light: #0b1020;
+  --text-dark: #e6edf8;
+  --text-muted: #94a3b8;
+  --border-color: #253454;
+  --surface: #121a2f;
+  --white: #e6edf8;
 }
 
 * {
@@ -21,6 +22,71 @@ body {
   background-color: var(--bg-light);
   color: var(--text-dark);
   line-height: 1.5;
+}
+
+body.is-loading {
+  overflow: hidden;
+}
+
+.intro-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at top, #182646 0%, var(--bg-light) 60%);
+  transition: opacity 0.45s ease, visibility 0.45s ease;
+}
+
+.intro-content {
+  text-align: center;
+  padding: 1.5rem 2rem;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: rgba(18, 26, 47, 0.95);
+  animation: intro-pop 0.6s ease;
+}
+
+.intro-kicker {
+  color: var(--accent-gold);
+  font-family: sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  margin-bottom: 0.4rem;
+}
+
+.intro-content h2 {
+  color: var(--text-dark);
+  font-size: 1.8rem;
+  font-family: sans-serif;
+}
+
+.site-shell {
+  opacity: 0;
+  transform: scale(0.985);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+body.intro-done .intro-screen {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+body.intro-done .site-shell {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@keyframes intro-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 a {
@@ -54,13 +120,13 @@ a:hover {
 }
 
 .top-bar a {
-  color: #d1d5db;
+  color: var(--text-muted);
   margin: 0 0.4rem;
 }
 
 /* --- MAIN HEADER --- */
 .main-header {
-  background: var(--white);
+  background: var(--surface);
   padding: 1.2rem 0;
   border-bottom: 1px solid var(--border-color);
 }
@@ -104,6 +170,8 @@ a:hover {
   padding: 0.4rem 0.8rem;
   border: 1px solid var(--border-color);
   font-size: 0.85rem;
+  background: #0f172b;
+  color: var(--text-dark);
 }
 
 .header-search button {
@@ -154,7 +222,7 @@ a:hover {
   top: 100%;
   left: 0;
   min-width: 220px;
-  background: var(--white);
+  background: var(--surface);
   border: 1px solid var(--border-color);
   z-index: 10;
 }
@@ -172,7 +240,7 @@ a:hover {
 }
 
 .dropdown-menu a:hover {
-  background: var(--bg-light);
+  background: #1a2743;
   color: var(--primary-navy);
   text-decoration: none;
 }
@@ -183,8 +251,8 @@ a:hover {
 
 /* --- TICKER ANNOUNCEMENT BAR --- */
 .ticker-bar {
-  background: #fff8e1;
-  border-bottom: 1px solid #ffe082;
+  background: #0f172b;
+  border-bottom: 1px solid var(--border-color);
   font-family: sans-serif;
   font-size: 0.85rem;
   padding: 0.4rem 0;
@@ -215,7 +283,7 @@ a:hover {
 
 .featured-slider {
   position: relative;
-  background: #000;
+  background: #090f1f;
   border: 1px solid var(--border-color);
 }
 
@@ -230,7 +298,7 @@ a:hover {
 .slider-caption {
   position: absolute;
   bottom: 0;
-  background: rgba(0, 33, 71, 0.88);
+  background: rgba(11, 16, 32, 0.9);
   color: var(--white);
   padding: 1rem;
   width: 100%;
@@ -248,7 +316,7 @@ a:hover {
 }
 
 .quick-links-card {
-  background: var(--white);
+  background: var(--surface);
   border: 1px solid var(--border-color);
   padding: 1.2rem;
   border-top: 4px solid var(--primary-navy);
@@ -281,7 +349,7 @@ a:hover {
 }
 
 .portal-card {
-  background: var(--white);
+  background: var(--surface);
   border: 1px solid var(--border-color);
   padding: 1.2rem;
   border-top: 3px solid var(--accent-gold);
@@ -402,7 +470,7 @@ a:hover {
 /* --- FOOTER --- */
 .footer {
   background: var(--primary-navy);
-  color: #94a3b8;
+  color: var(--text-muted);
   padding: 2rem 0;
   font-size: 0.85rem;
   font-family: sans-serif;
@@ -421,7 +489,16 @@ a:hover {
 }
 
 .footer a {
-  color: #cbd5e1;
+  color: var(--text-dark);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-screen,
+  .site-shell,
+  .intro-content {
+    animation: none;
+    transition: none;
+  }
 }
 
 /* --- RESPONSIVE MEDIA QUERIES --- */
