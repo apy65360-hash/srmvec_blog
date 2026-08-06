@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" data-variant="dark">
+<html lang="en" data-variant="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Auto Playing Event Poster Slider</title>
   <style>
     :root {
-      --page: #0f172a;
-      --text: #e2e8f0;
-      --text-muted: #94a3b8;
+      --page: #F8FAFC;
+      --text: #0F172A;
+      --text-muted: #475569;
       --font-body: Arial, sans-serif;
       --fs-base: 16px;
       --fs-sm: 14px;
@@ -23,18 +23,19 @@
       --space-4: 16px;
       --space-6: 24px;
       --space-8: 32px;
-      --surface: #111827;
-      --surface-2: #1f2937;
-      --surface-accent: #0b1220;
-      --border: #334155;
-      --border-strong: #475569;
-      --brand-text: #60a5fa;
-      --ring: rgba(96, 165, 250, 0.35);
+      --surface: #E2E8F0;
+      --surface-2: #F1F5F9;
+      --surface-accent: #EFF6FF;
+      --border: #BFDBFE;
+      --border-strong: #93C5FD;
+      --brand-text: #2563EB;
+      --accent: #0EA5E9;
+      --ring: rgba(37, 99, 235, 0.22);
       --radius: 14px;
       --radius-lg: 20px;
-      --shadow-1: 0 2px 8px rgba(0,0,0,0.18);
-      --shadow-2: 0 10px 30px rgba(0,0,0,0.22);
-      --shadow-3: 0 14px 40px rgba(0,0,0,0.3);
+      --shadow-1: 0 2px 8px rgba(15, 23, 42, 0.08);
+      --shadow-2: 0 10px 30px rgba(37, 99, 235, 0.10);
+      --shadow-3: 0 14px 40px rgba(14, 165, 233, 0.14);
       --lh-body: 1.5;
     }
 
@@ -65,7 +66,7 @@
     .site-header {
       text-align: center;
       padding: var(--space-8) var(--space-4);
-      background: var(--surface-accent);
+      background: linear-gradient(135deg, #EFF6FF 0%, #F8FAFC 100%);
       border-bottom: 1px solid var(--border);
     }
 
@@ -104,9 +105,9 @@
       justify-content: center;
       width: 48px;
       height: 48px;
-      border: 2px solid var(--border-strong);
-      background: var(--surface);
-      color: var(--text);
+      border: 1px solid var(--border-strong);
+      background: linear-gradient(180deg, #FFFFFF 0%, #E2E8F0 100%);
+      color: var(--brand-text);
       cursor: pointer;
       border-radius: var(--radius);
       transition: all 200ms ease;
@@ -114,11 +115,14 @@
       padding: 0;
       font-size: inherit;
       font-family: inherit;
+      box-shadow: var(--shadow-1);
     }
 
     .carousel-btn:hover {
-      background: var(--surface-2);
+      background: #F8FAFC;
       border-color: var(--brand-text);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-2);
     }
 
     .carousel-btn:focus {
@@ -134,8 +138,9 @@
       width: 100%;
       overflow: hidden;
       border-radius: var(--radius-lg);
-      background: var(--surface);
+      background: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%);
       box-shadow: var(--shadow-2);
+      border: 1px solid var(--border);
     }
 
     .carousel-track {
@@ -149,11 +154,12 @@
     .poster-card {
       flex: 0 0 calc(50% - var(--space-2));
       min-width: 0;
-      background: var(--surface-2);
+      background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
       border-radius: var(--radius);
       overflow: hidden;
       box-shadow: var(--shadow-1);
-      transition: transform 200ms ease, box-shadow 200ms ease;
+      border: 1px solid #CBD5E1;
+      transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
       display: flex;
       flex-direction: column;
     }
@@ -161,17 +167,21 @@
     .poster-card:hover {
       transform: translateY(-4px);
       box-shadow: var(--shadow-3);
+      border-color: var(--accent);
     }
 
     .poster-image {
       width: 100%;
       height: 240px;
-      background: linear-gradient(135deg, hsl(280, 60%, 50%), hsl(320, 60%, 50%));
+      background: linear-gradient(135deg, #2563EB 0%, #0EA5E9 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text);
+      color: #FFFFFF;
       font-size: var(--fs-sm);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: var(--fw-semibold);
     }
 
     .poster-info {
@@ -212,14 +222,14 @@
     .progress-bar {
       flex: 1;
       height: 4px;
-      background: var(--border);
+      background: #CBD5E1;
       border-radius: 2px;
       overflow: hidden;
     }
 
     .progress-fill {
       height: 100%;
-      background: var(--brand-text);
+      background: linear-gradient(90deg, var(--brand-text), var(--accent));
       animation: progress 5s linear forwards;
     }
 
@@ -233,6 +243,53 @@
       color: var(--text-muted);
       white-space: nowrap;
       min-width: 140px;
+    }
+
+    @media (max-width: 768px) {
+      .carousel-wrapper {
+        grid-template-columns: auto 1fr auto;
+        gap: var(--space-2);
+      }
+
+      .carousel-btn {
+        width: 40px;
+        height: 40px;
+      }
+
+      .poster-card {
+        flex: 0 0 calc(50% - var(--space-2));
+      }
+
+      .poster-image {
+        height: 180px;
+      }
+
+      .poster-info h3 {
+        font-size: var(--fs-base);
+      }
+
+      .status-text {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: var(--space-4) var(--space-2);
+      }
+
+      .carousel-wrapper {
+        gap: var(--space-2);
+      }
+
+      .carousel-btn {
+        width: 36px;
+        height: 36px;
+      }
+
+      .poster-card {
+        flex: 0 0 calc(50% - var(--space-2));
+      }
     }
   </style>
 </head>
