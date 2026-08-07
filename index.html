@@ -6,7 +6,7 @@
   <title>Department of Computer Science & Engineering | SRMVEC</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -18,14 +18,17 @@
 </head>
 <body class="is-loading">
 
+  <!-- Intro Screen -->
   <div class="intro-screen" id="introScreen" role="status" aria-live="polite">
     <div class="intro-content">
-      <p class="intro-kicker">SRMVEC CSE</p>
-      <h2>Welcome...</h2>
+      <p class="intro-kicker">SRMVEC CSE DEPARTMENT</p>
+      <h2>Welcome to CSE Portal</h2>
     </div>
   </div>
 
   <div class="site-shell">
+    
+  <!-- Social Sidebar -->
   <aside class="social-sidebar" aria-label="Official SRMVEC social media links">
     <a class="social-link facebook" href="https://www.facebook.com/srmvecofficial/" target="_blank" rel="noopener noreferrer" aria-label="SRMVEC on Facebook">
       <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
@@ -42,13 +45,9 @@
     <a class="social-link instagram" href="https://www.instagram.com/srmvecofficial/" target="_blank" rel="noopener noreferrer" aria-label="SRMVEC on Instagram">
       <i class="fa-brands fa-instagram" aria-hidden="true"></i>
     </a>
-    <a class="social-link location" href="https://www.google.com/maps/place/SRM+Valliammai+Engineering+College/@12.8259494,80.0387379,17z/data=!3m1!4b1!4m6!3m5!1s0x3a52f70d79722631:0x49afcd4648f94894!8m2!3d12.8259442!4d80.0413128!16s%2Fm%2F076ybnz?entry=ttu&g_ep=EgoyMDI2MDgwMy4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" aria-label="SRMVEC location on map">
+    <a class="social-link location" href="https://www.google.com/maps/place/SRM+Valliammai+Engineering+College/@12.8259494,80.0387379,17z" target="_blank" rel="noopener noreferrer" aria-label="SRMVEC location on map">
       <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
     </a>
-    <div class="social-location-card">
-      <strong>Visit us</strong>
-      <span>National Highway 45, Potheri, SRM Nagar, Kattankulathur, Tamil Nadu 603203</span>
-    </div>
   </aside>
 
   <!-- Top Institutional Bar -->
@@ -59,8 +58,8 @@
         <a href="#">Kattankulathur Campus</a>
       </div>
       <div class="top-right-links">
-        <a href="#">Portals</a>
-        <a href="#">Library</a>
+        <a href="#">Student Portals</a>
+        <a href="#">Library & IEEE</a>
         <a href="#">Contact Us</a>
       </div>
     </div>
@@ -79,7 +78,7 @@
       </div>
       <div class="header-search">
         <input type="text" placeholder="Search department site..." />
-        <button>Search</button>
+        <button><i class="fa-solid fa-magnifying-glass"></i> Search</button>
       </div>
     </div>
   </header>
@@ -87,42 +86,141 @@
   <!-- Main Navigation Bar -->
   <nav class="main-nav">
     <div class="container nav-list">
+      <a href="#" class="active"><i class="fa-solid fa-house"></i> Home</a>
       <div class="nav-dropdown">
-        <a href="#">About Us</a>
+        <a href="#">About Us <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i></a>
         <div class="dropdown-menu">
-          <a href="#">Academics</a>
-          <a href="#">Research &amp; Projects</a>
-          <a href="#">Placements</a>
+          <a href="#">Academics & Accreditation</a>
+          <a href="#">Research & Projects</a>
+          <a href="#">Placements & MOUs</a>
         </div>
       </div>
-      <a href="#" class="active">Home</a>
       <a href="#">Faculty & Staff</a>
+      <a href="#specializations">Tech Domains</a>
+      <a href="#events-section">Upcoming Events</a>
       <a href="#">Student Corner</a>
-      <a href="#">Events & Symposium</a>
     </div>
   </nav>
 
-
-  <!-- Main Content Layout -->
+  <!-- Main Content Area -->
   <main class="container main-content">
     
-    <!-- Hero Banner & News Grid -->
-    <section class="hero-section">
-      <div class="featured-slider">
-        <img src="samplehomeimg.jpg" alt="Campus Event" />
-   </div>
-  
+    <!-- HIGH-TECH HERO BANNER -->
+    <section class="tech-hero-container">
+      <div class="tech-hero-card">
+        <canvas id="techHeroCanvas" class="tech-hero-canvas"></canvas>
+        <div class="tech-hero-body">
+          
+          <div class="hero-main-info">
+            <div class="tech-badge">
+              <span class="pulse-dot"></span> Department of Computer Science & Engineering
+            </div>
+            <h1 class="hero-main-title">Advancing Intelligent Computing, Systems & Innovation</h1>
+            <p class="hero-subtitle">
+              Empowering engineers through hands-on research in Artificial Intelligence, Cloud Infrastructure, Cybersecurity, and Next-Gen Software Engineering.
+            </p>
+            <div class="hero-cta-group">
+              <a href="#specializations" class="btn-tech-primary">
+                <i class="fa-solid fa-layer-group"></i> Explore Domains
+              </a>
+              <a href="#events-section" class="btn-tech-secondary">
+                <i class="fa-solid fa-calendar-days"></i> Upcoming Events
+              </a>
+            </div>
+          </div>
+
+          <!-- METRICS STATS PANEL -->
+          <div class="hero-stats-panel">
+            <div class="stat-card">
+              <span class="stat-number" data-target="95" data-suffix="%">0%</span>
+              <span class="stat-label">Placement Record</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number" data-target="200" data-suffix="+">0+</span>
+              <span class="stat-label">Research Papers</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number" data-target="15" data-suffix="+">0+</span>
+              <span class="stat-label">High-Tech Labs</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number" data-target="1200" data-suffix="+">0+</span>
+              <span class="stat-label">Active Scholars</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </section>
 
-    <!-- Main Navigation Bar inside index.html for events -->
-<section class="events-embed-wrapper">
-  <iframe src="event1.html" title="Upcoming Events" class="events-iframe"></iframe>
-</section>
+    <!-- TECHNICAL DOMAINS & SPECIALIZATION MODULES -->
+    <section class="tech-domains-section" id="specializations">
+      <div class="section-header-center">
+        <span class="section-kicker">Core Capabilities</span>
+        <h2 class="section-title">CSE Academic & Research Domains</h2>
+      </div>
 
-<!-- add more .poster-card items -->
+      <div class="domains-grid">
+        <div class="domain-card">
+          <div class="domain-icon-wrap">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <h3>AI & Machine Learning</h3>
+          <p>Deep Learning models, Computer Vision, Natural Language Processing, and Neural Architectures.</p>
+          <div class="domain-tags">
+            <span class="domain-tag">PyTorch</span>
+            <span class="domain-tag">TensorFlow</span>
+            <span class="domain-tag">LLMs</span>
+          </div>
+        </div>
 
+        <div class="domain-card">
+          <div class="domain-icon-wrap">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h3>Cybersecurity & Defense</h3>
+          <p>Network security protocols, Cryptography, Penetration Testing, and Incident Management.</p>
+          <div class="domain-tags">
+            <span class="domain-tag">Ethical Hacking</span>
+            <span class="domain-tag">Zero Trust</span>
+            <span class="domain-tag">SIEM</span>
+          </div>
+        </div>
 
-    <!-- Content Columns: News, Events, Highlights -->
+        <div class="domain-card">
+          <div class="domain-icon-wrap">
+            <i class="fa-solid fa-cloud"></i>
+          </div>
+          <h3>Cloud & Microservices</h3>
+          <p>Distributed cloud architectures, Container orchestration, DevOps automation pipelines.</p>
+          <div class="domain-tags">
+            <span class="domain-tag">Kubernetes</span>
+            <span class="domain-tag">Docker</span>
+            <span class="domain-tag">AWS / GCP</span>
+          </div>
+        </div>
+
+        <div class="domain-card">
+          <div class="domain-icon-wrap">
+            <i class="fa-solid fa-database"></i>
+          </div>
+          <h3>Data Engineering</h3>
+          <p>Real-time analytics pipelines, Big Data processing, Graph Databases, and Warehousing.</p>
+          <div class="domain-tags">
+            <span class="domain-tag">Apache Spark</span>
+            <span class="domain-tag">SQL</span>
+            <span class="domain-tag">ETL</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EVENTS EMBED SLIDER -->
+    <section class="events-embed-wrapper" id="events-section">
+      <iframe src="event1.html" title="Upcoming Events" class="events-iframe"></iframe>
+    </section>
+
+    <!-- THREE COLUMN GRID: NEWS, EVENTS, SPOTLIGHT -->
     <div class="three-column-grid">
       
       <!-- Column 1: Department News -->
@@ -177,8 +275,8 @@
         <div class="spotlight-box">
           <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=500&auto=format&fit=crop" alt="Students Placed" />
           <h4>Campus Recruitment Drive 2026</h4>
-          <p>Over 85% of eligible CSE students secured placements in top Tier-1 technical enterprises.</p>
-          <a href="#" class="btn-link">Read Success Stories</a>
+          <p>Over 95% of eligible CSE students secured placements in top Tier-1 technical enterprises.</p>
+          <a href="#" class="btn-link">Read Success Stories <i class="fa-solid fa-arrow-right"></i></a>
         </div>
       </section>
 
@@ -191,41 +289,41 @@
     <div class="container footer-grid">
       <div>
         <h4>Department Contact</h4>
-        <p>Department of CSE<br />SRM Valliammai Engineering College<br />Kattankulathur, Chengalpattu Dist.</p>
+        <p>Department of Computer Science & Engineering<br />SRM Valliammai Engineering College<br />Kattankulathur, Chengalpattu Dist.</p>
       </div>
       <div>
-        <h4>Quick Navigation</h4>
+        <h4>Quick Links</h4>
         <ul>
           <li><a href="#">Home</a></li>
-          <li><a href="#">About us</a></li>
-          <li><a href="#">Faculty and Staffs</a></li>
-          <li><a href="#">Blog</a></li>
-          <li><a href="#">Student corner</a></li>
-          <li><a href="#">Library</a></li>
-          <li><a href="#">E-books</a></li>
-         <li><a href="#">Curriculum & Syllabus</a></li>
+          <li><a href="#specializations">Tech Domains</a></li>
           <li><a href="#">Faculty Directory</a></li>
           <li><a href="#">Laboratories</a></li>
+          <li><a href="#">Student Corner</a></li>
+          <li><a href="#">Curriculum & Syllabus</a></li>
         </ul>
       </div>
       <div>
-        <h4>Connect</h4>
+        <h4>Connect & Support</h4>
         <p>Email: cse.info@valliammai.edu.in</p>
-        <p>Address: National Highway 45, Potheri, SRM Nagar, Kattankulathur, Tamil Nadu 603203</p>
-        <p>Contact us: 04427454784</p>
-        <p>© 2026 SRMVEC CSE Department. All Rights Reserved.</p>
+        <p>Location: National Highway 45, Potheri, SRM Nagar, Kattankulathur, Tamil Nadu 603203</p>
+        <p>Contact: 044-27454784</p>
       </div>
+    </div>
+    <div class="container footer-bottom">
+      © 2026 Department of Computer Science & Engineering, SRMVEC. All Rights Reserved.
     </div>
   </footer>
 
   </div>
 
+  <!-- Tech Hero JS -->
+  <script src="tech-hero.js"></script>
   <script>
     window.addEventListener('DOMContentLoaded', () => {
       window.setTimeout(() => {
         document.body.classList.add('intro-done');
         document.body.classList.remove('is-loading');
-      }, 850);
+      }, 700);
     });
   </script>
 
