@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Corner — SRMVEC CSE Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="blogs.css" />
+</head>
+<body>
+
+<!-- ═══════════════ LOGIN ═══════════════ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-card-header">
+      <div class="login-icon" style="background:linear-gradient(135deg,#4C1D95,#7C3AED);"><i class="fa-solid fa-shield-halved"></i></div>
+      <h2>Admin Corner</h2>
+      <p>SRMVEC CSE Blog — Super Admin Access</p>
+    </div>
+    <div class="error-msg" id="loginError">Invalid admin credentials.</div>
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label for="loginUsername">Admin Username</label>
+        <input type="text" id="loginUsername" class="form-control" placeholder="admin" autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">Admin Password</label>
+        <input type="password" id="loginPassword" class="form-control" placeholder="Admin password" autocomplete="current-password" />
+      </div>
+      <button type="submit" class="btn" style="width:100%;justify-content:center;padding:.8rem;background:linear-gradient(135deg,#4C1D95,#7C3AED);color:#fff;border:none;">
+        <i class="fa-solid fa-right-to-bracket"></i> Admin Sign In
+      </button>
+    </form>
+    <p style="text-align:center;margin-top:1.2rem;font-size:0.82rem;color:#94A3B8;">
+      Default: <code style="background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:.8rem;">admin / Admin@2026</code>
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════ ADMIN DASHBOARD ═══════════════ -->
+<div class="portal-layout" id="dashboardScreen" style="display:none;">
+
+  <header class="portal-header" style="border-bottom-color:#7C3AED;">
+    <div class="portal-header-brand">
+      <div class="portal-icon" style="background:linear-gradient(135deg,#4C1D95,#7C3AED);"><i class="fa-solid fa-shield-halved"></i></div>
+      <div>
+        <h1>Admin Corner</h1>
+        <small>Full Access — All Blogs &amp; Users</small>
+      </div>
+    </div>
+    <div class="portal-header-actions">
+      <span class="user-chip" style="border-color:rgba(124,58,237,.4);"><i class="fa-solid fa-crown"></i> Administrator</span>
+      <a href="index.html" class="btn btn-ghost btn-sm"><i class="fa-solid fa-house"></i> Home</a>
+      <button class="btn btn-danger btn-sm" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+    </div>
+  </header>
+
+  <main class="portal-main">
+
+    <!-- Stats Row -->
+    <div class="admin-stats-grid" id="statsGrid"></div>
+
+    <!-- All Blogs Table -->
+    <div class="section-card">
+      <div class="section-card-header">
+        <h2><i class="fa-solid fa-database"></i> All Blogs — Full Control</h2>
+        <div style="display:flex;gap:.5rem;align-items:center;">
+          <input type="text" id="filterInput" class="form-control" style="width:200px;font-size:.85rem;padding:.4rem .75rem;" placeholder="Search title or author…" />
+          <select id="filterRole" class="form-control" style="width:130px;font-size:.85rem;padding:.4rem .75rem;">
+            <option value="">All Roles</option>
+            <option value="teacher">Teachers</option>
+            <option value="student">Students</option>
+          </select>
+        </div>
+      </div>
+      <div class="section-card-body" style="padding:0;">
+        <div class="data-table-wrap" id="allBlogsTableWrap"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-pen"></i> Admin Edit Blog</h3>
+      <button class="modal-close-btn" id="editModalClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="error-msg" id="editError"></div>
+      <form class="blog-form" id="editBlogForm" novalidate>
+        <input type="hidden" id="editBlogId" />
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editTitle">Blog Title *</label>
+            <input type="text" id="editTitle" class="form-control" />
+          </div>
+          <div class="form-group">
+            <label for="editCategory">Category *</label>
+            <select id="editCategory" class="form-control">
+              <option>AI & ML</option>
+              <option>Cybersecurity</option>
+              <option>Cloud & DevOps</option>
+              <option>Web Development</option>
+              <option>Data Engineering</option>
+              <option>Research & Publications</option>
+              <option>Student Life</option>
+              <option>Events & Symposium</option>
+              <option>General</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="editContent">Content *</label>
+          <textarea id="editContent" class="form-control" rows="8"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="editTags">Tags</label>
+          <input type="text" id="editTags" class="form-control" />
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="editModalCancel">Cancel</button>
+      <button class="btn" style="background:#7C3AED;color:#fff;" id="saveEditBtn"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <h3>Delete This Blog?</h3>
+    <p>As admin, you are permanently deleting this blog entry. This cannot be undone.</p>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" id="cancelDeleteBtn">Cancel</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn"><i class="fa-solid fa-trash"></i> Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="blog-data.js"></script>
+<script>
+  let pendingDeleteId = null;
+
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const user = BlogDB.authenticate(username, password, 'admin');
+    if (!user) {
+      document.getElementById('loginError').classList.add('visible');
+      return;
+    }
+    BlogDB.setCurrentUser(user);
+    showDashboard();
+  });
+
+  function showDashboard() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboardScreen').style.display = '';
+    renderStats();
+    renderAllBlogs();
+    document.getElementById('filterInput').addEventListener('input', renderAllBlogs);
+    document.getElementById('filterRole').addEventListener('change', renderAllBlogs);
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const saved = BlogDB.getCurrentUser();
+    if (saved && saved.role === 'admin') showDashboard();
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    BlogDB.logout(); location.reload();
+  });
+
+  function renderStats() {
+    const blogs    = BlogDB.getBlogs();
+    const teachers = blogs.filter(b => b.role === 'teacher').length;
+    const students = blogs.filter(b => b.role === 'student').length;
+    const views    = blogs.reduce((s, b) => s + (b.views || 0), 0);
+
+    document.getElementById('statsGrid').innerHTML = `
+      <div class="admin-stat-card"><span class="num">${blogs.length}</span><span class="lbl">Total Blogs</span></div>
+      <div class="admin-stat-card"><span class="num">${teachers}</span><span class="lbl">Teacher Posts</span></div>
+      <div class="admin-stat-card"><span class="num">${students}</span><span class="lbl">Student Posts</span></div>
+      <div class="admin-stat-card"><span class="num">${views}</span><span class="lbl">Total Views</span></div>
+    `;
+  }
+
+  function renderAllBlogs() {
+    const query      = (document.getElementById('filterInput')?.value || '').toLowerCase();
+    const roleFilter = document.getElementById('filterRole')?.value || '';
+    let blogs = BlogDB.getBlogs();
+
+    if (query)      blogs = blogs.filter(b => b.title.toLowerCase().includes(query) || b.author.toLowerCase().includes(query));
+    if (roleFilter) blogs = blogs.filter(b => b.role === roleFilter);
+
+    const wrap = document.getElementById('allBlogsTableWrap');
+    if (blogs.length === 0) {
+      wrap.innerHTML = `<div class="empty-state"><i class="fa-regular fa-newspaper"></i><p>No blogs match your filters.</p></div>`;
+      return;
+    }
+
+    const rows = blogs.map(b => `
+      <tr>
+        <td class="td-title">
+          <strong>${b.title}</strong>
+          <span>${BlogDB.truncate(b.content, 80)}</span>
+        </td>
+        <td><span class="tag-chip">${b.category}</span></td>
+        <td>
+          <span class="role-badge ${b.role}">${b.role}</span><br/>
+          <small style="color:#64748B;font-size:.78rem;">${b.author}</small>
+        </td>
+        <td style="font-size:.85rem;">${BlogDB.formatDate(b.createdAt)}</td>
+        <td style="text-align:center;">${b.views || 0}</td>
+        <td>
+          <div class="action-btns">
+            <a href="blog-view.html?id=${b.id}" class="btn btn-ghost btn-sm" target="_blank"><i class="fa-solid fa-eye"></i></a>
+            <button class="btn btn-sm" style="background:#7C3AED;color:#fff;" onclick="openEdit('${b.id}')"><i class="fa-solid fa-pen"></i> Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="requestDelete('${b.id}')"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+    wrap.innerHTML = `
+      <table class="data-table">
+        <thead><tr>
+          <th>Blog Title &amp; Excerpt</th>
+          <th>Category</th>
+          <th>Author &amp; Role</th>
+          <th>Published</th>
+          <th style="text-align:center;">Views</th>
+          <th>Actions</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  function openEdit(id) {
+    const blog = BlogDB.getBlogById(id);
+    if (!blog) return;
+    document.getElementById('editBlogId').value   = id;
+    document.getElementById('editTitle').value    = blog.title;
+    document.getElementById('editCategory').value = blog.category;
+    document.getElementById('editContent').value  = blog.content;
+    document.getElementById('editTags').value     = (blog.tags || []).join(', ');
+    document.getElementById('editModal').classList.add('open');
+  }
+
+  document.getElementById('editModalClose').addEventListener('click',  () => document.getElementById('editModal').classList.remove('open'));
+  document.getElementById('editModalCancel').addEventListener('click', () => document.getElementById('editModal').classList.remove('open'));
+
+  document.getElementById('saveEditBtn').addEventListener('click', () => {
+    const id       = document.getElementById('editBlogId').value;
+    const title    = document.getElementById('editTitle').value.trim();
+    const category = document.getElementById('editCategory').value;
+    const content  = document.getElementById('editContent').value.trim();
+    const tags     = document.getElementById('editTags').value;
+    const errEl    = document.getElementById('editError');
+    if (!title || !content) { errEl.textContent = 'Title and content are required.'; errEl.classList.add('visible'); return; }
+    errEl.classList.remove('visible');
+    BlogDB.updateBlog(id, { title, category, content, tags: tags.split(',').map(t=>t.trim()).filter(Boolean) });
+    document.getElementById('editModal').classList.remove('open');
+    renderStats();
+    renderAllBlogs();
+  });
+
+  function requestDelete(id) {
+    pendingDeleteId = id;
+    document.getElementById('confirmOverlay').classList.add('open');
+  }
+
+  document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+    pendingDeleteId = null;
+    document.getElementById('confirmOverlay').classList.remove('open');
+  });
+
+  document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+    if (pendingDeleteId) { BlogDB.deleteBlog(pendingDeleteId); pendingDeleteId = null; }
+    document.getElementById('confirmOverlay').classList.remove('open');
+    renderStats();
+    renderAllBlogs();
+  });
+</script>
+</body>
+</html>

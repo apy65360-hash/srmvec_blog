@@ -230,7 +230,7 @@
     .progress-fill {
       height: 100%;
       background: linear-gradient(90deg, var(--brand-text), var(--accent));
-      animation: progress 5s linear forwards;
+      animation: progress 3s linear forwards;
     }
 
     @keyframes progress {
@@ -323,7 +323,7 @@
         <div class="progress-bar" id="progressBar">
           <div class="progress-fill"></div>
         </div>
-        <span class="status-text" id="statusText">Auto advancing in 5s</span>
+        <span class="status-text" id="statusText">Auto advancing in 3s</span>
       </div>
     </main>
   </div>
@@ -415,7 +415,7 @@
 
     container.addEventListener("mouseleave", () => {
       isHovering = false;
-      statusText.textContent = "Auto advancing in 5s";
+      statusText.textContent = "Auto advancing in 3s";
       startAutoPlay();
     });
 

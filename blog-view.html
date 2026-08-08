@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Read Blog — SRMVEC CSE Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="blogs.css" />
+  <style>
+    /* Minimal top header for blog view */
+    .bv-header {
+      background: #002947;
+      padding: .85rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid #F59E0B;
+    }
+    .bv-header .bv-brand {
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+    }
+    .bv-header .bv-brand span { color: #F59E0B; }
+    .not-found {
+      text-align: center;
+      padding: 5rem 1rem;
+      color: #64748B;
+    }
+    .not-found i { font-size: 3rem; display: block; margin-bottom: 1rem; }
+  </style>
+</head>
+<body style="background:#F8FAFC;">
+
+  <header class="bv-header">
+    <div class="bv-brand">CSE <span>Blog</span></div>
+    <a href="index.html" class="blog-view-back" style="margin:0;"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+  </header>
+
+  <div id="blogViewContainer"></div>
+
+  <script src="blog-data.js"></script>
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const id     = params.get('id');
+      const container = document.getElementById('blogViewContainer');
+
+      if (!id) {
+        container.innerHTML = `<div class="not-found"><i class="fa-regular fa-file-lines"></i><p>No blog ID provided.</p><a href="index.html" class="btn btn-ghost" style="margin-top:1rem;display:inline-flex;">← Back to Home</a></div>`;
+        return;
+      }
+
+      const blog = BlogDB.getBlogById(id);
+      if (!blog) {
+        container.innerHTML = `<div class="not-found"><i class="fa-regular fa-circle-xmark"></i><p>Blog not found. It may have been deleted.</p><a href="index.html" class="btn btn-ghost" style="margin-top:1rem;display:inline-flex;">← Back to Home</a></div>`;
+        return;
+      }
+
+      // Increment view count
+      BlogDB.incrementViews(id);
+
+      const tagPills = (blog.tags || []).map(t => `<span class="tag-chip">${t}</span>`).join('');
+      const roleBadge = `<span class="role-badge ${blog.role}">${blog.role}</span>`;
+      const updated = blog.updatedAt !== blog.createdAt
+        ? `<span title="Updated ${BlogDB.formatDate(blog.updatedAt)}"><i class="fa-regular fa-clock"></i> Updated ${BlogDB.formatDate(blog.updatedAt)}</span>`
+        : '';
+
+      container.innerHTML = `
+        <div class="blog-view-wrap">
+          <a href="index.html" class="blog-view-back"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+
+          <div class="blog-view-header">
+            <div class="blog-view-category">
+              <i class="fa-solid fa-tag"></i> ${blog.category}
+            </div>
+            <h1 class="blog-view-title">${blog.title}</h1>
+            <div class="blog-view-byline">
+              <span class="author-name"><i class="fa-solid fa-user-pen"></i> ${blog.author} ${roleBadge}</span>
+              <span><i class="fa-regular fa-calendar"></i> ${BlogDB.formatDate(blog.createdAt)}</span>
+              ${updated}
+              <span><i class="fa-regular fa-eye"></i> ${(blog.views || 0) + 1} views</span>
+            </div>
+          </div>
+
+          <hr class="blog-view-divider" />
+
+          <div class="blog-view-body">${blog.content}</div>
+
+          <div class="blog-view-tags">${tagPills}</div>
+
+          <div style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid #E2E8F0;display:flex;justify-content:space-between;align-items:center;">
+            <a href="index.html" class="blog-view-back" style="margin:0;"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+            <div style="display:flex;gap:.75rem;">
+              <a href="student-corner.html" class="btn btn-ghost btn-sm"><i class="fa-solid fa-user-graduate"></i> Student Corner</a>
+              <a href="teachers-corner.html" class="btn btn-ghost btn-sm"><i class="fa-solid fa-chalkboard-user"></i> Teacher's Corner</a>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.title = blog.title + ' — SRMVEC CSE Blog';
+    })();
+  </script>
+</body>
+</html>

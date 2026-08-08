@@ -116,8 +116,12 @@
           <a href="#events-section">Campus Life <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
           <div class="dropdown-menu">
             <a href="#events-section">Events & Symposium</a>
-            <a href="#">Student Corner</a>
+            <a href="student-corner.html">Student Corner</a>
+            <a href="teachers-corner.html">Teacher's Corner</a>
           </div>
+        </div>
+        <div class="nav-item">
+          <a href="#blog-corner-section"><i class="fa-solid fa-pen-nib" style="margin-right:.3rem;"></i>CSE Blog</a>
         </div>
       </nav>
 
@@ -213,6 +217,31 @@
           <span class="stat-number" data-target="1200" data-suffix="+">0+</span>
           <span class="stat-label">Active Scholars</span>
         </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ BLOG CORNER CAROUSEL SECTION ═══════════ -->
+    <section class="blog-corner-section" id="blog-corner-section">
+      <div class="blog-corner-header">
+        <div>
+          <span class="section-kicker">Community Knowledge</span>
+          <h2 class="section-title">CSE Blog Corner</h2>
+        </div>
+        <div class="blog-corner-nav-links">
+          <a href="student-corner.html" class="blog-corner-link"><i class="fa-solid fa-user-graduate"></i> Student Corner</a>
+          <a href="teachers-corner.html" class="blog-corner-link"><i class="fa-solid fa-chalkboard-user"></i> Teacher's Corner</a>
+        </div>
+      </div>
+
+      <div class="blog-carousel-viewport">
+        <!-- Cards injected by blog-corner.js -->
+        <div class="blog-carousel-track" id="blogCarouselTrack"></div>
+      </div>
+
+      <div class="blog-carousel-controls">
+        <button class="blog-carousel-btn" id="blogCarouselPrev" aria-label="Previous blog"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="blog-carousel-dots" id="blogCarouselDots"></div>
+        <button class="blog-carousel-btn" id="blogCarouselNext" aria-label="Next blog"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
     </section>
 
@@ -366,6 +395,9 @@
 
   </div>
 
+  <!-- Blog Data & Carousel JS -->
+  <script src="blog-data.js"></script>
+  <script src="blog-corner.js"></script>
   <!-- Tech Hero JS -->
   <script src="tech-hero.js"></script>
   <script>

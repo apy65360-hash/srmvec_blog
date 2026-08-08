@@ -312,15 +312,8 @@ document.addEventListener('DOMContentLoaded', () => {
       { month: 11, day: 10, title: "Annual Alumni Meet & Industry Interaction", venue: "Campus Convention Hall", time: "10:00 AM" }
     ];
 
-    // Check events scheduled for today
+    // Check events scheduled for today ONLY
     const todaysEvents = YEARLY_CALENDAR.filter(e => e.month === currentMonth && e.day === currentDate);
-
-    // Find upcoming events from today onwards
-    const upcomingEvents = YEARLY_CALENDAR.filter(e => {
-      if (e.month > currentMonth) return true;
-      if (e.month === currentMonth && e.day > currentDate) return true;
-      return false;
-    });
 
     todaysEventsList.innerHTML = '';
 
@@ -342,7 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
         todaysEventsList.appendChild(li);
       });
     } else {
-      // Notice for today
       const noticeLi = document.createElement('li');
       noticeLi.innerHTML = `
         <div class="date-badge today-badge">
@@ -352,28 +344,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="event-details">
           <span class="status-pill info-today"><i class="fa-solid fa-calendar-check"></i> CALENDAR ACTIVE</span>
           <strong>No special events today</strong>
-          <small>Academic sessions & research labs running on schedule</small>
+          <small>Academic sessions &amp; research labs running on schedule</small>
         </div>
       `;
       todaysEventsList.appendChild(noticeLi);
-    }
-
-    // Append next upcoming scheduled event from yearly calendar
-    if (upcomingEvents.length > 0) {
-      const nextEvt = upcomingEvents[0];
-      const nextLi = document.createElement('li');
-      nextLi.innerHTML = `
-        <div class="date-badge">
-          <span>${nextEvt.day < 10 ? '0' + nextEvt.day : nextEvt.day}</span>
-          ${monthNames[nextEvt.month]}
-        </div>
-        <div class="event-details">
-          <span class="status-pill upcoming-pill"><i class="fa-solid fa-clock"></i> NEXT UPCOMING</span>
-          <strong>${nextEvt.title}</strong>
-          <small>Venue: ${nextEvt.venue} • ${nextEvt.time}</small>
-        </div>
-      `;
-      todaysEventsList.appendChild(nextLi);
     }
   }
 });
