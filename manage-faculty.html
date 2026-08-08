@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Faculty | CSE Blog Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+
+  <div class="admin-layout">
+
+    <aside class="admin-sidebar">
+      <h3>CSE BLOG</h3>
+      <p class="sidebar-user">Signed in as <span data-auth-user>Guest</span></p>
+      <a href="dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a>
+      <a href="teachers-corner.html"><i class="fa-solid fa-pen-nib"></i> Manage Blogs</a>
+      <a href="add-event.html"><i class="fa-solid fa-calendar-plus"></i> Manage Events</a>
+      <a class="active" href="manage-faculty.html"><i class="fa-solid fa-chalkboard-user"></i> Faculty</a>
+      <a href="contact.html"><i class="fa-solid fa-envelope"></i> Newsletter</a>
+      <a href="index.html"><i class="fa-solid fa-globe"></i> View Site</a>
+      <a href="#" data-auth-logout><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </aside>
+
+    <main class="admin-main">
+      <div class="portal-panel">
+        <h2>Manage Faculty</h2>
+
+        <div class="toolbar">
+          <input class="form-control" type="text" id="facultySearch" placeholder="Search Faculty" />
+          <button class="btn btn-success" type="button" id="toggleAddFaculty"><i class="fa-solid fa-plus"></i> Add Faculty</button>
+        </div>
+
+        <form id="addFacultyForm" class="two-column-layout" style="display:none; margin-bottom:1.5rem;">
+          <div class="form-row">
+            <label for="facultyName">Name</label>
+            <input class="form-control" type="text" id="facultyName" placeholder="Dr. Full Name" required />
+          </div>
+          <div class="form-row">
+            <label for="facultyDesignation">Designation</label>
+            <input class="form-control" type="text" id="facultyDesignation" placeholder="Professor" required />
+          </div>
+          <div class="form-row">
+            <label for="facultyEmail">Email</label>
+            <input class="form-control" type="email" id="facultyEmail" placeholder="name@valliammai.ac.in" required />
+          </div>
+          <div class="form-actions" style="align-items:flex-end;">
+            <button class="btn btn-primary" type="submit">Save Faculty</button>
+          </div>
+        </form>
+
+        <div class="table-scroll">
+          <table class="portal-table" id="facultyTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Photo</th>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Email</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="facultyTableBody">
+              <tr>
+                <td>1</td>
+                <td><span class="avatar-initials">AB</span></td>
+                <td>Dr. A. Bharathi</td>
+                <td>Professor</td>
+                <td>bharathi.cse@valliammai.ac.in</td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-primary btn-sm" type="button" data-action="view">View</button>
+                    <button class="btn btn-warning btn-sm" type="button" data-action="edit">Edit</button>
+                    <button class="btn btn-danger btn-sm" type="button" data-action="delete">Delete</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td><span class="avatar-initials">KR</span></td>
+                <td>Dr. K. Ramesh</td>
+                <td>Associate Professor</td>
+                <td>ramesh.cse@valliammai.ac.in</td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-primary btn-sm" type="button" data-action="view">View</button>
+                    <button class="btn btn-warning btn-sm" type="button" data-action="edit">Edit</button>
+                    <button class="btn btn-danger btn-sm" type="button" data-action="delete">Delete</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td><span class="avatar-initials">SD</span></td>
+                <td>Mrs. S. Divya</td>
+                <td>Assistant Professor</td>
+                <td>divya.cse@valliammai.ac.in</td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn btn-primary btn-sm" type="button" data-action="view">View</button>
+                    <button class="btn btn-warning btn-sm" type="button" data-action="edit">Edit</button>
+                    <button class="btn btn-danger btn-sm" type="button" data-action="delete">Delete</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="users.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    Auth.requireLogin(["teacher"]);
+    Auth.renderUserBadge();
+
+    const tableBody = document.getElementById("facultyTableBody");
+
+    function initials(name) {
+      return name
+        .replace(/^(Dr\.|Mr\.|Mrs\.|Ms\.)\s*/i, "")
+        .split(/\s+/)
+        .slice(0, 2)
+        .map(function (part) { return part.charAt(0).toUpperCase(); })
+        .join("");
+    }
+
+    document.getElementById("facultySearch").addEventListener("input", function () {
+      const term = this.value.trim().toLowerCase();
+      Array.prototype.forEach.call(tableBody.rows, function (row) {
+        row.style.display = row.textContent.toLowerCase().includes(term) ? "" : "none";
+      });
+    });
+
+    document.getElementById("toggleAddFaculty").addEventListener("click", function () {
+      const form = document.getElementById("addFacultyForm");
+      form.style.display = form.style.display === "none" ? "grid" : "none";
+    });
+
+    document.getElementById("addFacultyForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      const name = document.getElementById("facultyName").value;
+      const designation = document.getElementById("facultyDesignation").value;
+      const email = document.getElementById("facultyEmail").value;
+      const row = tableBody.insertRow();
+      row.innerHTML =
+        "<td>" + (tableBody.rows.length) + "</td>" +
+        '<td><span class="avatar-initials"></span></td>' +
+        "<td></td><td></td><td></td>" +
+        '<td><div class="table-actions">' +
+        '<button class="btn btn-primary btn-sm" type="button" data-action="view">View</button>' +
+        '<button class="btn btn-warning btn-sm" type="button" data-action="edit">Edit</button>' +
+        '<button class="btn btn-danger btn-sm" type="button" data-action="delete">Delete</button>' +
+        "</div></td>";
+      row.querySelector(".avatar-initials").textContent = initials(name);
+      row.cells[2].textContent = name;
+      row.cells[3].textContent = designation;
+      row.cells[4].textContent = email;
+      this.reset();
+      this.style.display = "none";
+    });
+
+    tableBody.addEventListener("click", function (event) {
+      const button = event.target.closest("button[data-action]");
+      if (!button) { return; }
+      const row = button.closest("tr");
+      const name = row.cells[2].textContent;
+      if (button.dataset.action === "delete") {
+        if (window.confirm("Remove " + name + " from the faculty list?")) {
+          row.remove();
+        }
+      } else if (button.dataset.action === "view") {
+        window.alert(name + "\n" + row.cells[3].textContent + "\n" + row.cells[4].textContent);
+      } else {
+        const updated = window.prompt("Update designation for " + name, row.cells[3].textContent);
+        if (updated) {
+          row.cells[3].textContent = updated;
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

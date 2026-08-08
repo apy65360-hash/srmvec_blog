@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Event | CSE Blog Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+
+  <div class="admin-layout">
+
+    <aside class="admin-sidebar">
+      <h3>CSE BLOG</h3>
+      <p class="sidebar-user">Signed in as <span data-auth-user>Guest</span></p>
+      <a href="dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a>
+      <a href="teachers-corner.html"><i class="fa-solid fa-pen-nib"></i> Manage Blogs</a>
+      <a class="active" href="add-event.html"><i class="fa-solid fa-calendar-plus"></i> Manage Events</a>
+      <a href="manage-faculty.html"><i class="fa-solid fa-chalkboard-user"></i> Faculty</a>
+      <a href="contact.html"><i class="fa-solid fa-envelope"></i> Newsletter</a>
+      <a href="index.html"><i class="fa-solid fa-globe"></i> View Site</a>
+      <a href="#" data-auth-logout><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </aside>
+
+    <main class="admin-main">
+      <div class="portal-panel" style="max-width:900px;">
+        <h2>Add New Event</h2>
+
+        <div class="form-message" id="eventMessage"></div>
+
+        <form id="addEventForm">
+          <div class="form-row">
+            <label for="eventTitle">Event Title</label>
+            <input class="form-control" type="text" id="eventTitle" placeholder="Enter Event Title" required />
+          </div>
+
+          <div class="form-row">
+            <label for="eventCategory">Event Category</label>
+            <select class="form-control" id="eventCategory">
+              <option>Workshop</option>
+              <option>Hackathon</option>
+              <option>Seminar</option>
+              <option>Guest Lecture</option>
+              <option>Symposium</option>
+              <option>Conference</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="eventDate">Event Date</label>
+            <input class="form-control" type="date" id="eventDate" required />
+          </div>
+
+          <div class="form-row">
+            <label for="eventTime">Event Time</label>
+            <input class="form-control" type="time" id="eventTime" />
+          </div>
+
+          <div class="form-row">
+            <label for="eventVenue">Venue</label>
+            <input class="form-control" type="text" id="eventVenue" placeholder="Seminar Hall / Lab" />
+          </div>
+
+          <div class="form-row">
+            <label for="eventImage">Upload Event Image</label>
+            <input class="form-control" type="file" id="eventImage" accept="image/*" />
+          </div>
+
+          <div class="form-row">
+            <label for="eventDescription">Event Description</label>
+            <textarea class="form-control" id="eventDescription" rows="8" placeholder="Enter Event Description"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-success" type="submit"><i class="fa-solid fa-upload"></i> Publish Event</button>
+            <button class="btn btn-muted" type="reset">Clear</button>
+          </div>
+        </form>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="users.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    Auth.requireLogin(["teacher"]);
+    Auth.renderUserBadge();
+    document.getElementById("addEventForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      const box = document.getElementById("eventMessage");
+      box.textContent = "Event \"" + document.getElementById("eventTitle").value + "\" published.";
+      box.className = "form-message is-visible success";
+      this.reset();
+    });
+  </script>
+
+</body>
+</html>

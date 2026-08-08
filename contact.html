@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact | SRM Valliammai CSE Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="page-header-bar">
+    <div class="container header-nav-container">
+      <a class="brand-main-title" href="index.html" style="color:#fff;">CSE Blog</a>
+      <nav class="page-links">
+        <a href="index.html">Home</a>
+        <a href="student-corner.html">Student Corner</a>
+        <a href="teachers-corner.html">Teacher's Corner</a>
+        <a href="event1.html">Events</a>
+        <a href="manage-faculty.html">Faculty</a>
+        <a class="active" href="contact.html">Contact</a>
+        <a href="login.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <h1>Contact Us</h1>
+      <p>Department of Computer Science &amp; Engineering</p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="container page-section">
+    <div class="two-column-layout">
+
+      <div class="portal-panel detail-list">
+        <h3>Department Details</h3>
+        <p><strong>College:</strong> SRM Valliammai Engineering College</p>
+        <p><strong>Department:</strong> Computer Science &amp; Engineering</p>
+        <p><strong>Email:</strong> cse@valliammai.ac.in</p>
+        <p><strong>Phone:</strong> 044-27454784</p>
+        <p><strong>Address:</strong><br />
+          SRM Valliammai Engineering College,<br />
+          Kattankulathur, Chennai - 603203.
+        </p>
+      </div>
+
+      <div class="portal-panel">
+        <h3>Send a Message</h3>
+        <div class="form-message" id="contactMessage"></div>
+        <form id="contactForm">
+          <div class="form-row">
+            <label for="contactName">Your Name</label>
+            <input class="form-control" type="text" id="contactName" placeholder="Your Name" required />
+          </div>
+          <div class="form-row">
+            <label for="contactEmail">Email</label>
+            <input class="form-control" type="email" id="contactEmail" placeholder="Email" required />
+          </div>
+          <div class="form-row">
+            <label for="contactBody">Your Message</label>
+            <textarea class="form-control" id="contactBody" rows="5" placeholder="Your Message" required></textarea>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-paper-plane"></i> Send Message</button>
+            <button class="btn btn-muted" type="reset">Clear</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-bottom">
+      © 2026 Department of Computer Science &amp; Engineering, SRMVEC. All Rights Reserved.
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("contactForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      const box = document.getElementById("contactMessage");
+      box.textContent = "Thanks! Your message has been recorded. The department will reply by email.";
+      box.className = "form-message is-visible success";
+      this.reset();
+    });
+  </script>
+
+</body>
+</html>
