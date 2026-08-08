@@ -306,27 +306,14 @@
         </div>
       </section>
 
-      <!-- Column 2: Upcoming Events -->
-      <section class="portal-card">
+      <!-- Column 2: Today's Events (Yearly Academic Calendar Engine) -->
+      <section class="portal-card" id="todays-events-card">
         <div class="card-header">
-          <h3>Upcoming Events</h3>
-          <a href="#" class="more-link">Full Calendar &rarr;</a>
+          <h3>Today's Events</h3>
+          <a href="#" class="more-link" id="todayDateStr">AUG 07, 2026</a>
         </div>
-        <ul class="event-schedule">
-          <li>
-            <div class="date-badge"><span>18</span>AUG</div>
-            <div class="event-details">
-              <strong>Workshop on Python Data Engineering</strong>
-              <small>Venue: CSE Lab 3 • 10:00 AM</small>
-            </div>
-          </li>
-          <li>
-            <div class="date-badge"><span>25</span>AUG</div>
-            <div class="event-details">
-              <strong>National Technical Symposium</strong>
-              <small>Venue: College Auditorium</small>
-            </div>
-          </li>
+        <ul class="event-schedule" id="todaysEventsList">
+          <!-- Populated dynamically by tech-hero.js -->
         </ul>
       </section>
 

@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let height = (canvas.height = canvas.offsetHeight);
 
     let activeMode = 0;
-    let transitionProgress = 1;
 
     // Node Mesh Data (Mode 0)
     const nodeCount = Math.min(Math.floor(width / 18), 70);
@@ -50,13 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Color palettes per mode
     const palettes = [
-      { primary: 'rgba(14, 165, 233,', secondary: 'rgba(59, 130, 246,', bg: '#020B18' }, // Cyan / Blue
-      { primary: 'rgba(168, 85, 247,', secondary: 'rgba(99, 102, 241,', bg: '#08051A' }, // Purple / Violet
-      { primary: 'rgba(16, 185, 129,', secondary: 'rgba(6, 182, 212,', bg: '#021215' }   // Emerald / Cyan
+      { bg: '#020B18' }, // Cyan / Blue
+      { bg: '#08051A' }, // Purple / Violet
+      { bg: '#021215' }  // Emerald / Cyan
     ];
 
     function drawMode0(time) {
-      // Cyber Neural Mesh Animation
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
         n.x += n.vx;
@@ -73,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fillStyle = `rgba(56, 189, 248, 0.8)`;
         ctx.fill();
 
-        // Connect nodes
         for (let j = i + 1; j < nodes.length; j++) {
           const n2 = nodes[j];
           const dx = n.x - n2.x;
@@ -89,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.lineWidth = 1;
             ctx.stroke();
 
-            // Light signal pulse along line
             if (Math.random() < 0.003) {
               const pX = n.x + (n2.x - n.x) * ((time * 0.001) % 1);
               const pY = n.y + (n2.y - n.y) * ((time * 0.001) % 1);
@@ -104,14 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function drawMode1(time) {
-      // Perspective Cyber Grid & Waves
       gridOffset = (gridOffset + 1.2) % 40;
       const horizonY = height * 0.35;
 
       ctx.strokeStyle = 'rgba(168, 85, 247, 0.25)';
       ctx.lineWidth = 1;
 
-      // Perspective vertical lines
       const perspectiveLines = 24;
       const centerX = width / 2;
       for (let i = -perspectiveLines; i <= perspectiveLines; i++) {
@@ -121,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.stroke();
       }
 
-      // Horizontal grid lines moving forward
       for (let y = horizonY; y < height; y += 25 + (y - horizonY) * 0.1) {
         ctx.beginPath();
         ctx.moveTo(0, y + (gridOffset % 25));
@@ -129,7 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.stroke();
       }
 
-      // Wave pulses
       ctx.beginPath();
       for (let x = 0; x < width; x += 10) {
         const waveY = horizonY + Math.sin(x * 0.01 + time * 0.003) * 35;
@@ -142,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function drawMode2(time) {
-      // Quantum Particle Constellation Orbit
       const centerX = width * 0.65;
       const centerY = height * 0.5;
 
@@ -156,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fillStyle = `rgba(16, 185, 129, ${p.alpha})`;
         ctx.fill();
 
-        // Connect nearby particles
         particles.forEach((p2) => {
           const x2 = centerX + Math.cos(p2.angle) * p2.radius;
           const y2 = centerY + Math.sin(p2.angle) * (p2.radius * 0.5);
@@ -278,5 +268,112 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
     statNumbers.forEach((num) => observer.observe(num));
+  }
+
+  // 4. DYNAMIC TODAY'S EVENTS & YEARLY ACADEMIC CALENDAR ENGINE
+  const todaysEventsList = document.getElementById('todaysEventsList');
+  const todayDateStr = document.getElementById('todayDateStr');
+
+  if (todaysEventsList) {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth(); // 0 - 11
+    const currentDate = now.getDate(); // 1 - 31
+
+    const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+    if (todayDateStr) {
+      todayDateStr.textContent = `${monthNames[currentMonth]} ${currentDate < 10 ? '0' + currentDate : currentDate}, ${currentYear}`;
+    }
+
+    // Comprehensive Yearly Academic & Technical Event Calendar
+    const YEARLY_CALENDAR = [
+      { month: 0, day: 10, title: "Special Lecture on Quantum Algorithm Design", venue: "CSE Hall 1", time: "10:30 AM" },
+      { month: 0, day: 24, title: "Republic Day Tech Hackathon", venue: "Lab 3", time: "09:00 AM" },
+      { month: 1, day: 12, title: "Workshop on Full-Stack Microservices", venue: "Tech Lab 2", time: "11:00 AM" },
+      { month: 1, day: 25, title: "International Cyber Security Conclave", venue: "Main Auditorium", time: "09:30 AM" },
+      { month: 2, day: 8, title: "Women in Tech Symposium 2026", venue: "Convention Hall", time: "10:00 AM" },
+      { month: 2, day: 20, title: "IEEE Student Paper Contest Presentation", venue: "Seminar Room 4", time: "02:00 PM" },
+      { month: 3, day: 14, title: "Annual Innovation & Project Expo", venue: "College Grounds", time: "09:30 AM" },
+      { month: 3, day: 28, title: "Cloud Architecture Masterclass by AWS Experts", venue: "CSE Lab 1", time: "10:00 AM" },
+      { month: 4, day: 15, title: "End-Semester Academic & Lab Assessments", venue: "CSE Blocks", time: "09:00 AM" },
+      { month: 5, day: 10, title: "Summer Research Fellowship Orientation", venue: "Research Wing", time: "10:00 AM" },
+      { month: 6, day: 15, title: "National Technical Symposium: TechVista", venue: "Auditorium", time: "09:30 AM" },
+      { month: 6, day: 28, title: "Industry Guest Lecture on Cloud DevOps", venue: "CSE Hall 2", time: "11:00 AM" },
+      { month: 7, day: 3, title: "Faculty Paper Publication Summit", venue: "Research Hall", time: "10:00 AM" },
+      { month: 7, day: 7, title: "IEEE Guest Lecture & Hands-on AI Workshop", venue: "CSE Lab 3", time: "10:00 AM" },
+      { month: 7, day: 18, title: "Workshop on Python Data Engineering", venue: "CSE Lab 3", time: "10:00 AM" },
+      { month: 7, day: 25, title: "National Level Technical Symposium 2026", venue: "Main Auditorium", time: "09:00 AM" },
+      { month: 8, day: 5, title: "Teachers' Day Technical Seminar", venue: "CSE Seminar Hall", time: "11:00 AM" },
+      { month: 8, day: 22, title: "Hackathon: 24-Hour CodeSprint 2026", venue: "Innovation Lab", time: "10:00 AM" },
+      { month: 9, day: 15, title: "Placement Orientation & Mock Interview Drive", venue: "Placement Cell", time: "09:00 AM" },
+      { month: 9, day: 30, title: "Web3 & Blockchain Developers Conclave", venue: "Auditorium", time: "10:30 AM" },
+      { month: 10, day: 14, title: "AI & ML Model Deployment Workshop", venue: "CSE Lab 4", time: "10:00 AM" },
+      { month: 11, day: 10, title: "Annual Alumni Meet & Industry Interaction", venue: "Campus Convention Hall", time: "10:00 AM" }
+    ];
+
+    // Check events scheduled for today
+    const todaysEvents = YEARLY_CALENDAR.filter(e => e.month === currentMonth && e.day === currentDate);
+
+    // Find upcoming events from today onwards
+    const upcomingEvents = YEARLY_CALENDAR.filter(e => {
+      if (e.month > currentMonth) return true;
+      if (e.month === currentMonth && e.day > currentDate) return true;
+      return false;
+    });
+
+    todaysEventsList.innerHTML = '';
+
+    if (todaysEvents.length > 0) {
+      todaysEvents.forEach(evt => {
+        const li = document.createElement('li');
+        li.className = 'today-event-item active-today';
+        li.innerHTML = `
+          <div class="date-badge today-highlight">
+            <span>${currentDate < 10 ? '0' + currentDate : currentDate}</span>
+            ${monthNames[currentMonth]}
+          </div>
+          <div class="event-details">
+            <span class="status-pill live-today"><i class="fa-solid fa-circle-dot"></i> HAPPENING TODAY</span>
+            <strong>${evt.title}</strong>
+            <small>Venue: ${evt.venue} • ${evt.time}</small>
+          </div>
+        `;
+        todaysEventsList.appendChild(li);
+      });
+    } else {
+      // Notice for today
+      const noticeLi = document.createElement('li');
+      noticeLi.innerHTML = `
+        <div class="date-badge today-badge">
+          <span>${currentDate < 10 ? '0' + currentDate : currentDate}</span>
+          ${monthNames[currentMonth]}
+        </div>
+        <div class="event-details">
+          <span class="status-pill info-today"><i class="fa-solid fa-calendar-check"></i> CALENDAR ACTIVE</span>
+          <strong>No special events today</strong>
+          <small>Academic sessions & research labs running on schedule</small>
+        </div>
+      `;
+      todaysEventsList.appendChild(noticeLi);
+    }
+
+    // Append next upcoming scheduled event from yearly calendar
+    if (upcomingEvents.length > 0) {
+      const nextEvt = upcomingEvents[0];
+      const nextLi = document.createElement('li');
+      nextLi.innerHTML = `
+        <div class="date-badge">
+          <span>${nextEvt.day < 10 ? '0' + nextEvt.day : nextEvt.day}</span>
+          ${monthNames[nextEvt.month]}
+        </div>
+        <div class="event-details">
+          <span class="status-pill upcoming-pill"><i class="fa-solid fa-clock"></i> NEXT UPCOMING</span>
+          <strong>${nextEvt.title}</strong>
+          <small>Venue: ${nextEvt.venue} • ${nextEvt.time}</small>
+        </div>
+      `;
+      todaysEventsList.appendChild(nextLi);
+    }
   }
 });
