@@ -182,6 +182,16 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       font-weight: var(--fw-semibold);
+      overflow: hidden;
+    }
+
+    /* Posters fill the whole card area, cropping instead of leaving gaps. */
+    .poster-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
     }
 
     .poster-info {
@@ -329,15 +339,15 @@
   </div>
 
   <script>
+    // Titles and dates are taken from the posters in eventposterimg/.
     const EVENTS = [
-      { id: 1, title: "National Technical Symposium: TechVista 2026", date: "July 15", time: "9:30 AM", venue: "Central Auditorium" },
-      { id: 2, title: "International Conference on Artificial Intelligence & ML", date: "July 18", time: "9:00 AM", venue: "Tech Convention Hall" },
-      { id: 3, title: "Hackathon: 24-Hour CodeSprint", date: "July 22", time: "10:00 AM", venue: "Innovation Lab 3" },
-      { id: 4, title: "Web3 & Blockchain Developers Summit", date: "July 25", time: "10:30 AM", venue: "Main Seminar Complex" },
-      { id: 5, title: "Cloud Computing & DevOps Workshop", date: "July 29", time: "11:00 AM", venue: "CS Computer Lab 1" },
-      { id: 6, title: "Cybersecurity & Ethical Hacking Symposium", date: "August 1", time: "9:30 AM", venue: "Cyber Research Center" },
-      { id: 7, title: "IEEE International Conference on Data Engineering", date: "August 5", time: "9:00 AM", venue: "Virtual & Campus Auditorium" },
-      { id: 8, title: "Open Source Software & Algorithmic Challenge", date: "August 8", time: "10:00 AM", venue: "Software Engineering Block" }
+      { id: 1, title: "AUGUSTA '24 — National Level Technical Symposium", date: "April 03", time: "As per poster", venue: "AAA College of Engineering & Technology", poster: "eventposterimg/eve1.webp" },
+      { id: 2, title: "KREATIV '26 — Tech Beta: Business x Coding", date: "February 13", time: "As per poster", venue: "Kamaraj College of Engineering & Technology", poster: "eventposterimg/eve2.webp" },
+      { id: 3, title: "CSEISMIC 2020 — Inter-Collegiate Technical Symposium", date: "January 10, 2020", time: "As per poster", venue: "KCG College of Technology", poster: "eventposterimg/eve3.webp" },
+      { id: 4, title: "CYNOSURE '23 — National Level Technical Symposium", date: "February 09, 2023", time: "As per poster", venue: "Sri Ramakrishna Institute of Technology", poster: "eventposterimg/eve4.webp" },
+      { id: 5, title: "PHANTAZO '22 — National Level Technical Symposium", date: "November 05, 2022", time: "As per poster", venue: "J.J. College of Engineering and Technology", poster: "eventposterimg/eve5.webp" },
+      { id: 6, title: "DRESTEIN '24 — Technical & Management Fest", date: "November 04 - 09, 2024", time: "As per poster", venue: "Saveetha Engineering College", poster: "eventposterimg/eve6.webp" },
+      { id: 7, title: "CanFig — Hands-on Workshop on Figma and Canva", date: "May 27 & 30, 2023", time: "10:00 AM - 4:00 PM", venue: "Beta Hall, Sri Sai Ram Engineering College", poster: "eventposterimg/eve7.webp" }
     ];
 
     let currentIndex = 0;
@@ -355,7 +365,7 @@
       const card = document.createElement("div");
       card.className = "poster-card";
       card.innerHTML = `
-        <div class="poster-image"><span>Event Poster</span></div>
+        <div class="poster-image"><img src="${event.poster}" alt="${event.title} poster" loading="lazy"></div>
         <div class="poster-info">
           <h3>${event.title}</h3>
           <div class="poster-meta">
