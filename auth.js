@@ -1,34 +1,44 @@
 /**
  * Front-end session helper for the CSE Blog portal.
- * Credentials live in users.js; this file only handles login state.
+ * Accounts live in users.js; sign-in is NAME + ID NUMBER (e.g. "Dr. Priya Ramesh" / "CSE101").
  * Note: this is a demo-only client-side check, not real security.
  */
 const AUTH_STORAGE_KEY = "srmvec_portal_session";
+const BLOGDB_USER_KEY = "srmvec_current_user";
 
 const Auth = {
-  login(username, password) {
-    const users = window.PORTAL_USERS || [];
-    const match = users.find(function (user) {
-      return user.username === String(username).trim() && user.password === password;
-    });
-    if (!match) {
+  /**
+   * Signs in with a name (or ID) and the account's ID number as the password.
+   * Pass a role to restrict the lookup to teachers or students.
+   */
+  login(nameOrId, idNumber, role) {
+    const user = window.PortalUsers ? window.PortalUsers.match(nameOrId, idNumber, role) : null;
+    if (!user) {
       return null;
     }
+    return this.startSession(user);
+  },
+
+  startSession(user) {
     const session = {
-      id: match.id,
-      name: match.name,
-      role: match.role,
-      email: match.email,
-      username: match.username,
+      userId: user.userId,
+      id: user.id,
+      name: user.name,
+      displayName: user.name,
+      username: user.name,
+      role: user.role,
+      email: user.email || "",
       loggedInAt: new Date().toISOString()
     };
     sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(session));
+    // Shared with the corner pages (blog-data.js) so they skip their own login screen.
+    sessionStorage.setItem(BLOGDB_USER_KEY, JSON.stringify(session));
     return session;
   },
 
   currentUser() {
     try {
-      const raw = sessionStorage.getItem(AUTH_STORAGE_KEY);
+      const raw = sessionStorage.getItem(AUTH_STORAGE_KEY) || sessionStorage.getItem(BLOGDB_USER_KEY);
       return raw ? JSON.parse(raw) : null;
     } catch (error) {
       return null;
@@ -37,27 +47,46 @@ const Auth = {
 
   logout() {
     sessionStorage.removeItem(AUTH_STORAGE_KEY);
+    sessionStorage.removeItem(BLOGDB_USER_KEY);
   },
 
   /**
-   * Redirects to login.html when nobody is signed in, or when the signed-in
+   * Keeps a ?next= destination on this site: relative page names only, so a
+   * crafted link cannot bounce someone to another origin after sign-in.
+   */
+  safeNext(next) {
+    const value = String(next || "").trim();
+    return /^[\w.-]+\.html(\?[^\s]*)?(#[^\s]*)?$/.test(value) ? value : null;
+  },
+
+  /** Landing page for a role after sign-in. */
+  homeFor(role) {
+    if (role === "teacher") { return "dashboard.html"; }
+    if (role === "admin") { return "admin-corner.html"; }
+    return "student-corner.html";
+  },
+
+  /**
+   * Redirects to the login page when nobody is signed in, or when the signed-in
    * user's role is not in allowedRoles (omit allowedRoles to allow any role).
    */
   requireLogin(allowedRoles) {
     const user = this.currentUser();
-    const target = "login.html?next=" + encodeURIComponent(location.pathname.split("/").pop() || "index.html");
+    const page = location.pathname.split("/").pop() || "index.html";
+    const wantsTeacher = Array.isArray(allowedRoles) && allowedRoles.length === 1 && allowedRoles[0] === "teacher";
+    const loginPage = wantsTeacher ? "teacher-login.html" : "login.html";
     if (!user) {
-      location.replace(target);
+      location.replace(loginPage + "?next=" + encodeURIComponent(page));
       return null;
     }
     if (Array.isArray(allowedRoles) && allowedRoles.length && !allowedRoles.includes(user.role)) {
-      location.replace("login.html?denied=1");
+      location.replace(loginPage + "?denied=1");
       return null;
     }
     return user;
   },
 
-  /** Fills every [data-auth-user] element with the signed-in user's name and role. */
+  /** Fills every [data-auth-user] element and wires [data-auth-logout] triggers. */
   renderUserBadge() {
     const user = this.currentUser();
     document.querySelectorAll("[data-auth-user]").forEach(function (node) {
@@ -67,7 +96,7 @@ const Auth = {
       node.addEventListener("click", function (event) {
         event.preventDefault();
         Auth.logout();
-        location.href = "login.html";
+        location.href = "index.html";
       });
     });
     return user;
