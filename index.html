@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Department of Computer Science & Engineering | SRMVEC</title>
+  <title>Department of Computer Science & Engineering | SRMVEC CSE Blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -22,7 +22,7 @@
   <div class="intro-screen" id="introScreen" role="status" aria-live="polite">
     <div class="intro-content">
       <p class="intro-kicker">SRMVEC CSE DEPARTMENT</p>
-      <h2>Welcome to CSE Portal</h2>
+      <h2>Welcome to CSE Blog Portal</h2>
     </div>
   </div>
 
@@ -50,105 +50,168 @@
     </a>
   </aside>
 
-  <!-- Top Institutional Bar -->
+  <!-- TOP INSTITUTIONAL UTILITY BAR -->
   <div class="top-bar">
     <div class="container top-bar-content">
-      <div class="institutional-links">
-        <a href="#">SRM Valliammai Engineering College</a> |
-        <a href="#">Kattankulathur Campus</a>
+      <div class="top-utility-links">
+        <a href="#">Students</a>
+        <a href="#">Faculty & Staff</a>
+        <a href="#">Parents</a>
+        <a href="#">Alumni</a>
+        <a href="#">Campus Map</a>
+        <a href="#">Directory</a>
+        <a href="#">CSE Portal</a>
       </div>
-      <div class="top-right-links">
-        <a href="#">Student Portals</a>
-        <a href="#">Library & IEEE</a>
-        <a href="#">Contact Us</a>
+      <div class="top-bar-search">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" placeholder="Search CSE Blog" />
       </div>
     </div>
   </div>
 
-  <!-- Main Header with Logo & Crest -->
-  <header class="main-header">
-    <div class="container header-container">
-      <div class="branding">
-        <img class="brand-logo brand-logo-left" src="logo p1.png" alt="SRMVEC logo left" />
-        <div class="title-box">
-          <h1>Department of Computer Science & Engineering</h1>
-          <h2>SRM Valliammai Engineering College (An Autonomous Institution)</h2>
+  <!-- MAIN UNIFIED HEADER & NAV (WITHOUT LOGO AS REQUESTED) -->
+  <header class="main-header-unified">
+    <div class="container header-nav-container">
+      
+      <!-- Text Branding (Logo Removed) -->
+      <div class="brand-group">
+        <div class="brand-text-box">
+          <h1 class="brand-main-title">CSE Blog</h1>
         </div>
-        <img class="brand-logo brand-logo-right" src="logo p2-clean.png" alt="SRMVEC logo right" />
       </div>
-      <div class="header-search">
-        <input type="text" placeholder="Search department site..." />
-        <button><i class="fa-solid fa-magnifying-glass"></i> Search</button>
-      </div>
+
+      <!-- Right Navigation Menu with Chevron Dropdowns -->
+      <nav class="main-nav-menu">
+        <div class="nav-item dropdown">
+          <a href="#">About <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+          <div class="dropdown-menu">
+            <a href="#">Academics & Accreditation</a>
+            <a href="#">Faculty Directory</a>
+            <a href="#">Laboratories</a>
+          </div>
+        </div>
+        <div class="nav-item dropdown">
+          <a href="#">Admissions <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+          <div class="dropdown-menu">
+            <a href="#">B.E. Computer Science</a>
+            <a href="#">M.E. Computer Science</a>
+            <a href="#">Eligibility & Cutoffs</a>
+          </div>
+        </div>
+        <div class="nav-item dropdown">
+          <a href="#specializations">Academics <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+          <div class="dropdown-menu">
+            <a href="#specializations">Tech Domains</a>
+            <a href="#">Curriculum & Syllabus</a>
+          </div>
+        </div>
+        <div class="nav-item dropdown">
+          <a href="#">Research <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+          <div class="dropdown-menu">
+            <a href="#">Publications & Patents</a>
+            <a href="#">Research Labs</a>
+          </div>
+        </div>
+        <div class="nav-item dropdown">
+          <a href="#events-section">Campus Life <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+          <div class="dropdown-menu">
+            <a href="#events-section">Events & Symposium</a>
+            <a href="#">Student Corner</a>
+          </div>
+        </div>
+      </nav>
+
     </div>
   </header>
 
-  <!-- Main Navigation Bar -->
-  <nav class="main-nav">
-    <div class="container nav-list">
-      <a href="#" class="active"><i class="fa-solid fa-house"></i> Home</a>
-      <div class="nav-dropdown">
-        <a href="#">About Us <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i></a>
-        <div class="dropdown-menu">
-          <a href="#">Academics & Accreditation</a>
-          <a href="#">Research & Projects</a>
-          <a href="#">Placements & MOUs</a>
+  <!-- FULL-BLEED MAXIMIZED ANIMATED GRAPHICAL TECH HERO SLIDER -->
+  <section class="hero-slider-wrapper">
+    
+    <!-- HTML5 Animated Tech Canvas Background -->
+    <canvas id="heroTechCanvas" class="hero-tech-canvas"></canvas>
+
+    <!-- Slide 1: Neural Systems -->
+    <div class="hero-slide active">
+      <div class="container hero-slide-container">
+        <div class="hero-slide-content">
+          <span class="tech-mode-tag"><i class="fa-solid fa-microchip"></i> Cyber Neural Systems</span>
+          <h1 class="hero-slide-title">Advancing Intelligent Computing & Systems Engineering</h1>
+          <p class="hero-slide-desc">
+            Hundreds of scholars and engineers ready to build the next generation of artificial intelligence, cloud architectures, and autonomous software systems.
+          </p>
+          <a href="#specializations" class="btn-hero-gold">Explore Research & Labs</a>
         </div>
       </div>
-      <a href="#">Faculty & Staff</a>
-      <a href="#specializations">Tech Domains</a>
-      <a href="#events-section">Upcoming Events</a>
-      <a href="#">Student Corner</a>
     </div>
-  </nav>
+
+    <!-- Slide 2: Cyber Defense -->
+    <div class="hero-slide">
+      <div class="container hero-slide-container">
+        <div class="hero-slide-content">
+          <span class="tech-mode-tag"><i class="fa-solid fa-shield-halved"></i> Zero-Trust Cyber Defense</span>
+          <h1 class="hero-slide-title">Next-Gen Cybersecurity & Cryptographic Infrastructure</h1>
+          <p class="hero-slide-desc">
+            Pioneering secure protocol design, automated vulnerability auditing, zero-trust network defenses, and threat intelligence.
+          </p>
+          <a href="#specializations" class="btn-hero-gold">Discover Defense Labs</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3: Cloud & Quantum Systems -->
+    <div class="hero-slide">
+      <div class="container hero-slide-container">
+        <div class="hero-slide-content">
+          <span class="tech-mode-tag"><i class="fa-solid fa-server"></i> Cloud & Distributed Systems</span>
+          <h1 class="hero-slide-title">High-Performance Cloud & Quantum Data Systems</h1>
+          <p class="hero-slide-desc">
+            Building resilient microservices, container orchestrations, real-time data pipelines, and scalable enterprise platforms.
+          </p>
+          <a href="#events-section" class="btn-hero-gold">View Placements & MOUs</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Slider Controls (Bottom Right Circles & Dashes) -->
+    <div class="container hero-controls-container">
+      <div class="hero-slider-controls">
+        <button class="hero-circle-btn" id="heroPrevBtn" aria-label="Previous slide">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button class="hero-circle-btn" id="heroNextBtn" aria-label="Next slide">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+        <div class="hero-slider-dashes">
+          <span class="dash active"></span>
+          <span class="dash"></span>
+          <span class="dash"></span>
+        </div>
+      </div>
+    </div>
+
+  </section>
 
   <!-- Main Content Area -->
   <main class="container main-content">
     
-    <!-- HIGH-TECH HERO BANNER -->
-    <section class="tech-hero-container">
-      <div class="tech-hero-card">
-        <canvas id="techHeroCanvas" class="tech-hero-canvas"></canvas>
-        <div class="tech-hero-body">
-          
-          <div class="hero-main-info">
-            <div class="tech-badge">
-              <span class="pulse-dot"></span> Department of Computer Science & Engineering
-            </div>
-            <h1 class="hero-main-title">Advancing Intelligent Computing, Systems & Innovation</h1>
-            <p class="hero-subtitle">
-              Empowering engineers through hands-on research in Artificial Intelligence, Cloud Infrastructure, Cybersecurity, and Next-Gen Software Engineering.
-            </p>
-            <div class="hero-cta-group">
-              <a href="#specializations" class="btn-tech-primary">
-                <i class="fa-solid fa-layer-group"></i> Explore Domains
-              </a>
-              <a href="#events-section" class="btn-tech-secondary">
-                <i class="fa-solid fa-calendar-days"></i> Upcoming Events
-              </a>
-            </div>
-          </div>
-
-          <!-- METRICS STATS PANEL -->
-          <div class="hero-stats-panel">
-            <div class="stat-card">
-              <span class="stat-number" data-target="95" data-suffix="%">0%</span>
-              <span class="stat-label">Placement Record</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number" data-target="200" data-suffix="+">0+</span>
-              <span class="stat-label">Research Papers</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number" data-target="15" data-suffix="+">0+</span>
-              <span class="stat-label">High-Tech Labs</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number" data-target="1200" data-suffix="+">0+</span>
-              <span class="stat-label">Active Scholars</span>
-            </div>
-          </div>
-
+    <!-- METRICS STATS BAR -->
+    <section class="stats-banner-wrapper">
+      <div class="hero-stats-panel">
+        <div class="stat-card">
+          <span class="stat-number" data-target="95" data-suffix="%">0%</span>
+          <span class="stat-label">Placement Record</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" data-target="200" data-suffix="+">0+</span>
+          <span class="stat-label">Research Papers</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" data-target="15" data-suffix="+">0+</span>
+          <span class="stat-label">High-Tech Labs</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" data-target="1200" data-suffix="+">0+</span>
+          <span class="stat-label">Active Scholars</span>
         </div>
       </div>
     </section>
@@ -156,7 +219,7 @@
     <!-- TECHNICAL DOMAINS & SPECIALIZATION MODULES -->
     <section class="tech-domains-section" id="specializations">
       <div class="section-header-center">
-        <span class="section-kicker">Core Capabilities</span>
+        <span class="section-kicker">Our research advances</span>
         <h2 class="section-title">CSE Academic & Research Domains</h2>
       </div>
 
