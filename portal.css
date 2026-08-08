@@ -1,5 +1,52 @@
 /* --- SHARED STYLES FOR PORTAL PAGES (login, contact, admin) --- */
 
+/* Home page directory of every portal page */
+.page-directory {
+  margin: 3rem 0;
+}
+
+.page-directory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.1rem;
+  margin-top: 1.5rem;
+}
+
+.page-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  background: var(--white);
+  box-shadow: var(--card-shadow);
+  color: var(--text-dark);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.page-tile:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-blue);
+  color: var(--text-dark);
+  text-decoration: none;
+}
+
+.page-tile i {
+  font-size: 1.4rem;
+  color: var(--accent-blue);
+}
+
+.page-tile strong {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.02rem;
+}
+
+.page-tile span {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
 .page-header-bar {
   background: var(--primary-navy);
   color: var(--white);
@@ -370,6 +417,44 @@ textarea.form-control {
   margin-bottom: 1.5rem;
 }
 
+.role-choice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.role-choice-card {
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 1.5rem;
+  text-align: center;
+  background: var(--surface);
+}
+
+.role-choice-card p {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  margin: 0.4rem 0 1rem;
+}
+
+.role-choice-card .btn {
+  margin-bottom: 0.5rem;
+}
+
+.role-choice-icon {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  color: var(--white);
+}
+
+.role-choice-icon.student { background: linear-gradient(135deg, #2563EB, #0EA5E9); }
+.role-choice-icon.teacher { background: linear-gradient(135deg, #002947, #F59E0B); }
+
 .role-hint {
   margin-top: 1.5rem;
   border-top: 1px solid var(--border-color);
@@ -387,6 +472,7 @@ textarea.form-control {
 
 @media (max-width: 992px) {
   .two-column-layout { grid-template-columns: 1fr; }
+  .role-choice-grid { grid-template-columns: 1fr; }
   .stat-grid { grid-template-columns: repeat(2, 1fr); }
 }
 

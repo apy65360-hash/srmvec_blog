@@ -1,74 +1,124 @@
 /**
- * Demo login directory for the CSE Blog portal.
- * These are placeholder accounts for front-end demo/testing only.
- * Replace them with real accounts (or a backend) later.
+ * Login directory for the CSE Blog portal (single source of truth).
+ *
+ * Sign-in format for everyone: NAME + ID NUMBER, e.g. "Dr. Priya Ramesh" / "CSE101".
+ * The ID number is also accepted in the name field, so "CSE101" / "CSE101" works too.
+ * Accounts created from the sign-up pages are stored in localStorage and merged in
+ * by PortalUsers.all(). Edit / replace these seed accounts any time.
  */
 const PORTAL_USERS = [
-  // --- Teachers / Faculty (admin access) ---
+  // --- Teachers / Faculty (staff access) ---
   {
-    id: "T101",
-    name: "Dr. A. Bharathi",
+    userId: "teacher_seed_1",
+    id: "CSE101",
+    name: "Dr. Priya Ramesh",
     role: "teacher",
-    department: "CSE",
     designation: "Professor",
-    email: "bharathi.cse@valliammai.ac.in",
-    username: "teacher1",
-    password: "teacher@123"
+    department: "CSE",
+    email: "priya.cse@valliammai.ac.in"
   },
   {
-    id: "T102",
-    name: "Dr. K. Ramesh",
+    userId: "teacher_seed_2",
+    id: "CSE102",
+    name: "Prof. Karthik Subramanian",
     role: "teacher",
-    department: "CSE",
     designation: "Associate Professor",
-    email: "ramesh.cse@valliammai.ac.in",
-    username: "teacher2",
-    password: "teacher@456"
+    department: "CSE",
+    email: "karthik.cse@valliammai.ac.in"
   },
   {
-    id: "T103",
-    name: "Mrs. S. Divya",
+    userId: "teacher_seed_3",
+    id: "CSE103",
+    name: "Dr. Meena Sundarajan",
     role: "teacher",
-    department: "CSE",
     designation: "Assistant Professor",
-    email: "divya.cse@valliammai.ac.in",
-    username: "teacher3",
-    password: "teacher@789"
+    department: "CSE",
+    email: "meena.cse@valliammai.ac.in"
   },
 
-  // --- Students (read-only access) ---
+  // --- Students ---
   {
-    id: "S2201",
-    name: "Arun Kumar",
+    userId: "student_seed_1",
+    id: "CSE2201",
+    name: "Arun Krishnamurthy",
     role: "student",
-    department: "CSE",
     year: "III Year",
-    email: "arun.s2201@valliammai.ac.in",
-    username: "student1",
-    password: "student@123"
-  },
-  {
-    id: "S2202",
-    name: "Priya Ravi",
-    role: "student",
     department: "CSE",
-    year: "II Year",
-    email: "priya.s2202@valliammai.ac.in",
-    username: "student2",
-    password: "student@456"
+    email: "arun.cse@valliammai.ac.in"
   },
   {
-    id: "S2203",
+    userId: "student_seed_2",
+    id: "CSE2202",
+    name: "Swetha Raghavan",
+    role: "student",
+    year: "II Year",
+    department: "CSE",
+    email: "swetha.cse@valliammai.ac.in"
+  },
+  {
+    userId: "student_seed_3",
+    id: "CSE2203",
     name: "Mohammed Irfan",
     role: "student",
-    department: "CSE",
     year: "IV Year",
-    email: "irfan.s2203@valliammai.ac.in",
-    username: "student3",
-    password: "student@789"
+    department: "CSE",
+    email: "irfan.cse@valliammai.ac.in"
   }
 ];
 
+const REGISTERED_USERS_KEY = "srmvec_registered_users";
+
+const PortalUsers = {
+  /** Accounts created through the sign-up pages. */
+  registered() {
+    try {
+      return JSON.parse(localStorage.getItem(REGISTERED_USERS_KEY)) || [];
+    } catch (error) {
+      return [];
+    }
+  },
+
+  /** Seed accounts plus every signed-up account. */
+  all() {
+    return PORTAL_USERS.concat(this.registered());
+  },
+
+  find(nameOrId, role) {
+    const needle = String(nameOrId || "").trim().toLowerCase();
+    return this.all().find(function (user) {
+      const matchesRole = !role || user.role === role;
+      return matchesRole && (user.name.toLowerCase() === needle || user.id.toLowerCase() === needle);
+    }) || null;
+  },
+
+  /** Adds a sign-up account. Returns { user } or { error }. */
+  register(details) {
+    const name = String(details.name || "").trim();
+    const id = String(details.id || "").trim().toUpperCase();
+    if (!name || !id) {
+      return { error: "Name and ID number are required." };
+    }
+    if (this.all().some(function (user) { return user.id.toUpperCase() === id; })) {
+      return { error: "An account with ID " + id + " already exists." };
+    }
+    const user = {
+      userId: "user_" + id.toLowerCase(),
+      id: id,
+      name: name,
+      role: details.role,
+      department: details.department || "CSE",
+      designation: details.designation || "",
+      year: details.year || "",
+      email: String(details.email || "").trim()
+    };
+    const registered = this.registered();
+    registered.push(user);
+    localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(registered));
+    return { user: user };
+  }
+};
+
 if (typeof window !== "undefined") {
   window.PORTAL_USERS = PORTAL_USERS;
+  window.PortalUsers = PortalUsers;
 }

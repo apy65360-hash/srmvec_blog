@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teacher Login | SRMVEC CSE Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="role-choice-icon teacher" style="margin-bottom:1rem;"><i class="fa-solid fa-chalkboard-user"></i></div>
+      <h1>Teacher Login</h1>
+      <p class="login-sub">Sign in with your name and staff ID number.</p>
+
+      <div class="form-message" id="loginMessage"></div>
+
+      <form id="loginForm">
+        <div class="form-row">
+          <label for="loginName">Name</label>
+          <input class="form-control" type="text" id="loginName" placeholder="e.g. Dr. Priya Ramesh" autocomplete="username" required />
+        </div>
+        <div class="form-row">
+          <label for="loginId">ID Number (password)</label>
+          <input class="form-control" type="password" id="loginId" placeholder="e.g. CSE101" autocomplete="current-password" required />
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary btn-block" type="submit"><i class="fa-solid fa-right-to-bracket"></i> Sign In</button>
+        </div>
+      </form>
+
+      <div class="role-hint">
+        <p>No account yet? <a href="teacher-signup.html">Create a teacher account</a></p>
+        <p>Student? <a href="student-login.html">Student login</a></p>
+        <p>Demo: <code>Dr. Priya Ramesh</code> / <code>CSE101</code></p>
+        <p style="margin-top:.6rem;"><a href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="users.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const box = document.getElementById("loginMessage");
+
+      if (params.get("registered")) {
+        box.textContent = "Account created. Sign in with your name and ID number.";
+        box.className = "form-message is-visible success";
+      } else if (params.get("denied")) {
+        box.textContent = "That page is for faculty accounts. Please sign in as a teacher.";
+        box.className = "form-message is-visible error";
+      }
+
+      document.getElementById("loginForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        const user = Auth.login(document.getElementById("loginName").value, document.getElementById("loginId").value, "teacher");
+        if (!user) {
+          box.textContent = "No teacher account matches that name and ID number.";
+          box.className = "form-message is-visible error";
+          return;
+        }
+        const next = params.get("next");
+        location.href = next || Auth.homeFor(user.role);
+      });
+    }());
+  </script>
+
+</body>
+</html>

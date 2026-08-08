@@ -177,27 +177,27 @@ const BlogDB = (() => {
     sessionStorage.removeItem(USER_KEY);
   }
 
-  // ── Simple credential check (in production use a real backend) ──
-  const CREDENTIALS = {
-    admin:    [{ username: 'admin',    password: 'Admin@2026',   role: 'admin',   displayName: 'Administrator' }],
-    teachers: [
-      { username: 'teacher1', password: 'Teacher@1', role: 'teacher', displayName: 'Dr. Priya Ramesh',          userId: 'teacher_seed_1' },
-      { username: 'teacher2', password: 'Teacher@2', role: 'teacher', displayName: 'Prof. Karthik Subramanian', userId: 'teacher_seed_2' },
-      { username: 'teacher3', password: 'Teacher@3', role: 'teacher', displayName: 'Dr. Meena Sundarajan',      userId: 'teacher_seed_3' }
-    ],
-    students: [
-      { username: 'student1', password: 'Student@1', role: 'student', displayName: 'Arun Krishnamurthy', userId: 'student_seed_1' },
-      { username: 'student2', password: 'Student@2', role: 'student', displayName: 'Swetha Raghavan',    userId: 'student_seed_2' }
-    ]
-  };
+  // ── Credential check (demo only; in production use a real backend) ──
+  // Teacher and student accounts come from users.js: sign in with NAME + ID NUMBER.
+  const ADMIN_ACCOUNT = { username: 'admin', password: 'Admin@2026', role: 'admin', displayName: 'Administrator' };
 
   function authenticate(username, password, expectedRole) {
-    const pool = expectedRole === 'admin'
-      ? CREDENTIALS.admin
-      : expectedRole === 'teacher'
-        ? CREDENTIALS.teachers
-        : CREDENTIALS.students;
-    return pool.find(u => u.username === username && u.password === password) || null;
+    if (expectedRole === 'admin') {
+      return username === ADMIN_ACCOUNT.username && password === ADMIN_ACCOUNT.password ? ADMIN_ACCOUNT : null;
+    }
+    const directory = window.PortalUsers;
+    if (!directory) return null;
+    const user = directory.find(username, expectedRole);
+    if (!user || user.id.toLowerCase() !== String(password || '').trim().toLowerCase()) return null;
+    return {
+      userId: user.userId,
+      id: user.id,
+      username: user.name,
+      displayName: user.name,
+      name: user.name,
+      role: user.role,
+      email: user.email || ''
+    };
   }
 
   // ── Helpers ──

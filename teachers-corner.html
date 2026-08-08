@@ -22,19 +22,20 @@
     <div class="error-msg" id="loginError">Invalid username or password. Please try again.</div>
     <form id="loginForm" novalidate>
       <div class="form-group">
-        <label for="loginUsername">Username</label>
-        <input type="text" id="loginUsername" class="form-control" placeholder="e.g. teacher1" autocomplete="username" />
+        <label for="loginUsername">Name</label>
+        <input type="text" id="loginUsername" class="form-control" placeholder="e.g. Dr. Priya Ramesh" autocomplete="username" />
       </div>
       <div class="form-group">
-        <label for="loginPassword">Password</label>
-        <input type="password" id="loginPassword" class="form-control" placeholder="Your password" autocomplete="current-password" />
+        <label for="loginPassword">ID Number (password)</label>
+        <input type="password" id="loginPassword" class="form-control" placeholder="e.g. CSE101" autocomplete="current-password" />
       </div>
       <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:.8rem;">
         <i class="fa-solid fa-right-to-bracket"></i> Sign In
       </button>
     </form>
     <p style="text-align:center;margin-top:1.2rem;font-size:0.82rem;color:#94A3B8;">
-      Student? <a href="student-corner.html">Go to Student Corner</a>
+      New here? <a href="teacher-signup.html">Create a teacher account</a><br />
+      Student? <a href="student-corner.html">Go to Student Corner</a> &nbsp;•&nbsp; <a href="index.html">Home</a>
     </p>
   </div>
 </div>
@@ -185,6 +186,7 @@
   </div>
 </div>
 
+<script src="users.js"></script>
 <script src="blog-data.js"></script>
 <script>
   let currentUser = null;

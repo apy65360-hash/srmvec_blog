@@ -122,17 +122,17 @@ a:hover {
   padding: 0 1.25rem;
 }
 
-/* --- SOCIAL BAR (FIXED TOP RIGHT) --- */
+/* --- SOCIAL BAR (FIXED TOP RIGHT, VERTICAL) --- */
 .social-sidebar {
   position: fixed;
   right: 1.25rem;
   top: 7.5rem;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 0.6rem;
   z-index: 300;
   align-items: center;
-  padding: 0.5rem 0.65rem;
+  padding: 0.65rem 0.5rem;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.14);
   backdrop-filter: blur(8px);
@@ -1176,10 +1176,10 @@ a:hover {
   }
   .social-sidebar {
     right: 0.5rem;
-    top: auto;
-    bottom: 0.75rem;
-    gap: 0.45rem;
-    padding: 0.4rem 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    gap: 0.4rem;
+    padding: 0.4rem;
   }
   .social-link {
     width: 34px;

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teacher Sign Up | SRMVEC CSE Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="role-choice-icon teacher" style="margin-bottom:1rem;"><i class="fa-solid fa-user-plus"></i></div>
+      <h1>Teacher Sign Up</h1>
+      <p class="login-sub">Your staff ID number becomes your password.</p>
+
+      <div class="form-message" id="signupMessage"></div>
+
+      <form id="signupForm">
+        <div class="form-row">
+          <label for="signupName">Full Name</label>
+          <input class="form-control" type="text" id="signupName" placeholder="e.g. Dr. Priya Ramesh" required />
+        </div>
+        <div class="form-row">
+          <label for="signupId">Staff ID Number (used as password)</label>
+          <input class="form-control" type="text" id="signupId" placeholder="e.g. CSE104" required />
+        </div>
+        <div class="form-row">
+          <label for="signupDesignation">Designation</label>
+          <select class="form-control" id="signupDesignation">
+            <option>Professor</option>
+            <option>Associate Professor</option>
+            <option selected>Assistant Professor</option>
+            <option>Lab Instructor</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="signupEmail">College Email</label>
+          <input class="form-control" type="email" id="signupEmail" placeholder="name@valliammai.ac.in" required />
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-success btn-block" type="submit"><i class="fa-solid fa-user-plus"></i> Create Account</button>
+        </div>
+      </form>
+
+      <div class="role-hint">
+        <p>Already registered? <a href="teacher-login.html">Teacher login</a></p>
+        <p>Student? <a href="student-signup.html">Student sign up</a></p>
+        <p style="margin-top:.6rem;"><a href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="users.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    document.getElementById("signupForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      const box = document.getElementById("signupMessage");
+      const result = PortalUsers.register({
+        name: document.getElementById("signupName").value,
+        id: document.getElementById("signupId").value,
+        role: "teacher",
+        designation: document.getElementById("signupDesignation").value,
+        email: document.getElementById("signupEmail").value
+      });
+      if (result.error) {
+        box.textContent = result.error;
+        box.className = "form-message is-visible error";
+        return;
+      }
+      location.href = "teacher-login.html?registered=1";
+    });
+  </script>
+
+</body>
+</html>
