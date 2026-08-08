@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | CSE Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+
+  <div class="admin-layout">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <h3>CSE BLOG</h3>
+      <p class="sidebar-user">Signed in as <span data-auth-user>Guest</span></p>
+      <a class="active" href="dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a>
+      <a href="teachers-corner.html"><i class="fa-solid fa-pen-nib"></i> Manage Blogs</a>
+      <a href="add-event.html"><i class="fa-solid fa-calendar-plus"></i> Manage Events</a>
+      <a href="manage-faculty.html"><i class="fa-solid fa-chalkboard-user"></i> Faculty</a>
+      <a href="index.html#blog-corner-section"><i class="fa-solid fa-images"></i> Gallery</a>
+      <a href="contact.html"><i class="fa-solid fa-envelope"></i> Newsletter</a>
+      <a href="index.html"><i class="fa-solid fa-globe"></i> View Site</a>
+      <a href="#" data-auth-logout><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </aside>
+
+    <!-- Main -->
+    <main class="admin-main">
+      <h2>Dashboard</h2>
+
+      <div class="stat-grid">
+        <div class="stat-tile">
+          <h3>25</h3>
+          <p>Total Blogs</p>
+        </div>
+        <div class="stat-tile">
+          <h3>10</h3>
+          <p>Events</p>
+        </div>
+        <div class="stat-tile">
+          <h3>15</h3>
+          <p>Faculty</p>
+        </div>
+        <div class="stat-tile">
+          <h3>500+</h3>
+          <p>Subscribers</p>
+        </div>
+      </div>
+
+      <div class="portal-panel">
+        <h3>Recent Blogs</h3>
+        <div class="table-scroll">
+          <table class="portal-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Artificial Intelligence</td>
+                <td>20 Aug 2026</td>
+                <td><span class="status-pill">Published</span></td>
+                <td>
+                  <div class="table-actions">
+                    <a class="btn btn-warning btn-sm" href="teachers-corner.html">Edit</a>
+                    <button class="btn btn-danger btn-sm" type="button">Delete</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Zero-Trust Network Design</td>
+                <td>12 Aug 2026</td>
+                <td><span class="status-pill draft">Draft</span></td>
+                <td>
+                  <div class="table-actions">
+                    <a class="btn btn-warning btn-sm" href="teachers-corner.html">Edit</a>
+                    <button class="btn btn-danger btn-sm" type="button">Delete</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="users.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    Auth.requireLogin(["teacher"]);
+    Auth.renderUserBadge();
+    document.querySelectorAll(".btn-danger").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const row = button.closest("tr");
+        if (row && window.confirm("Delete this blog entry?")) {
+          row.remove();
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

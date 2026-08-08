@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Login | SRMVEC CSE Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="portal.css" />
+</head>
+<body>
+
+  <div class="login-wrapper">
+    <div class="login-card">
+      <h1>CSE Blog Portal Login</h1>
+      <p class="login-sub">Teachers and students sign in to access the department portal.</p>
+
+      <div class="form-message" id="loginMessage"></div>
+
+      <form id="loginForm">
+        <div class="form-row">
+          <label for="username">Username</label>
+          <input class="form-control" type="text" id="username" name="username" placeholder="e.g. teacher1" autocomplete="username" required />
+        </div>
+
+        <div class="form-row">
+          <label for="password">Password</label>
+          <input class="form-control" type="password" id="password" name="password" placeholder="Enter password" autocomplete="current-password" required />
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary btn-block" type="submit"><i class="fa-solid fa-right-to-bracket"></i> Sign In</button>
+        </div>
+      </form>
+
+      <div class="role-hint">
+        <p><strong>Demo accounts</strong> (defined in <code>users.js</code>, change any time):</p>
+        <p>Teacher: <code>teacher1</code> / <code>teacher@123</code> — full admin access</p>
+        <p>Student: <code>student1</code> / <code>student@123</code> — read-only pages</p>
+        <p style="margin-top:.6rem;"><a href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="users.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const messageBox = document.getElementById("loginMessage");
+
+      function showMessage(text, type) {
+        messageBox.textContent = text;
+        messageBox.className = "form-message is-visible " + type;
+      }
+
+      if (params.get("denied")) {
+        showMessage("Your account does not have access to that page.", "error");
+      }
+
+      document.getElementById("loginForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        const user = Auth.login(document.getElementById("username").value, document.getElementById("password").value);
+        if (!user) {
+          showMessage("Invalid username or password.", "error");
+          return;
+        }
+        showMessage("Welcome, " + user.name + ". Redirecting…", "success");
+        const next = params.get("next");
+        const fallback = user.role === "teacher" ? "dashboard.html" : "index.html";
+        location.href = next && next !== "login.html" ? next : fallback;
+      });
+    }());
+  </script>
+
+</body>
+</html>
