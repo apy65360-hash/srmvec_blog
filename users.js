@@ -83,11 +83,24 @@ const PortalUsers = {
     return PORTAL_USERS.concat(this.registered());
   },
 
-  find(nameOrId, role) {
+  /** Every account whose name or ID equals the input (names are not unique). */
+  findAll(nameOrId, role) {
     const needle = String(nameOrId || "").trim().toLowerCase();
-    return this.all().find(function (user) {
+    return this.all().filter(function (user) {
       const matchesRole = !role || user.role === role;
       return matchesRole && (user.name.toLowerCase() === needle || user.id.toLowerCase() === needle);
+    });
+  },
+
+  find(nameOrId, role) {
+    return this.findAll(nameOrId, role)[0] || null;
+  },
+
+  /** The account matching the name/ID whose ID number is the supplied one. */
+  match(nameOrId, idNumber, role) {
+    const id = String(idNumber || "").trim().toLowerCase();
+    return this.findAll(nameOrId, role).find(function (user) {
+      return user.id.toLowerCase() === id;
     }) || null;
   },
 

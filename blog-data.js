@@ -175,6 +175,8 @@ const BlogDB = (() => {
 
   function logout() {
     sessionStorage.removeItem(USER_KEY);
+    // The portal pages (auth.js) mirror the session under their own key.
+    sessionStorage.removeItem('srmvec_portal_session');
   }
 
   // ── Credential check (demo only; in production use a real backend) ──
@@ -187,8 +189,8 @@ const BlogDB = (() => {
     }
     const directory = window.PortalUsers;
     if (!directory) return null;
-    const user = directory.find(username, expectedRole);
-    if (!user || user.id.toLowerCase() !== String(password || '').trim().toLowerCase()) return null;
+    const user = directory.match(username, password, expectedRole);
+    if (!user) return null;
     return {
       userId: user.userId,
       id: user.id,

@@ -12,8 +12,8 @@ const Auth = {
    * Pass a role to restrict the lookup to teachers or students.
    */
   login(nameOrId, idNumber, role) {
-    const user = window.PortalUsers ? window.PortalUsers.find(nameOrId, role) : null;
-    if (!user || user.id.toLowerCase() !== String(idNumber || "").trim().toLowerCase()) {
+    const user = window.PortalUsers ? window.PortalUsers.match(nameOrId, idNumber, role) : null;
+    if (!user) {
       return null;
     }
     return this.startSession(user);
@@ -48,6 +48,15 @@ const Auth = {
   logout() {
     sessionStorage.removeItem(AUTH_STORAGE_KEY);
     sessionStorage.removeItem(BLOGDB_USER_KEY);
+  },
+
+  /**
+   * Keeps a ?next= destination on this site: relative page names only, so a
+   * crafted link cannot bounce someone to another origin after sign-in.
+   */
+  safeNext(next) {
+    const value = String(next || "").trim();
+    return /^[\w.-]+\.html(\?[^\s]*)?(#[^\s]*)?$/.test(value) ? value : null;
   },
 
   /** Landing page for a role after sign-in. */

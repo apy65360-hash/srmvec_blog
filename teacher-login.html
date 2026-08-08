@@ -67,8 +67,7 @@
           box.className = "form-message is-visible error";
           return;
         }
-        const next = params.get("next");
-        location.href = next || Auth.homeFor(user.role);
+        location.href = Auth.safeNext(params.get("next")) || Auth.homeFor(user.role);
       });
     }());
   </script>
