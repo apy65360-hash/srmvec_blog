@@ -150,15 +150,11 @@ const BlogDB = (() => {
     }
   }
 
-  // ── Top blogs for carousel (max 5, sorted by views desc then newest) ──
+  // ── Top blogs for carousel (max 5, sorted by newest) ──
   function getTopBlogs(max = 5) {
     const blogs = getBlogs();
     return [...blogs]
-      .sort((a, b) => {
-        const viewDiff = (b.views || 0) - (a.views || 0);
-        if (viewDiff !== 0) return viewDiff;
-        return new Date(b.createdAt) - new Date(a.createdAt);
-      })
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
       .slice(0, max);
   }
 
@@ -231,3 +227,5 @@ const BlogDB = (() => {
     truncate
   };
 })();
+
+window.BlogDB = BlogDB;

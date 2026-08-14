@@ -7,7 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" />
-  <link rel="stylesheet" href="blogs.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/src/styles/blogs.css" />
   <style>
     /* Minimal top header for blog view */
     .bv-header {
@@ -42,7 +43,7 @@
 
   <div id="blogViewContainer"></div>
 
-  <script src="blog-data.js"></script>
+  <script type="module" src="/src/scripts/blog-data.js"></script>
   <script>
     (function () {
       const params = new URLSearchParams(window.location.search);

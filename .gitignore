@@ -7,3 +7,9 @@
 # OS files
 .DS_Store
 Thumbs.db
+
+# Dependencies & Build
+node_modules/
+dist/
+.continue/
+
