@@ -73,8 +73,14 @@ const Auth = {
   requireLogin(allowedRoles) {
     const user = this.currentUser();
     const page = location.pathname.split("/").pop() || "index.html";
-    const wantsTeacher = Array.isArray(allowedRoles) && allowedRoles.length === 1 && allowedRoles[0] === "teacher";
-    const loginPage = wantsTeacher ? "teacher-login.html" : "login.html";
+    let loginPage = "login.html";
+    if (Array.isArray(allowedRoles)) {
+      if (allowedRoles.includes("admin")) {
+        loginPage = "admin-login.html";
+      } else if (allowedRoles.includes("teacher")) {
+        loginPage = "teacher-login.html";
+      }
+    }
     if (!user) {
       location.replace(loginPage + "?next=" + encodeURIComponent(page));
       return null;

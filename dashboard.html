@@ -101,7 +101,7 @@
   <script type="module" src="/src/scripts/users.js"></script>
   <script type="module" src="/src/scripts/auth.js"></script>
   <script>
-    Auth.requireLogin(["teacher"]);
+    Auth.requireLogin(["admin"]);
     Auth.renderUserBadge();
     document.querySelectorAll(".btn-danger").forEach(function (button) {
       button.addEventListener("click", function () {

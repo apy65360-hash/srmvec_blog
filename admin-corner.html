@@ -11,33 +11,7 @@
 </head>
 <body>
 
-<!-- ═══════════════ LOGIN ═══════════════ -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-card">
-    <div class="login-card-header">
-      <div class="login-icon" style="background:linear-gradient(135deg,#4C1D95,#7C3AED);"><i class="fa-solid fa-shield-halved"></i></div>
-      <h2>Admin Corner</h2>
-      <p>SRMVEC CSE Blog — Super Admin Access</p>
-    </div>
-    <div class="error-msg" id="loginError">Invalid admin credentials.</div>
-    <form id="loginForm" novalidate>
-      <div class="form-group">
-        <label for="loginUsername">Admin Username</label>
-        <input type="text" id="loginUsername" class="form-control" placeholder="admin" autocomplete="username" />
-      </div>
-      <div class="form-group">
-        <label for="loginPassword">Admin Password</label>
-        <input type="password" id="loginPassword" class="form-control" placeholder="Admin password" autocomplete="current-password" />
-      </div>
-      <button type="submit" class="btn" style="width:100%;justify-content:center;padding:.8rem;background:linear-gradient(135deg,#4C1D95,#7C3AED);color:#fff;border:none;">
-        <i class="fa-solid fa-right-to-bracket"></i> Admin Sign In
-      </button>
-    </form>
-    <p style="text-align:center;margin-top:1.2rem;font-size:0.82rem;color:#94A3B8;">
-      Default: <code style="background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:.8rem;">admin / Admin@2026</code>
-    </p>
-  </div>
-</div>
+<!-- Admin Access Required -->
 
 <!-- ═══════════════ ADMIN DASHBOARD ═══════════════ -->
 <div class="portal-layout" id="dashboardScreen" style="display:none;">
@@ -148,21 +122,7 @@
 <script>
   let pendingDeleteId = null;
 
-  document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const username = document.getElementById('loginUsername').value.trim();
-    const password = document.getElementById('loginPassword').value;
-    const user = BlogDB.authenticate(username, password, 'admin');
-    if (!user) {
-      document.getElementById('loginError').classList.add('visible');
-      return;
-    }
-    BlogDB.setCurrentUser(user);
-    showDashboard();
-  });
-
   function showDashboard() {
-    document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('dashboardScreen').style.display = '';
     renderStats();
     renderAllBlogs();
@@ -172,7 +132,11 @@
 
   window.addEventListener('DOMContentLoaded', () => {
     const saved = BlogDB.getCurrentUser();
-    if (saved && saved.role === 'admin') showDashboard();
+    if (!saved || saved.role !== 'admin') {
+      location.replace('admin-login.html?next=admin-corner.html');
+    } else {
+      showDashboard();
+    }
   });
 
   document.getElementById('logoutBtn').addEventListener('click', () => {
