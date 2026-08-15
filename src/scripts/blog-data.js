@@ -84,7 +84,7 @@ const BlogDB = (() => {
     }
   }
 
-  // ── BLOG CRUD ──
+  // ── BLOG CRUD (Synchronous with Local Cache & Supabase Sync) ──
   function getBlogs() {
     init();
     try {
@@ -96,48 +96,147 @@ const BlogDB = (() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(blogs));
   }
 
+  // Async Supabase sync
+  async function fetchBlogsAsync() {
+    if (window.supabase) {
+      try {
+        const { data, error } = await window.supabase
+          .from('blogs')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!error && data && data.length > 0) {
+          const mapped = data.map(b => ({
+            id: b.id,
+            title: b.title,
+            category: b.category,
+            content: b.content,
+            tags: b.tags || [],
+            author: b.author_name,
+            authorId: b.author_id,
+            role: b.author_role,
+            createdAt: b.created_at,
+            updatedAt: b.updated_at,
+            views: b.views || 0
+          }));
+          saveBlogs(mapped);
+          return mapped;
+        }
+      } catch (err) {
+        console.warn('Supabase fetch failed, using local cache:', err);
+      }
+    }
+    return getBlogs();
+  }
+
   function getBlogById(id) {
     return getBlogs().find(b => b.id === id) || null;
   }
 
-  function createBlog({ title, category, content, tags, author, authorId, role }) {
-    const blogs = getBlogs();
+  async function createBlog({ title, category, content, tags, author, authorId, role }) {
+    const parsedTags = Array.isArray(tags) ? tags : String(tags || '').split(',').map(t => t.trim()).filter(Boolean);
+    const currentUser = getCurrentUser();
+    const effectiveAuthorId = authorId || currentUser?.id || currentUser?.userId;
+
     const newBlog = {
       id: 'blog_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
       title: title.trim(),
       category: category.trim(),
       content: content.trim(),
-      tags: Array.isArray(tags) ? tags : tags.split(',').map(t => t.trim()).filter(Boolean),
-      author,
-      authorId,
-      role,
+      tags: parsedTags,
+      author: author || currentUser?.displayName || currentUser?.name || 'Anonymous',
+      authorId: effectiveAuthorId,
+      role: role || currentUser?.role || 'student',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       views: 0
     };
-    blogs.unshift(newBlog); // newest first
+
+    // Save locally first for instant UI response
+    const blogs = getBlogs();
+    blogs.unshift(newBlog);
     saveBlogs(blogs);
+
+    // Sync to Supabase if available
+    if (window.supabase && currentUser) {
+      try {
+        const { data, error } = await window.supabase
+          .from('blogs')
+          .insert([{
+            title: newBlog.title,
+            category: newBlog.category,
+            content: newBlog.content,
+            tags: newBlog.tags,
+            author_name: newBlog.author,
+            author_id: currentUser.id || currentUser.userId,
+            author_role: newBlog.role,
+            is_published: true
+          }])
+          .select()
+          .single();
+
+        if (!error && data) {
+          newBlog.id = data.id;
+          blogs[0].id = data.id;
+          saveBlogs(blogs);
+        }
+      } catch (e) {
+        console.warn('Supabase insert skipped or failed:', e);
+      }
+    }
+
     return newBlog;
   }
 
-  function updateBlog(id, updates) {
+  async function updateBlog(id, updates) {
     const blogs = getBlogs();
     const idx = blogs.findIndex(b => b.id === id);
     if (idx === -1) return null;
+
     blogs[idx] = {
       ...blogs[idx],
       ...updates,
       updatedAt: new Date().toISOString()
     };
     saveBlogs(blogs);
+
+    if (window.supabase) {
+      try {
+        await window.supabase
+          .from('blogs')
+          .update({
+            title: updates.title || blogs[idx].title,
+            category: updates.category || blogs[idx].category,
+            content: updates.content || blogs[idx].content,
+            tags: updates.tags || blogs[idx].tags,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', id);
+      } catch (e) {
+        console.warn('Supabase update failed:', e);
+      }
+    }
+
     return blogs[idx];
   }
 
-  function deleteBlog(id) {
+  async function deleteBlog(id) {
     const blogs = getBlogs();
     const filtered = blogs.filter(b => b.id !== id);
     if (filtered.length === blogs.length) return false;
     saveBlogs(filtered);
+
+    if (window.supabase) {
+      try {
+        await window.supabase
+          .from('blogs')
+          .delete()
+          .eq('id', id);
+      } catch (e) {
+        console.warn('Supabase delete failed:', e);
+      }
+    }
+
     return true;
   }
 
@@ -147,6 +246,14 @@ const BlogDB = (() => {
     if (idx !== -1) {
       blogs[idx].views = (blogs[idx].views || 0) + 1;
       saveBlogs(blogs);
+
+      if (window.supabase) {
+        window.supabase
+          .from('blogs')
+          .update({ views: blogs[idx].views })
+          .eq('id', id)
+          .then();
+      }
     }
   }
 
@@ -171,17 +278,14 @@ const BlogDB = (() => {
 
   function logout() {
     sessionStorage.removeItem(USER_KEY);
-    // The portal pages (auth.js) mirror the session under their own key.
     sessionStorage.removeItem('srmvec_portal_session');
   }
 
-  // ── Credential check (demo only; in production use a real backend) ──
-  // Teacher and student accounts come from users.js: sign in with NAME + ID NUMBER.
-  const ADMIN_ACCOUNT = { username: 'admin', password: 'Admin@2026', role: 'admin', displayName: 'Administrator' };
-
+  // ── Authentication Directory Check ──
   function authenticate(username, password, expectedRole) {
-    if (expectedRole === 'admin') {
-      return username === ADMIN_ACCOUNT.username && password === ADMIN_ACCOUNT.password ? ADMIN_ACCOUNT : null;
+    if (expectedRole === 'admin' || expectedRole === 'faculty_admin' || expectedRole === 'editor') {
+      // Admin authentication must be handled via Supabase Auth (Auth.login)
+      return null;
     }
     const directory = window.PortalUsers;
     if (!directory) return null;
@@ -209,10 +313,18 @@ const BlogDB = (() => {
     return str.length > maxLen ? str.slice(0, maxLen).trim() + '…' : str;
   }
 
+  // Auto fetch from Supabase on load
+  if (typeof window !== 'undefined') {
+    setTimeout(() => {
+      fetchBlogsAsync();
+    }, 300);
+  }
+
   // Public API
   return {
     init,
     getBlogs,
+    fetchBlogsAsync,
     getBlogById,
     createBlog,
     updateBlog,
@@ -229,3 +341,4 @@ const BlogDB = (() => {
 })();
 
 window.BlogDB = BlogDB;
+

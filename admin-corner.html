@@ -132,7 +132,8 @@
 
   window.addEventListener('DOMContentLoaded', () => {
     const saved = BlogDB.getCurrentUser();
-    if (!saved || saved.role !== 'admin') {
+    const isAdmin = saved && ['admin', 'faculty_admin', 'editor'].includes(saved.role);
+    if (!isAdmin) {
       location.replace('admin-login.html?next=admin-corner.html');
     } else {
       showDashboard();
