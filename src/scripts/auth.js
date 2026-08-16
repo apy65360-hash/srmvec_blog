@@ -7,23 +7,62 @@ const BLOGDB_USER_KEY = "srmvec_current_user";
 
 const Auth = {
   async login(emailOrName, password, role) {
+    let supabaseError = null;
+
     // Try Supabase auth first if available
     if (window.supabase) {
-      const email = emailOrName.includes('@') ? emailOrName : `${emailOrName.toLowerCase().replace(/\s+/g, '')}@srmvec.ac.in`;
-      const { data, error } = await window.supabase.auth.signInWithPassword({
+      const email = emailOrName.includes('@') ? emailOrName.trim() : `${emailOrName.toLowerCase().replace(/\s+/g, '')}@srmvec.ac.in`;
+      
+      let { data, error } = await window.supabase.auth.signInWithPassword({
         email: email,
         password: password
       });
 
-      if (!error && data.user) {
-        // Fetch user profile
-        const { data: profile } = await window.supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', data.user.id)
-          .single();
+      // If failed and emailOrName was entered without @, also try raw input as email just in case
+      if (error && !emailOrName.includes('@')) {
+        const retry = await window.supabase.auth.signInWithPassword({
+          email: emailOrName.trim(),
+          password: password
+        });
+        if (!retry.error && retry.data) {
+          data = retry.data;
+          error = null;
+        }
+      }
 
-        const userRole = profile?.role || data.user.user_metadata?.role || role || 'student';
+      if (!error && data && data.user) {
+        // Fetch user profile
+        let profile = null;
+        try {
+          const { data: profileData } = await window.supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', data.user.id)
+            .single();
+          profile = profileData;
+        } catch (e) {
+          console.warn("Profile fetch warning:", e);
+        }
+
+        let userRole = profile?.role || data.user.user_metadata?.role;
+        if (!userRole) {
+          userRole = (role === 'admin' || role === 'faculty_admin' || role === 'editor') ? 'faculty_admin' : (role || 'student');
+        }
+
+        // Auto-create or repair missing profile in Supabase table
+        if (!profile) {
+          try {
+            await window.supabase.from('profiles').upsert([{
+              id: data.user.id,
+              email: data.user.email,
+              full_name: data.user.user_metadata?.full_name || data.user.email.split('@')[0],
+              role: userRole
+            }]);
+          } catch (e) {
+            console.warn("Profile auto-creation warning:", e);
+          }
+        }
+
         const user = {
           userId: data.user.id,
           id: data.user.id,
@@ -35,13 +74,15 @@ const Auth = {
           permissions: profile?.permissions || {}
         };
         return this.startSession(user);
+      } else if (error) {
+        supabaseError = error.message;
       }
     }
 
     // Local fallback authentication
     const user = window.PortalUsers ? window.PortalUsers.match(emailOrName, password, role) : null;
     if (!user) {
-      return null;
+      return supabaseError ? { error: supabaseError } : null;
     }
     return this.startSession(user);
   },

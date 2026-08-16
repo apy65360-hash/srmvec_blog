@@ -1,234 +1,424 @@
 <!DOCTYPE html>
 <html lang="en" data-variant="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auto Playing Event Poster Slider</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Events Board | SRMVEC CSE Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="/src/styles/style.css" />
+  <link rel="stylesheet" href="/src/styles/portal.css" />
   <style>
     :root {
-      --page: #F8FAFC;
-      --text: #0F172A;
-      --text-muted: #475569;
-      --font-body: Arial, sans-serif;
-      --fs-base: 16px;
-      --fs-sm: 14px;
-      --fs-xs: 12px;
-      --fs-lg: 18px;
-      --fs-2xl: 32px;
-      --fw-display: 700;
-      --fw-semibold: 600;
-      --space-1: 4px;
-      --space-2: 8px;
-      --space-3: 12px;
-      --space-4: 16px;
-      --space-6: 24px;
-      --space-8: 32px;
-      --surface: #E2E8F0;
-      --surface-2: #F1F5F9;
-      --surface-accent: #EFF6FF;
-      --border: #BFDBFE;
-      --border-strong: #93C5FD;
-      --brand-text: #2563EB;
-      --accent: #0EA5E9;
-      --ring: rgba(37, 99, 235, 0.22);
-      --radius: 14px;
-      --radius-lg: 20px;
-      --shadow-1: 0 2px 8px rgba(15, 23, 42, 0.08);
-      --shadow-2: 0 10px 30px rgba(37, 99, 235, 0.10);
-      --shadow-3: 0 14px 40px rgba(14, 165, 233, 0.14);
-      --lh-body: 1.5;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
+      --brand-blue: #2563EB;
+      --brand-dark: #0F172A;
+      --accent-cyan: #0EA5E9;
+      --card-bg: #FFFFFF;
+      --surface-light: #F8FAFC;
+      --border-subtle: #E2E8F0;
+      --text-muted: #64748B;
+      --radius-lg: 16px;
+      --radius-md: 10px;
     }
 
     body {
-      margin: 0;
-      padding: 0;
-      background: var(--page);
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: var(--fs-base);
-      line-height: var(--lh-body);
+      background: #F1F5F9;
+      color: #0F172A;
+      font-family: 'Inter', sans-serif;
     }
 
-    .page-wrapper {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .site-header {
-      text-align: center;
-      padding: var(--space-8) var(--space-4);
-      background: linear-gradient(135deg, #EFF6FF 0%, #F8FAFC 100%);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .site-header h1 {
-      margin: 0 0 var(--space-2) 0;
-      font-size: var(--fs-2xl);
-      font-weight: var(--fw-display);
-      color: var(--text);
-    }
-
-    .site-header p {
-      margin: 0;
-      font-size: var(--fs-sm);
-      color: var(--text-muted);
-    }
-
-    .container {
-      flex: 1;
-      padding: var(--space-8) var(--space-4);
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    .carousel-wrapper {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: var(--space-4);
-      align-items: center;
-      margin-bottom: var(--space-6);
-    }
-
-    .carousel-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 48px;
-      height: 48px;
-      border: 1px solid var(--border-strong);
-      background: linear-gradient(180deg, #FFFFFF 0%, #E2E8F0 100%);
-      color: var(--brand-text);
-      cursor: pointer;
-      border-radius: var(--radius);
-      transition: all 200ms ease;
-      flex-shrink: 0;
-      padding: 0;
-      font-size: inherit;
-      font-family: inherit;
-      box-shadow: var(--shadow-1);
-    }
-
-    .carousel-btn:hover {
-      background: #F8FAFC;
-      border-color: var(--brand-text);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-2);
-    }
-
-    .carousel-btn:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px var(--ring);
-    }
-
-    .carousel-btn svg {
-      stroke: currentColor;
-    }
-
-    .carousel-container {
-      width: 100%;
-      overflow: hidden;
-      border-radius: var(--radius-lg);
-      background: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%);
-      box-shadow: var(--shadow-2);
-      border: 1px solid var(--border);
-    }
-
-    .carousel-track {
-      display: flex;
-      gap: var(--space-4);
-      padding: var(--space-4);
-      transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
-      width: fit-content;
-    }
-
-    .poster-card {
-      flex: 0 0 calc(50% - var(--space-2));
-      min-width: 0;
-      background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow-1);
-      border: 1px solid #CBD5E1;
-      transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .poster-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-3);
-      border-color: var(--accent);
-    }
-
-    .poster-image {
-      width: 100%;
-      height: 240px;
-      background: linear-gradient(135deg, #2563EB 0%, #0EA5E9 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* Page Hero Banner */
+    .events-hero-banner {
+      background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 50%, #0284C7 100%);
       color: #FFFFFF;
-      font-size: var(--fs-sm);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: var(--fw-semibold);
+      padding: 3.5rem 1rem 3rem 1rem;
+      text-align: center;
+      position: relative;
       overflow: hidden;
     }
+    .events-hero-banner h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    .events-hero-banner p {
+      color: #93C5FD;
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto 1.5rem auto;
+    }
+    .hero-badges-row {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .hero-badge {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
 
-    /* Posters fill the whole card area, cropping instead of leaving gaps. */
-    .poster-image img {
+    /* Filter & Controls Bar */
+    .controls-wrapper {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 1.25rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    }
+    .controls-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .search-box-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 260px;
+    }
+    .search-box-wrap input {
+      width: 100%;
+      padding: 0.7rem 1rem 0.7rem 2.6rem;
+      border: 1px solid #CBD5E1;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .search-box-wrap input:focus {
+      border-color: var(--brand-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .search-box-wrap i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94A3B8;
+    }
+    .view-toggle-btns {
+      display: flex;
+      background: #F1F5F9;
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid #E2E8F0;
+    }
+    .toggle-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: transparent;
+      border-radius: 7px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+    .toggle-btn.active {
+      background: #FFFFFF;
+      color: var(--brand-blue);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    /* Sort Info Banner */
+    .sort-info-bar {
+      margin: 1.5rem 0 1rem 0;
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      color: #1E40AF;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    /* Detailed Cards Grid */
+    .events-detailed-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.75rem;
+      margin-bottom: 3rem;
+    }
+
+    .event-detail-card {
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .event-detail-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.12);
+      border-color: #93C5FD;
+    }
+    .event-detail-card.highlighted {
+      animation: highlightPulse 2s infinite ease-in-out;
+      border: 2px solid #2563EB;
+    }
+    @keyframes highlightPulse {
+      0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
+      70% { box-shadow: 0 0 0 12px rgba(37, 99, 235, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+    }
+
+    .card-poster-wrap {
+      width: 100%;
+      height: 220px;
+      position: relative;
+      overflow: hidden;
+      background: #1E293B;
+      cursor: pointer;
+    }
+    .card-poster-wrap img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       object-position: center top;
-      display: block;
+      transition: transform 0.4s ease;
     }
-
-    .poster-info {
-      padding: var(--space-3);
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+    .card-poster-wrap:hover img {
+      transform: scale(1.05);
     }
-
-    .poster-info h3 {
-      margin: 0 0 var(--space-2) 0;
-      font-size: var(--fs-lg);
-      font-weight: var(--fw-semibold);
-      color: var(--text);
-    }
-
-    .poster-meta {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-2);
-      font-size: var(--fs-sm);
-      color: var(--text-muted);
-    }
-
-    .poster-meta span {
+    .poster-zoom-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.4);
       display: flex;
       align-items: center;
-      gap: var(--space-1);
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      color: #FFFFFF;
+      font-size: 1.2rem;
+      font-weight: 600;
+      gap: 0.5rem;
+    }
+    .card-poster-wrap:hover .poster-zoom-overlay {
+      opacity: 1;
     }
 
+    .reg-closing-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(6px);
+      color: #F8FAFC;
+      padding: 0.35rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .reg-closing-badge.closing-soon {
+      background: linear-gradient(135deg, #DC2626, #B91C1C);
+    }
+
+    .card-body {
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+    }
+    .card-college {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #2563EB;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.3rem;
+    }
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 0.8rem;
+      line-height: 1.35;
+    }
+
+    .card-meta-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      font-size: 0.88rem;
+      color: #475569;
+      margin-bottom: 1rem;
+    }
+    .card-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-meta-item i {
+      color: #0EA5E9;
+      width: 16px;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-bottom: 1.2rem;
+    }
+    .event-tag {
+      background: #F1F5F9;
+      color: #334155;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      border: 1px solid #E2E8F0;
+    }
+    .event-tag.tech {
+      background: #EFF6FF;
+      color: #1D4ED8;
+      border-color: #BFDBFE;
+    }
+
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: auto;
+      padding-top: 1rem;
+      border-top: 1px solid #F1F5F9;
+    }
+    .btn-action {
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+    .btn-register {
+      background: var(--brand-blue);
+      color: #FFFFFF;
+    }
+    .btn-register:hover {
+      background: #1D4ED8;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+    .btn-view-details {
+      background: #F8FAFC;
+      color: #334155;
+      border: 1px solid #CBD5E1;
+    }
+    .btn-view-details:hover {
+      background: #E2E8F0;
+      color: #0F172A;
+    }
+
+    /* Slider Section Styles (Motion Calibrated to 4s) */
+    .slider-view-section {
+      display: none;
+      margin-bottom: 3rem;
+    }
+    .carousel-wrapper {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .carousel-btn {
+      width: 48px;
+      height: 48px;
+      border: 1px solid #93C5FD;
+      background: linear-gradient(180deg, #FFFFFF 0%, #E2E8F0 100%);
+      color: #2563EB;
+      cursor: pointer;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .carousel-btn:hover {
+      background: #FFFFFF;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.15);
+    }
+    .carousel-container {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 16px;
+      background: #FFFFFF;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      border: 1px solid #E2E8F0;
+    }
+    .carousel-track {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+      transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
+      width: fit-content;
+    }
+    .slider-poster-card {
+      flex: 0 0 calc(33.333% - 0.7rem);
+      min-width: 280px;
+      background: #FFFFFF;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #CBD5E1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .slider-poster-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(14, 165, 233, 0.15);
+    }
+    .slider-poster-img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      object-position: center top;
+    }
+    .slider-poster-info {
+      padding: 1rem;
+    }
     .carousel-controls {
       display: flex;
       align-items: center;
-      gap: var(--space-3);
+      gap: 1rem;
     }
-
     .progress-bar {
       flex: 1;
       height: 4px;
@@ -236,158 +426,415 @@
       border-radius: 2px;
       overflow: hidden;
     }
-
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--brand-text), var(--accent));
-      animation: progress 3s linear forwards;
+      background: linear-gradient(90deg, #2563EB, #0EA5E9);
+      animation: progress 4s linear forwards; /* Calibrated to 4s */
     }
-
     @keyframes progress {
       from { width: 0%; }
       to { width: 100%; }
     }
 
-    .status-text {
-      font-size: var(--fs-xs);
-      color: var(--text-muted);
-      white-space: nowrap;
-      min-width: 140px;
+    /* Modal Overlay Styles */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
     }
-
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 20px;
+      max-width: 850px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      position: relative;
+      transform: translateY(20px);
+      transition: transform 0.25s ease;
+    }
+    .modal-overlay.active .modal-card {
+      transform: translateY(0);
+    }
+    .modal-close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.1);
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: background 0.2s ease;
+    }
+    .modal-close-btn:hover {
+      background: rgba(15, 23, 42, 0.2);
+    }
+    .modal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+    }
     @media (max-width: 768px) {
-      .carousel-wrapper {
-        grid-template-columns: auto 1fr auto;
-        gap: var(--space-2);
+      .modal-grid {
+        grid-template-columns: 1fr;
       }
-
-      .carousel-btn {
-        width: 40px;
-        height: 40px;
+      .slider-poster-card {
+        flex: 0 0 calc(100% - 1rem);
       }
-
-      .poster-card {
-        flex: 0 0 calc(50% - var(--space-2));
-      }
-
-      .poster-image {
-        height: 180px;
-      }
-
-      .poster-info h3 {
-        font-size: var(--fs-base);
-      }
-
-      .status-text {
-        display: none;
+      .events-detailed-grid {
+        grid-template-columns: 1fr;
       }
     }
+    .modal-poster-side {
+      background: #0F172A;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-poster-side img {
+      max-width: 100%;
+      max-height: 500px;
+      object-fit: contain;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .modal-content-side {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
-    @media (max-width: 480px) {
-      .container {
-        padding: var(--space-4) var(--space-2);
-      }
+    .modal-section-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #2563EB;
+      margin: 1.2rem 0 0.5rem 0;
+    }
 
-      .carousel-wrapper {
-        gap: var(--space-2);
-      }
-
-      .carousel-btn {
-        width: 36px;
-        height: 36px;
-      }
-
-      .poster-card {
-        flex: 0 0 calc(50% - var(--space-2));
-      }
+    /* Form inside Modal */
+    .reg-modal-content {
+      padding: 2.5rem 2rem;
     }
   </style>
 </head>
 <body>
-  <div class="page-wrapper">
-    <header class="site-header">
-      <h1>Upcoming Events</h1>
-      <p>Explore our calendar of community events and programs</p>
-    </header>
 
-    <main class="container">
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="container top-bar-content">
+      <div class="top-utility-links">
+        <a href="index.html">SRMVEC Main Portal</a>
+        <a href="student-corner.html">Students</a>
+        <a href="teachers-corner.html">Faculty & Staff</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="top-bar-search">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" placeholder="Search CSE Portal" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Unified Navigation Header -->
+  <header class="main-header-unified">
+    <div class="container header-nav-container">
+      <div class="brand-group">
+        <div class="brand-text-box">
+          <h1 class="brand-main-title"><a href="index.html" style="color:inherit;text-decoration:none;">CSE Blog</a></h1>
+        </div>
+      </div>
+      <nav class="main-nav-menu">
+        <div class="nav-item"><a href="index.html">Home</a></div>
+        <div class="nav-item"><a href="student-corner.html">Student Corner</a></div>
+        <div class="nav-item"><a href="teachers-corner.html">Teacher's Corner</a></div>
+        <div class="nav-item active"><a href="event1.html">Events Board</a></div>
+        <div class="nav-item"><a href="manage-faculty.html">Manage Faculty</a></div>
+        <div class="nav-item"><a href="contact.html">Contact</a></div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="events-hero-banner">
+    <div class="container">
+      <h1>CSE Events Board</h1>
+      <p>Discover technical symposiums, coding hackathons, workshops, and inter-collegiate conferences with complete event details and instant registration.</p>
+      <div class="hero-badges-row">
+        <span class="hero-badge"><i class="fa-solid fa-sort-amount-down"></i> Ordered by Registration Closing Date</span>
+        <span class="hero-badge"><i class="fa-solid fa-bolt"></i> Live Event Updates</span>
+        <span class="hero-badge"><i class="fa-solid fa-graduation-cap"></i> Inter-Collegiate Competitions</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sticky Controls Bar -->
+  <div class="controls-wrapper">
+    <div class="container controls-container">
+      <div class="search-box-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="eventSearchInput" placeholder="Search events by title, college, or sub-event name..." />
+      </div>
+      <div class="view-toggle-btns">
+        <button class="toggle-btn active" id="btnViewGrid"><i class="fa-solid fa-grip"></i> Detailed Cards</button>
+        <button class="toggle-btn" id="btnViewSlider"><i class="fa-solid fa-film"></i> Poster Slider</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="container" style="padding-top: 1.5rem;">
+
+    <!-- Sort Notice Bar -->
+    <div class="sort-info-bar">
+      <span><i class="fa-solid fa-calendar-check"></i> Events are ordered by <strong>First Registration Closing Date</strong> (Earliest closing event displayed first).</span>
+      <span id="totalEventsCount">Showing 7 Events</span>
+    </div>
+
+    <!-- ═══════════ DETAILED GRID VIEW SECTION ═══════════ -->
+    <section id="detailedGridSection">
+      <div class="events-detailed-grid" id="eventsDetailedGrid">
+        <!-- Rendered dynamically by JS -->
+      </div>
+    </section>
+
+    <!-- ═══════════ SLIDER VIEW SECTION ═══════════ -->
+    <section class="slider-view-section" id="sliderViewSection">
       <div class="carousel-wrapper">
-        <button class="carousel-btn carousel-btn-prev" id="prevBtn" aria-label="Previous events">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-        </button>
-
+        <button class="carousel-btn" id="prevBtn" aria-label="Previous event"><i class="fa-solid fa-chevron-left"></i></button>
         <div class="carousel-container" id="carouselContainer">
           <div class="carousel-track" id="carouselTrack"></div>
         </div>
-
-        <button class="carousel-btn carousel-btn-next" id="nextBtn" aria-label="Next events">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-        </button>
+        <button class="carousel-btn" id="nextBtn" aria-label="Next event"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
-
       <div class="carousel-controls">
         <div class="progress-bar" id="progressBar">
           <div class="progress-fill"></div>
         </div>
-        <span class="status-text" id="statusText">Auto advancing in 3s</span>
+        <span class="status-text" id="statusText" style="font-size:0.85rem;color:var(--text-muted);">Auto advancing in 4s</span>
       </div>
-    </main>
+    </section>
+
+  </main>
+
+  <!-- ═══════════ EVENT VIEW DETAILS MODAL ═══════════ -->
+  <div class="modal-overlay" id="detailsModal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeModal('detailsModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-grid">
+        <div class="modal-poster-side">
+          <img id="modalPosterImg" src="" alt="Event Poster" />
+        </div>
+        <div class="modal-content-side">
+          <div>
+            <span class="card-college" id="modalCollege">Host Institution</span>
+            <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.4rem;margin:0.2rem 0 0.8rem 0;" id="modalTitle">Event Title</h2>
+            
+            <div class="card-meta-list" style="margin-bottom:1rem;">
+              <div class="card-meta-item"><i class="fa-solid fa-hourglass-half" style="color:#DC2626;"></i> <strong>Reg Closes:</strong> <span id="modalRegClose">Date</span></div>
+              <div class="card-meta-item"><i class="fa-regular fa-calendar-days"></i> <strong>Event Date:</strong> <span id="modalDate">Date</span></div>
+              <div class="card-meta-item"><i class="fa-regular fa-clock"></i> <strong>Time:</strong> <span id="modalTime">Time</span></div>
+              <div class="card-meta-item"><i class="fa-solid fa-location-dot"></i> <strong>Venue:</strong> <span id="modalVenue">Venue</span></div>
+              <div class="card-meta-item"><i class="fa-solid fa-ticket"></i> <strong>Fee:</strong> <span id="modalFee">Fee</span></div>
+              <div class="card-meta-item"><i class="fa-solid fa-trophy"></i> <strong>Prizes:</strong> <span id="modalPrizes">Prizes</span></div>
+            </div>
+
+            <div class="modal-section-title">Technical Events</div>
+            <div class="card-tags" id="modalTechTags"></div>
+
+            <div class="modal-section-title">Non-Technical Events</div>
+            <div class="card-tags" id="modalNonTechTags"></div>
+
+            <div class="modal-section-title">Description & Details</div>
+            <p style="font-size:0.9rem;color:#475569;line-height:1.5;" id="modalDesc">Event summary...</p>
+
+            <div class="modal-section-title">Contact Information</div>
+            <p style="font-size:0.88rem;color:#334155;font-weight:600;" id="modalContact">Contacts...</p>
+          </div>
+
+          <div style="margin-top:1.5rem;display:flex;gap:0.75rem;">
+            <button class="btn-action btn-register" style="flex:1;" id="modalBtnRegister"><i class="fa-solid fa-paper-plane"></i> Proceed to Register</button>
+            <button class="btn-action btn-view-details" onclick="closeModal('detailsModal')">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <script>
-    // Titles and dates are taken from the posters in eventposterimg/.
-    const EVENTS = [
-      { id: 1, title: "AUGUSTA '24 — National Level Technical Symposium", date: "April 03", time: "As per poster", venue: "AAA College of Engineering & Technology", poster: "eventposterimg/eve1.webp" },
-      { id: 2, title: "KREATIV '26 — Tech Beta: Business x Coding", date: "February 13", time: "As per poster", venue: "Kamaraj College of Engineering & Technology", poster: "eventposterimg/eve2.webp" },
-      { id: 3, title: "CSEISMIC 2020 — Inter-Collegiate Technical Symposium", date: "January 10, 2020", time: "As per poster", venue: "KCG College of Technology", poster: "eventposterimg/eve3.webp" },
-      { id: 4, title: "CYNOSURE '23 — National Level Technical Symposium", date: "February 09, 2023", time: "As per poster", venue: "Sri Ramakrishna Institute of Technology", poster: "eventposterimg/eve4.webp" },
-      { id: 5, title: "PHANTAZO '22 — National Level Technical Symposium", date: "November 05, 2022", time: "As per poster", venue: "J.J. College of Engineering and Technology", poster: "eventposterimg/eve5.webp" },
-      { id: 6, title: "DRESTEIN '24 — Technical & Management Fest", date: "November 04 - 09, 2024", time: "As per poster", venue: "Saveetha Engineering College", poster: "eventposterimg/eve6.webp" },
-      { id: 7, title: "CanFig — Hands-on Workshop on Figma and Canva", date: "May 27 & 30, 2023", time: "10:00 AM - 4:00 PM", venue: "Beta Hall, Sri Sai Ram Engineering College", poster: "eventposterimg/eve7.webp" }
-    ];
+  <!-- ═══════════ REGISTRATION MODAL ═══════════ -->
+  <div class="modal-overlay" id="registerModal" role="dialog" aria-modal="true">
+    <div class="modal-card" style="max-width:550px;">
+      <button class="modal-close-btn" onclick="closeModal('registerModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div class="reg-modal-content">
+        <h2 style="font-family:'Space Grotesk',sans-serif;margin-bottom:0.3rem;" id="regModalTitle">Register for Event</h2>
+        <p style="color:#64748B;font-size:0.9rem;margin-bottom:1.5rem;" id="regModalSub">Fill out your information to complete event registration.</p>
 
-    let currentIndex = 0;
+        <form id="eventRegistrationForm">
+          <input type="hidden" id="regEventId" />
+          <div class="form-row">
+            <label for="regStudentName">Full Name</label>
+            <input class="form-control" type="text" id="regStudentName" placeholder="Enter your full name" required />
+          </div>
+          <div class="form-row">
+            <label for="regStudentEmail">Email Address</label>
+            <input class="form-control" type="email" id="regStudentEmail" placeholder="student@srmvalliammai.ac.in" required />
+          </div>
+          <div class="form-row">
+            <label for="regStudentCollege">College & Department</label>
+            <input class="form-control" type="text" id="regStudentCollege" placeholder="e.g. SRMVEC - CSE Dept" required />
+          </div>
+          <div class="form-row">
+            <label for="regStudentPhone">Phone Number</label>
+            <input class="form-control" type="tel" id="regStudentPhone" placeholder="+91 98765 43210" required />
+          </div>
+
+          <div style="background:#F8FAFC;border:1px solid #E2E8F0;padding:1rem;border-radius:10px;margin-bottom:1.25rem;">
+            <span style="font-size:0.85rem;color:#475569;display:block;"><strong>Registration Fee:</strong> <span id="regModalFeeInfo">Free</span></span>
+            <span style="font-size:0.8rem;color:#64748B;display:block;margin-top:0.2rem;">Official Website: <a id="regModalOfficialLink" href="#" target="_blank" style="color:#2563EB;word-break:break-all;">Click to view official website</a></span>
+          </div>
+
+          <div style="display:flex;gap:0.75rem;">
+            <button class="btn btn-success" type="submit" style="flex:1;"><i class="fa-solid fa-check"></i> Confirm Registration</button>
+            <button class="btn btn-muted" type="button" onclick="closeModal('registerModal')">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Centralized Script Import -->
+  <script type="module">
+    import { EventsStore } from "/src/scripts/events-store.js";
+
+    let currentEvents = [];
+    let activeIndex = 0;
     let autoPlayTimer = null;
     let isHovering = false;
 
-    const track = document.getElementById("carouselTrack");
-    const container = document.getElementById("carouselContainer");
+    const detailedGrid = document.getElementById("eventsDetailedGrid");
+    const carouselTrack = document.getElementById("carouselTrack");
+    const carouselContainer = document.getElementById("carouselContainer");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
     const progressBar = document.getElementById("progressBar");
     const statusText = document.getElementById("statusText");
+    const searchInput = document.getElementById("eventSearchInput");
+    const btnViewGrid = document.getElementById("btnViewGrid");
+    const btnViewSlider = document.getElementById("btnViewSlider");
+    const gridSection = document.getElementById("detailedGridSection");
+    const sliderSection = document.getElementById("sliderViewSection");
 
-    function renderPoster(event) {
-      const card = document.createElement("div");
-      card.className = "poster-card";
-      card.innerHTML = `
-        <div class="poster-image"><img src="${event.poster}" alt="${event.title} poster" loading="lazy"></div>
-        <div class="poster-info">
-          <h3>${event.title}</h3>
-          <div class="poster-meta">
-            <span>📅 ${event.date}</span>
-            <span>⏰ ${event.time}</span>
-            <span>📍 ${event.venue}</span>
+    function init() {
+      currentEvents = EventsStore.getEvents();
+      document.getElementById("totalEventsCount").textContent = `Showing ${currentEvents.length} Events`;
+      renderGrid(currentEvents);
+      renderSlider(currentEvents);
+
+      // Check URL for specific eventId parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const targetId = urlParams.get("eventId");
+      if (targetId) {
+        setTimeout(() => {
+          highlightAndOpenEvent(targetId);
+        }, 300);
+      }
+    }
+
+    function renderGrid(events) {
+      detailedGrid.innerHTML = "";
+      if (events.length === 0) {
+        detailedGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #64748B;">No matching events found.</div>`;
+        return;
+      }
+
+      events.forEach(evt => {
+        const isClosingSoon = new Date(evt.regCloseDate) <= new Date("2026-12-31");
+        const card = document.createElement("article");
+        card.className = "event-detail-card";
+        card.id = `card-${evt.id}`;
+        card.innerHTML = `
+          <div class="card-poster-wrap" onclick="openDetailsModal('${evt.id}')">
+            <img src="${evt.poster}" alt="${evt.title} Poster" loading="lazy" />
+            <div class="poster-zoom-overlay"><i class="fa-solid fa-expand"></i> View Details</div>
+            <div class="reg-closing-badge ${isClosingSoon ? 'closing-soon' : ''}">
+              <i class="fa-solid fa-clock"></i> Reg Closes: ${evt.regCloseFormatted}
+            </div>
           </div>
-        </div>
-      `;
-      return card;
+          <div class="card-body">
+            <div>
+              <span class="card-college">${evt.college}</span>
+              <h3 class="card-title">${evt.title}</h3>
+              <div class="card-meta-list">
+                <div class="card-meta-item"><i class="fa-regular fa-calendar-days"></i> <span><strong>Date:</strong> ${evt.date}</span></div>
+                <div class="card-meta-item"><i class="fa-solid fa-location-dot"></i> <span><strong>Venue:</strong> ${evt.venue}</span></div>
+                <div class="card-meta-item"><i class="fa-solid fa-ticket"></i> <span><strong>Fee:</strong> ${evt.fee}</span></div>
+              </div>
+              <div class="card-tags">
+                ${evt.techEvents.slice(0, 3).map(t => `<span class="event-tag tech">${t}</span>`).join("")}
+                ${evt.nonTechEvents.slice(0, 2).map(nt => `<span class="event-tag">${nt}</span>`).join("")}
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="btn-action btn-register" onclick="openRegisterModal('${evt.id}')">
+                <i class="fa-solid fa-file-pen"></i> Register Now
+              </button>
+              <button class="btn-action btn-view-details" onclick="openDetailsModal('${evt.id}')">
+                <i class="fa-solid fa-circle-info"></i> View Details
+              </button>
+            </div>
+          </div>
+        `;
+        detailedGrid.appendChild(card);
+      });
     }
 
-    function updateCarouselPosition() {
-      const itemWidth = track.children[0]?.offsetWidth || 0;
+    function renderSlider(events) {
+      carouselTrack.innerHTML = "";
+      events.forEach(evt => {
+        const slide = document.createElement("div");
+        slide.className = "slider-poster-card";
+        slide.onclick = () => openDetailsModal(evt.id);
+        slide.innerHTML = `
+          <img class="slider-poster-img" src="${evt.poster}" alt="${evt.title} Poster" loading="lazy" />
+          <div class="slider-poster-info">
+            <span style="font-size:0.75rem;font-weight:700;color:#2563EB;text-transform:uppercase;">Reg Closes: ${evt.regCloseFormatted}</span>
+            <h4 style="font-size:0.95rem;font-weight:700;margin:0.2rem 0 0.4rem 0;color:#0F172A;line-height:1.3;">${evt.title}</h4>
+            <p style="font-size:0.8rem;color:#64748B;margin:0;"><i class="fa-solid fa-location-dot"></i> ${evt.venue}</p>
+          </div>
+        `;
+        carouselTrack.appendChild(slide);
+      });
+      updateSliderPosition();
+    }
+
+    function updateSliderPosition() {
+      if (!carouselTrack.children[0]) return;
+      const itemWidth = carouselTrack.children[0].offsetWidth || 280;
       const gap = 16;
-      track.style.transform = `translateX(-${(itemWidth + gap) * currentIndex}px)`;
-    }
-
-    function initCarousel() {
-      track.innerHTML = "";
-      EVENTS.forEach(event => track.appendChild(renderPoster(event)));
-      updateCarouselPosition();
+      carouselTrack.style.transform = `translateX(-${(itemWidth + gap) * activeIndex}px)`;
     }
 
     function resetProgressBar() {
@@ -397,41 +844,152 @@
     function startAutoPlay() {
       if (autoPlayTimer) clearTimeout(autoPlayTimer);
       resetProgressBar();
-      if (!isHovering) {
-        autoPlayTimer = setTimeout(() => advance(), 5000);
+      if (!isHovering && sliderSection.style.display !== "none") {
+        autoPlayTimer = setTimeout(() => advance(), 4000); // 4 Seconds Motion Timing
       }
     }
 
     function advance() {
-      currentIndex = (currentIndex + 1) % EVENTS.length;
-      updateCarouselPosition();
+      activeIndex = (activeIndex + 1) % currentEvents.length;
+      updateSliderPosition();
       startAutoPlay();
     }
 
     function goBack() {
-      currentIndex = (currentIndex - 1 + EVENTS.length) % EVENTS.length;
-      updateCarouselPosition();
+      activeIndex = (activeIndex - 1 + currentEvents.length) % currentEvents.length;
+      updateSliderPosition();
       startAutoPlay();
     }
 
     prevBtn.addEventListener("click", goBack);
     nextBtn.addEventListener("click", advance);
 
-    container.addEventListener("mouseenter", () => {
+    carouselContainer.addEventListener("mouseenter", () => {
       isHovering = true;
       if (autoPlayTimer) clearTimeout(autoPlayTimer);
       statusText.textContent = "Paused";
     });
 
-    container.addEventListener("mouseleave", () => {
+    carouselContainer.addEventListener("mouseleave", () => {
       isHovering = false;
-      statusText.textContent = "Auto advancing in 3s";
+      statusText.textContent = "Auto advancing in 4s";
       startAutoPlay();
     });
 
-    window.addEventListener("resize", updateCarouselPosition);
-    initCarousel();
-    startAutoPlay();
+    // View Mode Toggles
+    btnViewGrid.addEventListener("click", () => {
+      btnViewGrid.classList.add("active");
+      btnViewSlider.classList.remove("active");
+      gridSection.style.display = "block";
+      sliderSection.style.display = "none";
+      if (autoPlayTimer) clearTimeout(autoPlayTimer);
+    });
+
+    btnViewSlider.addEventListener("click", () => {
+      btnViewSlider.classList.add("active");
+      btnViewGrid.classList.remove("active");
+      sliderSection.style.display = "block";
+      gridSection.style.display = "none";
+      updateSliderPosition();
+      startAutoPlay();
+    });
+
+    // Search Filter
+    searchInput.addEventListener("input", (e) => {
+      const term = e.target.value.toLowerCase().trim();
+      const filtered = EventsStore.getEvents().filter(evt => {
+        return evt.title.toLowerCase().includes(term) ||
+               evt.college.toLowerCase().includes(term) ||
+               evt.venue.toLowerCase().includes(term) ||
+               evt.techEvents.some(t => t.toLowerCase().includes(term)) ||
+               evt.nonTechEvents.some(nt => nt.toLowerCase().includes(term));
+      });
+      currentEvents = filtered;
+      document.getElementById("totalEventsCount").textContent = `Showing ${filtered.length} Events`;
+      renderGrid(filtered);
+      renderSlider(filtered);
+    });
+
+    // Global Modal Trigger Helper Functions
+    window.openDetailsModal = function(id) {
+      // If embedded in iframe (e.g. on home page index.html), redirect top window to event1.html?eventId=id
+      if (window.top !== window) {
+        window.top.location.href = "event1.html?eventId=" + id;
+        return;
+      }
+
+      const evt = EventsStore.getEventById(id);
+      if (!evt) return;
+
+      document.getElementById("modalPosterImg").src = evt.poster;
+      document.getElementById("modalCollege").textContent = evt.college;
+      document.getElementById("modalTitle").textContent = evt.title;
+      document.getElementById("modalRegClose").textContent = evt.regCloseFormatted;
+      document.getElementById("modalDate").textContent = evt.date;
+      document.getElementById("modalTime").textContent = evt.time;
+      document.getElementById("modalVenue").textContent = evt.venue;
+      document.getElementById("modalFee").textContent = evt.fee;
+      document.getElementById("modalPrizes").textContent = evt.prizes;
+      document.getElementById("modalDesc").textContent = evt.description;
+      document.getElementById("modalContact").textContent = evt.contact;
+
+      const techContainer = document.getElementById("modalTechTags");
+      techContainer.innerHTML = evt.techEvents.map(t => `<span class="event-tag tech">${t}</span>`).join("");
+
+      const nonTechContainer = document.getElementById("modalNonTechTags");
+      nonTechContainer.innerHTML = evt.nonTechEvents.map(nt => `<span class="event-tag">${nt}</span>`).join("");
+
+      document.getElementById("modalBtnRegister").onclick = () => {
+        closeModal('detailsModal');
+        openRegisterModal(id);
+      };
+
+      document.getElementById("detailsModal").classList.add("active");
+    };
+
+    window.openRegisterModal = function(id) {
+      if (window.top !== window) {
+        window.top.location.href = "event1.html?eventId=" + id;
+        return;
+      }
+
+      const evt = EventsStore.getEventById(id);
+      if (!evt) return;
+
+      document.getElementById("regEventId").value = evt.id;
+      document.getElementById("regModalTitle").textContent = `Register: ${evt.title}`;
+      document.getElementById("regModalSub").textContent = `Host: ${evt.college} | Registration Closing Date: ${evt.regCloseFormatted}`;
+      document.getElementById("regModalFeeInfo").textContent = evt.fee;
+      document.getElementById("regModalOfficialLink").href = evt.regUrl || "#";
+      document.getElementById("regModalOfficialLink").textContent = evt.regUrl || "Link Available On Poster";
+
+      document.getElementById("registerModal").classList.add("active");
+    };
+
+    window.closeModal = function(modalId) {
+      document.getElementById(modalId).classList.remove("active");
+    };
+
+    function highlightAndOpenEvent(id) {
+      const targetCard = document.getElementById(`card-${id}`);
+      if (targetCard) {
+        targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        targetCard.classList.add("highlighted");
+        setTimeout(() => targetCard.classList.remove("highlighted"), 3500);
+      }
+      openDetailsModal(id);
+    }
+
+    // Handle Form Submit
+    document.getElementById("eventRegistrationForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("regStudentName").value;
+      alert(`Registration Successful!\nThank you, ${name}. Your registration request has been submitted for this event.`);
+      closeModal("registerModal");
+      e.target.reset();
+    });
+
+    init();
   </script>
 </body>
 </html>

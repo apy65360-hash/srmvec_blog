@@ -43,9 +43,10 @@
 
   <div id="blogViewContainer"></div>
 
+  <script type="module" src="/src/scripts/supabase.js"></script>
   <script type="module" src="/src/scripts/blog-data.js"></script>
-  <script>
-    (function () {
+  <script type="module">
+    async function loadBlogView() {
       const params = new URLSearchParams(window.location.search);
       const id     = params.get('id');
       const container = document.getElementById('blogViewContainer');
@@ -55,19 +56,29 @@
         return;
       }
 
-      const blog = BlogDB.getBlogById(id);
+      // Try local cache first
+      let blog = window.BlogDB ? window.BlogDB.getBlogById(id) : null;
+
+      // If not in cache yet, try fetching async from Supabase
+      if (!blog && window.BlogDB && window.BlogDB.fetchBlogsAsync) {
+        await window.BlogDB.fetchBlogsAsync();
+        blog = window.BlogDB.getBlogById(id);
+      }
+
       if (!blog) {
         container.innerHTML = `<div class="not-found"><i class="fa-regular fa-circle-xmark"></i><p>Blog not found. It may have been deleted.</p><a href="index.html" class="btn btn-ghost" style="margin-top:1rem;display:inline-flex;">← Back to Home</a></div>`;
         return;
       }
 
       // Increment view count
-      BlogDB.incrementViews(id);
+      if (window.BlogDB && window.BlogDB.incrementViews) {
+        window.BlogDB.incrementViews(id);
+      }
 
       const tagPills = (blog.tags || []).map(t => `<span class="tag-chip">${t}</span>`).join('');
-      const roleBadge = `<span class="role-badge ${blog.role}">${blog.role}</span>`;
-      const updated = blog.updatedAt !== blog.createdAt
-        ? `<span title="Updated ${BlogDB.formatDate(blog.updatedAt)}"><i class="fa-regular fa-clock"></i> Updated ${BlogDB.formatDate(blog.updatedAt)}</span>`
+      const roleBadge = `<span class="role-badge ${blog.role || 'student'}">${blog.role || 'author'}</span>`;
+      const updated = blog.updatedAt && blog.updatedAt !== blog.createdAt
+        ? `<span title="Updated ${window.BlogDB.formatDate(blog.updatedAt)}"><i class="fa-regular fa-clock"></i> Updated ${window.BlogDB.formatDate(blog.updatedAt)}</span>`
         : '';
 
       container.innerHTML = `
@@ -81,7 +92,7 @@
             <h1 class="blog-view-title">${blog.title}</h1>
             <div class="blog-view-byline">
               <span class="author-name"><i class="fa-solid fa-user-pen"></i> ${blog.author} ${roleBadge}</span>
-              <span><i class="fa-regular fa-calendar"></i> ${BlogDB.formatDate(blog.createdAt)}</span>
+              <span><i class="fa-regular fa-calendar"></i> ${window.BlogDB.formatDate(blog.createdAt)}</span>
               ${updated}
               <span><i class="fa-regular fa-eye"></i> ${(blog.views || 0) + 1} views</span>
             </div>
@@ -104,7 +115,13 @@
       `;
 
       document.title = blog.title + ' — SRMVEC CSE Blog';
-    })();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadBlogView);
+    } else {
+      loadBlogView();
+    }
   </script>
 </body>
 </html>

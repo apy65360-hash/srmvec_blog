@@ -8,6 +8,7 @@
 
 # Sensitive script containing keys / credentials
 src/scripts/supabase.js
+src/scripts/test-admin-auth.js
 
 # OS files
 .DS_Store

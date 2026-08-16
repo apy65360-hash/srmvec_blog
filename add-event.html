@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Add Event | CSE Blog Admin</title>
+  <title>Add & Publish Event | CSE Blog Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -17,68 +17,110 @@
 
     <aside class="admin-sidebar">
       <h3>CSE BLOG</h3>
-      <p class="sidebar-user">Signed in as <span data-auth-user>Guest</span></p>
+      <p class="sidebar-user">Signed in as <span data-auth-user>Admin / Faculty</span></p>
       <a href="dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a>
       <a href="teachers-corner.html"><i class="fa-solid fa-pen-nib"></i> Manage Blogs</a>
       <a class="active" href="add-event.html"><i class="fa-solid fa-calendar-plus"></i> Manage Events</a>
       <a href="manage-faculty.html"><i class="fa-solid fa-chalkboard-user"></i> Faculty</a>
       <a href="contact.html"><i class="fa-solid fa-envelope"></i> Newsletter</a>
-      <a href="index.html"><i class="fa-solid fa-globe"></i> View Site</a>
+      <a href="event1.html"><i class="fa-solid fa-calendar-days"></i> View Events Board</a>
+      <a href="index.html"><i class="fa-solid fa-globe"></i> View Main Site</a>
       <a href="#" data-auth-logout><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
     </aside>
 
     <main class="admin-main">
-      <div class="portal-panel" style="max-width:900px;">
-        <h2>Add New Event</h2>
+      <div class="portal-panel" style="max-width:950px; margin:0 auto;">
+        <h2><i class="fa-solid fa-calendar-plus" style="color:var(--accent-blue);"></i> Publish New Event to Events Board</h2>
+        <p style="color:var(--text-muted); margin-bottom:1.5rem;">Fill in all event poster details. Once published, the event will automatically sort by registration closing date and update both the <strong>Events Board</strong> and the <strong>Home Page Event Slider</strong>.</p>
 
         <div class="form-message" id="eventMessage"></div>
 
         <form id="addEventForm">
-          <div class="form-row">
-            <label for="eventTitle">Event Title</label>
-            <input class="form-control" type="text" id="eventTitle" placeholder="Enter Event Title" required />
+          <div class="two-column-layout">
+            <div>
+              <div class="form-row">
+                <label for="eventTitle">Event Title *</label>
+                <input class="form-control" type="text" id="eventTitle" placeholder="e.g. TECH PULSE '26 — National Level Symposium" required />
+              </div>
+
+              <div class="form-row">
+                <label for="eventCollege">Host Institution / College *</label>
+                <input class="form-control" type="text" id="eventCollege" placeholder="e.g. SRM Valliammai Engineering College" required />
+              </div>
+
+              <div class="form-row">
+                <label for="eventDept">Department *</label>
+                <input class="form-control" type="text" id="eventDept" placeholder="e.g. Department of Computer Science & Engineering" required />
+              </div>
+
+              <div class="form-row">
+                <label for="eventRegClose">Registration Closing Date * (Used for Chronological Sorting)</label>
+                <input class="form-control" type="date" id="eventRegClose" required />
+              </div>
+
+              <div class="form-row">
+                <label for="eventDate">Event Date *</label>
+                <input class="form-control" type="text" id="eventDate" placeholder="e.g. March 15, 2026 or Mar 15-16, 2026" required />
+              </div>
+
+              <div class="form-row">
+                <label for="eventTime">Event Timings</label>
+                <input class="form-control" type="text" id="eventTime" placeholder="e.g. 9:00 AM - 4:30 PM" />
+              </div>
+
+              <div class="form-row">
+                <label for="eventVenue">Venue Location</label>
+                <input class="form-control" type="text" id="eventVenue" placeholder="e.g. Main Auditorium / CSE Lab 3" />
+              </div>
+            </div>
+
+            <div>
+              <div class="form-row">
+                <label for="eventFee">Registration Fee</label>
+                <input class="form-control" type="text" id="eventFee" placeholder="e.g. Free / ₹200 per head" />
+              </div>
+
+              <div class="form-row">
+                <label for="eventPrizes">Prizes & Awards</label>
+                <input class="form-control" type="text" id="eventPrizes" placeholder="e.g. ₹50,000 Prize Pool & Trophies" />
+              </div>
+
+              <div class="form-row">
+                <label for="eventTech">Technical Events (Comma-separated)</label>
+                <input class="form-control" type="text" id="eventTech" placeholder="Bug Hunt, UI/UX Design, Paper Presentation" />
+              </div>
+
+              <div class="form-row">
+                <label for="eventNonTech">Non-Technical Events (Comma-separated)</label>
+                <input class="form-control" type="text" id="eventNonTech" placeholder="Photography, Tech Quiz, Treasure Hunt" />
+              </div>
+
+              <div class="form-row">
+                <label for="eventContact">Contact Details (Phones & Emails)</label>
+                <input class="form-control" type="text" id="eventContact" placeholder="+91 98765 43210 | cse.events@srmvalliammai.ac.in" />
+              </div>
+
+              <div class="form-row">
+                <label for="eventRegUrl">Official Registration Link / URL</label>
+                <input class="form-control" type="url" id="eventRegUrl" placeholder="https://srmvalliammai.ac.in/events/techpulse26" />
+              </div>
+
+              <div class="form-row">
+                <label for="eventPosterFile">Upload Event Poster Image</label>
+                <input class="form-control" type="file" id="eventPosterFile" accept="image/*" />
+                <input type="hidden" id="eventPosterDataUrl" />
+              </div>
+            </div>
           </div>
 
           <div class="form-row">
-            <label for="eventCategory">Event Category</label>
-            <select class="form-control" id="eventCategory">
-              <option>Workshop</option>
-              <option>Hackathon</option>
-              <option>Seminar</option>
-              <option>Guest Lecture</option>
-              <option>Symposium</option>
-              <option>Conference</option>
-            </select>
+            <label for="eventDescription">Full Event Description & Rules</label>
+            <textarea class="form-control" id="eventDescription" rows="4" placeholder="Enter comprehensive event description, guidelines, and rules..."></textarea>
           </div>
 
-          <div class="form-row">
-            <label for="eventDate">Event Date</label>
-            <input class="form-control" type="date" id="eventDate" required />
-          </div>
-
-          <div class="form-row">
-            <label for="eventTime">Event Time</label>
-            <input class="form-control" type="time" id="eventTime" />
-          </div>
-
-          <div class="form-row">
-            <label for="eventVenue">Venue</label>
-            <input class="form-control" type="text" id="eventVenue" placeholder="Seminar Hall / Lab" />
-          </div>
-
-          <div class="form-row">
-            <label for="eventImage">Upload Event Image</label>
-            <input class="form-control" type="file" id="eventImage" accept="image/*" />
-          </div>
-
-          <div class="form-row">
-            <label for="eventDescription">Event Description</label>
-            <textarea class="form-control" id="eventDescription" rows="8" placeholder="Enter Event Description"></textarea>
-          </div>
-
-          <div class="form-actions">
-            <button class="btn btn-success" type="submit"><i class="fa-solid fa-upload"></i> Publish Event</button>
-            <button class="btn btn-muted" type="reset">Clear</button>
+          <div class="form-actions" style="margin-top:1.5rem; display:flex; gap:1rem;">
+            <button class="btn btn-success" type="submit" style="flex:1;"><i class="fa-solid fa-upload"></i> Publish Event to Portal</button>
+            <a href="event1.html" class="btn btn-muted" style="text-decoration:none; text-align:center;"><i class="fa-solid fa-eye"></i> View Events Board</a>
           </div>
         </form>
       </div>
@@ -88,15 +130,56 @@
 
   <script type="module" src="/src/scripts/users.js"></script>
   <script type="module" src="/src/scripts/auth.js"></script>
-  <script>
+  <script type="module">
+    import { EventsStore } from "/src/scripts/events-store.js";
+
     Auth.requireLogin(["teacher"]);
     Auth.renderUserBadge();
-    document.getElementById("addEventForm").addEventListener("submit", function (event) {
-      event.preventDefault();
-      const box = document.getElementById("eventMessage");
-      box.textContent = "Event \"" + document.getElementById("eventTitle").value + "\" published.";
-      box.className = "form-message is-visible success";
+
+    const posterFileInput = document.getElementById("eventPosterFile");
+    const posterDataUrlInput = document.getElementById("eventPosterDataUrl");
+
+    // Convert uploaded image to Base64 data URL for persistence
+    posterFileInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          posterDataUrlInput.value = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById("addEventForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      
+      const newEventData = {
+        title: document.getElementById("eventTitle").value,
+        college: document.getElementById("eventCollege").value,
+        dept: document.getElementById("eventDept").value,
+        regCloseDate: document.getElementById("eventRegClose").value,
+        date: document.getElementById("eventDate").value,
+        time: document.getElementById("eventTime").value,
+        venue: document.getElementById("eventVenue").value,
+        fee: document.getElementById("eventFee").value,
+        prizes: document.getElementById("eventPrizes").value,
+        techEvents: document.getElementById("eventTech").value,
+        nonTechEvents: document.getElementById("eventNonTech").value,
+        contact: document.getElementById("eventContact").value,
+        regUrl: document.getElementById("eventRegUrl").value,
+        poster: posterDataUrlInput.value || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800&auto=format&fit=crop",
+        description: document.getElementById("eventDescription").value
+      };
+
+      const publishedEvent = EventsStore.addEvent(newEventData);
+
+      const msgBox = document.getElementById("eventMessage");
+      msgBox.innerHTML = `<i class="fa-solid fa-circle-check"></i> Event <strong>"${publishedEvent.title}"</strong> successfully published! It is now live on the <a href="event1.html?eventId=${publishedEvent.id}" style="color:inherit;text-decoration:underline;">Events Board</a> and Home Page Slider.`;
+      msgBox.className = "form-message is-visible success";
+
       this.reset();
+      posterDataUrlInput.value = "";
     });
   </script>
 

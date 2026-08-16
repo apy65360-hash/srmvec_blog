@@ -147,9 +147,10 @@
     </div>
   </div>
 
+  <script type="module" src="/src/scripts/supabase.js"></script>
   <script type="module" src="/src/scripts/blog-data.js"></script>
   <script type="module" src="/src/scripts/auth.js"></script>
-  <script>
+  <script type="module">
     document.addEventListener("DOMContentLoaded", () => {
       const form = document.getElementById("adminLoginForm");
       const messageBox = document.getElementById("loginMessage");
@@ -216,12 +217,19 @@
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
 
         // Authenticate via Auth / Supabase
-        let user = null;
+        let res = null;
         if (window.Auth && window.Auth.login) {
-          user = await window.Auth.login(username, password, "admin");
+          res = await window.Auth.login(username, password, "admin");
         }
-        
-        if (!user && window.BlogDB) {
+
+        let user = null;
+        let errorMessage = null;
+
+        if (res && res.error) {
+          errorMessage = res.error;
+        } else if (res && res.role) {
+          user = res;
+        } else if (window.BlogDB) {
           user = window.BlogDB.authenticate(username, password, "admin");
           if (user && window.Auth) {
             window.Auth.startSession(user);
@@ -244,13 +252,16 @@
           submitBtn.disabled = false;
           submitBtn.innerHTML = '<i class="fa-solid fa-lock"></i> Authorize & Sign In';
           failedAttempts++;
+          
+          const errDetail = errorMessage ? `Supabase: ${errorMessage}` : "Invalid admin credentials";
+
           if (failedAttempts >= 3) {
             lockUntil = Date.now() + 30000; // 30 second lock
             submitBtn.disabled = true;
-            showError("Too many failed attempts. Locked out for 30 seconds.");
+            showError(`Access Denied (${errDetail}). Locked out for 30 seconds.`);
             startCooldown(30);
           } else {
-            showError(`Access Denied. Invalid admin credentials. (${3 - failedAttempts} attempts remaining)`);
+            showError(`Access Denied (${errDetail}). (${3 - failedAttempts} attempts remaining)`);
           }
         }
       });

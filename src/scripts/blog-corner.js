@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="blog-card-category">${blog.category}</span>
         <span class="blog-card-date">${BlogDB.formatDate(blog.createdAt)}</span>
       </div>
-      <h3 class="blog-card-title">${blog.title}</h3>
+      <h3 class="blog-card-title"><a href="blog-view.html?id=${blog.id}" style="color:inherit;text-decoration:none;">${blog.title}</a></h3>
       <p class="blog-card-excerpt">${BlogDB.truncate(blog.content, 120)}</p>
       <div class="blog-card-tags">${tagPills}</div>
       <div class="blog-card-footer">
