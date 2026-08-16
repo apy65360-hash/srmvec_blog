@@ -3,6 +3,11 @@
 
 # Local environment files
 .env
+.env.*
+!.env.example
+
+# Sensitive script containing keys / credentials
+src/scripts/supabase.js
 
 # OS files
 .DS_Store
@@ -12,4 +17,5 @@ Thumbs.db
 node_modules/
 dist/
 .continue/
+
 
