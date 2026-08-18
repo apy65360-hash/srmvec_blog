@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Laboratories | CSE Department – SRM Valliammai Engineering College</title>
+  <meta name="description" content="Explore the state-of-the-art laboratories of the Computer Science & Engineering Department at SRM Valliammai Engineering College, Chennai." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="/src/styles/style.css" />
+  <link rel="stylesheet" href="/src/styles/portal.css" />
+
+  <style>
+    /* ─────────── RESET / ROOT ─────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #002947;
+      --blue: #0ea5e9;
+      --accent: #2563eb;
+      --gold: #f59e0b;
+      --text: #1e293b;
+      --muted: #64748b;
+      --surface: #f8fafc;
+      --border: #e2e8f0;
+      --white: #fff;
+      --card-shadow: 0 4px 24px rgba(0,0,0,.08);
+      --card-shadow-hover: 0 16px 48px rgba(0,0,0,.18);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--surface);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ─────────── HERO ─────────── */
+    .labs-hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #0c1e3c 40%, #0369a1 100%);
+      padding: 5.5rem 1.5rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* animated circuit lines */
+    .hero-circuit {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      opacity: .12;
+    }
+    .hero-circuit svg { width: 100%; height: 100%; }
+
+    /* floating particle dots */
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(14,165,233,.6);
+      animation: floatUp var(--dur, 6s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+    }
+    @keyframes floatUp {
+      0%, 100% { transform: translateY(0) scale(1); opacity: .5; }
+      50% { transform: translateY(-40px) scale(1.3); opacity: 1; }
+    }
+
+    .labs-hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.15;
+      position: relative;
+    }
+    .labs-hero h1 span {
+      color: var(--gold);
+    }
+
+    .labs-hero p.sub {
+      color: #bfdbfe;
+      font-size: clamp(.9rem, 2vw, 1.05rem);
+      margin-top: .9rem;
+      max-width: 640px;
+      margin-inline: auto;
+      line-height: 1.65;
+      position: relative;
+    }
+
+    .hero-stats {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 1.5rem; margin-top: 2.5rem;
+      position: relative;
+    }
+
+    .hero-stat {
+      background: rgba(255,255,255,.08);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 16px;
+      padding: 1rem 2rem;
+      text-align: center;
+      min-width: 130px;
+      transition: transform .25s, background .25s;
+    }
+    .hero-stat:hover {
+      transform: translateY(-4px);
+      background: rgba(255,255,255,.14);
+    }
+    .hero-stat-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem; font-weight: 800;
+      color: var(--gold);
+      display: block;
+    }
+    .hero-stat-label { color: #bfdbfe; font-size: .8rem; font-weight: 600; margin-top: .15rem; }
+
+    /* ─────────── FILTERS ─────────── */
+    .labs-filters {
+      display: flex; flex-wrap: wrap; gap: .5rem;
+      justify-content: center;
+      padding: 1.8rem 1.5rem .5rem;
+    }
+
+    .lab-filter-btn {
+      padding: .4rem 1.1rem;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      color: var(--muted);
+      font-size: .83rem; font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: inherit;
+    }
+    .lab-filter-btn:hover, .lab-filter-btn.active {
+      background: var(--navy); color: var(--white);
+      border-color: var(--navy);
+    }
+
+    /* ─────────── SEARCH ─────────── */
+    .labs-search-wrap {
+      display: flex; justify-content: center;
+      padding: 0 1.5rem 2rem;
+    }
+    .labs-search {
+      width: min(520px, 100%);
+      padding: .7rem 1.2rem .7rem 3rem;
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      font-family: inherit; font-size: .95rem;
+      color: var(--text);
+      background: var(--white);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 1rem center;
+      background-size: 1.1rem;
+    }
+    .labs-search:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+
+    /* ─────────── GRID ─────────── */
+    .labs-container {
+      max-width: 1280px;
+      margin-inline: auto;
+      padding: 0 1.5rem 5rem;
+    }
+
+    .labs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.75rem;
+    }
+
+    /* ─────────── LAB CARD ─────────── */
+    .lab-card {
+      background: var(--white);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--card-shadow);
+      cursor: pointer;
+      transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s;
+      /* entry animation */
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    .lab-card.visible {
+      animation: cardIn .55s ease forwards;
+    }
+    @keyframes cardIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .lab-card:hover {
+      transform: translateY(-8px) scale(1.01);
+      box-shadow: var(--card-shadow-hover);
+    }
+    .lab-card:hover .lab-card-img {
+      transform: scale(1.06);
+    }
+
+    /* colourful top band */
+    .lab-card-band {
+      height: 6px;
+      width: 100%;
+    }
+
+    .lab-card-header {
+      padding: 1.4rem 1.5rem 0;
+      display: flex; align-items: flex-start; gap: 1rem;
+    }
+
+    .lab-icon-wrap {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: grid; place-items: center;
+      font-size: 1.4rem; color: var(--white);
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    /* shimmer effect on icon */
+    .lab-icon-wrap::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%);
+      background-size: 200% 100%;
+      animation: shimmer 2.5s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .lab-meta {}
+    .lab-category {
+      font-size: .72rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .lab-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem; font-weight: 700;
+      color: var(--text); line-height: 1.3;
+      margin-top: .18rem;
+    }
+
+    .lab-card-body { padding: 1rem 1.5rem 0; }
+    .lab-desc {
+      font-size: .88rem; color: var(--muted); line-height: 1.65;
+    }
+
+    /* Specs bar */
+    .lab-specs {
+      display: flex; flex-wrap: wrap; gap: .4rem;
+      margin: 1rem 0 0;
+    }
+    .lab-spec-tag {
+      background: #EFF6FF; color: #1D4ED8;
+      padding: .22rem .65rem; border-radius: 6px;
+      font-size: .73rem; font-weight: 600;
+      transition: background .18s, color .18s;
+    }
+    .lab-card:hover .lab-spec-tag {
+      background: #DBEAFE;
+    }
+
+    /* Footer row */
+    .lab-card-footer {
+      padding: 1rem 1.5rem 1.4rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid var(--border);
+      margin-top: 1.1rem;
+    }
+    .lab-stat-row {
+      display: flex; gap: 1.2rem;
+    }
+    .lab-stat {
+      display: flex; align-items: center; gap: .35rem;
+      font-size: .8rem; color: var(--muted);
+    }
+    .lab-stat i { font-size: .75rem; }
+
+    .lab-open-btn {
+      background: var(--navy); color: var(--white);
+      border: none; border-radius: 999px;
+      padding: .38rem 1rem; font-size: .8rem; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      display: flex; align-items: center; gap: .35rem;
+      transition: background .2s, transform .2s;
+    }
+    .lab-open-btn:hover { background: var(--accent); transform: scale(1.05); }
+
+    /* ─────────── DETAIL MODAL ─────────── */
+    .lab-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(10,20,50,.6);
+      backdrop-filter: blur(6px);
+      z-index: 9000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.5rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity .28s;
+    }
+    .lab-modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+    .lab-modal {
+      background: var(--white);
+      border-radius: 24px;
+      box-shadow: 0 40px 100px rgba(0,0,0,.28);
+      width: min(720px, 100%);
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: scale(.94) translateY(20px);
+      transition: transform .32s cubic-bezier(.34,1.56,.64,1);
+    }
+    .lab-modal-overlay.open .lab-modal { transform: scale(1) translateY(0); }
+
+    .lab-modal-top {
+      padding: 2.2rem 2.5rem 1.5rem;
+      position: sticky; top: 0;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; gap: 1.25rem;
+      z-index: 1;
+    }
+    .lab-modal-close {
+      position: absolute; top: 1rem; right: 1.25rem;
+      background: #f1f5f9; border: none; border-radius: 50%;
+      width: 36px; height: 36px; cursor: pointer;
+      display: grid; place-items: center;
+      color: var(--muted); font-size: .95rem;
+      transition: background .18s, color .18s;
+    }
+    .lab-modal-close:hover { background: #fee2e2; color: #e11d48; }
+
+    .lab-modal-icon {
+      width: 64px; height: 64px; border-radius: 18px;
+      display: grid; place-items: center;
+      font-size: 1.8rem; color: var(--white);
+      flex-shrink: 0;
+    }
+
+    .lab-modal-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem; font-weight: 800;
+    }
+    .lab-modal-cat {
+      font-size: .8rem; color: var(--muted); font-weight: 600;
+      text-transform: uppercase; letter-spacing: .08em; margin-top: .2rem;
+    }
+
+    .lab-modal-body { padding: 2rem 2.5rem; }
+
+    .modal-section-title {
+      font-size: .72rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .1em;
+      margin-bottom: .75rem; display: flex; align-items: center; gap: .4rem;
+    }
+
+    .modal-desc { font-size: .95rem; color: #334155; line-height: 1.75; margin-bottom: 1.8rem; }
+
+    .modal-equipment-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: .65rem; margin-bottom: 1.8rem;
+    }
+    .equip-item {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .7rem .9rem;
+      display: flex; align-items: center; gap: .6rem;
+      font-size: .85rem; color: var(--text); font-weight: 500;
+      transition: background .18s, border-color .18s;
+    }
+    .equip-item:hover { background: #EFF6FF; border-color: #BFDBFE; }
+    .equip-item i { color: var(--accent); font-size: .85rem; flex-shrink: 0; }
+
+    .modal-tech-tags { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: 1.8rem; }
+    .modal-tech-tag {
+      padding: .3rem .85rem; border-radius: 8px;
+      font-size: .8rem; font-weight: 600;
+      background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+      color: #1D4ED8;
+      border: 1px solid #BFDBFE;
+      transition: transform .18s;
+    }
+    .modal-tech-tag:hover { transform: scale(1.05); }
+
+    .modal-stats-row {
+      display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.8rem;
+    }
+    .modal-stat-box {
+      flex: 1; min-width: 120px;
+      background: linear-gradient(135deg, var(--navy), #0369a1);
+      color: var(--white); border-radius: 14px;
+      padding: 1.1rem; text-align: center;
+    }
+    .modal-stat-box span {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.6rem; font-weight: 800;
+      display: block; color: var(--gold);
+    }
+    .modal-stat-box p { font-size: .78rem; color: #bfdbfe; margin-top: .2rem; }
+
+    /* Progress bars */
+    .modal-progress-list { display: flex; flex-direction: column; gap: .85rem; }
+    .progress-item label {
+      display: flex; justify-content: space-between;
+      font-size: .82rem; font-weight: 600; color: var(--text);
+      margin-bottom: .3rem;
+    }
+    .progress-track {
+      height: 7px; background: #E2E8F0;
+      border-radius: 999px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--blue));
+      width: 0%;
+      transition: width 1s ease;
+    }
+
+    /* ─────────── EMPTY STATE ─────────── */
+    .labs-empty {
+      text-align: center; padding: 4rem 1rem;
+      color: var(--muted); display: none;
+    }
+    .labs-empty i { font-size: 3rem; color: #cbd5e1; margin-bottom: .75rem; }
+
+    /* ─────────── BACK TO TOP ─────────── */
+    .back-top {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 800;
+      background: var(--navy); color: var(--white);
+      width: 44px; height: 44px; border-radius: 50%; border: none;
+      display: grid; place-items: center; font-size: 1rem;
+      cursor: pointer; opacity: 0; pointer-events: none;
+      transition: opacity .3s, transform .3s;
+      box-shadow: 0 4px 16px rgba(0,0,0,.2);
+    }
+    .back-top.show { opacity: 1; pointer-events: auto; transform: translateY(-4px); }
+    .back-top:hover { background: var(--accent); }
+
+    /* ─────────── RESPONSIVE ─────────── */
+    @media (max-width: 640px) {
+      .labs-grid { grid-template-columns: 1fr; }
+      .lab-modal-top { flex-direction: column; gap: .85rem; padding: 1.5rem; }
+      .lab-modal-body { padding: 1.5rem; }
+      .modal-equipment-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ────────── HERO ────────── -->
+<section class="labs-hero">
+  <!-- Circuit background -->
+  <div class="hero-circuit">
+    <svg viewBox="0 0 1440 400" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <path d="M0 200 L100 200 L100 80 L300 80 L300 200 L500 200" stroke="white" stroke-width="1.5"/>
+      <circle cx="100" cy="200" r="5" fill="white"/>
+      <circle cx="300" cy="80" r="5" fill="white"/>
+      <path d="M500 200 L600 200 L600 300 L800 300 L800 150 L1000 150" stroke="white" stroke-width="1.5"/>
+      <circle cx="600" cy="300" r="5" fill="white"/>
+      <circle cx="800" cy="150" r="5" fill="white"/>
+      <path d="M1000 150 L1100 150 L1100 250 L1300 250 L1300 100 L1440 100" stroke="white" stroke-width="1.5"/>
+      <circle cx="1100" cy="250" r="5" fill="white"/>
+      <circle cx="1300" cy="100" r="5" fill="white"/>
+      <rect x="95" y="195" width="10" height="10" stroke="white" fill="none"/>
+      <rect x="295" y="75" width="10" height="10" stroke="white" fill="none"/>
+      <rect x="595" y="295" width="10" height="10" stroke="white" fill="none"/>
+      <rect x="795" y="145" width="10" height="10" stroke="white" fill="none"/>
+      <path d="M200 400 L200 320 L400 320 L400 400" stroke="white" stroke-width="1"/>
+      <path d="M700 400 L700 380 L900 380" stroke="white" stroke-width="1"/>
+      <path d="M1200 0 L1200 60 L1000 60" stroke="white" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <!-- Floating particles -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const hero = document.querySelector(".labs-hero");
+      for (let i = 0; i < 18; i++) {
+        const p = document.createElement("div");
+        p.className = "particle";
+        const size = Math.random() * 8 + 3;
+        p.style.cssText = `
+          width:${size}px;height:${size}px;
+          left:${Math.random()*100}%;
+          top:${Math.random()*100}%;
+          --dur:${4 + Math.random()*5}s;
+          --delay:${Math.random()*4}s;
+          opacity:${Math.random()*.5+.2};
+        `;
+        hero.appendChild(p);
+      }
+    });
+  </script>
+
+  <h1>CSE <span>Laboratories</span></h1>
+  <p class="sub">The Department of Computer Science &amp; Engineering has 6 Labs for Undergraduate students and 1 Lab for Post Graduate students to meet the curriculum and syllabus of Anna University, Chennai.</p>
+
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="hero-stat-num" data-count="7">0</span><div class="hero-stat-label">Laboratories</div></div>
+    <div class="hero-stat"><span class="hero-stat-num" data-count="229">0</span><div class="hero-stat-label">Computers</div></div>
+    <div class="hero-stat"><span class="hero-stat-num" data-count="3">0</span><div class="hero-stat-label">Servers</div></div>
+    <div class="hero-stat"><span class="hero-stat-num" data-count="20">0</span><div class="hero-stat-label">Printers</div></div>
+  </div>
+</section>
+
+<!-- ────────── FILTERS ────────── -->
+<div class="labs-filters" id="labFilters">
+  <button class="lab-filter-btn active" data-filter="all">All Labs</button>
+  <button class="lab-filter-btn" data-filter="ug">UG Labs</button>
+  <button class="lab-filter-btn" data-filter="pg">PG Lab</button>
+</div>
+
+<!-- ────────── SEARCH ────────── -->
+<div class="labs-search-wrap">
+  <input class="labs-search" type="text" id="labSearch" placeholder="Search labs, technologies, equipment…" autocomplete="off" />
+</div>
+
+<!-- ────────── GRID ────────── -->
+<div class="labs-container">
+  <div class="labs-grid" id="labsGrid"></div>
+  <div class="labs-empty" id="labsEmpty">
+    <i class="fa-solid fa-flask-vial"></i>
+    <p>No laboratories match your search.</p>
+  </div>
+</div>
+
+<!-- ────────── LAB DETAIL MODAL ────────── -->
+<div class="lab-modal-overlay" id="labModalOverlay" role="dialog" aria-modal="true">
+  <div class="lab-modal" id="labModal">
+    <div class="lab-modal-top">
+      <div class="lab-modal-icon" id="mIcon"></div>
+      <div>
+        <div class="lab-modal-title" id="mTitle"></div>
+        <div class="lab-modal-cat" id="mCat"></div>
+      </div>
+      <button class="lab-modal-close" id="labModalClose" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="lab-modal-body">
+      <!-- Image -->
+      <div class="modal-image-wrap" id="mImageWrap" style="margin-bottom: 1.8rem; display: none;">
+        <img id="mImage" src="" alt="Laboratory Image" style="width: 100%; height: 280px; object-fit: cover; border-radius: 14px; border: 1px solid var(--border);" />
+      </div>
+      <!-- Stats -->
+      <div class="modal-stats-row" id="mStats"></div>
+      <!-- Description -->
+      <div class="modal-section-title"><i class="fa-solid fa-circle-info"></i> About this Lab</div>
+      <div class="modal-desc" id="mDesc"></div>
+      <!-- Equipment -->
+      <div class="modal-section-title"><i class="fa-solid fa-microchip"></i> Equipment & Infrastructure</div>
+      <div class="modal-equipment-grid" id="mEquip"></div>
+      <!-- Tech Stack -->
+      <div class="modal-section-title"><i class="fa-solid fa-code"></i> Technologies & Software</div>
+      <div class="modal-tech-tags" id="mTech"></div>
+      <!-- Utilization -->
+      <div class="modal-section-title" style="margin-top:.5rem;"><i class="fa-solid fa-chart-bar"></i> Lab Utilization</div>
+      <div class="modal-progress-list" id="mProgress"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Back to top -->
+<button class="back-top" id="backTop" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></button>
+
+<script>
+// ─────────────────────────────────────────────
+//  Servers
+// ─────────────────────────────────────────────
+const SERVERS = [
+  "Windows 2003 Server (Domain)",
+  "Windows 2003 Server (Oracle 9i)",
+  "Redhat 5 Linux Server"
+];
+
+// ─────────────────────────────────────────────
+//  Labs Dataset – SRM Valliammai CSE Dept.
+// ─────────────────────────────────────────────
+const LABS = [
+  {
+    id: "lab01", category: "ug", categoryLabel: "CSE Lab I",
+    name: "James Gosling Lab",
+    subtitle: "Networks Lab / DBMS",
+    image: "/images/labs/cse-lab-i.jpg",
+    icon: "fa-solid fa-network-wired",
+    gradient: "linear-gradient(135deg,#1d4ed8,#0ea5e9)",
+    band: "linear-gradient(90deg,#1d4ed8,#0ea5e9)",
+    desc: "Named after Java creator James Gosling, this lab is dedicated to Networks and Database Management Systems (DBMS). Students gain hands-on experience with networking concepts and database design using Oracle and Visual Basic.",
+    computers: 35, printers: 3, ups: "01",
+    equipment: [
+      "35 Computers",
+      "03 Printers",
+      "01 UPS"
+    ],
+    tech: ["Oracle", "Visual Basic", "MS Office"],
+    progress: [
+      { label: "Computers", val: 100 },
+      { label: "Lab Availability", val: 90 },
+      { label: "Student Satisfaction", val: 92 }
+    ],
+    tags: ["Networks", "DBMS", "Oracle", "Visual Basic"]
+  },
+  {
+    id: "lab02", category: "ug", categoryLabel: "CSE Lab II",
+    name: "Dennis Ritchie Lab",
+    subtitle: "Data Structures / OOPS Lab",
+    image: "/images/labs/cse-lab-ii.jpg",
+    icon: "fa-solid fa-code",
+    gradient: "linear-gradient(135deg,#059669,#10b981)",
+    band: "linear-gradient(90deg,#059669,#10b981)",
+    desc: "Named after C programming language creator Dennis Ritchie, this lab is designed for Data Structures and Object-Oriented Programming (OOPS) coursework. Students work with Turbo C++ to implement data structures and OOP concepts.",
+    computers: 35, printers: 4, ups: "01 (10 KVA)",
+    equipment: [
+      "35 Computers",
+      "04 Printers",
+      "01 UPS (10 KVA)"
+    ],
+    tech: ["Turbo C++", "MS Office"],
+    progress: [
+      { label: "Computers", val: 100 },
+      { label: "Lab Availability", val: 90 },
+      { label: "Student Satisfaction", val: 94 }
+    ],
+    tags: ["Data Structures", "OOPS", "C++", "Programming"]
+  },
+  {
+    id: "lab03", category: "ug", categoryLabel: "CSE Lab III",
+    name: "John Backus Lab",
+    subtitle: "Operating System / System Software Lab",
+    image: "/images/labs/cse-lab-iii.jpg",
+    icon: "fa-solid fa-server",
+    gradient: "linear-gradient(135deg,#7c3aed,#a855f7)",
+    band: "linear-gradient(90deg,#7c3aed,#a855f7)",
+    desc: "Named after FORTRAN creator John Backus, this lab is dedicated to Operating Systems and System Software development. Students explore OS internals, process scheduling, and system-level programming using Turbo C++, Java, and OPNET.",
+    computers: 35, printers: 3, ups: "01",
+    equipment: [
+      "35 Computers",
+      "03 Printers",
+      "01 UPS"
+    ],
+    tech: ["Turbo C++", "MS Office", "OPNET", "Java"],
+    progress: [
+      { label: "Computers", val: 100 },
+      { label: "Lab Availability", val: 88 },
+      { label: "Student Satisfaction", val: 90 }
+    ],
+    tags: ["Operating System", "System Software", "Java", "OPNET"]
+  },
+  {
+    id: "lab04", category: "ug", categoryLabel: "CSE Lab IV",
+    name: "Larry Ellison Lab",
+    subtitle: "Computer Programming Lab / System Software Lab",
+    image: "/images/labs/cse-lab-iv.jpg",
+    icon: "fa-solid fa-terminal",
+    gradient: "linear-gradient(135deg,#dc2626,#f97316)",
+    band: "linear-gradient(90deg,#dc2626,#f97316)",
+    desc: "Named after Oracle co-founder Larry Ellison, this lab serves the Computer Programming and System Software curriculum. Students learn programming fundamentals with Turbo C++ and Java, building strong foundation in software development.",
+    computers: 35, printers: 4, ups: "01 (10 KVA)",
+    equipment: [
+      "35 Computers",
+      "04 Printers",
+      "01 UPS (10 KVA)"
+    ],
+    tech: ["Turbo C++", "Java", "MS Office"],
+    progress: [
+      { label: "Computers", val: 100 },
+      { label: "Lab Availability", val: 92 },
+      { label: "Student Satisfaction", val: 91 }
+    ],
+    tags: ["Computer Programming", "System Software", "Java", "C++"]
+  },
+  {
+    id: "lab05", category: "ug", categoryLabel: "CSE Lab V",
+    name: "Charles Babbage Lab",
+    subtitle: "Graphics Lab / Case Tools Lab",
+    image: "/images/labs/cse-lab-v.jpg",
+    icon: "fa-solid fa-palette",
+    gradient: "linear-gradient(135deg,#0369a1,#0ea5e9)",
+    band: "linear-gradient(90deg,#0369a1,#0ea5e9)",
+    desc: "Named after the Father of the Computer Charles Babbage, this lab is equipped for Computer Graphics and CASE Tools coursework. Students work on graphical applications and software engineering tools using Turbo C++, Java, Visual Studio, and Rational Rose.",
+    computers: 35, printers: 3, ups: "01 (10 KVA)",
+    equipment: [
+      "35 Computers",
+      "03 Printers",
+      "01 UPS (10 KVA)"
+    ],
+    tech: ["Turbo C++", "Java", "MS Office", "Visual Studio", "Rational Rose"],
+    progress: [
+      { label: "Computers", val: 100 },
+      { label: "Lab Availability", val: 87 },
+      { label: "Student Satisfaction", val: 93 }
+    ],
+    tags: ["Graphics", "CASE Tools", "Visual Studio", "Rational Rose"]
+  },
+  {
+    id: "lab06", category: "ug", categoryLabel: "CSE Lab VI",
+    name: "Ken Thompson Lab",
+    subtitle: "Open Source / Internet Programming Lab",
+    image: "/images/labs/cse-lab-vi.jpg",
+    icon: "fa-solid fa-globe",
+    gradient: "linear-gradient(135deg,#065f46,#059669)",
+    band: "linear-gradient(90deg,#065f46,#059669)",
+    desc: "Named after Unix co-creator Ken Thompson, this lab is dedicated to Open Source technologies and Internet Programming. Students explore web development and open-source tools using Fedora Linux, Java, NetBeans, and more.",
+    computers: 35, printers: 2, ups: "02 (10 KVA, 5 KVA)",
+    equipment: [
+      "35 Computers",
+      "02 Printers",
+      "02 UPS (10 KVA, 5 KVA)"
+    ],
+    tech: ["Turbo C++", "MS Office", "Fedora Linux", "Java", "NetBeans"],
+    progress: [
+      { label: "Computers", val: 100 },
+      { label: "Lab Availability", val: 85 },
+      { label: "Student Satisfaction", val: 95 }
+    ],
+    tags: ["Open Source", "Internet Programming", "Linux", "NetBeans"]
+  },
+  {
+    id: "lab07", category: "pg", categoryLabel: "CSE Lab VII",
+    name: "Donald D. Chamberlin Lab",
+    subtitle: "PG Lab",
+    image: "/images/labs/cse-lab-vii.jpg",
+    icon: "fa-solid fa-graduation-cap",
+    gradient: "linear-gradient(135deg,#92400e,#b45309)",
+    band: "linear-gradient(90deg,#92400e,#d97706)",
+    desc: "Named after SQL co-inventor Donald D. Chamberlin, this lab is exclusively for Post Graduate students. It supports advanced coursework and research with Turbo C++, RedHat Linux, and Oracle database systems.",
+    computers: 19, printers: 1, ups: "01 (10 KVA)",
+    equipment: [
+      "19 Computers",
+      "01 Printer",
+      "01 UPS (10 KVA)"
+    ],
+    tech: ["Turbo C++", "MS Office", "RedHat Linux", "Oracle"],
+    progress: [
+      { label: "Computers", val: 100 },
+      { label: "Lab Availability", val: 88 },
+      { label: "Student Satisfaction", val: 90 }
+    ],
+    tags: ["PG Lab", "Oracle", "RedHat Linux", "Research"]
+  }
+];
+
+// ─────────────────────────────────────────────
+//  Render
+// ─────────────────────────────────────────────
+let activeFilter = "all";
+let searchQuery = "";
+let currentLab = null;
+
+function matchFilter(lab) {
+  return activeFilter === "all" || lab.category === activeFilter;
+}
+
+function matchSearch(lab) {
+  const q = searchQuery.toLowerCase();
+  if (!q) return true;
+  return lab.name.toLowerCase().includes(q) ||
+    (lab.subtitle && lab.subtitle.toLowerCase().includes(q)) ||
+    lab.desc.toLowerCase().includes(q) ||
+    lab.tags.some(t => t.toLowerCase().includes(q)) ||
+    lab.tech.some(t => t.toLowerCase().includes(q)) ||
+    lab.equipment.some(t => t.toLowerCase().includes(q));
+}
+
+function buildCard(lab, delay) {
+  const card = document.createElement("div");
+  card.className = "lab-card";
+  card.style.animationDelay = delay + "ms";
+  card.dataset.labId = lab.id;
+  card.innerHTML = `
+    <div class="lab-card-band" style="background:${lab.band};"></div>
+    ${lab.image ? `
+    <div class="lab-card-image-wrap" style="height: 160px; overflow: hidden; position: relative;">
+      <img src="${lab.image}" alt="${lab.name}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;" class="lab-card-img" />
+    </div>
+    ` : ""}
+    <div class="lab-card-header">
+      <div class="lab-icon-wrap" style="background:${lab.gradient};">
+        <i class="${lab.icon}"></i>
+      </div>
+      <div class="lab-meta">
+        <div class="lab-category">${lab.categoryLabel}</div>
+        <div class="lab-name">${lab.name}</div>
+        ${lab.subtitle ? `<div style="font-size:.78rem;color:var(--muted);margin-top:.1rem;">${lab.subtitle}</div>` : ""}
+      </div>
+    </div>
+    <div class="lab-card-body">
+      <p class="lab-desc">${lab.desc.slice(0,130)}…</p>
+      <div class="lab-specs">
+        ${lab.tags.slice(0,4).map(t=>`<span class="lab-spec-tag">${t}</span>`).join("")}
+      </div>
+    </div>
+    <div class="lab-card-footer">
+      <div class="lab-stat-row">
+        <div class="lab-stat"><i class="fa-solid fa-desktop"></i> ${lab.computers} PCs</div>
+        <div class="lab-stat"><i class="fa-solid fa-print"></i> ${lab.printers} Printers</div>
+      </div>
+      <button class="lab-open-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> Explore</button>
+    </div>`;
+  card.addEventListener("click", () => openLabModal(lab));
+  return card;
+}
+
+function renderGrid() {
+  const grid = document.getElementById("labsGrid");
+  const empty = document.getElementById("labsEmpty");
+  grid.innerHTML = "";
+  const data = LABS.filter(l => matchFilter(l) && matchSearch(l));
+  if (data.length === 0) { empty.style.display = "block"; return; }
+  empty.style.display = "none";
+  data.forEach((lab, i) => {
+    const card = buildCard(lab, i * 80);
+    grid.appendChild(card);
+    // Intersection Observer for entry animation
+    setTimeout(() => {
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(en => {
+          if (en.isIntersecting) { en.target.classList.add("visible"); obs.unobserve(en.target); }
+        });
+      }, { threshold: 0.08 });
+      obs.observe(card);
+    }, 0);
+  });
+}
+
+// ─────────── Modal ───────────
+const overlay = document.getElementById("labModalOverlay");
+
+function openLabModal(lab) {
+  currentLab = lab;
+  document.getElementById("mIcon").innerHTML = `<i class="${lab.icon}"></i>`;
+  document.getElementById("mIcon").style.background = lab.gradient;
+  document.getElementById("mTitle").textContent = lab.name;
+  document.getElementById("mCat").textContent = (lab.subtitle || lab.categoryLabel) + " — " + lab.categoryLabel;
+  document.getElementById("mDesc").textContent = lab.desc;
+
+  // Image
+  const mImageWrap = document.getElementById("mImageWrap");
+  const mImage = document.getElementById("mImage");
+  if (lab.image) {
+    mImage.src = lab.image;
+    mImage.alt = lab.name + " Image";
+    mImageWrap.style.display = "block";
+  } else {
+    mImageWrap.style.display = "none";
+  }
+
+  // Stats
+  document.getElementById("mStats").innerHTML = [
+    { num: lab.computers, label: "Computers" },
+    { num: lab.printers, label: "Printers" },
+    { num: lab.ups, label: "UPS" },
+    { num: lab.tech.length, label: "Software" }
+  ].map(s => `<div class="modal-stat-box"><span>${s.num}</span><p>${s.label}</p></div>`).join("");
+
+  // Equipment
+  document.getElementById("mEquip").innerHTML = lab.equipment.map(e =>
+    `<div class="equip-item"><i class="fa-solid fa-check-circle"></i>${e}</div>`
+  ).join("");
+
+  // Tech tags
+  document.getElementById("mTech").innerHTML = lab.tech.map(t =>
+    `<span class="modal-tech-tag">${t}</span>`
+  ).join("");
+
+  // Progress bars
+  document.getElementById("mProgress").innerHTML = lab.progress.map(p => `
+    <div class="progress-item">
+      <label><span>${p.label}</span><span>${p.val}%</span></label>
+      <div class="progress-track"><div class="progress-fill" data-val="${p.val}"></div></div>
+    </div>`
+  ).join("");
+
+  overlay.classList.add("open");
+  document.body.style.overflow = "hidden";
+
+  // Animate progress bars
+  setTimeout(() => {
+    document.querySelectorAll("#mProgress .progress-fill").forEach(el => {
+      el.style.width = el.dataset.val + "%";
+    });
+  }, 120);
+}
+
+function closeLabModal() {
+  overlay.classList.remove("open");
+  document.body.style.overflow = "";
+  // Reset progress fills
+  document.querySelectorAll("#mProgress .progress-fill").forEach(el => el.style.width = "0%");
+}
+
+document.getElementById("labModalClose").addEventListener("click", closeLabModal);
+overlay.addEventListener("click", e => { if (e.target === overlay) closeLabModal(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeLabModal(); });
+
+// ─────────── Filters ───────────
+document.getElementById("labFilters").addEventListener("click", e => {
+  const btn = e.target.closest(".lab-filter-btn");
+  if (!btn) return;
+  document.querySelectorAll(".lab-filter-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  activeFilter = btn.dataset.filter;
+  renderGrid();
+});
+
+// ─────────── Search ───────────
+document.getElementById("labSearch").addEventListener("input", function() {
+  searchQuery = this.value.trim();
+  renderGrid();
+});
+
+// ─────────── Counter Animation ───────────
+function animateCounters() {
+  document.querySelectorAll("[data-count]").forEach(el => {
+    const target = parseInt(el.dataset.count);
+    let curr = 0;
+    const step = Math.ceil(target / 50);
+    const t = setInterval(() => {
+      curr = Math.min(curr + step, target);
+      el.textContent = curr;
+      if (curr >= target) clearInterval(t);
+    }, 25);
+  });
+}
+setTimeout(animateCounters, 400);
+
+// ─────────── Back to top ───────────
+const backBtn = document.getElementById("backTop");
+window.addEventListener("scroll", () => {
+  backBtn.classList.toggle("show", window.scrollY > 400);
+});
+backBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+// ─────────── Initial render ───────────
+renderGrid();
+</script>
+
+</body>
+</html>
