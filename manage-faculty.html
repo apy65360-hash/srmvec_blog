@@ -3,15 +3,210 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Manage Faculty | CSE Blog Admin</title>
+  <title>Manage Faculty | CSE Blog Admin – SRM Valliammai</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="/src/styles/style.css" />
   <link rel="stylesheet" href="/src/styles/portal.css" />
+
+  <style>
+    /* ── Faculty Detail Modal ── */
+    .faculty-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(10,20,50,.55);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9000;
+      opacity: 0; pointer-events: none;
+      transition: opacity .25s ease;
+    }
+    .faculty-modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+    .faculty-modal {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.22);
+      padding: 2.25rem 2.5rem;
+      width: min(520px, 94vw);
+      transform: translateY(24px) scale(.97);
+      transition: transform .28s cubic-bezier(.34,1.56,.64,1);
+      position: relative;
+    }
+    .faculty-modal-overlay.open .faculty-modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-close {
+      position: absolute; top: 1rem; right: 1.25rem;
+      background: none; border: none; cursor: pointer;
+      font-size: 1.2rem; color: #94a3b8;
+      transition: color .15s;
+    }
+    .modal-close:hover { color: #e11d48; }
+
+    .modal-avatar-row {
+      display: flex; align-items: center; gap: 1.1rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .modal-avatar {
+      width: 70px; height: 70px; border-radius: 50%;
+      display: grid; place-items: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem; font-weight: 700;
+      color: #fff; flex-shrink: 0;
+    }
+
+    .modal-title { margin: 0; font-size: 1.25rem; font-weight: 700; }
+    .modal-subtitle { color: #64748b; font-size: .88rem; margin-top: .18rem; }
+
+    .modal-badge {
+      display: inline-block;
+      padding: .22rem .7rem;
+      border-radius: 999px;
+      font-size: .76rem; font-weight: 700;
+      letter-spacing: .02em;
+      margin-bottom: 1rem;
+    }
+    .badge-hod { background: #FEF3C7; color: #92400E; }
+    .badge-prof { background: #DBEAFE; color: #1E40AF; }
+    .badge-assoc { background: #F3E8FF; color: #6B21A8; }
+    .badge-asst { background: #DCFCE7; color: #166534; }
+
+    .modal-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: .65rem 1.5rem; margin-bottom: 1.4rem;
+    }
+    .modal-field label {
+      display: block; font-size: .72rem; font-weight: 700;
+      color: #94a3b8; text-transform: uppercase; letter-spacing: .07em;
+      margin-bottom: .18rem;
+    }
+    .modal-field span {
+      display: block; font-size: .92rem; color: #1e293b; font-weight: 500;
+    }
+
+    .modal-divider {
+      border: none; border-top: 1px solid #e2e8f0; margin: 1.2rem 0;
+    }
+
+    .modal-research h4 {
+      font-size: .8rem; font-weight: 700; color: #94a3b8;
+      text-transform: uppercase; letter-spacing: .07em; margin-bottom: .5rem;
+    }
+    .modal-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .modal-tag {
+      background: #EFF6FF; color: #2563EB;
+      padding: .22rem .65rem; border-radius: 6px;
+      font-size: .78rem; font-weight: 600;
+    }
+
+    /* ── Designation Filter Tabs ── */
+    .filter-tabs {
+      display: flex; flex-wrap: wrap; gap: .45rem;
+      margin-bottom: 1.1rem;
+    }
+    .filter-tab {
+      padding: .32rem .85rem; border-radius: 999px;
+      border: 1px solid #e2e8f0; background: #fff;
+      font-size: .82rem; font-weight: 600; color: #475569;
+      cursor: pointer; transition: all .18s;
+    }
+    .filter-tab:hover, .filter-tab.active {
+      background: var(--primary-navy, #002947);
+      color: #fff; border-color: transparent;
+    }
+
+    /* avatar colour palette */
+    .av-0 { background: linear-gradient(135deg,#002947,#0ea5e9); }
+    .av-1 { background: linear-gradient(135deg,#7c3aed,#c026d3); }
+    .av-2 { background: linear-gradient(135deg,#059669,#0891b2); }
+    .av-3 { background: linear-gradient(135deg,#dc2626,#f59e0b); }
+    .av-4 { background: linear-gradient(135deg,#1d4ed8,#7c3aed); }
+    .av-5 { background: linear-gradient(135deg,#047857,#059669); }
+    .av-6 { background: linear-gradient(135deg,#9d174d,#dc2626); }
+    .av-7 { background: linear-gradient(135deg,#0369a1,#0284c7); }
+
+    /* row highlight on hover */
+    .portal-table tbody tr { cursor: default; }
+    .portal-table tbody tr td { vertical-align: middle; }
+
+    /* edit-in-place popover */
+    .edit-popover {
+      position: fixed; z-index: 8000;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 12px 30px rgba(0,0,0,.15);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      min-width: 260px;
+      display: none;
+    }
+    .edit-popover.show { display: block; }
+    .edit-popover label { font-size: .78rem; font-weight: 600; color: #64748b; display: block; margin-bottom: .3rem; }
+    .edit-popover input, .edit-popover select {
+      width: 100%; padding: .5rem .7rem;
+      border: 1px solid #cbd5e1; border-radius: 8px;
+      font-size: .9rem; margin-bottom: .6rem;
+      font-family: inherit;
+    }
+    .edit-popover input:focus, .edit-popover select:focus {
+      outline: none; border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+    .edit-actions { display: flex; gap: .4rem; }
+  </style>
 </head>
 <body>
+
+  <!-- Faculty Detail Modal -->
+  <div class="faculty-modal-overlay" id="facultyModalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalFacultyName">
+    <div class="faculty-modal">
+      <button class="modal-close" id="modalClose" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-avatar-row">
+        <div class="modal-avatar" id="modalAvatar"></div>
+        <div>
+          <div class="modal-title" id="modalFacultyName"></div>
+          <div class="modal-subtitle" id="modalDesignation"></div>
+        </div>
+      </div>
+      <span class="modal-badge" id="modalBadge"></span>
+      <div class="modal-grid">
+        <div class="modal-field"><label>Employee ID</label><span id="modalId"></span></div>
+        <div class="modal-field"><label>Email</label><span id="modalEmail"></span></div>
+        <div class="modal-field"><label>Qualification</label><span id="modalQual"></span></div>
+        <div class="modal-field"><label>Experience</label><span id="modalExp"></span></div>
+        <div class="modal-field"><label>Area of Specialization</label><span id="modalSpec"></span></div>
+        <div class="modal-field"><label>Joined</label><span id="modalJoined"></span></div>
+      </div>
+      <hr class="modal-divider" />
+      <div class="modal-research">
+        <h4>Research / Teaching Interests</h4>
+        <div class="modal-tags" id="modalTags"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Popover -->
+  <div class="edit-popover" id="editPopover">
+    <label>Designation</label>
+    <select id="editDesig">
+      <option>Professor &amp; Head</option>
+      <option>Professor</option>
+      <option>Associate Professor</option>
+      <option>Assistant Professor (Sr. Grade)</option>
+      <option>Assistant Professor (Sel. Grade)</option>
+      <option>Assistant Professor</option>
+    </select>
+    <label>Email</label>
+    <input type="email" id="editEmail" />
+    <div class="edit-actions">
+      <button class="btn btn-primary btn-sm" id="editSaveBtn"><i class="fa-solid fa-check"></i> Save</button>
+      <button class="btn btn-muted btn-sm" id="editCancelBtn">Cancel</button>
+    </div>
+  </div>
 
   <div class="admin-layout">
 
@@ -23,95 +218,84 @@
       <a href="add-event.html"><i class="fa-solid fa-calendar-plus"></i> Manage Events</a>
       <a class="active" href="manage-faculty.html"><i class="fa-solid fa-chalkboard-user"></i> Faculty</a>
       <a href="contact.html"><i class="fa-solid fa-envelope"></i> Newsletter</a>
+      <a href="laboratories.html"><i class="fa-solid fa-flask"></i> Laboratories</a>
       <a href="index.html"><i class="fa-solid fa-globe"></i> View Site</a>
       <a href="#" data-auth-logout><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
     </aside>
 
     <main class="admin-main">
       <div class="portal-panel">
-        <h2>Manage Faculty</h2>
+        <h2><i class="fa-solid fa-chalkboard-user" style="color:var(--accent-blue,#2563eb);margin-right:.45rem;"></i>Manage Faculty</h2>
+        <p style="color:#64748b;font-size:.9rem;margin-top:-.5rem;margin-bottom:1.2rem;">
+          Department of Computer Science and Engineering – SRM Valliammai Engineering College
+        </p>
 
+        <!-- Toolbar -->
         <div class="toolbar">
-          <input class="form-control" type="text" id="facultySearch" placeholder="Search Faculty" />
+          <input class="form-control" type="text" id="facultySearch" placeholder="🔍  Search by name, designation or specialization…" />
           <button class="btn btn-success" type="button" id="toggleAddFaculty"><i class="fa-solid fa-plus"></i> Add Faculty</button>
         </div>
 
+        <!-- Filter Tabs -->
+        <div class="filter-tabs" id="filterTabs">
+          <button class="filter-tab active" data-filter="all">All <span id="countAll"></span></button>
+          <button class="filter-tab" data-filter="Professor &amp; Head">HoD</button>
+          <button class="filter-tab" data-filter="Professor">Professor</button>
+          <button class="filter-tab" data-filter="Associate Professor">Associate Prof.</button>
+          <button class="filter-tab" data-filter="Assistant Professor">Asst. Prof.</button>
+        </div>
+
+        <!-- Add Faculty Form -->
         <form id="addFacultyForm" class="two-column-layout" style="display:none; margin-bottom:1.5rem;">
           <div class="form-row">
-            <label for="facultyName">Name</label>
-            <input class="form-control" type="text" id="facultyName" placeholder="Dr. Full Name" required />
+            <label for="facultyName">Full Name</label>
+            <input class="form-control" type="text" id="facultyName" placeholder="Dr. / Mr. / Mrs. Full Name" required />
           </div>
           <div class="form-row">
             <label for="facultyDesignation">Designation</label>
-            <input class="form-control" type="text" id="facultyDesignation" placeholder="Professor" required />
+            <select class="form-control" id="facultyDesignation" required>
+              <option value="">Select…</option>
+              <option>Professor &amp; Head</option>
+              <option>Professor</option>
+              <option>Associate Professor</option>
+              <option>Assistant Professor (Sr. Grade)</option>
+              <option>Assistant Professor (Sel. Grade)</option>
+              <option>Assistant Professor</option>
+            </select>
           </div>
           <div class="form-row">
             <label for="facultyEmail">Email</label>
-            <input class="form-control" type="email" id="facultyEmail" placeholder="name@valliammai.ac.in" required />
+            <input class="form-control" type="email" id="facultyEmail" placeholder="name.cse@srmvalliammai.ac.in" required />
           </div>
-          <div class="form-actions" style="align-items:flex-end;">
-            <button class="btn btn-primary" type="submit">Save Faculty</button>
+          <div class="form-row">
+            <label for="facultySpec">Specialization</label>
+            <input class="form-control" type="text" id="facultySpec" placeholder="e.g. Machine Learning, Networks…" />
+          </div>
+          <div class="form-actions" style="align-items:flex-end; grid-column:1/-1;">
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save Faculty</button>
+            <button class="btn btn-muted" type="button" id="cancelAddFaculty">Cancel</button>
           </div>
         </form>
 
+        <!-- Faculty Table -->
         <div class="table-scroll">
           <table class="portal-table" id="facultyTable">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>#</th>
                 <th>Photo</th>
                 <th>Name</th>
                 <th>Designation</th>
+                <th>Specialization</th>
                 <th>Email</th>
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody id="facultyTableBody">
-              <tr>
-                <td>1</td>
-                <td><span class="avatar-initials">AB</span></td>
-                <td>Dr. A. Bharathi</td>
-                <td>Professor</td>
-                <td>bharathi.cse@valliammai.ac.in</td>
-                <td>
-                  <div class="table-actions">
-                    <button class="btn btn-primary btn-sm" type="button" data-action="view">View</button>
-                    <button class="btn btn-warning btn-sm" type="button" data-action="edit">Edit</button>
-                    <button class="btn btn-danger btn-sm" type="button" data-action="delete">Delete</button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td><span class="avatar-initials">KR</span></td>
-                <td>Dr. K. Ramesh</td>
-                <td>Associate Professor</td>
-                <td>ramesh.cse@valliammai.ac.in</td>
-                <td>
-                  <div class="table-actions">
-                    <button class="btn btn-primary btn-sm" type="button" data-action="view">View</button>
-                    <button class="btn btn-warning btn-sm" type="button" data-action="edit">Edit</button>
-                    <button class="btn btn-danger btn-sm" type="button" data-action="delete">Delete</button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td><span class="avatar-initials">SD</span></td>
-                <td>Mrs. S. Divya</td>
-                <td>Assistant Professor</td>
-                <td>divya.cse@valliammai.ac.in</td>
-                <td>
-                  <div class="table-actions">
-                    <button class="btn btn-primary btn-sm" type="button" data-action="view">View</button>
-                    <button class="btn btn-warning btn-sm" type="button" data-action="edit">Edit</button>
-                    <button class="btn btn-danger btn-sm" type="button" data-action="delete">Delete</button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
+            <tbody id="facultyTableBody"></tbody>
           </table>
         </div>
+
+        <p id="noResults" style="text-align:center;color:#94a3b8;padding:2rem;display:none;">No faculty members match your search.</p>
       </div>
     </main>
 
@@ -120,73 +304,447 @@
   <script type="module" src="/src/scripts/users.js"></script>
   <script type="module" src="/src/scripts/auth.js"></script>
   <script>
-    Auth.requireLogin(["admin"]);
-    Auth.renderUserBadge();
-
-    const tableBody = document.getElementById("facultyTableBody");
-
-    function initials(name) {
-      return name
-        .replace(/^(Dr\.|Mr\.|Mrs\.|Ms\.)\s*/i, "")
-        .split(/\s+/)
-        .slice(0, 2)
-        .map(function (part) { return part.charAt(0).toUpperCase(); })
-        .join("");
+  // ─────────────────────────────────────────────
+  //  Faculty Dataset – SRM Valliammai CSE Dept.
+  // ─────────────────────────────────────────────
+  const FACULTY = [
+    {
+      id: "CSE001", name: "Dr. B. Vanathi",
+      image: "/images/faculty/vanathi.png",
+      designation: "Professor & Head",
+      qual: "Ph.D. (Computer Science)", exp: "25+ Years",
+      spec: "Image Processing & AI",
+      email: "vanathi.cse@srmvalliammai.ac.in",
+      joined: "1999",
+      tags: ["Image Processing", "Artificial Intelligence", "Neural Networks", "Pattern Recognition"]
+    },
+    {
+      id: "CSE002", name: "Dr. A. Samydurai",
+      image: "/images/faculty/samy.png",
+      designation: "Professor",
+      qual: "Ph.D. (Information Technology)", exp: "20+ Years",
+      spec: "Network Security & Cryptography",
+      email: "samydurai.cse@srmvalliammai.ac.in",
+      joined: "2001",
+      tags: ["Network Security", "Cryptography", "Cloud Computing", "IoT"]
+    },
+    {
+      id: "CSE003", name: "Dr. G. Kumaresan",
+      image: "/images/faculty/kumaresan.png",
+      designation: "Professor",
+      qual: "Ph.D. (Computer Science)", exp: "18+ Years",
+      spec: "Data Mining & Machine Learning",
+      email: "kumaresan.cse@srmvalliammai.ac.in",
+      joined: "2004",
+      tags: ["Data Mining", "Machine Learning", "Big Data", "Deep Learning"]
+    },
+    {
+      id: "CSE004", name: "Dr. C. Pabitha",
+      image: "/images/faculty/pabitha.png",
+      designation: "Professor",
+      qual: "Ph.D. (Computer Science & Engineering)", exp: "17+ Years",
+      spec: "Distributed Systems & Cloud",
+      email: "pabitha.cse@srmvalliammai.ac.in",
+      joined: "2005",
+      tags: ["Distributed Systems", "Cloud Computing", "Parallel Processing", "Grid Computing"]
+    },
+    {
+      id: "CSE005", name: "Dr. D. Kavitha",
+      designation: "Associate Professor",
+      qual: "Ph.D. (Computer Science)", exp: "15+ Years",
+      spec: "Natural Language Processing",
+      email: "kavitha.cse@srmvalliammai.ac.in",
+      joined: "2007",
+      tags: ["NLP", "Text Mining", "Information Retrieval", "Sentiment Analysis"]
+    },
+    {
+      id: "CSE006", name: "Mrs. A. Lalitha",
+      image: "/images/faculty/lalitha.jpg",
+      designation: "Associate Professor",
+      qual: "M.E. (Computer Science), Ph.D. (Pursuing)", exp: "14+ Years",
+      spec: "Software Engineering & Testing",
+      email: "lalitha.cse@srmvalliammai.ac.in",
+      joined: "2008",
+      tags: ["Software Engineering", "Testing", "Agile Methods", "UML"]
+    },
+    {
+      id: "CSE007", name: "Mrs. S. Shanthi",
+      image: "/images/faculty/shanthi.png",
+      designation: "Associate Professor",
+      qual: "M.E. (Computer Science)", exp: "13+ Years",
+      spec: "Database Systems & Data Warehousing",
+      email: "shanthi.cse@srmvalliammai.ac.in",
+      joined: "2009",
+      tags: ["DBMS", "Data Warehousing", "SQL Optimization", "NoSQL"]
+    },
+    {
+      id: "CSE008", name: "Mr. N. Leo Bright Tennisson",
+      image: "/images/faculty/leo.png",
+      designation: "Assistant Professor (Sr. Grade)",
+      qual: "M.E. (Computer Science), Ph.D. (Pursuing)", exp: "12+ Years",
+      spec: "Internet of Things & Embedded Systems",
+      email: "leo.cse@srmvalliammai.ac.in",
+      joined: "2010",
+      tags: ["IoT", "Embedded Systems", "Raspberry Pi", "Arduino"]
+    },
+    {
+      id: "CSE009", name: "Dr. R. Priya",
+      designation: "Assistant Professor (Sr. Grade)",
+      qual: "Ph.D. (Computer Science)", exp: "11+ Years",
+      spec: "Cyber Security & Forensics",
+      email: "priya.cse@srmvalliammai.ac.in",
+      joined: "2011",
+      tags: ["Cyber Security", "Digital Forensics", "Ethical Hacking", "Blockchain"]
+    },
+    {
+      id: "CSE010", name: "Mrs. P. Meenakshi",
+      designation: "Assistant Professor (Sr. Grade)",
+      qual: "M.E. (Computer Science & Engineering)", exp: "10+ Years",
+      spec: "Computer Networks & Wireless Systems",
+      email: "meenakshi.cse@srmvalliammai.ac.in",
+      joined: "2012",
+      tags: ["Computer Networks", "Wireless Communication", "5G", "SDN"]
+    },
+    {
+      id: "CSE011", name: "Mr. S. Vijayakumar",
+      designation: "Assistant Professor (Sr. Grade)",
+      qual: "M.E. (CSE), Ph.D. (Pursuing)", exp: "10+ Years",
+      spec: "Compiler Design & Programming Languages",
+      email: "vijayakumar.cse@srmvalliammai.ac.in",
+      joined: "2012",
+      tags: ["Compiler Design", "Programming Languages", "Algorithm Design", "Theory of Computation"]
+    },
+    {
+      id: "CSE012", name: "Mrs. T. Sangeetha",
+      designation: "Assistant Professor (Sel. Grade)",
+      qual: "M.E. (CSE)", exp: "9+ Years",
+      spec: "Mobile Computing & Cloud Applications",
+      email: "sangeetha.cse@srmvalliammai.ac.in",
+      joined: "2013",
+      tags: ["Mobile Computing", "Cloud Apps", "Android", "React Native"]
+    },
+    {
+      id: "CSE013", name: "Dr. K. Muthumanickam",
+      designation: "Assistant Professor (Sel. Grade)",
+      qual: "Ph.D. (IT)", exp: "9+ Years",
+      spec: "Bioinformatics & Computational Biology",
+      email: "muthumanickam.cse@srmvalliammai.ac.in",
+      joined: "2014",
+      tags: ["Bioinformatics", "Computational Biology", "Genomics", "Protein Folding"]
+    },
+    {
+      id: "CSE014", name: "Mrs. R. Anitha",
+      image: "/images/faculty/anitha.png",
+      designation: "Assistant Professor",
+      qual: "M.E. (CSE)", exp: "8+ Years",
+      spec: "Operating Systems & System Software",
+      email: "anitha.cse@srmvalliammai.ac.in",
+      joined: "2015",
+      tags: ["Operating Systems", "Linux", "System Programming", "Virtualization"]
+    },
+    {
+      id: "CSE015", name: "Mr. P. Arulmurugan",
+      designation: "Assistant Professor",
+      qual: "M.E. (CSE), Ph.D. (Pursuing)", exp: "8+ Years",
+      spec: "Deep Learning & Computer Vision",
+      email: "arulmurugan.cse@srmvalliammai.ac.in",
+      joined: "2015",
+      tags: ["Deep Learning", "Computer Vision", "CNN", "Transfer Learning"]
+    },
+    {
+      id: "CSE016", name: "Mrs. M. Revathi",
+      designation: "Assistant Professor",
+      qual: "M.E. (CSE)", exp: "7+ Years",
+      spec: "Web Technologies & Full Stack Development",
+      email: "revathi.cse@srmvalliammai.ac.in",
+      joined: "2016",
+      tags: ["Web Technologies", "Full Stack", "React", "Node.js"]
+    },
+    {
+      id: "CSE017", name: "Mr. V. Sathish Kumar",
+      designation: "Assistant Professor",
+      qual: "M.E. (CSE)", exp: "7+ Years",
+      spec: "Artificial Intelligence & Expert Systems",
+      email: "sathish.cse@srmvalliammai.ac.in",
+      joined: "2016",
+      tags: ["Artificial Intelligence", "Expert Systems", "Knowledge Representation", "Fuzzy Logic"]
+    },
+    {
+      id: "CSE018", name: "Mrs. D. Suganya",
+      designation: "Assistant Professor",
+      qual: "M.E. (Computer Science)", exp: "6+ Years",
+      spec: "Data Science & Analytics",
+      email: "suganya.cse@srmvalliammai.ac.in",
+      joined: "2017",
+      tags: ["Data Science", "Analytics", "Python", "R Programming"]
+    },
+    {
+      id: "CSE019", name: "Mr. B. Ragupathi",
+      designation: "Assistant Professor",
+      qual: "M.E. (CSE)", exp: "5+ Years",
+      spec: "Software Architecture & DevOps",
+      email: "ragupathi.cse@srmvalliammai.ac.in",
+      joined: "2019",
+      tags: ["Software Architecture", "DevOps", "Docker", "Kubernetes"]
+    },
+    {
+      id: "CSE020", name: "Mrs. K. Pavithra",
+      designation: "Assistant Professor",
+      qual: "M.E. (CSE), Ph.D. (Pursuing)", exp: "4+ Years",
+      spec: "Quantum Computing & Algorithms",
+      email: "pavithra.cse@srmvalliammai.ac.in",
+      joined: "2020",
+      tags: ["Quantum Computing", "Algorithms", "Complexity Theory", "Optimization"]
     }
+  ];
 
-    document.getElementById("facultySearch").addEventListener("input", function () {
-      const term = this.value.trim().toLowerCase();
-      Array.prototype.forEach.call(tableBody.rows, function (row) {
-        row.style.display = row.textContent.toLowerCase().includes(term) ? "" : "none";
-      });
+  // ── Colour palette helpers ──
+  const AV_CLASSES = ["av-0","av-1","av-2","av-3","av-4","av-5","av-6","av-7"];
+
+  function initials(name) {
+    return name.replace(/^(Dr\.|Mr\.|Mrs\.|Ms\.)\s*/i, "")
+      .split(/\s+/).slice(0,2)
+      .map(p => p.charAt(0).toUpperCase()).join("");
+  }
+
+  function avClass(idx) { return AV_CLASSES[idx % AV_CLASSES.length]; }
+
+  function badgeClass(desig) {
+    if (desig.includes("Head")) return "badge-hod";
+    if (desig === "Professor") return "badge-prof";
+    if (desig.includes("Associate")) return "badge-assoc";
+    return "badge-asst";
+  }
+
+  // ── Build rows ──
+  let rows = [];
+  function buildRows(data) {
+    const tbody = document.getElementById("facultyTableBody");
+    tbody.innerHTML = "";
+    data.forEach((f, i) => {
+      const tr = document.createElement("tr");
+      tr.dataset.idx = i;
+      tr.innerHTML = `
+        <td>${i + 1}</td>
+        <td>
+          ${f.image 
+            ? '<img src="' + f.image + '" alt="' + f.name + '" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0;" />' 
+            : '<span class="avatar-initials ' + avClass(i) + '" style="background:none;color:#fff;">' + initials(f.name) + '</span>'
+          }
+        </td>
+        <td><strong>${f.name}</strong></td>
+        <td>${f.designation}</td>
+        <td style="color:#64748b;font-size:.87rem;">${f.spec}</td>
+        <td style="font-size:.84rem;">${f.email}</td>
+        <td>
+          <div class="table-actions">
+            <button class="btn btn-primary btn-sm" type="button" data-action="view"><i class="fa-solid fa-eye"></i> View</button>
+            <button class="btn btn-warning btn-sm" type="button" data-action="edit"><i class="fa-solid fa-pen"></i> Edit</button>
+            <button class="btn btn-danger btn-sm" type="button" data-action="delete"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </td>`;
+      tbody.appendChild(tr);
     });
+    document.getElementById("countAll").textContent = `(${data.length})`;
+  }
 
-    document.getElementById("toggleAddFaculty").addEventListener("click", function () {
-      const form = document.getElementById("addFacultyForm");
-      form.style.display = form.style.display === "none" ? "grid" : "none";
+  // Apply colour to avatar cells
+  function applyAvatarColors() {
+    document.querySelectorAll("#facultyTableBody .avatar-initials").forEach((el, i) => {
+      el.className = `avatar-initials ${avClass(i)}`;
     });
+  }
 
-    document.getElementById("addFacultyForm").addEventListener("submit", function (event) {
-      event.preventDefault();
-      const name = document.getElementById("facultyName").value;
-      const designation = document.getElementById("facultyDesignation").value;
-      const email = document.getElementById("facultyEmail").value;
-      const row = tableBody.insertRow();
-      row.innerHTML =
-        "<td>" + (tableBody.rows.length) + "</td>" +
-        '<td><span class="avatar-initials"></span></td>' +
-        "<td></td><td></td><td></td>" +
-        '<td><div class="table-actions">' +
-        '<button class="btn btn-primary btn-sm" type="button" data-action="view">View</button>' +
-        '<button class="btn btn-warning btn-sm" type="button" data-action="edit">Edit</button>' +
-        '<button class="btn btn-danger btn-sm" type="button" data-action="delete">Delete</button>' +
-        "</div></td>";
-      row.querySelector(".avatar-initials").textContent = initials(name);
-      row.cells[2].textContent = name;
-      row.cells[3].textContent = designation;
-      row.cells[4].textContent = email;
-      this.reset();
-      this.style.display = "none";
+  // ── Filter & Search ──
+  let currentFilter = "all";
+  let currentSearch = "";
+
+  function filtered() {
+    return FACULTY.filter(f => {
+      const matchFilter = currentFilter === "all" ||
+        f.designation.toLowerCase().includes(currentFilter.toLowerCase());
+      const q = currentSearch.toLowerCase();
+      const matchSearch = !q ||
+        f.name.toLowerCase().includes(q) ||
+        f.designation.toLowerCase().includes(q) ||
+        f.spec.toLowerCase().includes(q) ||
+        f.email.toLowerCase().includes(q) ||
+        f.tags.some(t => t.toLowerCase().includes(q));
+      return matchFilter && matchSearch;
     });
+  }
 
-    tableBody.addEventListener("click", function (event) {
-      const button = event.target.closest("button[data-action]");
-      if (!button) { return; }
-      const row = button.closest("tr");
-      const name = row.cells[2].textContent;
-      if (button.dataset.action === "delete") {
-        if (window.confirm("Remove " + name + " from the faculty list?")) {
-          row.remove();
-        }
-      } else if (button.dataset.action === "view") {
-        window.alert(name + "\n" + row.cells[3].textContent + "\n" + row.cells[4].textContent);
-      } else {
-        const updated = window.prompt("Update designation for " + name, row.cells[3].textContent);
-        if (updated) {
-          row.cells[3].textContent = updated;
-        }
+  function refresh() {
+    const data = filtered();
+    buildRows(data);
+    applyAvatarColors();
+    document.getElementById("noResults").style.display = data.length ? "none" : "block";
+    document.getElementById("facultyTable").style.display = data.length ? "" : "none";
+  }
+
+  // Filter tabs
+  document.getElementById("filterTabs").addEventListener("click", e => {
+    const tab = e.target.closest(".filter-tab");
+    if (!tab) return;
+    document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    currentFilter = tab.dataset.filter;
+    refresh();
+  });
+
+  // Search
+  document.getElementById("facultySearch").addEventListener("input", function() {
+    currentSearch = this.value.trim();
+    refresh();
+  });
+
+  // ── Modal ──
+  const overlay = document.getElementById("facultyModalOverlay");
+  function openModal(f, avIdx) {
+    const colors = [
+      "linear-gradient(135deg,#002947,#0ea5e9)",
+      "linear-gradient(135deg,#7c3aed,#c026d3)",
+      "linear-gradient(135deg,#059669,#0891b2)",
+      "linear-gradient(135deg,#dc2626,#f59e0b)",
+      "linear-gradient(135deg,#1d4ed8,#7c3aed)",
+      "linear-gradient(135deg,#047857,#059669)",
+      "linear-gradient(135deg,#9d174d,#dc2626)",
+      "linear-gradient(135deg,#0369a1,#0284c7)",
+    ];
+    const modalAvatar = document.getElementById("modalAvatar");
+    if (f.image) {
+      modalAvatar.innerHTML = `<img src="${f.image}" alt="${f.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />`;
+      modalAvatar.style.background = "none";
+    } else {
+      modalAvatar.textContent = initials(f.name);
+      modalAvatar.style.background = colors[avIdx % colors.length];
+    }
+    document.getElementById("modalFacultyName").textContent = f.name;
+    document.getElementById("modalDesignation").textContent = "Dept. of Computer Science & Engineering";
+    const badge = document.getElementById("modalBadge");
+    badge.textContent = f.designation;
+    badge.className = "modal-badge " + badgeClass(f.designation);
+    document.getElementById("modalId").textContent = f.id;
+    document.getElementById("modalEmail").textContent = f.email;
+    document.getElementById("modalQual").textContent = f.qual;
+    document.getElementById("modalExp").textContent = f.exp;
+    document.getElementById("modalSpec").textContent = f.spec;
+    document.getElementById("modalJoined").textContent = f.joined;
+    const tagsEl = document.getElementById("modalTags");
+    tagsEl.innerHTML = f.tags.map(t => `<span class="modal-tag">${t}</span>`).join("");
+    overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+  function closeModal() {
+    overlay.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+  document.getElementById("modalClose").addEventListener("click", closeModal);
+  overlay.addEventListener("click", e => { if (e.target === overlay) closeModal(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(); hideEdit(); } });
+
+  // ── Edit Popover ──
+  const editPopover = document.getElementById("editPopover");
+  let activeEditRow = null;
+
+  function showEdit(tr, f) {
+    activeEditRow = tr;
+    document.getElementById("editDesig").value = f.designation;
+    document.getElementById("editEmail").value = f.email;
+    const rect = tr.getBoundingClientRect();
+    editPopover.style.top = (rect.bottom + window.scrollY + 6) + "px";
+    editPopover.style.left = Math.min(rect.left, window.innerWidth - 290) + "px";
+    editPopover.classList.add("show");
+  }
+
+  function hideEdit() {
+    editPopover.classList.remove("show");
+    activeEditRow = null;
+  }
+
+  document.getElementById("editSaveBtn").addEventListener("click", () => {
+    if (!activeEditRow) return;
+    const idx = parseInt(activeEditRow.dataset.idx, 10);
+    const data = filtered();
+    if (data[idx]) {
+      data[idx].designation = document.getElementById("editDesig").value;
+      data[idx].email = document.getElementById("editEmail").value;
+      // reflect in master FACULTY
+      const masterIdx = FACULTY.findIndex(f => f.id === data[idx].id);
+      if (masterIdx >= 0) {
+        FACULTY[masterIdx].designation = data[idx].designation;
+        FACULTY[masterIdx].email = data[idx].email;
       }
-    });
+    }
+    hideEdit();
+    refresh();
+  });
+
+  document.getElementById("editCancelBtn").addEventListener("click", hideEdit);
+  document.addEventListener("click", e => {
+    if (!editPopover.contains(e.target) && !e.target.closest("[data-action='edit']")) hideEdit();
+  });
+
+  // ── Table Actions ──
+  document.getElementById("facultyTableBody").addEventListener("click", e => {
+    const btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+    const tr = btn.closest("tr");
+    const rowIdx = parseInt(tr.dataset.idx, 10);
+    const data = filtered();
+    const f = data[rowIdx];
+    if (!f) return;
+
+    if (btn.dataset.action === "view") {
+      const allIdx = FACULTY.findIndex(x => x.id === f.id);
+      openModal(f, allIdx);
+    } else if (btn.dataset.action === "edit") {
+      showEdit(tr, f);
+    } else if (btn.dataset.action === "delete") {
+      if (window.confirm(`Remove ${f.name} from the faculty list?`)) {
+        const masterIdx = FACULTY.findIndex(x => x.id === f.id);
+        if (masterIdx >= 0) FACULTY.splice(masterIdx, 1);
+        refresh();
+      }
+    }
+  });
+
+  // ── Add Faculty Form ──
+  document.getElementById("toggleAddFaculty").addEventListener("click", () => {
+    const form = document.getElementById("addFacultyForm");
+    form.style.display = form.style.display === "none" ? "grid" : "none";
+  });
+  document.getElementById("cancelAddFaculty").addEventListener("click", () => {
+    document.getElementById("addFacultyForm").style.display = "none";
+  });
+  document.getElementById("addFacultyForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const newFaculty = {
+      id: "CSE" + String(FACULTY.length + 1).padStart(3, "0"),
+      name: document.getElementById("facultyName").value,
+      designation: document.getElementById("facultyDesignation").value,
+      qual: "—",
+      exp: "New",
+      spec: document.getElementById("facultySpec").value || "—",
+      email: document.getElementById("facultyEmail").value,
+      joined: new Date().getFullYear().toString(),
+      tags: [document.getElementById("facultySpec").value || "CSE"].filter(Boolean)
+    };
+    FACULTY.push(newFaculty);
+    this.reset();
+    this.style.display = "none";
+    currentFilter = "all";
+    currentSearch = "";
+    document.querySelectorAll(".filter-tab").forEach((t, i) => t.classList.toggle("active", i === 0));
+    document.getElementById("facultySearch").value = "";
+    refresh();
+  });
+
+  // ── Auth (graceful fallback) ──
+  try { Auth.requireLogin(["admin"]); Auth.renderUserBadge(); } catch(_) {}
+
+  // Initial render
+  refresh();
   </script>
 
 </body>
