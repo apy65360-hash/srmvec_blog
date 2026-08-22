@@ -1,3 +1,5 @@
+import { CALENDAR_DATA } from './calendar-data.js';
+
 /* --- HIGH-TECH ANIMATED GRAPHICAL CANVAS & SLIDER ENGINE --- */
 document.addEventListener('DOMContentLoaded', () => {
   // 1. ANIMATED TECH CANVAS ENGINE
@@ -286,50 +288,76 @@ document.addEventListener('DOMContentLoaded', () => {
       todayDateStr.textContent = `${monthNames[currentMonth]} ${currentDate < 10 ? '0' + currentDate : currentDate}, ${currentYear}`;
     }
 
-    // Comprehensive Yearly Academic & Technical Event Calendar
-    const YEARLY_CALENDAR = [
-      { month: 0, day: 10, title: "Special Lecture on Quantum Algorithm Design", venue: "CSE Hall 1", time: "10:30 AM" },
-      { month: 0, day: 24, title: "Republic Day Tech Hackathon", venue: "Lab 3", time: "09:00 AM" },
-      { month: 1, day: 12, title: "Workshop on Full-Stack Microservices", venue: "Tech Lab 2", time: "11:00 AM" },
-      { month: 1, day: 25, title: "International Cyber Security Conclave", venue: "Main Auditorium", time: "09:30 AM" },
-      { month: 2, day: 8, title: "Women in Tech Symposium 2026", venue: "Convention Hall", time: "10:00 AM" },
-      { month: 2, day: 20, title: "IEEE Student Paper Contest Presentation", venue: "Seminar Room 4", time: "02:00 PM" },
-      { month: 3, day: 14, title: "Annual Innovation & Project Expo", venue: "College Grounds", time: "09:30 AM" },
-      { month: 3, day: 28, title: "Cloud Architecture Masterclass by AWS Experts", venue: "CSE Lab 1", time: "10:00 AM" },
-      { month: 4, day: 15, title: "End-Semester Academic & Lab Assessments", venue: "CSE Blocks", time: "09:00 AM" },
-      { month: 5, day: 10, title: "Summer Research Fellowship Orientation", venue: "Research Wing", time: "10:00 AM" },
-      { month: 6, day: 15, title: "National Technical Symposium: TechVista", venue: "Auditorium", time: "09:30 AM" },
-      { month: 6, day: 28, title: "Industry Guest Lecture on Cloud DevOps", venue: "CSE Hall 2", time: "11:00 AM" },
-      { month: 7, day: 3, title: "Faculty Paper Publication Summit", venue: "Research Hall", time: "10:00 AM" },
-      { month: 7, day: 7, title: "IEEE Guest Lecture & Hands-on AI Workshop", venue: "CSE Lab 3", time: "10:00 AM" },
-      { month: 7, day: 18, title: "Workshop on Python Data Engineering", venue: "CSE Lab 3", time: "10:00 AM" },
-      { month: 7, day: 25, title: "National Level Technical Symposium 2026", venue: "Main Auditorium", time: "09:00 AM" },
-      { month: 8, day: 5, title: "Teachers' Day Technical Seminar", venue: "CSE Seminar Hall", time: "11:00 AM" },
-      { month: 8, day: 22, title: "Hackathon: 24-Hour CodeSprint 2026", venue: "Innovation Lab", time: "10:00 AM" },
-      { month: 9, day: 15, title: "Placement Orientation & Mock Interview Drive", venue: "Placement Cell", time: "09:00 AM" },
-      { month: 9, day: 30, title: "Web3 & Blockchain Developers Conclave", venue: "Auditorium", time: "10:30 AM" },
-      { month: 10, day: 14, title: "AI & ML Model Deployment Workshop", venue: "CSE Lab 4", time: "10:00 AM" },
-      { month: 11, day: 10, title: "Annual Alumni Meet & Industry Interaction", venue: "Campus Convention Hall", time: "10:00 AM" }
-    ];
-
-    // Check events scheduled for today ONLY
-    const todaysEvents = YEARLY_CALENDAR.filter(e => e.month === currentMonth && e.day === currentDate);
+    // Check events scheduled for today in parsed calendar
+    const todayEntry = CALENDAR_DATA.find(e => 
+      e.year === currentYear && 
+      e.month === (currentMonth + 1) && 
+      e.day === currentDate
+    );
+    const todaysEvents = todayEntry ? todayEntry.events : [];
 
     todaysEventsList.innerHTML = '';
 
-    if (todaysEvents.length > 0) {
-      todaysEvents.forEach(evt => {
+    if (todaysEvents && todaysEvents.length > 0) {
+      todaysEvents.forEach(evtText => {
         const li = document.createElement('li');
         li.className = 'today-event-item active-today';
+        
+        // Categorize event for pill styling
+        let pillText = "EVENT / ACTIVITY";
+        let pillClass = "general-today";
+        const upperEvt = evtText.toUpperCase();
+        
+        if (upperEvt.includes("HOLIDAY")) {
+          pillText = "HOLIDAY";
+          pillClass = "holiday-today";
+        } else if (upperEvt.includes("CAT") || upperEvt.includes("EXAMINATION") || upperEvt.includes("ASSESSMENT") || upperEvt.includes("LAST WORKING DAY")) {
+          pillText = "ACADEMICS";
+          pillClass = "academic-today";
+        } else if (upperEvt.startsWith("CSE -") || upperEvt.startsWith("CSE-") || upperEvt.includes("CSE DEPT") || upperEvt.includes("CSE - ")) {
+          pillText = "CSE DEPT";
+          pillClass = "cse-today";
+        } else if (upperEvt.startsWith("IT -") || upperEvt.startsWith("IT-")) {
+          pillText = "IT DEPT";
+          pillClass = "it-today";
+        } else if (upperEvt.startsWith("ECE -") || upperEvt.startsWith("ECE-")) {
+          pillText = "ECE DEPT";
+          pillClass = "ece-today";
+        } else if (upperEvt.startsWith("AI&DS -") || upperEvt.startsWith("AI&DS-") || upperEvt.startsWith("ADS -")) {
+          pillText = "AI & DS";
+          pillClass = "aids-today";
+        } else if (upperEvt.startsWith("CYB -") || upperEvt.startsWith("CYB-")) {
+          pillText = "CYBER DEPT";
+          pillClass = "cyb-today";
+        } else if (upperEvt.startsWith("NSS -") || upperEvt.startsWith("NSS-")) {
+          pillText = "NSS EVENT";
+          pillClass = "nss-today";
+        } else if (upperEvt.startsWith("R&D -") || upperEvt.startsWith("R&D-")) {
+          pillText = "RESEARCH & DEV";
+          pillClass = "rnd-today";
+        } else if (upperEvt.startsWith("MECH -") || upperEvt.startsWith("MECH-")) {
+          pillText = "MECH DEPT";
+          pillClass = "mech-today";
+        } else if (upperEvt.startsWith("CIVIL -") || upperEvt.startsWith("CIVIL-")) {
+          pillText = "CIVIL DEPT";
+          pillClass = "civil-today";
+        } else if (upperEvt.startsWith("MBA -") || upperEvt.startsWith("MBA-")) {
+          pillText = "MBA DEPT";
+          pillClass = "mba-today";
+        } else if (upperEvt.startsWith("ENG -") || upperEvt.startsWith("ENG-")) {
+          pillText = "ENGLISH DEPT";
+          pillClass = "eng-today";
+        }
+
         li.innerHTML = `
           <div class="date-badge today-highlight">
             <span>${currentDate < 10 ? '0' + currentDate : currentDate}</span>
             ${monthNames[currentMonth]}
           </div>
-          <div class="event-details">
-            <span class="status-pill live-today"><i class="fa-solid fa-circle-dot"></i> HAPPENING TODAY</span>
-            <strong>${evt.title}</strong>
-            <small>Venue: ${evt.venue} • ${evt.time}</small>
+          <div class="event-details" style="flex: 1;">
+            <span class="status-pill ${pillClass}" style="margin-bottom: 0.25rem;"><i class="fa-solid fa-circle-dot"></i> ${pillText}</span>
+            <strong style="font-weight: 600; font-size: 0.88rem; line-height: 1.35; display: block; color: var(--primary-navy);">${evtText}</strong>
+            <small>Academic Session • 2026-27</small>
           </div>
         `;
         todaysEventsList.appendChild(li);

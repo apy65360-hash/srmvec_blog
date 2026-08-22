@@ -482,3 +482,20 @@ textarea.form-control {
   .admin-main { padding: 1.25rem; }
   .stat-grid { grid-template-columns: 1fr; }
 }
+
+/* --- ACADEMIC CALENDAR STATUS PILLS --- */
+.status-pill.holiday-today { background: #FEE2E2; color: #991B1B; }
+.status-pill.academic-today { background: #DBEAFE; color: #1E40AF; }
+.status-pill.cse-today { background: #E0F2FE; color: #0369A1; }
+.status-pill.it-today { background: #F3E8FF; color: #6B21A8; }
+.status-pill.ece-today { background: #E0E7FF; color: #3730A3; }
+.status-pill.aids-today { background: #ECFDF5; color: #065F46; }
+.status-pill.cyb-today { background: #FFF1F2; color: #9F1239; }
+.status-pill.nss-today { background: #FEF3C7; color: #92400E; }
+.status-pill.rnd-today { background: #F0FDF4; color: #166534; }
+.status-pill.mech-today { background: #FFEDD5; color: #9A3412; }
+.status-pill.civil-today { background: #FAFAFA; color: #44403C; border: 1px solid #E4E4E7; }
+.status-pill.mba-today { background: #FDF2F8; color: #9D174D; }
+.status-pill.eng-today { background: #F0FDFA; color: #0F766E; }
+.status-pill.general-today { background: #F1F5F9; color: #475569; }
+

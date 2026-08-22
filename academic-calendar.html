@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Academic Calendar 2026-27 | SRMVEC CSE Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="/src/styles/style.css" />
+  <link rel="stylesheet" href="/src/styles/portal.css" />
+  
+  <style>
+    :root {
+      --calendar-gold: #D97706;
+      --calendar-blue: #2563EB;
+      --calendar-light-blue: #EFF6FF;
+      --calendar-border: #E2E8F0;
+      --calendar-text-muted: #64748B;
+      --calendar-bg: #FFFFFF;
+      --calendar-surface: #F8FAFC;
+    }
+
+    body {
+      background: #F1F5F9;
+      color: #0F172A;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Page Hero Banner */
+    .calendar-hero-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0284c7 100%);
+      color: #ffffff;
+      padding: 3.5rem 1rem 3rem 1rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .calendar-hero-banner h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    .calendar-hero-banner p {
+      color: #93c5fd;
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto 1.5rem auto;
+    }
+    .hero-badges-row {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .hero-badge {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Search & Toggle Controls */
+    .controls-wrapper {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1.25rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    }
+    .controls-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .search-box-wrap {
+      position: relative;
+      flex: 1;
+      max-width: 400px;
+      min-width: 260px;
+    }
+    .search-box-wrap input {
+      width: 100%;
+      padding: 0.7rem 1rem 0.7rem 2.6rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .search-box-wrap input:focus {
+      border-color: var(--calendar-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .search-box-wrap i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+    }
+    .view-toggle-btns {
+      display: flex;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+    }
+    .toggle-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: transparent;
+      border-radius: 7px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+    .toggle-btn.active {
+      background: #ffffff;
+      color: var(--calendar-blue);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    /* Main Content Layout */
+    .calendar-layout {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    
+    @media (max-width: 992px) {
+      .calendar-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Yearly Calendar Grid */
+    .yearly-grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    
+    .month-card {
+      background: var(--calendar-bg);
+      border: 1px solid var(--calendar-border);
+      border-radius: 14px;
+      padding: 1.1rem;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.01);
+      transition: opacity 0.3s ease, transform 0.2s ease;
+    }
+    
+    .month-card.dimmed {
+      opacity: 0.45;
+    }
+    
+    .month-card-header {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid var(--calendar-border);
+      padding-bottom: 0.4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .month-card-header span.year-label {
+      font-size: 0.8rem;
+      background: #f1f5f9;
+      color: #475569;
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
+    }
+    
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+      text-align: center;
+    }
+    
+    .day-name-cell {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--calendar-text-muted);
+      padding: 0.25rem 0;
+    }
+    
+    .day-cell {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    
+    .day-cell.empty {
+      cursor: default;
+    }
+    
+    .day-cell:not(.empty):hover {
+      background: #f1f5f9;
+    }
+    
+    .day-cell.has-events {
+      background: var(--calendar-light-blue);
+      color: var(--calendar-blue);
+      font-weight: 700;
+    }
+    .day-cell.has-events::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      width: 4px;
+      height: 4px;
+      background: var(--calendar-gold);
+      border-radius: 50%;
+    }
+    
+    .day-cell.search-matched {
+      background: #FEF3C7 !important;
+      color: #D97706 !important;
+      border: 1px solid #FCD34D;
+    }
+    
+    .day-cell.selected {
+      background: var(--calendar-blue) !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 10px rgba(37,99,235,0.3);
+    }
+    .day-cell.selected::after {
+      background: #ffffff !important;
+    }
+
+    /* Sidebar Details Panel */
+    .details-panel {
+      background: var(--calendar-bg);
+      border: 1px solid var(--calendar-border);
+      border-radius: 16px;
+      padding: 1.25rem;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 90px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .details-panel-header {
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .details-date {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .details-day-name {
+      font-size: 0.85rem;
+      color: var(--calendar-text-muted);
+      margin-top: 0.15rem;
+    }
+    
+    .details-events-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    
+    .details-event-card {
+      background: var(--calendar-surface);
+      border-left: 4px solid var(--calendar-blue);
+      padding: 0.8rem 1rem;
+      border-radius: 0 8px 8px 0;
+    }
+    
+    .details-event-card.holiday {
+      border-left-color: #EF4444;
+    }
+    
+    .details-event-card.academics {
+      border-left-color: var(--calendar-blue);
+    }
+    
+    .details-event-card.cse {
+      border-left-color: #0EA5E9;
+    }
+    
+    .details-event-card.it {
+      border-left-color: #A855F7;
+    }
+    
+    .details-event-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      line-height: 1.4;
+      color: #1e293b;
+      display: block;
+      margin-top: 0.35rem;
+    }
+    
+    /* Monthly List View */
+    .monthly-list-container {
+      background: var(--calendar-bg);
+      border: 1px solid var(--calendar-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+    }
+    .month-select-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .month-selector {
+      padding: 0.6rem 1.2rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      outline: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #1e293b;
+      background: #ffffff;
+      cursor: pointer;
+    }
+    
+    .monthly-event-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+    }
+    
+    .timeline-item {
+      display: flex;
+      gap: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .timeline-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    
+    .timeline-date-col {
+      min-width: 65px;
+      text-align: center;
+    }
+    
+    .timeline-date-badge {
+      background: #f1f5f9;
+      color: #475569;
+      padding: 0.5rem;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .timeline-date-badge.has-events {
+      background: var(--calendar-light-blue);
+      color: var(--calendar-blue);
+    }
+    .timeline-date-badge span {
+      display: block;
+      font-size: 1.2rem;
+      color: #0f172a;
+    }
+    .timeline-date-badge.has-events span {
+      color: var(--calendar-blue);
+    }
+    
+    .timeline-events-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    
+    .timeline-event-entry {
+      background: var(--calendar-surface);
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      border: 1px solid #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    
+    .timeline-event-text {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    
+    .no-events-notice {
+      padding: 2.5rem 1rem;
+      text-align: center;
+      color: var(--calendar-text-muted);
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body class="intro-done">
+
+  <div class="site-shell">
+    
+    <!-- Social Sidebar -->
+    <aside class="social-sidebar" aria-label="Official SRMVEC social media links">
+      <a class="social-link facebook" href="https://www.facebook.com/srmvecofficial/" target="_blank" rel="noopener noreferrer" aria-label="SRMVEC on Facebook">
+        <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+      </a>
+      <a class="social-link x-twitter" href="https://twitter.com/srmvec" target="_blank" rel="noopener noreferrer" aria-label="SRMVEC on X">
+        <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+      </a>
+      <a class="social-link youtube" href="https://www.youtube.com/@srmvecoff" target="_blank" rel="noopener noreferrer" aria-label="SRMVEC on YouTube">
+        <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+      </a>
+      <a class="social-link linkedin" href="https://www.linkedin.com/school/srm-valliammai-engineering-college/" target="_blank" rel="noopener noreferrer" aria-label="SRMVEC on LinkedIn">
+        <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+      </a>
+      <a class="social-link instagram" href="https://www.instagram.com/srmvecofficial/" target="_blank" rel="noopener noreferrer" aria-label="SRMVEC on Instagram">
+        <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+      </a>
+      <a class="social-link location" href="https://www.google.com/maps/place/SRM+Valliammai+Engineering+College/@12.8259494,80.0387379,17z" target="_blank" rel="noopener noreferrer" aria-label="SRMVEC location on map">
+        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+      </a>
+    </aside>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="container top-bar-content">
+        <div class="top-utility-links">
+          <a href="student-corner.html">Students</a>
+          <a href="teachers-corner.html">Faculty & Staff</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="top-bar-search">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" placeholder="Search CSE Blog" />
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN UNIFIED HEADER & NAV -->
+    <header class="main-header-unified">
+      <div class="container header-nav-container">
+        <div class="brand-group">
+          <div class="brand-text-box">
+            <h1 class="brand-main-title"><a href="index.html" style="color: inherit; text-decoration: none;">CSE Blog</a></h1>
+          </div>
+        </div>
+
+        <nav class="main-nav-menu">
+          <div class="nav-item dropdown">
+            <a href="#">About <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+            <div class="dropdown-menu">
+              <a href="https://srmvalliammai.ac.in/be-computer-science-and-engineering/" target="_blank" rel="noopener noreferrer">Academics &amp; Accreditation</a>
+              <a href="laboratories.html">Laboratories</a>
+              <a href="contact.html">Contact Us</a>
+            </div>
+          </div>
+          <div class="nav-item dropdown">
+            <a href="#">Admissions <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+            <div class="dropdown-menu">
+              <a href="#">B.E. Computer Science</a>
+              <a href="#">M.E. Computer Science</a>
+              <a href="#">Eligibility &amp; Cutoffs</a>
+            </div>
+          </div>
+          <div class="nav-item dropdown">
+            <a href="index.html#specializations">Academics <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+            <div class="dropdown-menu">
+              <a href="publications-patents.html">Publications &amp; Patents</a>
+              <a href="academic-calendar.html">Academic Calendar</a>
+              <a href="#">Curriculum &amp; Syllabus</a>
+            </div>
+          </div>
+          <div class="nav-item dropdown">
+            <a href="index.html#portal-pages"><i class="fa-solid fa-pen-nib" style="margin-right:.3rem;"></i>CSE Blog <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+            <div class="dropdown-menu">
+              <a href="index.html#blog-corner-section">Blog Corner</a>
+              <a href="student-corner.html">Student Corner</a>
+              <a href="teachers-corner.html">Teacher's Corner</a>
+              <a href="event1.html">Events Board</a>
+              <a href="academic-calendar.html">Academic Calendar</a>
+              <a href="contact.html">Contact</a>
+            </div>
+          </div>
+          <div class="nav-item dropdown">
+            <a href="#">Admin Corner <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+            <div class="dropdown-menu">
+              <a href="manage-faculty.html">Manage Faculty</a>
+              <a href="dashboard.html">Student's Data Dashboard</a>
+              <a href="admin-login.html">Admin Login</a>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- HERO BANNER -->
+    <section class="calendar-hero-banner">
+      <div class="container">
+        <h1>Academic Calendar 2026-27</h1>
+        <p>Yearly planner of academic sessions, examinations, department technical guest lectures, workshops, and college activities.</p>
+        <div class="hero-badges-row">
+          <span class="hero-badge"><i class="fa-solid fa-university"></i> SRMVEC Autonomous</span>
+          <span class="hero-badge"><i class="fa-solid fa-calendar-alt"></i> July 2026 - June 2027</span>
+          <a class="hero-badge" href="https://srmvalliammai.ac.in/wp-content/uploads/2026/08/academic-calendar-2026-27.pdf" target="_blank" rel="noopener noreferrer" style="text-decoration: none; cursor: pointer; transition: background 0.2s;"><i class="fa-solid fa-file-pdf"></i> Download Official PDF</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE CONTROL BAR -->
+    <div class="controls-wrapper">
+      <div class="container controls-container">
+        <div class="view-toggle-btns">
+          <button class="toggle-btn active" id="btnYearView">
+            <i class="fa-solid fa-calendar-days"></i> Year Grid View
+          </button>
+          <button class="toggle-btn" id="btnListView">
+            <i class="fa-solid fa-list-ul"></i> Monthly List View
+          </button>
+        </div>
+        
+        <div class="search-box-wrap">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="calendarSearchInput" placeholder="Search events (e.g. CAT1, CSE, Holiday)..." />
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN BODY -->
+    <main class="container" style="padding: 1.5rem 0 3rem 0;">
+      
+      <!-- ── YEAR GRID VIEW LAYOUT ── -->
+      <div id="yearViewContainer" class="calendar-layout">
+        
+        <!-- Left: 12 Month Grid -->
+        <div class="yearly-grid-container" id="yearlyGrid">
+          <!-- Monthly grids injected here by Javascript -->
+        </div>
+        
+        <!-- Right: Floating Sticky Event Details -->
+        <div class="details-panel" id="detailsPanel">
+          <div class="details-panel-header">
+            <div class="details-date" id="selectedDateStr">Select a day</div>
+            <div class="details-day-name" id="selectedDayName">Click any highlighted date to view scheduled events.</div>
+          </div>
+          <div id="selectedEventsListContainer" style="flex: 1;">
+            <ul class="details-events-list" id="selectedEventsList">
+              <li style="color: var(--calendar-text-muted); font-size: 0.88rem; text-align: center; padding: 2rem 0;">
+                <i class="fa-solid fa-calendar-check" style="font-size: 2rem; margin-bottom: 0.75rem; color: #cbd5e1; display: block;"></i>
+                Choose a highlighted day in the calendar grid to explore event logs.
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── MONTHLY LIST VIEW LAYOUT ── -->
+      <div id="listViewContainer" class="monthly-list-container" style="display: none;">
+        
+        <div class="month-select-row">
+          <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700;" id="listMonthHeader">July 2026 Schedule</h2>
+          <select class="month-selector" id="monthDropdown">
+            <option value="7">July 2026</option>
+            <option value="8">August 2026</option>
+            <option value="9">September 2026</option>
+            <option value="10">October 2026</option>
+            <option value="11">November 2026</option>
+            <option value="12">December 2026</option>
+            <option value="1">January 2027</option>
+            <option value="2">February 2027</option>
+            <option value="3">March 2027</option>
+            <option value="4">April 2027</option>
+            <option value="5">May 2027</option>
+            <option value="6">June 2027</option>
+          </select>
+        </div>
+        
+        <div class="monthly-event-timeline" id="monthlyTimeline">
+          <!-- Timelines populated by Javascript -->
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="container footer-grid">
+        <div>
+          <h4>Department Contact</h4>
+          <p>Department of Computer Science & Engineering<br />SRM Valliammai Engineering College<br />Kattankulathur, Chengalpattu Dist.</p>
+        </div>
+        <div>
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#specializations">Tech Domains</a></li>
+            <li><a href="laboratories.html">Laboratories</a></li>
+            <li><a href="student-corner.html">Student Corner</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Connect & Support</h4>
+          <p>Email: cse.info@valliammai.edu.in</p>
+          <p>Location: National Highway 45, Potheri, SRM Nagar, Kattankulathur, Tamil Nadu 603203</p>
+          <p>Contact: 044-27454784</p>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        © 2026 Department of Computer Science & Engineering, SRMVEC. All Rights Reserved.
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- CALENDAR RENDERING ENGINE SCRIPT -->
+  <script type="module">
+    import { CALENDAR_DATA } from './src/scripts/calendar-data.js';
+
+    // Global UI state
+    let activeView = 'year'; // 'year' | 'list'
+    let selectedDate = null; // { year, month, day }
+    let searchQuery = '';
+    
+    const monthNamesLong = [
+      "January", "February", "March", "April", "May", "June", 
+      "July", "August", "September", "October", "November", "December"
+    ];
+    
+    const weekDaysShort = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+
+    // Date range configurations July 2026 to June 2027
+    const monthsConfig = [
+      { name: "July", val: 7, year: 2026 },
+      { name: "August", val: 8, year: 2026 },
+      { name: "September", val: 9, year: 2026 },
+      { name: "October", val: 10, year: 2026 },
+      { name: "November", val: 11, year: 2026 },
+      { name: "December", val: 12, year: 2026 },
+      { name: "January", val: 1, year: 2027 },
+      { name: "February", val: 2, year: 2027 },
+      { name: "March", val: 3, year: 2027 },
+      { name: "April", val: 4, year: 2027 },
+      { name: "May", val: 5, year: 2027 },
+      { name: "June", val: 6, year: 2027 }
+    ];
+
+    // Helper functions
+    function getDaysInMonth(year, monthVal) {
+      // monthVal is 1-12
+      return new Date(year, monthVal, 0).getDate();
+    }
+
+    function getStartDayOfWeek(year, monthVal) {
+      // returns 0 (Sunday) to 6 (Saturday)
+      return new Date(year, monthVal - 1, 1).getDay();
+    }
+
+    function getEventCategory(eventStr) {
+      const str = eventStr.toUpperCase();
+      if (str.includes("HOLIDAY")) return { text: "HOLIDAY", class: "holiday-today", type: "holiday" };
+      if (str.includes("CAT") || str.includes("EXAMINATION") || str.includes("ASSESSMENT") || str.includes("LAST WORKING DAY")) return { text: "ACADEMICS", class: "academic-today", type: "academics" };
+      if (str.includes("CSE -") || str.includes("CSE-") || str.includes("CSE DEPT") || str.includes("CSE - ")) return { text: "CSE DEPT", class: "cse-today", type: "cse" };
+      if (str.includes("IT -") || str.includes("IT-")) return { text: "IT DEPT", class: "it-today", type: "it" };
+      if (str.includes("ECE -") || str.includes("ECE-")) return { text: "ECE DEPT", class: "ece-today", type: "ece" };
+      if (str.includes("AI&DS -") || str.includes("AI&DS-") || str.includes("ADS -")) return { text: "AI & DS", class: "aids-today", type: "aids" };
+      if (str.includes("CYB -") || str.includes("CYB-")) return { text: "CYBER DEPT", class: "cyb-today", type: "cyb" };
+      if (str.includes("NSS -") || str.includes("NSS-")) return { text: "NSS EVENT", class: "nss-today", type: "nss" };
+      if (str.includes("R&D -") || str.includes("R&D-")) return { text: "RESEARCH & DEV", class: "rnd-today", type: "rnd" };
+      if (str.includes("MECH -") || str.includes("MECH-")) return { text: "MECH DEPT", class: "mech-today", type: "mech" };
+      if (str.includes("CIVIL -") || str.includes("CIVIL-")) return { text: "CIVIL DEPT", class: "civil-today", type: "civil" };
+      if (str.includes("MBA -") || str.includes("MBA-")) return { text: "MBA DEPT", class: "mba-today", type: "mba" };
+      if (str.includes("ENG -") || str.includes("ENG-")) return { text: "ENGLISH DEPT", class: "eng-today", type: "eng" };
+      return { text: "EVENT / ACTIVITY", class: "general-today", type: "general" };
+    }
+
+    // Render Yearly View
+    window.renderYearView = function() {
+      const container = document.getElementById('yearlyGrid');
+      container.innerHTML = '';
+
+      monthsConfig.forEach(mConfig => {
+        const monthCard = document.createElement('div');
+        monthCard.className = 'month-card';
+        monthCard.setAttribute('data-month-val', mConfig.val);
+        monthCard.setAttribute('data-year', mConfig.year);
+
+        const header = document.createElement('div');
+        header.className = 'month-card-header';
+        header.innerHTML = `
+          <span>${mConfig.name}</span>
+          <span class="year-label">${mConfig.year}</span>
+        `;
+        monthCard.appendChild(header);
+
+        const grid = document.createElement('div');
+        grid.className = 'calendar-grid';
+
+        // Add weekdays header
+        weekDaysShort.forEach(wd => {
+          const wdCell = document.createElement('div');
+          wdCell.className = 'day-name-cell';
+          wdCell.textContent = wd;
+          grid.appendChild(wdCell);
+        });
+
+        // Add empty offset cells
+        const startDay = getStartDayOfWeek(mConfig.year, mConfig.val);
+        for (let i = 0; i < startDay; i++) {
+          const emptyCell = document.createElement('div');
+          emptyCell.className = 'day-cell empty';
+          grid.appendChild(emptyCell);
+        }
+
+        // Add day cells
+        const numDays = getDaysInMonth(mConfig.year, mConfig.val);
+        let monthHasSearchMatch = false;
+
+        for (let d = 1; d <= numDays; d++) {
+          const dayCell = document.createElement('div');
+          dayCell.className = 'day-cell';
+          dayCell.textContent = d;
+          dayCell.setAttribute('data-day', d);
+
+          // Find events for this day
+          const dayData = CALENDAR_DATA.find(e => 
+            e.year === mConfig.year && 
+            e.month === mConfig.val && 
+            e.day === d
+          );
+
+          const hasEvents = dayData && dayData.events && dayData.events.length > 0;
+          if (hasEvents) {
+            dayCell.classList.add('has-events');
+            
+            // Search filtering check
+            if (searchQuery.trim() !== '') {
+              const matchesQuery = dayData.events.some(evt => 
+                evt.toLowerCase().includes(searchQuery.toLowerCase())
+              );
+              if (matchesQuery) {
+                dayCell.classList.add('search-matched');
+                monthHasSearchMatch = true;
+              }
+            }
+          }
+
+          // Check if selected
+          if (selectedDate && 
+              selectedDate.year === mConfig.year && 
+              selectedDate.month === mConfig.val && 
+              selectedDate.day === d) {
+            dayCell.classList.add('selected');
+          }
+
+          // Handle click
+          dayCell.addEventListener('click', () => {
+            // Deselect previous
+            document.querySelectorAll('.day-cell.selected').forEach(c => c.classList.remove('selected'));
+            dayCell.classList.add('selected');
+            
+            selectedDate = { year: mConfig.year, month: mConfig.val, day: d };
+            showDateDetails(selectedDate, dayData ? dayData.events : []);
+          });
+
+          grid.appendChild(dayCell);
+        }
+
+        monthCard.appendChild(grid);
+
+        // Dim cards that don't match search query if query is active
+        if (searchQuery.trim() !== '') {
+          if (!monthHasSearchMatch) {
+            monthCard.classList.add('dimmed');
+          }
+        }
+
+        container.appendChild(monthCard);
+      });
+    }
+
+    // Show date details in sidebar
+    window.showDateDetails = function(dateObj, events) {
+      const dateHeader = document.getElementById('selectedDateStr');
+      const dayNameSub = document.getElementById('selectedDayName');
+      const listContainer = document.getElementById('selectedEventsList');
+
+      const dName = new Date(dateObj.year, dateObj.month - 1, dateObj.day).toLocaleDateString("en-US", { weekday: 'long' });
+      dateHeader.textContent = `${monthNamesLong[dateObj.month - 1]} ${dateObj.day}, ${dateObj.year}`;
+      dayNameSub.textContent = dName;
+
+      listContainer.innerHTML = '';
+
+      if (events && events.length > 0) {
+        events.forEach(evt => {
+          const li = document.createElement('li');
+          const cat = getEventCategory(evt);
+          li.className = `details-event-card ${cat.type}`;
+          li.innerHTML = `
+            <span class="status-pill ${cat.class}"><i class="fa-solid fa-circle-dot"></i> ${cat.text}</span>
+            <span class="details-event-title">${evt}</span>
+          `;
+          listContainer.appendChild(li);
+        });
+      } else {
+        const li = document.createElement('li');
+        li.style.cssText = "color: var(--calendar-text-muted); font-size: 0.88rem; text-align: center; padding: 2rem 0;";
+        li.innerHTML = `
+          <i class="fa-solid fa-calendar-check" style="font-size: 2rem; margin-bottom: 0.75rem; color: #cbd5e1; display: block;"></i>
+          No special events scheduled for this day. Academic classes and standard labs are running on schedule.
+        `;
+        listContainer.appendChild(li);
+      }
+    }
+
+    // Render Monthly List View
+    window.renderListView = function() {
+      const monthDropdown = document.getElementById('monthDropdown');
+      const targetMonthVal = parseInt(monthDropdown.value);
+      
+      const configMatch = monthsConfig.find(m => m.val === targetMonthVal);
+      if (!configMatch) return;
+      
+      const headerTitle = document.getElementById('listMonthHeader');
+      headerTitle.textContent = `${configMatch.name} ${configMatch.year} Schedule`;
+      
+      const timeline = document.getElementById('monthlyTimeline');
+      timeline.innerHTML = '';
+      
+      // Get all entries for this month & year
+      const days = getDaysInMonth(configMatch.year, configMatch.val);
+      let eventCount = 0;
+      
+      for (let d = 1; d <= days; d++) {
+        // Check events for day
+        const dayData = CALENDAR_DATA.find(e => 
+          e.year === configMatch.year && 
+          e.month === configMatch.val && 
+          e.day === d
+        );
+        
+        let displayEvents = dayData ? dayData.events : [];
+        
+        // Filter events by search query if active
+        if (searchQuery.trim() !== '') {
+          displayEvents = displayEvents.filter(evt => 
+            evt.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+        }
+        
+        if (displayEvents && displayEvents.length > 0) {
+          eventCount += displayEvents.length;
+          
+          const item = document.createElement('div');
+          item.className = 'timeline-item';
+          
+          const weekday = new Date(configMatch.year, configMatch.val - 1, d)
+            .toLocaleDateString("en-US", { weekday: 'short' }).toUpperCase();
+            
+          const dateCol = document.createElement('div');
+          dateCol.className = 'timeline-date-col';
+          dateCol.innerHTML = `
+            <div class="timeline-date-badge has-events">
+              <span>${d < 10 ? '0' + d : d}</span>
+              ${weekday}
+            </div>
+          `;
+          
+          const eventsCol = document.createElement('div');
+          eventsCol.className = 'timeline-events-col';
+          
+          displayEvents.forEach(evt => {
+            const cat = getEventCategory(evt);
+            const entry = document.createElement('div');
+            entry.className = 'timeline-event-entry';
+            entry.innerHTML = `
+              <div>
+                <span class="status-pill ${cat.class}" style="margin-bottom: 0.3rem;"><i class="fa-solid fa-circle-dot"></i> ${cat.text}</span>
+              </div>
+              <span class="timeline-event-text">${evt}</span>
+            `;
+            eventsCol.appendChild(entry);
+          });
+          
+          item.appendChild(dateCol);
+          item.appendChild(eventsCol);
+          timeline.appendChild(item);
+        }
+      }
+      
+      if (eventCount === 0) {
+        timeline.innerHTML = `
+          <div class="no-events-notice">
+            <i class="fa-solid fa-calendar-xmark" style="font-size: 2.5rem; color: #cbd5e1; display: block; margin-bottom: 0.75rem;"></i>
+            No events found matching your filter criteria for this month.
+          </div>
+        `;
+      }
+    }
+
+    // Toggle views
+    window.setView = function(viewName) {
+      activeView = viewName;
+      const btnYear = document.getElementById('btnYearView');
+      const btnList = document.getElementById('btnListView');
+      const yearContainer = document.getElementById('yearViewContainer');
+      const listContainer = document.getElementById('listViewContainer');
+
+      if (viewName === 'year') {
+        btnYear.classList.add('active');
+        btnList.classList.remove('active');
+        yearContainer.style.display = 'grid';
+        listContainer.style.display = 'none';
+        renderYearView();
+      } else {
+        btnYear.classList.remove('active');
+        btnList.classList.add('active');
+        yearContainer.style.display = 'none';
+        listContainer.style.display = 'block';
+        renderListView();
+      }
+    }
+
+    // Event listeners initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Set current date default selection in Yearly Details Sidebar
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const currentMonthVal = today.getMonth() + 1; // 1-indexed
+      const currentDate = today.getDate();
+
+      // Check if current date is within July 2026 - June 2027
+      // If not, default to July 1, 2026
+      const inRange = monthsConfig.some(m => m.year === currentYear && m.val === currentMonthVal);
+      if (inRange) {
+        selectedDate = { year: currentYear, month: currentMonthVal, day: currentDate };
+        // Set the dropdown default
+        document.getElementById('monthDropdown').value = currentMonthVal;
+      } else {
+        selectedDate = { year: 2026, month: 7, day: 1 };
+        document.getElementById('monthDropdown').value = "7";
+      }
+
+      // Initial renders
+      renderYearView();
+      
+      const dayData = CALENDAR_DATA.find(e => 
+        e.year === selectedDate.year && 
+        e.month === selectedDate.month && 
+        e.day === selectedDate.day
+      );
+      showDateDetails(selectedDate, dayData ? dayData.events : []);
+
+      // 2. Nav Toggle Event Listeners
+      document.getElementById('btnYearView').addEventListener('click', () => setView('year'));
+      document.getElementById('btnListView').addEventListener('click', () => setView('list'));
+
+      // 3. Dropdown selector change
+      document.getElementById('monthDropdown').addEventListener('change', () => {
+        if (activeView === 'list') {
+          renderListView();
+        }
+      });
+
+      // 4. Search Filter Input Event
+      const searchInput = document.getElementById('calendarSearchInput');
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        if (activeView === 'year') {
+          renderYearView();
+        } else {
+          renderListView();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
