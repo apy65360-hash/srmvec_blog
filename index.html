@@ -51,6 +51,18 @@
     </a>
   </aside>
 
+  <!-- ═══ ANNOUNCEMENT LIVE TICKER ═══ -->
+  <div class="ann-ticker-bar">
+    <div class="ann-ticker-label">
+      <span class="ann-live-dot"></span>
+      <i class="fa-solid fa-bullhorn"></i> ANNOUNCEMENTS
+    </div>
+    <div class="ann-ticker-viewport">
+      <div class="ann-ticker-track" id="ann-ticker-text">Loading announcements...</div>
+    </div>
+    <a href="#announcements-section" class="ann-ticker-cta">View All</a>
+  </div>
+
   <!-- TOP INSTITUTIONAL UTILITY BAR -->
   <div class="top-bar">
     <div class="container top-bar-content">
@@ -81,8 +93,8 @@
       <nav class="main-nav-menu">
         <div class="nav-item dropdown">
           <a href="#">About <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
-                              <div class="dropdown-menu">
-                        <a href="https://srmvalliammai.ac.in/be-computer-science-and-engineering/" target="_blank" rel="noopener noreferrer">Academics & Accreditation</a>
+          <div class="dropdown-menu">
+            <a href="https://srmvalliammai.ac.in/be-computer-science-and-engineering/" target="_blank" rel="noopener noreferrer">Academics &amp; Accreditation</a>
             <a href="laboratories.html">Laboratories</a>
             <a href="contact.html">Contact Us</a>
           </div>
@@ -98,23 +110,9 @@
         <div class="nav-item dropdown">
           <a href="#specializations">Academics <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
           <div class="dropdown-menu">
-            <a href="#specializations">Tech Domains</a>
-            <a href="#">Curriculum & Syllabus</a>
-          </div>
-        </div>
-        <div class="nav-item dropdown">
-          <a href="#">Research <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
-                    <div class="dropdown-menu">
-            <a href="#">Publications & Patents</a>
-            <a href="laboratories.html">Research Labs</a>
-          </div>
-        </div>
-        <div class="nav-item dropdown">
-          <a href="#events-section">Campus Life <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
-          <div class="dropdown-menu">
-            <a href="#events-section">Events & Symposium</a>
-            <a href="student-corner.html">Student Corner</a>
-            <a href="teachers-corner.html">Teacher's Corner</a>
+            <a href="publications-patents.html">Publications &amp; Patents</a>
+            <a href="academic-calendar.html">Academic Calendar</a>
+            <a href="#">Curriculum &amp; Syllabus</a>
           </div>
         </div>
         <div class="nav-item dropdown">
@@ -124,6 +122,8 @@
             <a href="student-corner.html">Student Corner</a>
             <a href="teachers-corner.html">Teacher's Corner</a>
             <a href="event1.html">Events Board</a>
+            <a href="add-event.html"><i class="fa-solid fa-calendar-plus" style="margin-right:0.3rem;color:#10B981;"></i>Add Event</a>
+            <a href="academic-calendar.html">Academic Calendar</a>
             <a href="contact.html">Contact</a>
           </div>
         </div>
@@ -150,12 +150,12 @@
     <div class="hero-slide active">
       <div class="container hero-slide-container">
         <div class="hero-slide-content">
-          <span class="tech-mode-tag"><i class="fa-solid fa-microchip"></i> Cyber Neural Systems</span>
-          <h1 class="hero-slide-title">Advancing Intelligent Computing & Systems Engineering</h1>
+          <span class="tech-mode-tag"><i class="fa-solid fa-university"></i> SRM Valliammai</span>
+          <h1 class="hero-slide-title">Department of Computer Science and Engineering</h1>
           <p class="hero-slide-desc">
-            Hundreds of scholars and engineers ready to build the next generation of artificial intelligence, cloud architectures, and autonomous software systems.
+            Driven by curiosity, compiled by logic
           </p>
-          <a href="#specializations" class="btn-hero-gold">Explore Research & Labs</a>
+          <a href="#specializations" class="btn-hero-gold">Explore</a>
         </div>
       </div>
     </div>
@@ -164,12 +164,12 @@
     <div class="hero-slide">
       <div class="container hero-slide-container">
         <div class="hero-slide-content">
-          <span class="tech-mode-tag"><i class="fa-solid fa-shield-halved"></i> Zero-Trust Cyber Defense</span>
-          <h1 class="hero-slide-title">Next-Gen Cybersecurity & Cryptographic Infrastructure</h1>
+          <span class="tech-mode-tag"><i class="fa-solid fa-university"></i> SRM Valliammai</span>
+          <h1 class="hero-slide-title">Department of Computer Science and Engineering</h1>
           <p class="hero-slide-desc">
-            Pioneering secure protocol design, automated vulnerability auditing, zero-trust network defenses, and threat intelligence.
+            Driven by curiosity, compiled by logic
           </p>
-          <a href="#specializations" class="btn-hero-gold">Discover Defense Labs</a>
+          <a href="#specializations" class="btn-hero-gold">Explore</a>
         </div>
       </div>
     </div>
@@ -178,12 +178,12 @@
     <div class="hero-slide">
       <div class="container hero-slide-container">
         <div class="hero-slide-content">
-          <span class="tech-mode-tag"><i class="fa-solid fa-server"></i> Cloud & Distributed Systems</span>
-          <h1 class="hero-slide-title">High-Performance Cloud & Quantum Data Systems</h1>
+          <span class="tech-mode-tag"><i class="fa-solid fa-university"></i> SRM Valliammai</span>
+          <h1 class="hero-slide-title">Department of Computer Science and Engineering</h1>
           <p class="hero-slide-desc">
-            Building resilient microservices, container orchestrations, real-time data pipelines, and scalable enterprise platforms.
+            Driven by curiosity, compiled by logic
           </p>
-          <a href="#events-section" class="btn-hero-gold">View Placements & MOUs</a>
+          <a href="#events-section" class="btn-hero-gold">Explore</a>
         </div>
       </div>
     </div>
@@ -265,20 +265,26 @@
       </div>
 
       <div class="page-directory-grid">
-        <a class="page-tile" href="student-corner.html">
-          <i class="fa-solid fa-user-graduate"></i>
-          <strong>Student Corner</strong>
-          <span>Write and manage student blogs</span>
-        </a>
-        <a class="page-tile" href="teachers-corner.html">
-          <i class="fa-solid fa-chalkboard-user"></i>
-          <strong>Teacher's Corner</strong>
-          <span>Faculty blog publishing</span>
-        </a>
+
         <a class="page-tile" href="event1.html">
           <i class="fa-solid fa-calendar-days"></i>
           <strong>Events Board</strong>
           <span>Upcoming events and posters</span>
+        </a>
+        <a class="page-tile" href="add-event.html">
+          <i class="fa-solid fa-calendar-plus" style="color:#10B981;"></i>
+          <strong>Add New Event</strong>
+          <span>Publish &amp; feature upcoming events</span>
+        </a>
+        <a class="page-tile" href="academic-calendar.html">
+          <i class="fa-solid fa-calendar-check"></i>
+          <strong>Academic Calendar</strong>
+          <span>View monthly & yearly schedules</span>
+        </a>
+        <a class="page-tile" href="publications-patents.html">
+          <i class="fa-solid fa-file-invoice"></i>
+          <strong>Publications &amp; Patents</strong>
+          <span>Journals, research papers &amp; patents portal</span>
         </a>
         <a class="page-tile" href="contact.html">
           <i class="fa-solid fa-envelope"></i>
@@ -288,70 +294,19 @@
       </div>
     </section>
 
-    <!-- TECHNICAL DOMAINS & SPECIALIZATION MODULES -->
-    <section class="tech-domains-section" id="specializations">
-      <div class="section-header-center">
-        <span class="section-kicker">Our research advances</span>
-        <h2 class="section-title">CSE Academic & Research Domains</h2>
-      </div>
 
-      <div class="domains-grid">
-        <div class="domain-card">
-          <div class="domain-icon-wrap">
-            <i class="fa-solid fa-brain"></i>
-          </div>
-          <h3>AI & Machine Learning</h3>
-          <p>Deep Learning models, Computer Vision, Natural Language Processing, and Neural Architectures.</p>
-          <div class="domain-tags">
-            <span class="domain-tag">PyTorch</span>
-            <span class="domain-tag">TensorFlow</span>
-            <span class="domain-tag">LLMs</span>
-          </div>
-        </div>
-
-        <div class="domain-card">
-          <div class="domain-icon-wrap">
-            <i class="fa-solid fa-shield-halved"></i>
-          </div>
-          <h3>Cybersecurity & Defense</h3>
-          <p>Network security protocols, Cryptography, Penetration Testing, and Incident Management.</p>
-          <div class="domain-tags">
-            <span class="domain-tag">Ethical Hacking</span>
-            <span class="domain-tag">Zero Trust</span>
-            <span class="domain-tag">SIEM</span>
-          </div>
-        </div>
-
-        <div class="domain-card">
-          <div class="domain-icon-wrap">
-            <i class="fa-solid fa-cloud"></i>
-          </div>
-          <h3>Cloud & Microservices</h3>
-          <p>Distributed cloud architectures, Container orchestration, DevOps automation pipelines.</p>
-          <div class="domain-tags">
-            <span class="domain-tag">Kubernetes</span>
-            <span class="domain-tag">Docker</span>
-            <span class="domain-tag">AWS / GCP</span>
-          </div>
-        </div>
-
-        <div class="domain-card">
-          <div class="domain-icon-wrap">
-            <i class="fa-solid fa-database"></i>
-          </div>
-          <h3>Data Engineering</h3>
-          <p>Real-time analytics pipelines, Big Data processing, Graph Databases, and Warehousing.</p>
-          <div class="domain-tags">
-            <span class="domain-tag">Apache Spark</span>
-            <span class="domain-tag">SQL</span>
-            <span class="domain-tag">ETL</span>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- EVENTS EMBED SLIDER -->
     <section class="events-embed-wrapper" id="events-section">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem; padding:0 0.5rem;">
+        <div>
+          <h2 style="margin:0; font-family:'Space Grotesk', sans-serif; font-size:1.6rem; font-weight:700; color:var(--text-color);"><i class="fa-solid fa-calendar-days" style="color:#2563EB; margin-right:0.5rem;"></i> Upcoming CSE Events</h2>
+          <p style="margin:0.25rem 0 0 0; color:var(--text-muted); font-size:0.9rem;">Live slider of upcoming departmental symposiums, workshops &amp; competitions</p>
+        </div>
+        <a href="add-event.html" style="display:inline-flex; align-items:center; gap:0.5rem; background:linear-gradient(135deg, #2563EB, #0EA5E9); color:white; padding:0.6rem 1.2rem; border-radius:10px; font-size:0.95rem; font-weight:600; text-decoration:none; box-shadow:0 4px 12px rgba(37,99,235,0.25); transition:all 0.2s ease;">
+          <i class="fa-solid fa-calendar-plus"></i> Add Event
+        </a>
+      </div>
       <iframe src="event-slider.html" title="Upcoming Events" class="events-iframe"></iframe>
     </section>
 
@@ -382,7 +337,7 @@
       <section class="portal-card" id="todays-events-card">
         <div class="card-header">
           <h3>Today's Events</h3>
-          <a href="#" class="more-link" id="todayDateStr">AUG 07, 2026</a>
+          <a href="academic-calendar.html" class="more-link" id="todayDateStr">AUG 07, 2026</a>
         </div>
         <ul class="event-schedule" id="todaysEventsList">
           <!-- Populated dynamically by tech-hero.js -->
@@ -403,6 +358,114 @@
       </section>
 
     </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         ANNOUNCEMENTS SECTION
+    ════════════════════════════════════════════════════════════ -->
+    <section class="ann-section" id="announcements-section">
+
+      <!-- Left: Announcement Column -->
+      <div class="ann-column">
+
+        <!-- Tech animated header -->
+        <div class="ann-column-header">
+          <canvas id="ann-header-canvas" class="ann-header-canvas"></canvas>
+          <div class="ann-header-content">
+            <div class="ann-header-left">
+              <span class="ann-live-badge"><span class="ann-live-dot"></span> LIVE</span>
+              <h2><i class="fa-solid fa-bullhorn"></i> Announcements
+                <span class="ann-badge-count" id="ann-badge-count" style="display:none">0</span>
+              </h2>
+              <p>Department-wide notices, exam alerts &amp; important updates</p>
+            </div>
+            <div class="ann-header-right">
+              <div class="ann-scan-line"></div>
+              <span class="ann-sys-text" id="ann-sys-clock">SYS::LIVE</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Admin quick-post form (shown only when teacher/admin is logged in) -->
+        <div class="ann-post-wrap" id="ann-post-wrap" style="display:none;">
+          <form class="ann-post-form" id="ann-post-form">
+            <div class="ann-form-title"><i class="fa-solid fa-circle-plus"></i> Post New Announcement</div>
+            <div id="ann-post-msg" class="ann-post-success" style="display:none;">
+              <i class="fa-solid fa-circle-check"></i> Announcement published &amp; notifications sent!
+            </div>
+            <input  class="ann-form-input" type="text"   id="ann-title"    placeholder="Announcement title *" required />
+            <textarea class="ann-form-input ann-form-ta"  id="ann-body"   rows="3" placeholder="Full message / details *" required></textarea>
+            <div class="ann-form-row">
+              <select class="ann-form-input ann-form-select" id="ann-category">
+                <option value="Academic">Academic</option>
+                <option value="Exam">Exam</option>
+                <option value="Placement">Placement</option>
+                <option value="Club">Club</option>
+                <option value="Holiday">Holiday</option>
+                <option value="General" selected>General</option>
+              </select>
+              <select class="ann-form-input ann-form-select" id="ann-priority">
+                <option value="normal" selected>Normal</option>
+                <option value="high">Urgent</option>
+              </select>
+              <button class="ann-form-submit" type="submit"><i class="fa-solid fa-paper-plane"></i> Post &amp; Notify</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Notification permission prompt -->
+        <div class="ann-notif-prompt" id="ann-notif-prompt">
+          <i class="fa-solid fa-bell"></i>
+          <span>Enable browser notifications to get instant alerts when new announcements are posted.</span>
+          <button class="ann-notif-btn" id="ann-enable-notif">Enable Notifications</button>
+          <button class="ann-notif-dismiss" id="ann-dismiss-notif">✕</button>
+        </div>
+
+        <!-- Scrollable list -->
+        <div class="ann-list-wrap">
+          <div class="ann-list" id="ann-list">
+            <!-- Rendered by announcements.js -->
+            <div class="ann-skeleton"></div>
+            <div class="ann-skeleton"></div>
+            <div class="ann-skeleton"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Quick-stats sidebar -->
+      <div class="ann-sidebar">
+
+        <!-- Category filter pills -->
+        <div class="ann-sidebar-card">
+          <h4 class="ann-sidebar-title"><i class="fa-solid fa-filter"></i> Filter by Category</h4>
+          <div class="ann-filter-pills" id="ann-filter-pills">
+            <button class="ann-pill active" data-cat="all">All</button>
+            <button class="ann-pill" data-cat="Academic">Academic</button>
+            <button class="ann-pill" data-cat="Exam">Exam</button>
+            <button class="ann-pill" data-cat="Placement">Placement</button>
+            <button class="ann-pill" data-cat="Club">Club</button>
+            <button class="ann-pill" data-cat="Holiday">Holiday</button>
+            <button class="ann-pill" data-cat="General">General</button>
+          </div>
+        </div>
+
+        <!-- Stats card -->
+        <div class="ann-sidebar-card ann-stats-card">
+          <h4 class="ann-sidebar-title"><i class="fa-solid fa-chart-bar"></i> This Week</h4>
+          <div class="ann-stats-grid" id="ann-stats-grid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Latest urgent -->
+        <div class="ann-sidebar-card" id="ann-urgent-card" style="display:none;">
+          <h4 class="ann-sidebar-title" style="color:#DC2626;"><i class="fa-solid fa-triangle-exclamation"></i> Urgent Notice</h4>
+          <p class="ann-urgent-text" id="ann-urgent-text"></p>
+        </div>
+
+      </div>
+
+    </section>
 
   </main>
 
@@ -446,6 +509,8 @@
   <script type="module" src="/src/scripts/blog-corner.js"></script>
   <!-- Tech Hero JS -->
   <script type="module" src="/src/scripts/tech-hero.js"></script>
+  <!-- Announcements JS -->
+  <script type="module" src="/src/scripts/announcements.js"></script>
   <script>
     window.addEventListener('DOMContentLoaded', () => {
       window.setTimeout(() => {
