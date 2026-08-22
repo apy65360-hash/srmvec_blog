@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Publications & Patents | SRMVEC CSE Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <link rel="stylesheet" href="/src/styles/style.css" />
+  <link rel="stylesheet" href="/src/styles/portal.css" />
+  <style>
+    /* Technical & Animated styles for Publications & Patents page */
+    .pub-hero-banner {
+      background: linear-gradient(135deg, #0b132b 0%, #1c2541 50%, #3a506b 100%);
+      color: #ffffff;
+      padding: 4rem 1rem 3.5rem 1rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 2px solid var(--accent-gold);
+    }
+    .pub-hero-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(217,119,6,0.08) 0%, transparent 60%);
+      pointer-events: none;
+      animation: heroPulse 12s infinite alternate ease-in-out;
+    }
+    @keyframes heroPulse {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(5%, 5%) scale(1.1); }
+    }
+    .pub-hero-banner h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+    .pub-hero-banner p {
+      color: #e2e8f0;
+      font-size: 1.15rem;
+      max-width: 800px;
+      margin: 0 auto 1.5rem auto;
+      line-height: 1.6;
+    }
+    .pub-hero-badges {
+      display: flex;
+      justify-content: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .pub-hero-badge {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      padding: 0.5rem 1.2rem;
+      border-radius: 30px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    .pub-hero-badge i {
+      color: var(--accent-gold);
+    }
+    .pub-hero-badge:hover {
+      background: rgba(217, 119, 6, 0.12);
+      border-color: var(--accent-gold);
+      transform: translateY(-2px);
+    }
+
+    /* Live stats dashboard panel */
+    .pub-stats-panel {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-top: -2.5rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+      z-index: 10;
+    }
+    .pub-stat-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .pub-stat-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--primary-navy);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .pub-stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .pub-stat-card:hover::after {
+      transform: scaleX(1);
+    }
+    .pub-stat-card.gold-line::after {
+      background: var(--accent-gold);
+    }
+    .pub-stat-number {
+      display: block;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--primary-navy);
+      font-family: 'Space Grotesk', sans-serif;
+      margin-bottom: 0.25rem;
+    }
+    .pub-stat-card.gold-line .pub-stat-number {
+      color: #b45309;
+    }
+    .pub-stat-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Filter Controls and Search Menu */
+    .pub-search-wrapper {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+    }
+    .search-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .search-input-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 280px;
+    }
+    .search-input-wrap input {
+      width: 100%;
+      padding: 0.85rem 1rem 0.85rem 2.8rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      color: #0f172a;
+      outline: none;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+    }
+    .search-input-wrap input:focus {
+      background: #ffffff;
+      border-color: var(--primary-navy);
+      box-shadow: 0 0 0 4px rgba(0, 41, 71, 0.08);
+    }
+    .search-input-wrap i {
+      position: absolute;
+      left: 1.1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      font-size: 1.05rem;
+    }
+    .type-select-wrap {
+      min-width: 180px;
+    }
+    .type-select-wrap select {
+      width: 100%;
+      padding: 0.85rem 1.25rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #334155;
+      background-color: #f8fafc;
+      outline: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .type-select-wrap select:focus {
+      border-color: var(--primary-navy);
+      background-color: #ffffff;
+    }
+    .pub-publish-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--primary-navy);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 0.85rem 1.5rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .pub-publish-btn:hover {
+      background: #003760;
+      transform: translateY(-1px);
+    }
+
+    /* Tabs Filter Bar (Topic & Year) */
+    .filter-tabs-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 1.25rem;
+    }
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+      scrollbar-width: none; /* Hide scrollbar for clean menu */
+    }
+    .filter-row::-webkit-scrollbar {
+      display: none;
+    }
+    .filter-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      min-width: 80px;
+    }
+    .filter-pills {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: nowrap;
+    }
+    .filter-pill {
+      background: #f1f5f9;
+      color: #475569;
+      border: none;
+      border-radius: 8px;
+      padding: 0.4rem 0.95rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+    .filter-pill:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+    .filter-pill.active {
+      background: var(--primary-navy);
+      color: #ffffff;
+    }
+    .filter-pill.active-gold {
+      background: var(--accent-gold);
+      color: #ffffff;
+    }
+
+    /* Grid Results of Publications/Patents Cards */
+    .publications-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin-bottom: 3.5rem;
+    }
+    
+    /* Sleek Tech Card Layout & Interactions */
+    .pub-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    }
+    .pub-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: #cbd5e1;
+      transition: background 0.3s ease;
+    }
+    .pub-card.type-journal::before {
+      background: #3b82f6; /* Blue for journals */
+    }
+    .pub-card.type-patent::before {
+      background: var(--accent-gold); /* Gold for patents */
+    }
+    .pub-card.type-conference::before {
+      background: #10b981; /* Green for conferences */
+    }
+    .pub-card.type-book_chapter::before {
+      background: #8b5cf6; /* Purple for books */
+    }
+    .pub-card:hover {
+      transform: translateY(-3px) scale(1.002);
+      box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+      border-color: #cbd5e1;
+    }
+    
+    .pub-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .pub-badges {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .badge-journal { background: #eff6ff; color: #1e40af; }
+    .badge-patent { background: #fffbeb; color: #92400e; }
+    .badge-conference { background: #ecfdf5; color: #065f46; }
+    .badge-book_chapter { background: #f5f3ff; color: #5b21b6; }
+    .badge-topic { background: #f1f5f9; color: #475569; }
+    .pub-year {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #64748b;
+      background: #f8fafc;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .pub-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.22rem;
+      font-weight: 700;
+      color: var(--primary-navy);
+      line-height: 1.35;
+      margin: 0;
+      transition: color 0.2s ease;
+    }
+    .pub-card:hover .pub-title {
+      color: #005a9c;
+    }
+
+    .pub-meta-line {
+      font-size: 0.86rem;
+      color: #475569;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .pub-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .pub-meta-item i {
+      color: #94a3b8;
+    }
+    .pub-contributors {
+      font-weight: 600;
+      color: #1e293b;
+    }
+    
+    /* Expandable Abstract Details with Smooth Animation */
+    .pub-details-drawer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+      opacity: 0;
+      border-top: 0px solid transparent;
+      padding-top: 0;
+      margin-top: 0;
+    }
+    .pub-card.expanded .pub-details-drawer {
+      max-height: 800px; /* Large enough to hold abstract content */
+      opacity: 1;
+      border-top: 1px dashed #e2e8f0;
+      padding-top: 1rem;
+      margin-top: 0.5rem;
+    }
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 600px) {
+      .details-grid { grid-template-columns: 1fr; }
+    }
+    .details-cell {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 0.65rem 0.85rem;
+      border: 1px solid #f1f5f9;
+    }
+    .details-cell-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-bottom: 0.15rem;
+    }
+    .details-cell-value {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .abstract-box {
+      line-height: 1.6;
+      font-size: 0.88rem;
+      color: #334155;
+      margin-bottom: 1rem;
+    }
+    .abstract-box h4 {
+      font-weight: 700;
+      color: var(--primary-navy);
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+    }
+    .pub-card-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+    .btn-link-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #2563eb;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .btn-link-action:hover {
+      color: #1d4ed8;
+      text-decoration: underline;
+    }
+    .expand-indicator {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .pub-card.expanded .expand-indicator {
+      color: var(--primary-navy);
+    }
+    .pub-card.expanded .expand-indicator i {
+      transform: rotate(180deg);
+    }
+
+    /* Modal Form Backdrop & Dialog */
+    .pub-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 1.5rem;
+    }
+    .pub-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .pub-modal-content {
+      background: #ffffff;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      border: 1px solid #e2e8f0;
+      transform: scale(0.95);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .pub-modal.open .pub-modal-content {
+      transform: scale(1);
+    }
+    .pub-modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--primary-navy);
+      color: #ffffff;
+    }
+    .pub-modal-header h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .pub-close-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.8);
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .pub-close-btn:hover {
+      color: #ffffff;
+    }
+    .pub-modal-body {
+      padding: 1.5rem;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 580px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+    .form-group-full {
+      grid-column: span 2;
+    }
+    @media (max-width: 580px) {
+      .form-group-full { grid-column: span 1; }
+    }
+
+    /* Auth prompt chip in search wrapper */
+    .auth-banner-prompt {
+      background: #eff6ff;
+      border: 1px dashed #bfdbfe;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .auth-prompt-text {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: #1e40af;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .auth-prompt-actions a {
+      font-size: 0.82rem;
+      font-weight: 700;
+      background: #3b82f6;
+      color: #ffffff;
+      padding: 0.35rem 0.85rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .auth-prompt-actions a:hover {
+      background: #2563eb;
+    }
+    
+    .empty-publications {
+      text-align: center;
+      padding: 4rem 1.5rem;
+      background: #ffffff;
+      border: 1px dashed #cbd5e1;
+      border-radius: 16px;
+      color: #64748b;
+    }
+    .empty-publications i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #94a3b8;
+    }
+    .empty-publications h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      color: var(--primary-navy);
+      margin-bottom: 0.5rem;
+    }
+    .empty-publications p {
+      font-size: 0.9rem;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body class="is-loading">
+
+  <div class="site-shell">
+    
+    <!-- Social Sidebar -->
+    <aside class="social-sidebar" aria-label="Official SRMVEC social media links">
+      <a class="social-link facebook" href="https://www.facebook.com/srmvecofficial/" target="_blank" rel="noopener noreferrer" aria-label="SRMVEC on Facebook">
+        <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+      </a>
+      <a class="social-link x-twitter" href="https://twitter.com/srmvec" target="_blank" rel="noopener noreferrer" aria-label="SRMVEC on X">
+        <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+      </a>
+      <a class="social-link youtube" href="https://www.youtube.com/@srmvecoff" target="_blank" rel="noopener noreferrer" aria-label="SRMVEC on YouTube">
+        <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+      </a>
+      <a class="social-link linkedin" href="https://www.linkedin.com/school/srm-valliammai-engineering-college/" target="_blank" rel="noopener noreferrer" aria-label="SRMVEC on LinkedIn">
+        <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+      </a>
+      <a class="social-link instagram" href="https://www.instagram.com/srmvecofficial/" target="_blank" rel="noopener noreferrer" aria-label="SRMVEC on Instagram">
+        <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+      </a>
+      <a class="social-link location" href="https://www.google.com/maps/place/SRM+Valliammai+Engineering+College/@12.8259494,80.0387379,17z" target="_blank" rel="noopener noreferrer" aria-label="SRMVEC location on map">
+        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+      </a>
+    </aside>
+
+    <!-- TOP INSTITUTIONAL UTILITY BAR -->
+    <div class="top-bar">
+      <div class="container top-bar-content">
+        <div class="top-utility-links">
+          <a href="student-corner.html">Students</a>
+          <a href="teachers-corner.html">Faculty & Staff</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="top-bar-search">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" placeholder="Search CSE Blog" />
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN UNIFIED HEADER & NAV -->
+    <header class="main-header-unified">
+      <div class="container header-nav-container">
+        
+        <div class="brand-group">
+          <div class="brand-text-box">
+            <h1 class="brand-main-title"><a href="index.html" style="color: inherit; text-decoration: none;">CSE Blog</a></h1>
+          </div>
+        </div>
+
+        <nav class="main-nav-menu">
+          <div class="nav-item dropdown">
+            <a href="#">About <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+            <div class="dropdown-menu">
+              <a href="https://srmvalliammai.ac.in/be-computer-science-and-engineering/" target="_blank" rel="noopener noreferrer">Academics &amp; Accreditation</a>
+              <a href="laboratories.html">Laboratories</a>
+              <a href="contact.html">Contact Us</a>
+            </div>
+          </div>
+          <div class="nav-item dropdown">
+            <a href="#">Admissions <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+            <div class="dropdown-menu">
+              <a href="#">B.E. Computer Science</a>
+              <a href="#">M.E. Computer Science</a>
+              <a href="#">Eligibility &amp; Cutoffs</a>
+            </div>
+          </div>
+          <div class="nav-item dropdown">
+            <a href="index.html#specializations">Academics <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+            <div class="dropdown-menu">
+              <a href="publications-patents.html">Publications &amp; Patents</a>
+              <a href="academic-calendar.html">Academic Calendar</a>
+              <a href="#">Curriculum &amp; Syllabus</a>
+            </div>
+          </div>
+          <div class="nav-item dropdown">
+            <a href="index.html#portal-pages"><i class="fa-solid fa-pen-nib" style="margin-right:.3rem;"></i>CSE Blog <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+            <div class="dropdown-menu">
+              <a href="index.html#blog-corner-section">Blog Corner</a>
+              <a href="student-corner.html">Student Corner</a>
+              <a href="teachers-corner.html">Teacher's Corner</a>
+              <a href="event1.html">Events Board</a>
+              <a href="academic-calendar.html">Academic Calendar</a>
+              <a href="contact.html">Contact</a>
+            </div>
+          </div>
+          <div class="nav-item dropdown">
+            <a href="#">Admin Corner <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+            <div class="dropdown-menu">
+              <a href="manage-faculty.html">Manage Faculty</a>
+              <a href="dashboard.html">Student's Data Dashboard</a>
+              <a href="admin-login.html">Admin Login</a>
+            </div>
+          </div>
+        </nav>
+
+      </div>
+    </header>
+
+    <!-- Page Hero Banner -->
+    <section class="pub-hero-banner">
+      <div class="container">
+        <h1>Research Publications &amp; Patents</h1>
+        <p>
+          Showcasing scholarly research papers, peer-reviewed journals, book chapters, and legal patents published by our students and faculties at the SRMVEC Computer Science Department.
+        </p>
+        <div class="pub-hero-badges">
+          <span class="pub-hero-badge"><i class="fa-solid fa-file-contract"></i> Peer-Reviewed Journals</span>
+          <span class="pub-hero-badge"><i class="fa-solid fa-certificate"></i> Granted/Filed Patents</span>
+          <span class="pub-hero-badge"><i class="fa-solid fa-network-wired"></i> CSE Tech Domains</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Layout -->
+    <main class="container main-content">
+
+      <!-- Live metrics stats panel -->
+      <section class="pub-stats-panel">
+        <div class="pub-stat-card">
+          <span class="pub-stat-number" id="statsTotal">0</span>
+          <span class="pub-stat-label">Total Submissions</span>
+        </div>
+        <div class="pub-stat-card gold-line">
+          <span class="pub-stat-number" id="statsPatents">0</span>
+          <span class="pub-stat-label">Received Patents</span>
+        </div>
+        <div class="pub-stat-card">
+          <span class="pub-stat-number" id="statsJournals">0</span>
+          <span class="pub-stat-label">Journals &amp; Papers</span>
+        </div>
+        <div class="pub-stat-card">
+          <span class="pub-stat-number" id="statsFaculty">0</span>
+          <span class="pub-stat-label">Faculty Guided</span>
+        </div>
+      </section>
+
+      <!-- Advanced Search / Filter Bar -->
+      <section class="pub-search-wrapper">
+        
+        <!-- Auth state check / Publish trigger prompt -->
+        <div class="auth-banner-prompt" id="authBannerPrompt">
+          <div class="auth-prompt-text">
+            <i class="fa-solid fa-key"></i>
+            <span>Want to publish your own paper or patent? Sign in to submit your research.</span>
+          </div>
+          <div class="auth-prompt-actions">
+            <a href="student-corner.html">Student Sign In</a>
+            <a href="teachers-corner.html" style="background:var(--primary-navy);margin-left:0.5rem;">Faculty Sign In</a>
+          </div>
+        </div>
+
+        <!-- Form trigger button (Only shows when logged in, styled dynamic) -->
+        <div class="auth-banner-prompt" id="userActivePrompt" style="display: none; background: #f0fdf4; border-color: #bbf7d0;">
+          <div class="auth-prompt-text" style="color: #166534;">
+            <i class="fa-solid fa-user-check"></i>
+            <span>Logged in as <strong id="loggedUserName">Guest</strong>. Ready to register a new publication or patent?</span>
+          </div>
+          <div class="auth-prompt-actions">
+            <button class="pub-publish-btn" id="openSubmitModalBtn"><i class="fa-solid fa-circle-plus"></i> Submit Research</button>
+          </div>
+        </div>
+
+        <div class="search-row">
+          <div class="search-input-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="pubSearchInput" placeholder="Search by title, author names, journal, index, patent registration number..." />
+          </div>
+          <div class="type-select-wrap">
+            <select id="typeSelect">
+              <option value="all">All Types</option>
+              <option value="journal">Journals</option>
+              <option value="conference">Conference Papers</option>
+              <option value="patent">Patents</option>
+              <option value="book_chapter">Book Chapters</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tabs Filter row by Topic and Year -->
+        <div class="filter-tabs-container">
+          
+          <!-- Topic Row -->
+          <div class="filter-row">
+            <span class="filter-label">Topic</span>
+            <div class="filter-pills" id="topicPills">
+              <button class="filter-pill active" data-topic="all">All Topics</button>
+              <button class="filter-pill" data-topic="AI &amp; ML">AI &amp; ML</button>
+              <button class="filter-pill" data-topic="Cybersecurity">Cybersecurity</button>
+              <button class="filter-pill" data-topic="Cloud &amp; DevOps">Cloud &amp; DevOps</button>
+              <button class="filter-pill" data-topic="Data Engineering">Data Engineering</button>
+              <button class="filter-pill" data-topic="General Tech">General Tech</button>
+            </div>
+          </div>
+
+          <!-- Year Row -->
+          <div class="filter-row">
+            <span class="filter-label">Publish Year</span>
+            <div class="filter-pills" id="yearPills">
+              <button class="filter-pill active-gold" data-year="all">All Years</button>
+              <button class="filter-pill" data-year="2026">2026</button>
+              <button class="filter-pill" data-year="2025">2025</button>
+              <button class="filter-pill" data-year="2024">2024</button>
+              <button class="filter-pill" data-year="before-2024">2023 &amp; Before</button>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- Publications Card Grid list -->
+      <section class="publications-grid" id="publicationsGrid">
+        <!-- Injected dynamically by JS -->
+      </section>
+
+    </main>
+
+    <!-- Institutional Footer -->
+    <footer class="footer">
+      <div class="container footer-grid">
+        <div>
+          <h4>Department Contact</h4>
+          <p>Department of Computer Science &amp; Engineering<br />SRM Valliammai Engineering College<br />Kattankulathur, Chengalpattu Dist.</p>
+        </div>
+        <div>
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="publications-patents.html">Publications &amp; Patents</a></li>
+            <li><a href="laboratories.html">Laboratories</a></li>
+            <li><a href="student-corner.html">Student Corner</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="index.html#portal-pages">All Portal Pages</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Connect &amp; Support</h4>
+          <p>Email: cse.info@valliammai.edu.in</p>
+          <p>Location: National Highway 45, Potheri, SRM Nagar, Kattankulathur, Tamil Nadu 603203</p>
+          <p>Contact: 044-27454784</p>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        © 2026 Department of Computer Science &amp; Engineering, SRMVEC. All Rights Reserved.
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Modal Submit Form -->
+  <div class="pub-modal" id="submitModal">
+    <div class="pub-modal-content">
+      <div class="pub-modal-header">
+        <h3><i class="fa-solid fa-circle-plus"></i> Submit Research / Patent</h3>
+        <button class="pub-close-btn" id="closeSubmitModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="pub-modal-body">
+        <form id="pubSubmitForm">
+          <div class="form-group">
+            <label for="formTitle" style="font-weight: 600; font-size: 0.9rem;">Publication or Patent Title *</label>
+            <input type="text" id="formTitle" class="form-control" placeholder="Enter full official title" required />
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="formType" style="font-weight: 600; font-size: 0.9rem;">Type *</label>
+              <select id="formType" class="form-control" required>
+                <option value="journal">Journal</option>
+                <option value="conference">Conference Paper</option>
+                <option value="patent">Patent (Filed or Granted)</option>
+                <option value="book_chapter">Book Chapter</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="formCategory" style="font-weight: 600; font-size: 0.9rem;">Topic Category *</label>
+              <select id="formCategory" class="form-control" required>
+                <option value="AI &amp; ML">AI &amp; ML</option>
+                <option value="Cybersecurity">Cybersecurity</option>
+                <option value="Cloud &amp; DevOps">Cloud &amp; DevOps</option>
+                <option value="Data Engineering">Data Engineering</option>
+                <option value="General Tech">General Tech</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="formJournal" style="font-weight: 600; font-size: 0.9rem;" id="journalLabel">Journal/Conference/Patent Office Name *</label>
+              <input type="text" id="formJournal" class="form-control" placeholder="e.g. IEEE Access or USPTO" required />
+            </div>
+            <div class="form-group">
+              <label for="formIssn" style="font-weight: 600; font-size: 0.9rem;" id="issnLabel">ISSN/ISBN or Patent Number *</label>
+              <input type="text" id="formIssn" class="form-control" placeholder="e.g. ISSN: 2169-3536" required />
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="formYear" style="font-weight: 600; font-size: 0.9rem;">Year of Publishing *</label>
+              <input type="number" id="formYear" class="form-control" placeholder="e.g. 2026" min="2000" max="2035" required />
+            </div>
+            <div class="form-group">
+              <label for="formUrl" style="font-weight: 600; font-size: 0.9rem;">External URL / DOI Link</label>
+              <input type="url" id="formUrl" class="form-control" placeholder="e.g. https://doi.org/10.1109/..." />
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="formContributors" style="font-weight: 600; font-size: 0.9rem;">Contributors / Authors *</label>
+              <input type="text" id="formContributors" class="form-control" placeholder="e.g. Swetha Raghavan, Arun K." required />
+              <span style="font-size:0.75rem;color:#64748b;">Enter full names (comma separated)</span>
+            </div>
+            <div class="form-group">
+              <label for="formMentors" style="font-weight: 600; font-size: 0.9rem;">Faculty Mentors / Guides</label>
+              <input type="text" id="formMentors" class="form-control" placeholder="e.g. Dr. Priya Ramesh" />
+              <span style="font-size:0.75rem;color:#64748b;">Specify guides involved</span>
+            </div>
+          </div>
+
+          <div class="form-group form-group-full">
+            <label for="formAbstract" style="font-weight: 600; font-size: 0.9rem;">Abstract or Patent Summary *</label>
+            <textarea id="formAbstract" class="form-control" rows="5" placeholder="Enter abstract details, research objectives, or patent claims..." required></textarea>
+          </div>
+
+          <div style="display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem;border-top:1px solid #e2e8f0;padding-top:1rem;">
+            <button type="button" class="btn btn-ghost" id="cancelSubmit">Cancel</button>
+            <button type="submit" class="btn btn-blue" id="submitFormBtn" style="background:var(--primary-navy);border-color:var(--primary-navy);"><i class="fa-solid fa-upload"></i> Publish</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase & Auth JS -->
+  <script type="module" src="/src/scripts/supabase.js"></script>
+  <script type="module" src="/src/scripts/auth.js"></script>
+  <!-- Dedicated Publications Manager JS -->
+  <script type="module" src="/src/scripts/publications-patents.js"></script>
+
+  <script>
+    // Intro screen removal logic
+    window.addEventListener('DOMContentLoaded', () => {
+      window.setTimeout(() => {
+        document.body.classList.add('intro-done');
+        document.body.classList.remove('is-loading');
+      }, 200);
+    });
+  </script>
+
+</body>
+</html>

@@ -156,3 +156,55 @@ CREATE POLICY "Permitted teachers delete blogs" ON public.blogs
     )
   );
 
+
+-- ============================================================
+-- 3. PUBLICATIONS & PATENTS TABLE
+-- ============================================================
+CREATE TABLE IF NOT EXISTS public.publications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  type TEXT NOT NULL CHECK (type IN ('journal', 'conference', 'patent', 'book_chapter')),
+  category TEXT NOT NULL,
+  journal_name TEXT NOT NULL,
+  issn_isbn TEXT NOT NULL,
+  year INTEGER NOT NULL,
+  contributors TEXT NOT NULL,
+  mentors TEXT,
+  abstract TEXT NOT NULL,
+  url TEXT,
+  author_name TEXT NOT NULL,
+  author_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+  author_role TEXT NOT NULL CHECK (author_role IN ('student', 'teacher', 'admin', 'faculty_admin', 'editor')),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Enable RLS on publications
+ALTER TABLE public.publications ENABLE ROW LEVEL SECURITY;
+
+-- Clean up any existing publication policies for clean re-runs
+DROP POLICY IF EXISTS "Public view publications" ON public.publications;
+DROP POLICY IF EXISTS "Authenticated users insert publications" ON public.publications;
+DROP POLICY IF EXISTS "Authors update own publications" ON public.publications;
+DROP POLICY IF EXISTS "Authors delete own publications" ON public.publications;
+
+-- Publications Policies:
+CREATE POLICY "Public view publications" ON public.publications
+  FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated users insert publications" ON public.publications
+  FOR INSERT TO authenticated
+  WITH CHECK (
+    auth.uid() = author_id
+  );
+
+CREATE POLICY "Authors update own publications" ON public.publications
+  FOR UPDATE TO authenticated
+  USING (auth.uid() = author_id)
+  WITH CHECK (auth.uid() = author_id);
+
+CREATE POLICY "Authors delete own publications" ON public.publications
+  FOR DELETE TO authenticated
+  USING (auth.uid() = author_id);
+
+
