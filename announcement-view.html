@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Announcement Details — SRMVEC CSE Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous"
+  />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/src/styles/style.css" />
+  <link rel="stylesheet" href="/src/styles/portal.css" />
+  <style>
+    .ann-view-header-bar {
+      background: #002947;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid #0EA5E9;
+    }
+    .ann-view-brand {
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .ann-view-brand span { color: #0EA5E9; }
+    
+    .ann-detail-card {
+      background: #ffffff;
+      border: 1px solid #E2E8F0;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+      padding: 2.5rem;
+      margin: 2.5rem auto;
+      max-width: 850px;
+    }
+    .ann-detail-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .ann-detail-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: #0F172A;
+      line-height: 1.3;
+      margin-bottom: 1.5rem;
+    }
+    .ann-detail-author-row {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1rem 1.25rem;
+      background: #F8FAFC;
+      border-radius: 12px;
+      border: 1px solid #F1F5F9;
+      color: #475569;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+    .ann-detail-body {
+      color: #334155;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .ann-urgent-banner {
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      color: #991B1B;
+      padding: 0.85rem 1.25rem;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    .not-found {
+      text-align: center;
+      padding: 5rem 1rem;
+      color: #64748B;
+    }
+    .not-found i { font-size: 3.5rem; display: block; margin-bottom: 1rem; color: #CBD5E1; }
+  </style>
+</head>
+<body style="background:#F8FAFC; min-height: 100vh; display: flex; flex-direction: column;">
+
+  <header class="ann-view-header-bar">
+    <div class="ann-view-brand">
+      <i class="fa-solid fa-bullhorn" style="color:#0EA5E9;"></i> SRMVEC CSE <span>Announcements</span>
+    </div>
+    <a href="index.html#announcements-section" class="btn-hero-gold" style="padding:0.5rem 1rem; font-size:0.9rem; text-decoration:none;">
+      <i class="fa-solid fa-arrow-left"></i> Back to Home
+    </a>
+  </header>
+
+  <main class="container" style="flex:1;">
+    <div id="announcementDetailContainer"></div>
+  </main>
+
+  <footer class="footer" style="margin-top:auto;">
+    <div class="container footer-bottom">
+      © 2026 Department of Computer Science & Engineering, SRMVEC. All Rights Reserved.
+    </div>
+  </footer>
+
+  <script type="module" src="/src/scripts/announcements-store.js"></script>
+  <script type="module">
+    import { AnnouncementsStore, getCategoryMeta, timeAgo } from '/src/scripts/announcements-store.js';
+
+    function loadAnnouncementDetail() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      const container = document.getElementById('announcementDetailContainer');
+
+      if (!id) {
+        container.innerHTML = `
+          <div class="not-found">
+            <i class="fa-regular fa-bell-slash"></i>
+            <p class="text-xl font-semibold mb-2">No Announcement Specified</p>
+            <p class="text-slate-500 mb-6">Please select an announcement from the homepage.</p>
+            <a href="index.html#announcements-section" class="btn-hero-gold" style="display:inline-flex; align-items:center; gap:0.5rem; text-decoration:none;">
+              <i class="fa-solid fa-arrow-left"></i> Return to Announcements
+            </a>
+          </div>`;
+        return;
+      }
+
+      const allItems = AnnouncementsStore.getAll();
+      const item = allItems.find(a => a.id === id);
+
+      if (!item) {
+        container.innerHTML = `
+          <div class="not-found">
+            <i class="fa-regular fa-circle-xmark"></i>
+            <p class="text-xl font-semibold mb-2">Announcement Not Found</p>
+            <p class="text-slate-500 mb-6">This announcement may have been removed or updated.</p>
+            <a href="index.html#announcements-section" class="btn-hero-gold" style="display:inline-flex; align-items:center; gap:0.5rem; text-decoration:none;">
+              <i class="fa-solid fa-arrow-left"></i> Return to Announcements
+            </a>
+          </div>`;
+        return;
+      }
+
+      const meta = getCategoryMeta(item.category);
+      const isHigh = item.priority === 'high';
+      const formattedDate = new Date(item.postedAt).toLocaleString('en-IN', {
+        dateStyle: 'full',
+        timeStyle: 'short'
+      });
+
+      container.innerHTML = `
+        <div class="ann-detail-card">
+          
+          <div class="mb-6">
+            <a href="index.html#announcements-section" class="inline-flex items-center gap-2 text-sky-600 hover:text-sky-700 font-medium transition-colors">
+              <i class="fa-solid fa-arrow-left text-sm"></i> Back to Announcements List
+            </a>
+          </div>
+
+          ${isHigh ? `
+            <div class="ann-urgent-banner">
+              <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+              <span>High Priority Announcement / Urgent Notice</span>
+            </div>
+          ` : ''}
+
+          <div class="ann-detail-meta">
+            <span class="ann-cat-pill" style="background:${meta.bg}; color:${meta.color}; border:1px solid ${meta.color}40; padding:0.35rem 0.85rem; border-radius:20px; font-weight:600; font-size:0.85rem; display:inline-flex; align-items:center; gap:0.4rem;">
+              <i class="fa-solid ${meta.icon}"></i> ${item.category}
+            </span>
+            <span class="text-slate-400">•</span>
+            <span class="text-slate-500 text-sm font-medium"><i class="fa-regular fa-clock"></i> ${timeAgo(item.postedAt)}</span>
+          </div>
+
+          <h1 class="ann-detail-title">${escHtml(item.title)}</h1>
+
+          <div class="ann-detail-author-row">
+            <div>
+              <i class="fa-solid fa-user-shield text-sky-600 mr-2"></i>
+              <strong>Posted by:</strong> ${escHtml(item.author)}
+            </div>
+            <div class="text-slate-300">|</div>
+            <div>
+              <i class="fa-regular fa-calendar-check text-sky-600 mr-2"></i>
+              <strong>Date &amp; Time:</strong> ${formattedDate}
+            </div>
+          </div>
+
+          <div class="ann-detail-body">${escHtml(item.body)}</div>
+
+          <hr class="my-8 border-slate-200" />
+
+          <div class="flex items-center justify-between">
+            <a href="index.html#announcements-section" class="btn-hero-gold" style="display:inline-flex; align-items:center; gap:0.5rem; text-decoration:none;">
+              <i class="fa-solid fa-arrow-left"></i> Back to Announcements
+            </a>
+            <button onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied to clipboard!');" class="text-slate-600 hover:text-sky-600 transition-colors text-sm font-medium inline-flex items-center gap-2">
+              <i class="fa-regular fa-share-from-square"></i> Share Announcement
+            </button>
+          </div>
+
+        </div>
+      `;
+
+      document.title = item.title + ' — SRMVEC CSE Announcement';
+    }
+
+    function escHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadAnnouncementDetail);
+    } else {
+      loadAnnouncementDetail();
+    }
+  </script>
+</body>
+</html>
