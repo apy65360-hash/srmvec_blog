@@ -1,0 +1,480 @@
+SRM VALLIAMMAI ENGNIEERING COLLEGE
+(An Autonomous Institution)
+SRM Nagar, Kattankulathur – 603203.
+DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING
+LIST OF JOURNALS (JULY 2024 – JUNE 2025)
+S. NO	AUTHOR	TITLE OF THE PAPER	VOLUME NO
+PAGE NO	NAME OF THE JOURNAL	MONTH & YEAR	Page No
+SCI
+1	Dr.G.Sangeetha
+Dr.B.Vanathi	A data-driven framework for fair and efficient organ transplantation using gradient boosting and adaptive genetic allocation	Vol.28,
+eISSN: 1619-0904	Journal of Artificial Organs	June 2025	527-537
+2	Anslam Sibi S et. al.,
+	Network Lifetime improvement in wireless sensor network using Energy-Efficient Bat-Moth Flame Optimization Technique
+	Vol.15, pp.1-11
+	Scientific reports, Springer Nature
+Impact factor – 3.8. (Q1)
+(Web of Science)	May 2025	
+3	Shanthi S
+Dr.M.Murugan	Advanced chest X-ray image classification for early detection and treatment monitoring of respiratory conditions”	Volume 110, Part A,2025,107990,ISSN 1746-8094,https://doi.org/10.1016/j.bspc.2025.107990-SCI ,page-1 to 13	Biomedical Signal Processing and Control	3 July 2025	
+4	Ms.Anitha R,
+Dr.M.Murugan.	Privacy-preserving collaboration in blockchain-enabled IoT:
+The synergy of modified homomorphic encryption and
+federated learning	VOL.7/ISSUE 28/	Int J Commun Syst. 2024;37:e5955.	DECEMBER 2024	
+SCOPUS
+5	Dr S.K Susee,
+Dr S.Venkatesh(2nd Author)
+Dr M.Senthil Kumar,
+Dr B.Chidambararajan
+	Leveraging Support Vector Machines for Optimizing Cluster Head Selection and Energy Management in Large-Scale Wireless Sensor Networks 
+	Vol 13/Pg 1-7/
+	International Journal of Computer Sciences and engineering(IF:3.802) (Accepted for Publication in May 2025)
+	June/2025	1484-1490
+6	C. Pabitha (First Author)
+	Deep Convolutional Multi-Relational Graph Attention Network for Autonomous Drone Navigation in Urban Wind Zones
+	2025, pp. 784-790, doi: 10.1109/ICMSCI62561.2025.10893994	IEEE Xplore: 27 February 2025 (SCOPUS INDEXED)
+		
+7	Dr. V.Dhanakoti/Prof
+	Contrasting a Conventional Approach with Digital Approach for Brand Communication Scrutiny	Vol.18, Issue.7, pp.602-611
+ISSN No:1001-2400	Journal of Xidian University	2024	602-611
+8	V.Dhanakoti, /Prof
+UG Student:
+Uttam M	Predication of Stock Market using Technical Trading Indicators	Vol.11, Issue.7, pp.70-83	VDI-Z Integrierte Produktion	2024	
+10	Pabitha C
+UG Student:
+Vignesh R
+Shamritha V
+Prathija A
+
+	Integrated Road Safety System for Real-Time Waterlogging Detection and Traffic Management Using Google Maps API
+	pp. 1165-1170, doi: 10.1109/ICMSCI62561.2025	IEEE Xplore: 27 February 2025 (SCOPUS INDEXED)	2025	
+11	
+Dr.B.Vanathi(2nd Author)	Comprehensive Analysis for Diagnosing Attention Deficit Hyperactivity Disorder Using Support Vector Machine and Multilayer Perceptron
+	10.1109/ICCCT63501.2025.11019010	 IEEE Xplore
+(scopus Indexed)	10 June 2025	
+
+Other Journals
+1	Dr.B.Vanathi
+UG Students(8th Sem):
+Ifthikaar Ahmed A,
+ Haari Vignesh T, Akshaya E	Optimizing Blood Cell Segmentation in Hematological Analysis Using Advanced Image Processing Techniques	
+ Volume 11 Issue 10 | ISSN: 2349-6002	
+ IJIRT	
+ March 2025	4571- 4576
+2	Dr. V. Dhanakoti, 
+UG Students(8th Sem):
+Sakthivel S, 
+Vedavarshini. K, Sundaresan. C
+	Parking Pixels: Python’s Vision for Urban Space Optimization	Volume.24, Issue.4,
+pp:21-29	International Journal of New Innovations in Engineering and Technology	March 2025	
+3	V. Dhanakoti, 
+UG Students(8th Sem):
+Anitha Varshini. A, Athmanathan K, 
+Balineni Akhila	Enhanced Sentiment Analysis Of App Reviews Using Naïve Bayes And Ensemble Learning	Volume 11, Issue.10
+	International Journal of Innovative Science and Research Technology 
+	March 2025	4206-4210
+4	C.Pabitha,
+UG Students(8th Sem):
+ G. Santhiya, R. Sharulatha, B.S. Shobika	Innovations in Stroke Identification - A Deep Learning- Based Diagnostic Model Using Neuroimages
+	Volume 11 Issue 10 , ISSN: 2349-6002
+	International Journal of Innovative Science and Research Technology 	March 2025	
+5	C.Pabitha, 
+UG Students(8th Sem):
+Sivarama Krishnan K, Steve Samuel A, Sylesh Gowtham S	Blockchain-Powered Logistics: Securing and Optimizing IoT-Based Distribution and Storage Networks 	Volume 11 Issue 10  , ISSN: 2349-6002
+
+	International Journal of Innovative Science and Research Technology 
+	March 2025 March 2025	3066 - 3071
+6	C.Pabitha, 
+UG Students(8th Sem):
+A. Prathija, V. Shamritha,
+ R. Vignesh	Safe Tracker - Combines Road Safety and Tracking Capabilities using Computer Vision	Volume 11 Issue 10 | ISSN: 2349-6002
+	International Journal of Innovative Science and Research Technology 
+	March 2025	958-964
+
+7
+	Pabitha C ,
+UG Students(8th Sem): 
+Sanjay H, 
+Vigneshwar S 
+Vishwa M	Otogalucosense: AI-Powered system for glaucoma and otitis media detection.	CrosRef DOI:10.30574/wjaets.2025.14.3.0101, Volume 14
+Issue 3
+	World Journal of Advanced Engineering Technology and Sciences (WJAETS)	March 2025	
+8	M. Mayuranathan, 
+UG Students(8th Sem):
+Vignesh D,
+Thirupathi M,
+Shiva Shankar M	Enhancing Customer Retention : A Voting Classifier Apporach	Volume 14, Issue 3
+	Journal Of Electronics Information Technology Science And Management	March 2025 	54-59
+9	Dr. G. Sangeetha
+UG Students(8th Sem):
+Vasan K J
+Subash M
+Venu Krishnan S	AI-Enhanced Lung Size Matching and Eligibility System	Volume 10, Issue 3
+	International Journal of Innovative Science and Research Technology  	March 2025	2456-2165
+10	S. Shanthi
+UG Students(8th Sem):
+Kishore Kumar M; Moulia Vasan G; Naveen Kumar P;	Blockchain-Enabled Solutions to Identify Users behind Drug Trafficking on Encrypted Platforms	Volume 10  Issue 3 
+ISSN No:-2456-2165 page no:3295 -3297
+	International Journal of Innovative Science and Research Technology 
+	March 2025	
+11	Ms.Shanthi S
+UG Students(8th Sem):
+Kavishri B
+Mahalakshmi R
+Nivedhitha.S
+	AI based OCR system for Digitizing Handwritten Historical Documents in Regional Languages	Volume 11.
+Issue 10,
+ISSN 2349-6002,
+page No:3435-3441
+	International Journal of Innovative Research in Technology
+	March 2025	
+12	A.Vidhya
+UG Students(8th Sem):
+Dharshana R S, 
+Dinesh R,
+ Dinesh S
+	Improving Breast Cancer Detection with Random Forest Algorithm and the Breakhis Dataset 
+	Volume:11
+,Issue:10,
+  Pg No:3145 -3150,
+IJIRT 174206
+	International Journal of Innovative Research in Technology
+	March 2025	
+13	Prema. V
+UG Students(8th Sem):
+Swathi.S, 
+Subhiksha G R S, 
+Vimal Kishore.M 
+	Machine Learning Classification for Identification of Heart Disease in E-Healthcare 
+	Volume 11 Issue 10 
+ISSN: 2349-6002
+	International Journal of Innovative Research in Technology
+	March 2025	
+14	Mrs. V. Prema 
+UG Students(8th Sem):
+Narendranaath S R  Muralidharan S Krishna Sai Ram R 
+	Automated OCR-Based PAN Card Text Extraction System	Volume 10, 
+Issue 3 
+ISSN: 
+2456-3315
+	International Journal of Innovative Research in Technology
+	March 2025	
+15	Rajasekaran T
+UG Students(8th Sem):
+Ajaykumar M 
+Arjun 
+Harish Kumar S T
+	Secure Blockchain-Based File Sharing
+	Volume 11, Issue 10, 
+Page No. 4487-4491, 
+ISSN: 2349-6002
+	International Journal of Innovative Research in Technology
+	March 2025	
+16	M. Sophiya Sugantha
+UG Students(8th Sem):
+Sanjay C
+Sugapriyan V
+Harish V	Multi Label Classification of Lung Diseases Using
+Deep Learning	Volume 11
+ISSN: 2349-6002
+
+	
+International Journal of Innovative Research in Technology
+	April 2025
+	
+17	Mrs. M. Mohanapriya
+UG Students(8th Sem):
+Eswarapasadh S
+Dinu Karthik P
+Franklin Jack R	Digital Money Transaction using
+Blockchain in Python	Volume 10,
+ Issue 3, 
+ISSN No:2456-2165
+	International Journal of Innovative Science and Research Technology	March 2025	1120-1124
+18	Mrs. M. Mohanapriya
+UG Students(8th Sem):
+Abilash K
+Harish N
+Dhushiv S	The Future of Iv Therapy: Smart Saline Bottle Using Iot Solutions	Volume 10,
+ Issue 3, 
+ISSN No:-2456-2165
+	International Journal of Innovative Science and Research Technology	March 2025	
+19	Ms.S.Balaswathy
+Ms.R.Gayathri
+UG Students(8th Sem):
+Sivasamy K
+Sudha dharan S
+Vibhu N	Enhancing palm leaves Manuscript Recognition  using capsule networks(Capsnet)in Deep Learning Approaches
+	Vol. 03
+ Issue: 04
+	International Research Journal on Advanced Engineering Hub (IRJAEH)
+	April 2025
+	1593-1603
+20	M.Sophiya Sugantha Grace
+	Multi Label Classification of Lung Diseases Using Deep Learning
+	Volume 11/April 2025/ISSN: 2349-6002
+	International Journal of Innovative Research in Technology
+	April 2025	
+21	Dr. V.Dhanakoti
+	A Methodical Examination in the Pursuit of Big Data Analytics in Digital Media Broadcasting	Volume 24 Issue 4 June 2024	International Journal of New Innovations in Engineering and Technology	June 2024	1-11
+
+22	Dr. A.Samydurai	Prediction of seed price using machine  Learning	Volume 11, Issue 12	International Journal of Innovative Research Technology	May– 2025 	2867
+CONFERENCE
+1
+	Dr.Mayuranathan
+Mr.R.Sudharsan
+Mr.V.Vikram	Gesture based Writing using computer vision	ISBN :978-81-953396-5-5	Proceeding of National Conference on Recent Trends in Computational Intelligence	April 2024	32
+2	Dr. A.Samydurai
+UG Students(7th Sem):
+Aswath.M
+Jaikanht. R
+	Blockchain Based Loan Management System using Smart Contracts	ISBN :978-81-985365-9-4	Proceeding of 13th International Conference on Contemporary E
+gineering and Technology  		
+3	A.Samydurai
+UG Students(7th Sem):
+Kaveeya D
+Joshua Samuel E
+Kanaga Sundari
+	Smart OCT Analysis: Predictive Diagonostics and automated Clinical Reporting	ISBN :978-81-985365-9-4	Proceeding of 13th International Conference on Contemporary Engineering and Technology  		
+4	Dr.G.Kumaresan
+UG Students(7th Sem):
+Rupesh T
+Jayannd Kishore A B
+Logeshwaren A	Development of Markerless Augmented Reality Bowling Game Using Vuforia and Unity engine-Organization of Science and Innovation Engineering & Technology	ISBN :978-81-985365-9-4	Proceedings of 13th International Conference on Contemporary Engineering & Technology 2025		
+5
+	Dr G
+Kumaresan
+UG Students(7th Sem):
+Muthuraman S
+Neevikkumar K
+Ram Manoj M P	Agronomics –Enhanced Agricultural Efficiency and Tracking Calamities for Targeted Agricultural Aid	ISBN :978-81-985365-9-4	Proceedings of 13th International Conference on Contemporary Engineering & Technology 2025		
+6	Dr.G.Sangeetha 
+UG Students(7th Sem):
+Kanishka. M.D
+Kavya Shree.V.S Nithya Sree.B	Soil Nutrient Analysis And Recommendations Using Machine Learning Technique	ISBN 978-81-985365-9-4	Proceeding of 13th International Conference on Contemporary Engineering and Technology 		
+7	Dr. G. Sangeetha
+UG Students(7th Sem):
+Vasan K J
+Subash M
+Venu Krishnan S	AI-Driven Lung Transplant Compatibility And Eligibility Criteria Analysis	ISBN :978-81-985365-9-4	Proceeding of 13th International Conference on Contemporary Engineering and Technology  		
+8	Mrs .A.Lalitha, 
+Dr. Samydurai. 
+UG Students(7th Sem):
+Kiranraj. A3, Manivannan. M4, Pranavh Balaji	Smart Meeting platform With Real Time Emotion Analysis Using AI	ISBN :978-81-985365-9-4	Proceeding of 13th International Conference on Contemporary Engineering and Technology 		
+9	Mrs .A.Lalitha
+UG Students(8th Sem):
+A.Abinayan
+A.Arokiya Avinash
+S.Dhanraj	Real-time Image Based Facial Emotion Detection Using Deep Learning		5th International Conference On Recent Trends in Engineering Technology		
+10	Dr.G.Kumaresan
+UG Students(7th Sem):
+Kanishkar Mathi
+John Tenis Johnson
+Richardson Dennis	NovaCrypt: A Secure and adaptive file encryption algorithm with dynamic key scheduling	ISBN :978-81-985365-9-4	Proceedings of 13th International Conference on Contemporary Engineering & Technology 2025		
+11	Dr. C. Pabitha, 
+UG Students(8th Sem):
+Santhiya G, Sharulatha R and Shobika B.S	IOT – Integrated Deep Learning Approach for Food Freshness Monitoring
+	indexed in 
+Robotics, Automation and Intelligent Computing - Cambridge Scholars Publishing	3rd International Conference on Robotics, Automation, and Intelligent Computing 		
+12	Mrs.S.Suma, 
+UG Students(7th Sem):
+Suvathi P,
+Tamizh Selvan
+ Yuvanjali S
+	Fashion Fusion AR: Where Tech Meets Trend
+	Volume 1  ISBN: 978-81-983500-6-0
+27.06.2025	7th International Conference On Engineering And Advancement in Technology– 2025
+Organization Of Science And Innovative Engineering & technology 		
+13	Shanthi S,
+UG Students(7th Sem):
+Deepakraj G,Arul Antrony Rajan 
+S,Arshad.S
+	Deep Learning Model For MonkeyPox Prediction using VGG16
+
+	ISBN :978-81-985365-9-4
+Mar 2025	13th International Conference on Contemporary Engineering and Technology		
+14	N. Leo Bright Tennisson
+UG Students(7th Sem):
+Prabhakaran S R
+Sadhiq Ali S
+Mohan S	Ai-powered automated filtering of inappropriate comments using deep learning-	ISBN :978-81-985365-9-4
+Mar 2025	International Conference on Contemporary Engineering and Technology,		
+15	Dr S.Venkatesh(2nd Author),
+UG Students(8th Sem):
+R.Sudharshan
+M.Sharanaragalingam
+M.Vaishnav	Novel AI Based Ensemble Technique for efficient Training of deep neural network on Brain Tumor Detection		National Conference on researches in Science and Technology (1/03/2025).		
+16	Ms.A.Vidhya,
+UG Students(7th Sem):
+Dharshana R S,
+Dinesh R
+Dinesh S
+	Optimized Breast Cancer  Image Classification  Using CNN	ISBN 978-81-985365-9-4	Proceeding of 13th International Conference on Contemporary Engineering and Technology 
+		
+17	Ms.A.Vidhya
+UG Students(7th Sem):
+Harshvardhan
+Harish
+	Lung Cancer Classification (NSCLC) Using Explainable AI Techniques
+	ISBN 978-81-985365-9-4
+	Proceeding of 13th International Conference on Contemporary Engineering and Technology 
+		
+18	Rajasekaran T
+UG Students(7th Sem):
+Elango V, 
+Gokul P, 
+Gowtham S
+	Intelligent Video Surveillance System using Deep Learning	ISBN 978-81-985365-9-4
+22.03.2025
+	International Conference on Contemporary Engineering and Technology 2025		
+19	Anslam Sibi S 
+UG Students(7th Sem):
+S.Jayamathi
+D.Karthikeyan
+V.Lakshmipriya
+P.Mahindhan
+	Authentech: GAN Powered Evidence Authentication
+	ISBN 978-81-985365-9-4
+22 & 23 March 2025	13th International Conference On Contemporary Engineering And Technology 		
+20	Ms.Anitha R, 
+UG Students(7th Sem):
+M.Dineshkumar
+D.Ajith
+A.Apsal Khan	Fetal Heart Disease Detection using Machine Learning	ISBN 978-81-985-365-9-4	13th International Conference On Contemporary Engineering And Technology- ICCET 2025 		
+21	Ms.Anitha R, 
+UG Students(7th Sem):
+Mr. Dineshkumar N
+Mr. Jaidev Melvine R J
+Mr. Hruthik P	Multimodal Interaction System: Cursor Controlling Using
+Hand Gestures-	ISBN 978-81-985-365-9-4	13th International Conference On Contemporary Engineering And Technology- ICCET 2025 		
+22	V.Vijaypriya
+UG Students(7th Sem):
+Sanjay,
+ Saravanan M
+ Sharath Surya N
+	Artificial Intelligence Based Real Time Smart Phishing Detection And Defence System	978-81-985365-9-4
+	13th International Conference On Contemporary Engineering And Technology 2025		
+23	Sathya G
+UG Students(7th Sem):
+K.Surendhar
+K Vijiyasimman
+J.Vijaikrishna	Automated Sewer Defect Detection and size Estimation using YOLOv8 and MiDaS
+	ISBN:978-81-985365-9-4
+	13th International Conference On Contemporary Engineering And Technology 2025		
+24	Sathya G
+UG Students(7th Sem):
+Jefferson Agnew.A
+S.Roopesh
+R.Varunprasanth
+	Security in cloud computing using triple-des algorithm in blockchain
+
+	ISBN:978-81-985365-9-4
+	13th International Conference On Contemporary Engineering And Technology 2025		
+25	Dr.Mayuranathan
+Mr.Saran.V	Real Time Deep Fake detection in video Conferencing with deep learning		Proceeding of National Conference on Recent Trends in Computational Intelligence	April 2024	52
+26	Ms.Sophiya sugantha Grace
+UG Students(7th Sem):
+S.Sabarishwar
+X.R.Ritish
+T.PrakashRaj	Smart Voice assistant for the Visually Impaired –Advancing Accessibility through Deep Learning on Mobile Platform	ISBN :978-81-985365-9-4	13th International conference on contemporary
+Engineering and Technology		
+27	Mrs. M. Mohanapriya
+UG Students(7th Sem):
+Abilash K2
+Harish N3
+Dhushiv S4	The Future of Iv Therapy: Smart Saline Bottle Using Iot Solutions	ISBN:978-93-342-3290-5	International conference on engineering Technology and Science		
+28	Ms.R.Gayathri
+UG Students(7th Sem):
+A. Aravind
+P. Sivaraj
+R.Vigneshwaran
+	Customs TTS solution using Real HumAN Voice data	ISBN :978-81-985365-9-4	13th International conference on contemporary
+Engineering and Technology		
+29	Ms.R.Gayathri
+UG Students(7th Sem):
+S.Dinesh
+J.Akash
+A.Anbuselvan
+V.Hemaraj 	Deepfake detection for Video and Audio	ISBN :978-81-985365-9-4	13th International conference on contemporary
+Engineering and Technology		
+30	Ms.R.Gayathri
+UG Students(7th Sem):
+S.Dhanushkumar
+S.Balamurugan
+R.Harikrishnan
+	Smart EDU hub AI  powered education platform	30.04.2025	International conference on Emerging trends in Engineering,management  and computer application		
+31	Anslam sibi S
+UG Students(8th Sem):
+Sundaresan C
+S.Surya
+J.P.Sujith	Medicinal Plant Identification and Information Provision using AI	ISBN: 979-8-3315-0981-1	International Conference on Multi-Agent Systems for Collaborative Intelligence (ICMSCI-2025)
+		
+32	Mrs. M. Mohanapriya
+	Revolutionizing Intrusion Detection In
+Industrial Iot With Deep Generative
+
+Techniques	ISBN Number : 978-81-972699-5-0	International Conference on Recent Innovations in Science,
+Engineering and Technology - Icriset ‘ 2024		
+33	Mrs. M. Mohanapriya
+	Next Generation Embedded systems with synergies VLSI with DeepLearning:Design  Methodologies,optimization Techniques and Real world Applications 	 ISBN:979-8-3315-2983-3	IEEE Conference	Jan 2025	
+34	Ms.V.Vijaypriya	Artificial Intelligence based Real smart phishing detection and defence system		13th International conference on contemporary
+Engineering and Technology	22nd and 23rd March 2025	
+35	Dr.C. Pabitha
+Dr.G. Sangeetha 
+Dr. B. Vanathi	Efficient vehicle detection in aerial imagery from unmanned
+air vehicles (UAVs) through computer vision techniques	978-0-7354-5202-2
+Proc. 3306, 050017-1–050017-8;	AIP Publishing
+	JUNE 2025	
+36	Anbuvizhi R	Neural Based Drug Target Prediction	NCRTCI 24/ 12 	National Conference on Recent Trends  in Computational Intelligence	APR 2024	
+37	M.Sophiya Sugantha Grace (1st author)
+	"Game Theory-based Resource Allocation in Edge Environment"
+	Volume 2 	11th International Conference on Mathematics and Computing, organized by IIT Bhilai from January 09-11, 2025. 
+	January 2025
+	
+38	M.Sophiya Sugantha Grace (2nd author)
+	Smart Voice Assistant  for the visually impaired  : Advancing Accessabilty through deep learning on Mobile Platform
+	535/March/2025/ISBN 978-81-985365-9-4
+	ICCET 2025,13th International Conference on Contemporary Engineering and Technology,organized by Prince Shri  Venkateshwara Padmavathy Engineering College, Chennai.	March 2025	
+39	Dr B Muthusenthil, Dr V Dhanakoti, P Jeyakani and B Aditya Bharathi	Mental Health Assistance and Early Detection of Alzheimer and Parkinson diseases using Deep Learning	DOI.No.979-8-3503-6880-2/24/$31.00 ©2024 IEEE	The International Conference on Computer Engineering, Network and Intelligent Multimedia (CENIM) CENIM 2024, November 19th – 20th, 2024 Surabaya, Indonesia		
+40	P. Sirenjeevi and V. Dhanakoti	Enhancing Network Security using Hybrid Machine Learning Techniques	DOI.No.10.1109/ACCAI61061.2024.10601791
+
+ieee	International Conference on Advances in Computing, Communication and Applied Informatics (ACCAI),	https://ieeexplore.ieee.org/document/10601791 	August21, 2024	1-6
+421	B.Vanathi	Deep learning approaches for structuring
+Clinical data: a comprehensive review		International Conference on Sustainable AI Innovations in Biotechnology andHealthcare	March 2025	
+
+BOOK / BOOK CHAPTER
+1	Ms.R.Gayathri
+	Artificial Intelligence in Cybersecurity:Revolutionizing Threat Detection and Defence	ISBN:978-81-982083-0-9	Imaginex Inks Publication	Dec 2024	
+2	C. Pabitha (first author)	Pulse rate and hypertension diagnosis using optimization approach
+	DOI: 10.1201/9781003559115-47
+pp 278 - 283	Hybrid and Advanced Technologies
+ ISBN 978-1-032-90254-8
+Open Access: TAYLOR & FRANCIS		
+3	C. Pabitha (first author)	Development of robotic sensor nodes in wireless sensor networks using embedded systems and machine learning	DOI: 10.1201/9781003559139-76    pp 513 -518	Hybrid and Advanced Technologies
+ ISBN 978-1-032-90254-8
+Open Access: TAYLOR & FRANCIS		
+4	C. Pabitha (First author)	Dual-stage deep learning: A new approach to enhancing
+species-specific plant disease detection	DOI: 10.1201/9781003559115-11 , pp 60 - 65	Hybrid and Advanced Technologies
+ ISBN 978-1-032-90254-8
+Open Access: TAYLOR & FRANCIS		
+5	C. Pabitha(Second author)	Enhancing pepper growth and yield through disease identification in plants using leaf-based deep learning techniques	DOI: 10.1201/9781003559115-10  , pp 54-59	Hybrid and Advanced Technologies
+ ISBN 978-1-032-90254-8
+Open Access: TAYLOR & FRANCIS		
+6	C. Pabitha (First author)	Weapon detection in armed forces for security purposes using artificial intelligence through fuzzy logic system	DOI: 10.1201/9781003559139-102, pp 685 - 690	Hybrid and Advanced Technologies
+ ISBN 978-1-032-90254-8
+Open Access: TAYLOR & FRANCIS
+		
+7	Dr.C.Pabitha
+Dr.B.Vanathi
+Dr.G.Sangeetha
+Dr.K.Shanmugam
+	Artificial Intelligence and Machine Learning	Deccan International Academic Publisher	ISBN 978-81-980462-0-8
+		
+8	M Mayuranathan,
+Garima Nahar,A Vijayakumar,	Sustainable Business Models for Smart City Using Artificial Intelligence Techniques		Published in the United States of America by IGI Global 	2024	263 - 294
+9	Dr. G. Kumaresan 
+Dr. G. Sangeetha Ms.S.Shanthi 	Foundations of Data Science	ISBN No. : 978-93-6260-314-2	CHARULATHA PUBLICATIONS	FEB 2025	
+10	Dr.C.Pabitha
+Dr.B.Vanathi
+Dr.G.Sangeetha
+Dr.K.Shanmugam	Artificial Intelligence and Machine Learning	ISBN No.:978-81-980462-0-8	Deccan International  Academic Publishers	Sep 2024	

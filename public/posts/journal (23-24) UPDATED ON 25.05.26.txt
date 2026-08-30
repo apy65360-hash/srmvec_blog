@@ -1,0 +1,385 @@
+SRM VALLIAMMAI ENGNIEERING COLLEGE
+(An Autonomous Institution)
+SRM Nagar, Kattankulathur – 603203.
+DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING
+LIST OF JOURNALS (JULY 2023 – JUNE 2024)
+S. NO	AUTHOR	TITLE OF THE PAPER	VOLUME NO
+PAGE NO	NAME OF THE JOURNAL	MONTH & YEAR	Page No
+SCI
+1	K. Rajkumar
+U. Hariharan
+V.Dhanakoti/Prof
+N. Muthukumaran
+	A secure framework for managing data in cloud storage using rapid asymmetric maximum based dynamic size chunking and fuzzy logic for deduplication  (SCI)	ISSN: 1572-8196
+	Wireless Networks
+	August 2023	
+2	Dr.C.Pabitha	Development and Implementation of an Intelligent Health  monitoring System using IoT and Advanced Machine Learning Techniques	ISSN: 2788–7669	Journal of Machine and Computing 3(4)(2023)	Oct 2023	456-464
+3	Dr.C.pabitha 
+Dr.B.vanathi	Dense Mesh RCNN: assessment of human skin burn and burn depth severity (SCI)	https://doi.org/10.1007/s11227-023-05660-y	The Journal of Supercomputing
+	Oct 2023	
+4	Dr.K.Shanmugam /Asst.Prof
+Dr.B.Vanathi/Prof 
+	Humming bird optimization based deep belief neural network for Tamil handwritten character recognition 
+(SCI)	ISSN: 
+1746-8094
+	International Journal of Biomedical signal processing and control	Oct 2024	
+5	 Dr.A.Samydurai/Prof
+
+	The resilience of Hermite–Gaussian and orbital angular momentum modes for free space optical communication in atmospheric turbulence’  (SCI)	ISSN: 
+1863-1711
+	Signal, Image and Video Processing
+	April 2024	
+6	Dr.A.Samydurai/Prof   	DeepLG SecNet:Utilizing deep LSTM and GRU with secure network for  Enhanced Intrusion Detection in  IoT Environment’ 
+ (SCI)	ISSN: 
+1386-7857
+	Journal of Cluster Computing
+	Jan 2024	
+7	B Christina Sweetline /Asst.Prof
+Dr.A.Samydurai/Prof   
+	Overcoming the Challenge of Accurate Segmentation of Lung Nodules: A Multi-crop CNN Approach(SCI)	ISSN: 
+2948-2933
+	Journal of Imaging Informatics in medicine  
+	Feb 2024	989-1007
+8	Dr.A. Samydurai
+	Dynamic 8-bit XOR algorithm with AES crypto algorithm for image
+steganography
+(SCI)	ISSN: 1863-1711	Signal Image and Video Processing	April 2024	
+9	Ms.G.Sangeetha, 
+Dr.B.Vanathi	HEL-MCNN: Hybrid extreme learning modified convolutional neural network for allocating suitable donors for patients with minimized waiting time,	Volume 232, ISSN 0957-4174,120673	Expert Systems with Applications	Dec 2023	
+10	Ms.A.Vidhya 
+Dr.B.Vanathi	HBO-GMRNN: Honey badger optimization based gain modulated recurrent neural network for classification of breast cancer	Volume 91, May 2024, 105910	Elsevier -  Biomedical Signal Processing and Control	Jan 2024	
+11	Ms.Prema.V
+Ms.Vidhya. A	TriKSV-LG: a robust approach to disease prediction in healthcare systems using AI and Levy Gazelle optimization	?https://doi.org/10.1080/10255842.2024.2339479
+	Taylor & Francis
+Computer Methods in Biomechanics and Biomedical Engineering	Apr 2024	
+SCOPUS
+12	Dr. C. Pabitha
+Dr. B.Vanathi Ms.G.Sangeetha
+Ms.S.Suma	Deep Learning Framework for Edge Detecting and
+Classification in SAR Images of Oil Spills using CNN	Grenze ID: 01.GIJET.9.1.733	Grenze International Journal of Engineering and Technology,	DEC 2023	1484-1490
+13	Dr.C.Pabitha /Asst.Prof
+Dr.B.Vanathi/Prof	Deep Learning Based Human Emotion Exposure Detection Using Vocal and Countenance
+	Vol 20 No S13
+ISSN: 
+1741-8992
+	Migration Letters
+	Dec 2023	435-448
+14	Ms.S.Suma/Asst.prof
+	Fuzzy optimal solution for the shortest mapping in the univariate search approach using decagonal fuzzy numbers
+	Vol 21, No 1
+ISSN: 
+1005-0930	Journal of basic science and engineering
+	June 2024	1471-1479
+15	Dr.M.Mayuranathan /AP
+UG Students: 
+T. Ragothaman, Agilen Napolean and N. Kalyan Kumar	Malware Website Detection Using Ensemble Machine Learning Approach 	Vol 10 Issue 3
+ISSN: 
+2395-1052
+	IJSART
+	March 2024	184-192
+16	B.Christina Sweetline/Asst.Prof
+Dr.A. Samydurai/Prof
+	Patient Monitoring for Personalized Mobile
+Health (PMH) Based on Medical Virtual Instruments 	Vol 17 No 16 ISSN: 
+1865-7923
+	International Journal of Interactive Mobile Technologies (iJIM) 	August 2023	82-91
+17	Dr.M.Mayuranathan /AP 
+ UG Students: 
+Vignesh D, Thirupathi M and M.Shiva Shankar 	Enhancing Customer Retention: A Voting Classifier Apporach’ 	Vol 14 Issue 3
+ISSN: 
+0258-7982
+	Journal of Electronics Information Technology Science and Management	2024	54-59
+18	Ms.S.Suma 
+Ms.A.Lalitha
+Ms.A.Vidhya 
+	New Tactic of Factorization with Triangular Fuzzy Numbers	DOI: 10.23750/abm.v94i3.13441,Vol. 94, N. 3: e2023717	Acta Biomed 	August 2023.	1-4
+OTHER JOURNALS
+1	Dr.K.Shanmugam
+UG Students:
+G.Bharath , J. Lokesh, N.Nirmal	Innovations In AI-Enhanced Mental Health Care	Volume 9 Issue 9 ISSN [ONLINE]: 2395-1052
+	IJSART	September 2023	
+2	Dr.V.Dhanakoti
+UG Students:
+Aadithya V,
+Amutha varshini S, Bakkiyalakshmi V
+ 	wwwId-A Practical Internet-Scale Self-Sovereign, Self-Federated Identity System 	Volume 10 Issue 10 
+ISSN: 
+2349-6002
+	International Journal Of Innovative Research In Technology	March 2024	833-839
+3	Dr.V.Dhanakoti
+UG Students:
+Dejaswarooba B, 
+Gokul M, 
+Dev Preeth Singh R
+	AuthentiGuard: Decentralized Product Authentication System using Blockchain for Counterfeit Detection	Volume 10 Issue 10 
+ISSN: 
+2349-6002	International Journal of Innovative Research in Technology
+	March
+2024	776-780
+4	Dr.V.Dhanakoti
+ UG Students:
+R.Maanasa
+P.Mohankumar
+B.Muthu Kiruba	AI as Personal Therapist 	Volume 14,Issue 3
+ISSN: 
+0258-7982
+	International Journal  of Electronics Information Technology Science And Management	2024	60-63
+5	Dr.V.Dhanakoti
+UG Students:
+R.Maanasa
+P.Mohankumar
+B.Muthu Kiruba	Analytiguard: Pioneering Data Analytics for Proactive Credit Card Fraud Detection	Volume 10 Issue 10 
+ISSN: 
+0258-7982
+	International Journal of Innovative Research in Technology
+	March 2024	673-678
+6	Ms.A.Vidhya
+UG Students:
+R.Nishanth
+S.Keerthana
+B.Kavya	Breast Cancer Detection Using Ensemble Technique	Volume 14,Issue 3
+ISSN: 
+0258-7982
+	Journal Of Electronics Information Technology Science And Management	2024	10-15
+7	Dr.K.Shanmugam/AP
+ UG Students: 
+Mercy G, 
+Mohanapriyan P S Keerthivasan 
+	Cloud Sentinel: A Robust Python-based cloud platform for secure and collaborative threat intelligence sharing, anonymization, dataaggregation and collective defense(UGC)	ISSN: 
+0258-7982
+	International Journal  of Electronics Information Technology Science and Management
+	2024	
+8	Dr.K.Shanmugam,Asst Prof
+UG Students:
+ Mohana Priya G, P. Mohan Kumar, B. Praveena Shivaani G N.Pradeep	Next Gen Self Driving Safety with Pothole Detection Via AI and YOLO v8 Deep Learning
+(UGC)	ISSN: 
+0258-7982
+	International Journal  of Electronics Information Technology Science and Management	2024	
+9	Dr. B. Vanathi/Prof
+UG Students: 
+Rajasundari J,
+Mohammad Abrar Z, Priyadharshini P
+	Virtual Fitting Room Using Deep Learning
+(UGC)	ISSN: 
+0258-7982
+	Journal Of Electronics Information Technology Science And Management	2024	
+10	Dr. M. Mayuranathan
+UG Students:
+C.R Dan prabhu
+.M.,Bhuvaneshwari
+K.Harthika
+	AI Based Bio Metric Smart Voting System Using Internet of Things	Volume 10 Issue 10 
+ISSN: 
+2349-6002
+	International Journal of Innovative Research in Technology
+	March 2024	467-472
+11	Dr. V. Dhanakoti
+UG Students:
+R.Dev preeth singh
+M.Gokul
+B.Dejaswarooba
+	Indian Corporate Stock Prediction Using Linear Regression	Volume 14,Issue 3 
+ISSN:
+0258-7982
+	Journal Of Electronics Information Technology Science And Management
+	2024	64-70
+12	Dr. V.Dhanakoti
+UG Students:
+M.Uttam
+	A Review on Role of Big Data Analytics During COVID-19	Volume 18,Issue 4
+ISSN: 
+1001-2400
+	Journal of Xidian University
+	2024	13731380
+13	Ms. Sangeetha G
+UG Students:
+K.Bharath
+S.Balamanikandan
+G.Bharath	Adversarial Training and Boosting Robustness in Machine Learning  Frameworks	Volume 4,Issue 4
+ISSN: 2581-9429	International Journal of Advanced Research in Science, Communication and Technology	March
+2024	198-201
+14	Dr. C.Pabitha
+UG Students:
+V.Nalina
+M.Nandhini
+I.RajaLakshmi	IOT based Intelligent Door Lock Ingress Control System with Digital Notification	ISSN: 2393-8447 Volume 10, Issue 2 	Journal of Advanced Engineering Research	2023	pp.175-180
+15	Dr. C. Pabitha
+UG Students:
+N.Logesh
+d.Kiran kumar
+N.Kishore	Decentralized Network of public distribution system using Block Chain	ISSN: 2393-8447 Volume 11, Issue 1 	Journal of Advanced Engineering Research	2024	pp.97-101
+16	Ms.Suma.S
+UG Students:
+S. Srijhanyee
+SS.Yaashini
+G.SaiSunitha
+
+	Medical Mask Recognition using DL	Volume 12, Issue 4, ISSN: 2320-2882	International Journal of Creative Research Thoughts (IJCRT)	APRIL 2024	PP.i712-i716
+17	Ms.Sathya. G
+UG Students:
+S.Kamesh
+S.Rishikumar
+S.Saai sabathty
+	Object detection convert object name to text and text to speech	ISSN:2581-9429
+Volume 4, Issue 4	IJARSCT	Mar 2024	470-473
+18	Ms.G.Sathya 
+UG Students:
+R.Shivasjankaran
+S.Diviyan	Depth sensing Imaging System Autonomous Restored Fog	ISSN 2581-9429
+Volume 4, Issue 4, 	IJARSCT	Mar 2024	219-223
+19	Ms.M.Sophiya Sugantha Grace
+UG Students:
+R.Dharini
+A.Deepan
+M.Gowthaman
+
+
+	AI Resume Analyzer using Natural Language Processing	Volume 4, Issue 4, ISSN (Online) 2581-9429	International Journal of Advanced Research in Science ,Communication and Technology(IJARSCT)	March 2024	474-477
+20	Dr V Dhanakoti, V 
+ UG Students:
+Aadithya, S Amutha Varshini, V Bakkiyalakshmi
+	Non-Repeating, Normalized Questionnaire Sets Generation and Rendering Based on A Parsed Input Domain with Cryptographically Enforced Secure Access	Vol.4, Issue.2, 
+ISSN (Online) 2581-9429	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	March 2024	548-554
+21	Dr. V. Dhanakoti
+UG Students:
+S.Sakthivel
+K.Vedavarshini
+C.Sundaresan	Parking Pixels: Python’s Vision for Urban Space Optimization	Vol.24, Issue.4, 	International Journal of New Innovations in Engineering and Technology	June 2024	pp:21-29
+22	Mr. N. Leo Bright Tennisson
+UG Students:
+V.Nithish
+M.Parkavi
+A.Priyadharshini	Fortifying Cyber Resilience	Vol 4, Issue 4, ISSN 2581-9429	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	Mar 2024	236-243
+23	Ms.Priyadharshini.M
+UG Students:
+S N .Sriram
+T.Sudhar Aathith
+N.Vigneshwaran	“STEVE JOBS”: Pioneering AI in Software Engineering	Volume 4, ISSUE 2
+ISSN: 2581-9429	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	March 2024	
+24	Ms.Vijaypriya.V
+UG Students:
+B.Gokul
+G.Gopinath
+A.Hariharan	An Efficient Segmentation and Classification of Brain Tumor Detection using Deep Learning	Volume 4, Issue 4
+ISSN: 2581-9429 	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)
+
+	March 2024	466-469
+25	Ms.Vijaypriya.V
+UG Students:
+P M .Dhanesh
+V.Giridhar
+B L.Harish	A Multifaceted Approach to Real Tim Online Proctoring with Gaze Tracking, Facial Aspect Ratio Analysis and Object Detection	Volume 4, Issue 4
+ISSN: 2581-9429 	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	March 2024	208-213
+26	Ms.Anitha R
+UG Students:
+P S Adithyan
+V A.Akshaya
+A.Bhunesh
+	Enhancing Customer Analytics: A Comprehensive Framework for Effective Churn Prediction	Volume 4, Issue 2
+ISSN: 2581-9429	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	March 2024	406-410
+27	Dr.Venkatesh S,
+UG Students
+Bharath G, 
+Bharath K	Dermacure – An Advanced skin Disease Detection using Deep Learning Algorithm	ISSN: 2581-9429
+Volume 3, Issue 1,	IJARSCT	October 2023	
+28	Ms.A.Lalitha
+UG Students:
+J.Karthik
+J.Pradeep
+P.Nian Adthith	Melanoma Skin Cancer Prediction	Volume 10 Issue 3
+ISSN 2395-1052	IJSART	March 2024	356361
+29	Dr.S. Venkatesh,
+UG Students
+Akash V, 
+Hariharan S, 
+Jayashri J	Video Surveillance and Security using Artificial Intelligence	ISSN (Online) 2581-9429
+Volume 4, Issue 4, 	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	March 2024	
+30	Ms.A.Lalitha
+UG Students:
+E.Pradeepkumar
+V.Rajaramanan
+M K.Ramharis	Driver Drowsinesss Detection using AI	ISSN (Online) 2581-9429
+Volume 4, Issue 4, 	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	March 2024	574-576
+31	Ms.Sophiya sugantha Grace
+UG Students(8th Sem):
+Mr. Abishek C, 
+Mr. Harish Kanna P, 4Mr. Varun G	Heritage Harbor with YOLOv8:Preserving Monuments through Audio Tales	Volume 4, Issue 4, ISSN (Online) 2581-9429
+	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	March 2024
+	
+32	Ms. Anitha R1, 
+UG Students(8th Sem):
+Ms.ArchanaM2, Ms. Aswini R3, Ms. Christabell Smylin P4
+	Deep Learning Based Knee Osteoarthritis Detection and Classification	Volume 4, Issue 4, 
+(Online) 2581-9429
+	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	March 2024
+	
+33	Ms. Sangeetha G, 
+UG Students(8th Sem):
+2Mr. Akash A, 3Mr. Dany Joseph C, 4Mr. Haarish Raj K
+	Detection of Gastrointestinal Lesions using Deep Learning	Volume 4, Issue 4, 
+(Online) 2581-9429
+M	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	arch 2024
+	
+34	Ms. Christina Sweetline B,
+UG Students(8th Sem):
+ Jagadesh T,
+ Harish S, 4Mr. Vijay Karthikeyan G
+	Online Auction System	Volume 4, Issue 4, 
+(Online) 2581-9429
+	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	March 2024	
+35	Dr.C.Pabitha4 
+UG Students(8th Sem):
+A.R. Nagaraja
+N. Nirmal
+J. Lokesh
+	Scout And Deal: A Football Transfer Recommendation System	 Volume 10 Issue 3 
+ISSN [online]: 2395-1052
+	International Journal for science and Advance Research in Technology (IJSART)	March 2024
+	
+36	Dr. V.Dhanakoti/Prof
+	A Methodical Examination in the Pursuit of Big
+Data Analytics in Digital Media Broadcasting	Volume 24,Issue 4
+ISSN: 
+2319-6319
+	International Journal of New Innovations in Engineering and Technology
+	2024	1-11
+37	Dr. V.Dhanakoti/Prof
+	Contrasting a Conventional Approach with Digital
+Approach for Brand Communication Scrutiny	Volume 18,Issue 7
+ISSN: 
+1001-2400
+	Journal of Xidian University
+	2024	602-611
+
+
+
+
+
+
+
+
+
+CONFERENCE
+1	Ms.S.Suma	Scalable Computing in Resource Allocation	ISBN: 979-8-3503-4757-9	International Conference on Edge computing and Applications	Aug 2023.	182-186
+2	Ms.V.Vijayapriya	Comparative Analysis for Detecting Drowsiness
+Using Deep Learning Approach	10.1109/ICEEICT5624.2023.10157730	 IEEE Xplore.	2023	
+3	1.Mr.N. Leo Bright Tennisson
+2. Dr. B. Vanathi 
+3.Dr. C. Pabitha	Machine Learning Techniques for Classification and Prediction of Structures and Rocks	10.1109/ICRASET59632.2023
+979-8-3503-0692-7/23	International Conference on Recent Advances in Science & Engineering Technology	Nov
+2023	
+4	Ms.Mohanapriya.M	Revolutionizing Intrusion Detection in Industrial IOT with Deep Generative Techniques	ISBN: 978-81-972699-5-0	International Conference on Recent Innovations In Science, Engineering and Technology
+(Paper ID: ICRISET24’ 63)	2024	63
+5	Ms.Vidhya. A
+Dr.Vanathi. B	Harnessing Deep Learning for Early Detection: A Performance Evaluation of RESNET V250, VGG 16, and CNN in Breast Cancer Histopathology	ISBN: 978-93-6155-898-6	Artificial Intelligence in Nanomaterials Engineering, Environmental & Healthcare Applications(IC-ANEHA’ 24)	Feb 2024	
+
+
+
+BOOK / BOOK CHAPTER
+1	Dr.M.Mayuranathan	Machine Learning using Python	ISBN NO: 978-93-5757-343-6.	International Publishing House		
+2	Ms.Shanthi.S,
+Dr.M.Murugan,
+Dr.M.Mayuranathan	Binary Classification of Medical Chest X-Ray Using Gaussian Naive Bayes in Machine Learning	ISBN 9781003430452,528-533	Next Gen Technologies in computational Intelligence
+	Jan 2024	529-533
+3	Dr.M.Mayuranathan	Navigating the Circular Age of a Sustainable Digital Revolution	ISBN 979-8-3693-2827-9	IGI Global Engineering Science Reference	2024	
+4	Dr.M.Mayuranathan	Sustainable Business Models for Smart City Using Artificial Intelligence Techniques	DOI:10.4018/979-8-3693-2827-9	IGI Global Engineering Science Reference	2024	263-293

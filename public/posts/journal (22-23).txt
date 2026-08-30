@@ -1,0 +1,353 @@
+SRM VALLIAMMAI ENGNIEERING COLLEGE
+(An Autonomous Institution)
+SRM Nagar, Kattankulathur – 603203.
+DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING
+LIST OF JOURNALS (JULY 2022 – JUNE 2023)
+S. NO	AUTHOR	TITLE OF THE PAPER	VOLUME NO
+PAGE NO	NAME OF THE JOURNAL	MONTH & YEAR	Page No
+SCI
+1	Mr.K.Shanmugam
+Dr.B.Vanathi	Newton algorithm based DELM for Enhancing offline Tamil Handwritten character Recognition	DOI:10.11142/S021s00142500203	International Journal of Pattern Recognition and Artificial  Intelligence	2022	151-163
+2	Dr.M.Mayuranathan
+Dr.S.K.Saravanan
+Dr.B.Muthusenthil
+Dr.A.Samydurai	An efficient optimal security system for intrusion detection in cloud computing environment using hybrid deep learning technique	Volume 173
+https://doi.org/10.1016/j.advengsoft.2022.103236
+	Advances in Engineering Software
+- ELSEVIER	November 2022,	1-9
+3	Dr.V.Dhanakoti
+	Fuzzy-Dedup: A secure deduplication model using cosine based Fuzzy interference system in cloud application	Vol.43, Issue.3, pp.2819-2832,
+DOI: 10.3233/JIFS-210511	Journal of Intelligent & Fuzzy Systems	July 2022	2819-2832
+4	Ms.M. Priyadharshini
+Ms.R. Anitha
+Ms.S. Suma
+Ms.V. Prema
+Ms.A. Vidhya	Adaptive DBN Using Hybrid Bayesian Lichtenberg Optimization for Intelligent Task Allocation	https://doi.org/10.1007/s11063-022-11071-6	Neural Processing Letters	Oct2022	
+5	Dr.A. Samydurai,  Dr.Revathi, 
+Dr.L. Karthikeya, 
+Dr.B. Vanathi 
+ Dr.K. Devi	An Enhanced Entity Model for Converting Relational to Non-Relational Documents in Hospital Management System Based on Cloud Computing	https://doi.org/10.1080/02564602.2021.2016075	IETE Technical Review-Taylor & Francis	2022	1-14
+6	Dr.L.Karthikeyan
+Dr.B.Chidambararajan	An Intelligent Deep Neural Sentiment classification Network	DOI:10.32604/iasc.2023.032108	Intelligent Automation & soft computing-Tech Science Press	Jan 2023	1733-1744
+7	Mr.V.Santhana Marichamy	Blockchain based securing Medical Records in Big data Analytics	https://doi.org/10.1016/j.datak.2022.102122	Elsevier	Nov 2022	1-17
+
+8	Dr.V.Dhanakoti	Hybrid whale tabul algorithm optimized convolutional neural network architecture for intrusion detection in big data	DOI:10.1002kpe.7038	Concurrency computat pract Exper. Wiley publication	Aug
+2022	1 to 15
+9	Ms.A. Vidhya,
+Ms.V. Prema,
+Ms.M. Priyadharshini,
+Dr.G. Kumaresan,
+Ms.G. Sangeetha	An efficient IoMT based health monitoring using complex valued deep CNN and political optimizer	https://doi.org/10.1002/ett.4610
+	Emerging Telecommunication  and Technologies	18 Aug 2022	
+10	Dr.G.Kumaresan,
+Dr.K.Devi, Ms.Shanthi.S,
+Dr.B.Muthusenthil
+Dr.A.Samydurai	  Hybrid Fuzzy Archimedes-based Light GBM-XGBoost model for distributed task scheduling in mobile edge computing	 
+https://doi.org/10.1002/ett.4733
+	
+
+John Wiley &Sons Ltd	Mar
+2023	
+11	Dr.K.Devi	An Investigation on Applicability of AD-HOC Routing Protocols in Fog-Assisted Smart Health Care System	Vol.18, No.6, ISSN: 1819-6608	ARPN Journal of Engineering and Applied Sciences	Mar 2023	633-639
+12	Dr.S. Parthasarathy	OSVR: an efcient support vector regression model based host
+overload detection and secure virtual machine migration	https://doi.org/10.1007/s12652-022-04439-y
+	Journal of Ambient Intelligence and Humanized Computing	Oct 2022	
+SCOPUS
+1	Mr.N. Leo Bright Tennisson
+	Support Vector Machine for real time analysis of rocks and structures
+	Vol. 13 No. 3 (2022),ISSN: 1309-3452
+	Journal Of Algebraic Statistics
+	Aug 22
+	988-994
+2	Dr.C.Pabitha
+Dr.B.Vanathi
+Ms.G.Sangeetha
+Ms.S.Suma
+	Deep Learning Frame work for Edge Detecting and Classification in SAR Images of oil Spills using CNN	Grenze ID :01.GIJET.9.1.633.	Grenze International Journal of Engineering and Technology 	Jan 2023	239-245
+3	Ms.V.Vijay Priya	An Effective Hybrid Features For Driver Fatigue Detection Using Convolutional Neural Network	Volume 101,  Issue 4, ISSN: 1992-8645	Journal of Theoretical and Applied Information Technology	Feb 2023	
+Other Reputed Journals
+1	Dr. S. K. Saravanan
+Mr. V. Santhana Marichamy	A Comprehensive Analysis Usage Of Data Science And Analytics
+	ISSN:2277-7881
+https://ijmer.in.doi./2022/11.06.09	International Journal of Multidisciplinary  Educational Research	July 2022	
+2	Dr. S.Benila
+UG Students:
+1.S.Nandini
+2.K.Nithin
+3.B.Pradeepa Illakkiya	Pedestrian Crossing Traffic Lightcontrol System Using Face Detection	(E-ISSN 2348-1269, Volume 10, Issue 2	International Journal of Research and Analytical Reviews (IJRAR)	Apr 2023	24-
+31
+
+
+
+
+3	Dr. Benila S
+UG Students:
+1.Karan Kumar R
+2.Karthikraja N
+3.Kavimukilan M	Survey of Deep Learning Techniques for Vehicle Detection	Volume 3, Issue 1,
+ISSN (Online) 2581-9429	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	February 2023	425-434
+4	Ms.A.Vidhya
+UG Students:
+P. Muthusathish
+G. Mythreyan
+M. Premkumar	CNN Based Real Time Sign Language To Text And Speech Conversion	Volume 10, Issue 2,
+E-ISSN 2348-1269	nternational Journal of Research and Analytical Reviews (IJRAR)	Apr 2023	247-254
+5	Ms. S. Suma
+UG Students:
+ S. Ahileshwaran
+P. Devakumar
+R. Dineshkumar	Arrythmia Disease Prediction using Deep Learning Technique	Volume 3, Issue 2,
+ISSN (Online) 2581-9429	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	March 2023	67-70
+6	Ms. S. Suma
+UG Students:
+S. Failur Rahuman 
+A. Ghoushick
+R. Hari Ganesh	File Storage System using Hybrid Cryptography	Volume 3, Issue 2,
+ISSN (Online) 2581-9429	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	March 2023	45-49
+7	MsAnitha R
+UG Students:
+Aarthika K
+ S.Aaslin Praise  Gowtham S	Smart Stretcher System Using IOT	VOLUME 13, ISSUE 3,
+ISSN NO : 0258-7982	Journal Of Electronics Information Technology Science And Management	2023	89-95
+8	Dr. M. Mayuranathan 
+UG Students:
+Annamalai J
+Ashwin R
+ Darrel P	Global Disaster Tracker	Volume 3, Issue 2,ISSN (Online) 2581-9429	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	March 2023	97-100
+9	Mrs. Sathya G 
+UG Students:
+Tharani S
+ Shivani S
+ Sharmi S	Facial Recognition For Criminal Detection Using Deep Learning	Volume: 05 Issue: 04 | 
+ISSN (Online) 2581-7795	International Research Journal of Education and Technology	April-2023	32-34
+10	Ms.S.Shanthi
+UG Students:
+S.Navin
+A.Ragul
+S.J.Ragunath	Cognitive Radio network for minimizing network Traffic	Vol 11,Issue:4,ISSN No:2320-2882	International
+Journal of Ceative Research Thoughts	2023	
+11	Ms.S.Shanthi
+UG Students:
+J.Ajith
+A.Chran Kumar
+K.Deepak Krishna
+N.Gokul
+
+	Intelligent video surveillance using Deep Learning	Volume 3, Issue 2,ISSN (Online) 2581-9429	International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	Apr 2023	77-83
+12	Ms.Ms. S. Suma
+UG Students:
+S.Reshma
+S.Santhosh
+S.Roshini
+	Browsecure	Volume:13,Issue.3,ISSN No:2250-1770	International Journal of Current Science	May 2023	582-591
+13	Ms.G.Sangeetha
+UG Students:
+S.Hariharan
+C.Hemnath
+K.Kabilesh	Organ Donation And Matching System	Volume XII,Issue IV, ISSN : 0950-0707	Science, Technology and Development	Apr 2023	405-409
+14	Ms.G.Sangeetha
+UG Students:
+S.Shantha kumar
+S.Harshavardhan
+D.Varun	Human Activity Recognition Using DNN Classifier And Feature Analysis	Volume 11, Issue 3 ISSN: 2320-2882	International Journal of Creative Research Thoughts (IJCRT) www.ijcrt.org	Mar 23	
+15	Dr.S.Venkatesh
+UG Students:
+R.K.Rithanya
+S.Subash
+P.Surendar
+	Smart Blind Stick Integration with IOT & SOS	Volume XII,Issue IV, ISSN : 0950-0707	Science, Technology and Development	Apr 2023	
+16	Ms.R.Anitha 
+	Recent Trends on the diverse application of blockchain using  Ethereum client	Volume 10,Issue 5,ISSN No:1869-9391	GIS science Journal	2023	1973-1976
+17	Dr.M.Mayuranathan
+UG Students:
+R.Aagash
+P.Dillibabu
+R.Balaji
+	A mobile application for product verification using QR code and NFC Tags in Supply chain Management using BlockChain	Volume 10,Issue 5,
+ISSN No:2320-2882	International Journal of Creative Research Thoughts 	May 2023	530-538
+18	Mr.N.Leo Bright Tennission 
+UG Students:
+K.Prem prasad
+E.Praveen Kumar
+K.Naveen Kumar	Analysis and Prediction of Employee Attrition	Volume: 11
+Issue: 04 
+ISSN (Online) 2320-2882	International Journal of Ceative Research Thoughts	May 2023	1467-1470
+19	Mr.N.Leo Bright Tennission 
+UG Students:
+Kanuparthi Saranya
+K.Kavi Bharathi
+D.Manoranjani	Smart Protection in Agricultural Fields	Volume: 13
+Issue: 04 
+ISSN (Online) 1258-7982	Journal of Electronics Technology Science and Management	May 2023	6-11
+20	Mrs. M. Priyadharshini 
+UG Students:
+Chrisolus Timonsingh J
+Insuvai V	An XGBoost-Based Regression Model for Wildfire Impact Prediction	Vol-10, Issue –3, ISSN :2395-0056	International Research Journal of Engineering and Technology (IRJET)	APR 2023	
+21	Mr.T.Rajasekar
+UG Students:
+B.Vignesh
+	Construction Of A Blockchain Web 3.0 Dapp With Nft Using Smart Contract
+	2581-7795 volume 5 issue 03	International Research Journal of Engineering and Technology	Mar
+2023	
+22	Dr.A.Samydurai
+UG Students:
+P.Karthikeyan
+T.Ram Prasath
+DN. Karthikeyan
+	Identification of false credit card transaction using machine learning	Volume:11
+Issue: 04 
+ISSN (Online) 2320-2882	International Journal of Ceative Research Thoughts	Apr 2023
+
+
+
+	
+23	Dr.L.Karthikeyan
+UG Students:
+K.Naveen Kumar
+P.Prasanna
+V.Rajalakshmi
+	Smart Vehicle Theft Detection and Recognition controlling intelligent system	Volume:10
+Issue: 02
+ISSN (Online) 2348-1269	International Journal of Research and Analytical reviews	Apr 2023
+	
+24	Dr.L.Karthikeyan
+UG Students:
+S.J.Nithish
+K.Pooja
+S.Porselvi
+	Intelligent Vehicle Black Box using IOT	Volume:10
+Issue: 02
+ISSN (Online) 2348-1269	International Journal of Research and Analytical reviews	Apr 2023
+	
+25	Dr.B.Muthusenthil
+UG Students:
+Mummaneni sravani
+Konduru Theja Sree
+M.P.Krithik Shri	Plant Life:An Intelligent mobile plant disease diagnostic system using Deep Learning	Volume:3
+Issue: 02
+ISSN (Online) 2581-9429	International  Journal of Advanced Research in  Technology Science communication and Technology	Apr 2023	
+26	Mr.K.Shanmugam
+UG Students:
+R.Srinath
+S.Silambarasan
+P.Siddharth	Smart Monitoring and wireless EV Charging	Volume:XII
+Issue: V
+ISSN (Online) 0950-0707	Science,Technology and Development	May 2023	
+27	Mr.K.Shanmugam
+UG Students:
+S.Anish Akshai
+R.Brahadeeshram
+P.Harish	Sales forecasting of Non-Stationary time series sales data using Deep Learning Approach	Volume:05
+Issue: 04
+ISSN (Online) 2581-7795	International Journal of Education and Technology	Apr 2023	
+28	Dr.Venkatesh
+UG Students:
+Sundar Naveen Kumar.C
+M.Sivanarayanan
+S. Vijaya Kumar	Automatic rain sensing wiper with drowsiness detection and alert systyem in Helmets	Volume:XII
+Issue: V
+ISSN (Online) 0950-0707	Science,Technology and Development	May 2023	
+29	Ms.V.Prema
+UG Students:
+P.Sai mounish 
+R.Roach Amalan
+K.Ranjith
+	Abnormal Event Detection in human behaviour	Volume: 11
+Issue: 04 
+ISSN (Online) 2320-2882	International Journal of Ceative Research Thoughts	Mar
+2023	
+30	Ms.R.Anitha 
+UG Students:
+T.Vasanth
+S.Veeraragavan
+K.Vigneshwaran	Bone Fracture Detection and Recommendation using CNN	Volume: 11
+Issue: 04 
+ISSN (Online) 2320-2882	International Journal of Ceative Research Thoughts	Mar
+2023	
+31	Ms.A.Vidhya
+UG Students:
+C.Akileshwar
+B.Hariharan
+Mohd Aklad	Health care system using Blockchain 	Volume: 10
+Issue: 05
+ISSN (Online) 2320-2882	International Journal of Ceative Research Thoughts		
+32	Dr.G.Kumaresan
+UG Students:
+B.Nithishkumar
+R.Ajin
+J.Gowtham	Framework for stock price prediction using ML and react JS	Volume: 3
+Issue: 03
+ISSN (Online) 2395-0072	International Journal of Advanced Research in  Technology Science communication and Technology	Apr 2023	
+33	Ms.A.Lalitha
+UG Students:
+Syed Muntasir SK
+Surya GM
+Roshan R	Negative Thinking Detection Using 
+Social Media Charts	Volume: 11
+Issue: 04 
+ISSN (Online) 2320-2882	International Journal of Ceative Research Thoughts	Apr 2023	
+34	V. Prema
+UG Students:
+V. Ripponika
+V. Rishikesh
+M.P. Roshan	Diabetic Retinopathy microaneurysms detection using pretrained convoliution neural network	Volume: 11
+Issue: 03
+ISSN (Online) 2320-2882	International Journal of Ceative Research Thoughts	Apr 2023	f946-f953
+CONFERENCE
+
+1	Dr.A.Samydurai	Context Aware Fog-Assisted Vital Sign Monitoring System: Design and Implementation	INSPEC Accession Number:22240273
+DOI:10.1109/ICECAA55415.2022.9936287	IEEE Conference Publication 	November 2022	
+2	Ms.V.Vijay Priya	Comparative Analysis for Detecting DrowsinessUsing Deep Learning Approach	Volume ISSN: 979-8-3503-9763-5/23  DOI:10.1109/ICEEICT56924.2023.10157730	IEEE Conference	June 23	
+3	Ms.Shanthi S	Binary Classification Of Medical Chest Xray Using Gaussian Naive Bayes In Machine learning		Scopus Indexed International Conference On Next-Gen Technologies In Computational Intelligence	Mar 2023	
+4	Dr.V.Dhanakoti
+Dr.B.Muthusenthil
+Dr.L.Karthikeyan	WG-WaveNet: On-Demand Speech Synthesis on CPU	DIR1122412	39th Dubai International Conference on ”Literature, Humanities, Education and Social Sciences”	Nov 2022	
+5	Dr.K.Devi
+UG Students:
+S.Manikandan
+B.Karthikeyan
+M.Karna
+Konduru Gajendra Raju	Cryptomining Based Toll Collection and Charging Station System		Fourth National Conference on Communication and System Design	Apr 2023	
+6	Mr.N.Leo Bright Tennisson Dr.C.Pabitha
+Dr.B.Vanathi
+	Machine Methods for classification of rocks and structure using outlier filter		14 th International conference on Engineering and Advancement in  Technology	June 2023	
+7	Ms.A.Vidhya
+PG Students:
+J.Abinaya	Performance Analysis od NIDS dataset using decision tree classifier		Emerging trends in artificial intelligence and  Block chain Technology	Apr 2023	
+8	Dr.C.Pabitha
+Dr.B.Vanathi
+	Deep Learning Framework for Edge Detecting and Classification in SAR images
+of Oil Spills using CNN		International Conference on Recent Advancements in
+Artificial Intelligence and Soft Computing ICAISC - 2022	Dec 2022	
+9	Dr.C.Pabitha
+UG Students:
+V.Nalina
+N.Nandhini
+I.Rajalakshmi
+	IOT based intelligent Door lock Ingress control system with digital Notification		5th International conference on Recent Innovations in Science & Technology(RIST 2023)	April 2023	
+10	Dr.C.Pabitha
+UG Students:
+D.Kiran kumar
+N.Kishore
+N.Logesh
+
+	Design and Implementation of public Distribution system using Block chain		5th International conference on Recent Innovations in Science & Technology(RIST 2023)	April 2023	
+11	Dr B.Muthusenthil
+UG Students:
+J Muthtamiz Selvan	Smart phone based autonomous vision enabled waste segregation system		Fourth National Conference on communication and system design(NC2SD), PSG Institute of technology and Applied research		
+BOOK CHAPTER
+1	Dr.S.K.Saravanan
+Mr.V.Santhana Marichamy	Composable data Analytics and its Applications	ISBN:978-81-9535921119	Book chapter-Emerging Applications and smart systems based on blockchain 
+Technology	Sep 2022	226
+
+2	Dr.S.K.Saravanan
+Dr.S.Parthasarathy	Recent Trends in Engineering and operation Management	ISBN:978-81-9535921119	Book chapter-Recent trends in Engineering and operation management
+	Sep 2022	232
+BOOKS
+3	Dr.M.Mayuranathan	Machine Learning using Python	ISBN No:978-93-5757-343-6	Scientific International publishing House	2022	
+4	Mr.V.Santhana
+Marichamy	Understanding Security Principles-
+Cryptography,Cyber law	ISBN No:978-935625-283-7	Scientific International publishing House	2022	
+
+
+

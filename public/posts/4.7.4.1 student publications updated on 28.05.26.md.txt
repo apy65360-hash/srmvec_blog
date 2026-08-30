@@ -1,0 +1,1024 @@
+4.7.4 Student Publications (05)
+(Provide details of student publications in journals, conferences, etc., for the past 3
+years.)
+Table No. 4.7.4.1: List of student publications.
+S.No	Name of the
+Student &
+Semester	Name of the
+Publisher	Name of the
+Journal/
+Conference, etc.	Paper Title	Volume
+No. &
+Issue No.
+	Name of the
+Award if any
+CAYm1(24-25)
+JOURNALS
+1	Dr.B.Vanathi
+UG Students(8th Sem):
+1.Ifthikaar Ahmed 2.A.Haari 3.Vignesh T, 4.Akshaya E		International Journal of Innovative Science and Research Technology	Optimizing Blood Cell Segmentation in Hematological Analysis Using Advanced Image Processing
+	Volume 11 Issue 10 
+ISSN: 2349-6002
+March 2025	
+
+2	Dr. V. Dhanakoti, 
+UG Students(8th Sem):
+Sakthivel S, 
+Vedavarshini. K, Sundaresan. C
+		International Journal of New Innovations in Engineering and Technology	Parking Pixels: Python’s Vision for Urban Space Optimization	Volume.24, Issue.4,
+pp:21-29	
+3	V. Dhanakoti, 
+UG Students(8th Sem):
+Anitha Varshini. A, Athmanathan K, 
+Balineni Akhila		International Journal of Innovative Science and Research Technology 
+	Enhanced Sentiment Analysis Of App Reviews Using Naïve Bayes And Ensemble Learning	Volume 11, Issue.10
+March 2025	
+4
+
+	C.Pabitha,
+UG Students(8th Sem):
+ G. Santhiya, R. Sharulatha, B.S. Shobika		International Journal of Innovative Science and Research Technology 	Innovations in Stroke Identification - A Deep Learning- Based Diagnostic Model Using Neuroimages
+	Volume 11 Issue 10 , ISSN: 2349-6002
+March 2025	
+5	C.Pabitha, 
+UG Students(8th Sem):
+Sivarama Krishnan K, Steve Samuel A, Sylesh Gowtham S		International Journal of Innovative Science and Research Technology 
+	Blockchain-Powered Logistics: Securing and Optimizing IoT-Based Distribution and Storage Networks 	Volume 11 Issue 10  , ISSN: 2349-6002
+March 2025
+
+
+	
+6	C.Pabitha, 
+UG Students(8th Sem):
+A. Prathija, V. Shamritha,
+ R. Vignesh		International Journal of Innovative Science and Research Technology 
+	Safe Tracker - Combines Road Safety and Tracking Capabilities using Computer Vision	Volume 11 Issue 10 | ISSN: 2349-6002
+March 2025	
+7	Pabitha C ,
+UG Students(8th Sem): 
+Sanjay H, 
+Vigneshwar S 
+Vishwa M		World Journal of Advanced Engineering Technology and Sciences (WJAETS)	Otogalucosense: AI-Powered system for glaucoma and otitis media detection.	CrosRef DOI:10.30574/wjaets.2025.14.3.0101, Volume 14
+Issue 3
+March 2025	
+8	M. Mayuranathan, 
+UG Students(8th Sem):
+Vignesh D,
+Thirupathi M,
+Shiva Shankar M		Journal Of Electronics Information Technology Science And Management	Enhancing Customer Retention : A Voting Classifier Apporach	Volume 14, Issue 3
+March 2025	
+9	Dr. G. Sangeetha
+UG Students(8th Sem):
+Vasan K J
+Subash M
+Venu Krishnan S		International Journal of Innovative Science and Research Technology  	AI-Enhanced Lung Size Matching and Eligibility System	Volume 10, Issue 3
+March 2025	
+10	S. Shanthi
+UG Students(8th Sem):
+Kishore Kumar M; Moulia Vasan G; Naveen Kumar P;		International Journal of Innovative Science and Research Technology 
+	Blockchain-Enabled Solutions to Identify Users behind Drug Trafficking on Encrypted Platforms	Volume 10  Issue 3 
+ISSN No:-2456-2165 page no:3295 -3297
+March 2025	
+11	Ms.Shanthi S
+UG Students(8th Sem):
+Kavishri B
+Mahalakshmi R
+Nivedhitha.S
+		International Journal of Innovative Research in Technology
+	AI based OCR system for Digitizing Handwritten Historical Documents in Regional Languages	Volume 11.
+Issue 10,
+ISSN 2349-6002,
+page No:3435-3441
+March 2025	
+12	A.Vidhya
+UG Students(8th Sem):
+Dharshana R S, 
+Dinesh R,
+ Dinesh S
+		International Journal of Innovative Research in Technology
+	Improving Breast Cancer Detection with Random Forest Algorithm and the Breakhis Dataset 
+	Volume:11
+,Issue:10,
+  Pg No:3145 -3150,
+IJIRT 174206
+March 2025	
+13	Prema. V
+UG Students(8th Sem):
+Swathi.S, 
+Subhiksha G R S, 
+Vimal Kishore.M 
+		International Journal of Innovative Research in Technology
+	Machine Learning Classification for Identification of Heart Disease in E-Healthcare 
+	Volume 11 Issue 10 
+ISSN: 2349-6002
+March 2025	
+14	Mrs. V. Prema 
+UG Students(8th Sem):
+Narendranaath S R  Muralidharan S Krishna Sai Ram R 
+		International Journal of Innovative Research in Technology
+	Automated OCR-Based PAN Card Text Extraction System	Volume 10, 
+Issue 3 
+ISSN: 
+2456-3315
+March 2025 
+	
+15	Rajasekaran T
+UG Students(8th Sem):
+Ajaykumar M 
+Arjun 
+Harish Kumar S T
+		International Journal of Innovative Research in Technology
+	Secure Blockchain-Based File Sharing
+	Volume 11, Issue 10, 
+Page No. 4487-4491, 
+ISSN: 2349-6002
+March 2025	
+16
+	M. Sophiya Sugantha
+UG Students(8th Sem):
+Sanjay C
+Sugapriyan V
+Harish V		
+International Journal of Innovative Research in Technology
+	Multi Label Classification of Lung Diseases Using
+Deep Learning	Volume 11
+ISSN: 2349-6002
+April 2025
+
+	
+17	Mrs. M. Mohanapriya
+UG Students(8th Sem):
+Eswarapasadh S
+Dinu Karthik P
+Franklin Jack R		International Journal of Innovative Science and Research Technology	Digital Money Transaction using
+Blockchain in Python	Volume 10,
+ Issue 3, 
+ISSN No:2456-2165
+March 2025	
+18	Mrs. M. Mohanapriya
+UG Students(8th Sem):
+Abilash K
+Harish N
+Dhushiv S		International Journal of Innovative Science and Research Technology	The Future of Iv Therapy: Smart Saline Bottle Using Iot Solutions	Volume 10,
+ Issue 3, 
+ISSN No:-2456-2165
+March 2025	
+19	Ms.S.Balaswathy
+Ms.R.Gayathri
+UG Students(8th Sem):
+Sivasamy K
+Sudha dharan S
+Vibhu N		International Research Journal on Advanced Engineering Hub (IRJAEH)	Enhancing palm leaves Manuscript Recognition  using capsule networks(Capsnet)in Deep Learning Approaches	Vol. 03
+ Issue: 04
+April 2025	
+
+
+
+
+
+
+20	
+Pabitha C
+UG Student:
+Vignesh R
+Shamritha V
+Prathija A
+		IEEE Xplore: 27 February 2025 (SCOPUS INDEXED) 	Integrated Road safetysystem for real-time water logging detectionand trafficmanagement using Google maps API	pp. 1165-1170, doi: 10.1109/ICMSCI62561.2025 	
+21	V.Dhanakoti, /Prof
+UG Student:
+Uttam M		VDI-Z Integrierte Produktion 	Prediction of stock market using technical trading Indicator	Vol.11, Issue.7, pp.70-83 	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CONFERENCE
+S.No	Name of the
+Student &
+Semester	Name of the
+Publisher	Name of the
+Journal/
+Conference, etc.	Paper Title	Volume
+No. &
+Issue No.
+	Name of the
+Award if any
+1	Dr.Mayuranathan
+Mr.R.Sudharsan
+Mr.V.Vikram	NCRTCI 24	Proceeding of National Conference on Recent Trends in Computational Intelligence	Gesture based Writing using computer vision	ISBN :978-81-953396-5-5
+April 2024	
+2	A.Samydurai
+UG Students(7th Sem):
+Kaveeya D
+Joshua Samuel E
+Kanaga Sundari
+
+	Organization of Science and Innovation Engineering & Technology	Proceeding of 13th International Conference on Contemporary Engineering and Technology  	Smart OCT Analysis: Predictive Diagonostics and automated Clinical Reporting-	ISBN :978-81-985365-9-4	
+3	Dr.G.Kumaresan
+UG Students(7th Sem):
+Rupesh T
+Jayannd Kishore A B
+Logeshwaren A	Organization of Science and Innovation Engineering & Technology	Proceedings of 13th International Conference on Contemporary Engineering & Technology 2025	Development of Markerless Augmented Reality Bowling Game Using/ Vuforia and Unity engine-Organization of Science and Innovation Engineering & Technology	ISBN :978-81-985365-9-4	
+4
+	Dr G
+Kumaresan
+UG Students(7th Sem):
+Muthuraman S
+Neevikkumar K
+Ram Manoj M P		Proceedings of 13th International Conference on Contemporary Engineering & Technology 2025	Agronomics –Enhanced Agricultural Efficiency and Tracking Calamities for Targeted Agricultural Aid	ISBN :978-81-985365-9-4	
+5	Dr.G.Sangeetha 
+UG Students(7th Sem):
+Kanishka. M.D
+Kavya Shree.V.S Nithya Sree.B	-A Review-Organization of Science and Innovation Engineering & Technology	Proceeding of 13th International Conference on Contemporary Engineering and Technology 	Soil Nutrient Analysis And Recommendations Using Machine Learning Technique	ISBN 978-81-985365-9-4	
+6	Dr. G. Sangeetha
+UG Students(7th Sem):
+Vasan K J
+Subash M
+Venu Krishnan S	Organization of Science and Innovation Engineering & Technology	Proceeding of 13th International Conference on Contemporary Engineering and Technology  	AI-Driven Lung Transplant Compatibility And Eligibility Criteria Analysis	ISBN :978-81-985365-9-4	
+7	Mrs .A.Lalitha, 
+Dr. Samydurai. 
+UG Students(7th Sem):
+Kiranraj. A3, Manivannan. M4, Pranavh Balaji	Organization of Science and Innovation Engineering & Technology	Proceeding of 13th International Conference on Contemporary Engineering and Technology 	Smart Meeting platform With Real Time Emotion Analysis Using AI	ISBN :978-81-985365-9-4	
+8	Mrs .A.Lalitha
+UG Students(8th Sem):
+A.Abinayan
+A.Arokiya Avinash
+S.Dhanraj		5th International Conference On Recent Trends in Engineering Technology	Real-time Image Based Facial Emotion Detection Using Deep Learning		
+9	Dr.G.Kumaresan
+UG Students(7th Sem):
+Kanishkar Mathi
+John Tenis Johnson
+Richardson Dennis	Organization of Science and Innovation Engineering & Technology	Proceedings of 13th International Conference on Contemporary Engineering & Technology 2025	NovaCrypt: A Secure and adaptive file encryption algorithm with dynamic key scheduling	ISBN :978-81-985365-9-4	
+10	Dr. C. Pabitha, 
+UG Students(8th Sem):
+Santhiya G, Sharulatha R and Shobika B.S		3rd International Conference on Robotics, Automation, and Intelligent Computing 	IOT – Integrated Deep Learning Approach for Food Freshness Monitoring
+	indexed in 
+Robotics, Automation and Intelligent Computing - Cambridge Scholars Publishing	
+11	Mrs.S.Suma, 
+UG Students(7th Sem):
+Suvathi P,
+Tamizh Selvan Yuvanjali S
+		7th International Conference On Engineering And Advancement in Technology– 2025
+Organization Of Science And Innovative Engineering & technology 	Fashion Fusion AR: Where Tech Meets Trend
+	Volume 1  ISBN: 978-81-983500-6-0
+	
+12	Shanthi S,
+UG Students(7th Sem):
+Deepakraj G,Arul Antrony Rajan 
+S,Arshad.S
+	Organization of Science and Innovation Engineering & Technology	13th International Conference on Contemporary Engineering and Technology	Deep Learning Model For MonkeyPox Prediction using VGG16
+
+
+	ISBN :978-81-985365-9-4	
+13	N. Leo Bright Tennisson
+UG Students(7th Sem):
+Prabhakaran S R
+Sadhiq Ali S
+Mohan S	Organization of Science and Innovation Engineering & Technology	International Conference on Contemporary Engineering and Technology,	Ai-powered automated filtering of inappropriate comments using deep learning-	ISBN :978-81-985365-9-4	
+14	Dr S.Venkatesh(2nd Author),
+UG Students(8th Sem):
+R.Sudharshan
+M.Sharanaragalingam
+M.Vaishnav		National Conference on researches in Science and Technology (1/03/2025).	Novel AI Based Ensemble Technique for efficient Training of deep neural network on Brain Tumor Detection		
+15	Ms.A.Vidhya,
+UG Students(7th Sem):
+Dharshana R S,
+Dinesh R
+Dinesh S
+	Organization of Science and Innovation Engineering & Technology
+	Proceeding of 13th International Conference on Contemporary Engineering and Technology	Optimized Breast Cancer  Image Classification  Using CNN-	ISBN 978-81-985365-9-4	
+16	Ms.A.Vidhya
+UG Students(7th Sem):
+Harshvardhan
+Harish
+
+	Organization of Science and Innovation Engineering & Technology	Proceeding of 13th International Conference on Contemporary Engineering and Technology 
+	Lung Cancer Classification (NSCLC) Using Explainable AI Techniques
+	ISBN 978-81-985365-9-4
+	
+17	Rajasekaran T
+UG Students(7th Sem):
+Elango V, 
+Gokul P, 
+Gowtham S	Organization of Science and Innovation Engineering & Technology
+
+	International Conference on Contemporary Engineering and Technology 2025	Intelligent Video Surveillance System using Deep Learning	ISBN 978-81-985365-9-4	
+18	Anslam Sibi S 
+UG Students(7th Sem):
+S.Jayamathi
+D.Karthikeyan
+V.Lakshmipriya
+P.Mahindhan
+	Organization of Science and Innovation Engineering & Technology	13th International Conference On Contemporary Engineering And Technology 	Authentech: GAN Powered Evidence Authentication
+	ISBN 978-81-985365-9-4
+22 & 23 March 2025	
+19	Ms.Anitha R, 
+UG Students(7th Sem):
+M.Dineshkumar
+D.Ajith
+A.Apsal Khan	Organization of Science and Innovation Engineering & Technology	13th International Conference On Contemporary Engineering And Technology- ICCET 2025 	Fetal Heart Disease Detection using Machine Learning-	ISBN 978-81-985-365-9-4	
+20	Ms.Anitha R, 
+UG Students(7th Sem):
+Mr. Dineshkumar N
+Mr. Jaidev Melvine R J
+Mr. Hruthik P	Organization of Science and Innovation Engineering & Technology	13th International Conference On Contemporary Engineering And Technology- ICCET 2025 	Multimodal Interaction System: Cursor Controlling Using
+Hand Gestures-	ISBN 978-81-985-365-9-4	
+21	V.Vijaypriya
+UG Students(7th Sem):
+Sanjay,
+ Saravanan M
+ Sharath Surya N
+	Organization of Science and Innovation Engineering & Technology
+	13th International Conference On Contemporary Engineering And Technology 2025	Artificial Intelligence Based Real Time Smart Phishing Detection And Defence System-	978-81-985365-9-4
+	
+22	Sathya G
+UG Students(7th Sem):
+K.Surendhar
+K Vijiyasimman
+J.Vijaikrishna	- Organization of Science and Innovation Engineering & Technology	13th International Conference On Contemporary Engineering And Technology 2025	Automated Sewer Defect Detection and size Estimation using YOLOv8 and MiDaS
+	ISBN:978-81-985365-9-4
+	
+23	Sathya G
+UG Students(7th Sem):
+Jefferson Agnew.A
+S.Roopesh
+R.Varunprasanth
+	Organization of Science and Innovation Engineering & Technology	13th International Conference On Contemporary Engineering And Technology 2025	Security in cloud computing using triple-des algorithm in blockchain
+
+
+	ISBN:978-81-985365-9-4
+	
+24	Dr.Mayuranathan
+Mr.Saran.V	NCRTCI 24	Proceeding of National Conference on Recent Trends in Computational Intelligence
+	Real Time Deep Fake detection in video Conferencing with deep learning	April 2024	
+25	Ms.Sophiya sugantha Grace
+UG Students(7th Sem):
+S.Sabarishwar
+X.R.Ritish
+T.PrakashRaj	Organization of Science and Innovation Engineering & Technology	13th International conference on contemporary
+Engineering and Technology	Smart Voice assistant for the Visually Impaired –Advancing Accessibility through Deep Learning on Mobile Platform	ISBN :978-81-985365-9-4	
+26	Mrs. M. Mohanapriya
+UG Students(7th Sem):
+Abilash K2
+Harish N3
+Dhushiv S4	- Organization of Science and Innovation Engineering & Technology	International conference on engineering Technology and Science	The Future of Iv Therapy: Smart Saline Bottle Using Iot Solutions	ISBN:978-93-342-3290-5	
+27	Ms.R.Gayathri
+UG Students(7th Sem):
+A. Aravind
+P. Sivaraj
+R.Vigneshwaran
+	Organization of Science and Innovation Engineering & Technology	13th International conference on contemporary
+Engineering and Technology	Customs TTS solution using Real HumAN Voice data-	ISBN :978-81-985365-9-4	
+28	Ms.R.Gayathri
+UG Students(7th Sem):
+S.Dinesh
+J.Akash
+A.Anbuselvan
+V.Hemaraj 		13th International conference on contemporary
+Engineering and Technology	Deepfake detection for Video and Audio	ISBN :978-81-985365-9-4	
+29	Ms.R.Gayathri
+UG Students(7th Sem):
+S.Dhanushkumar
+S.Balamurugan
+R.Harikrishnan
+		International conference on Emerging trends in Engineering,management  and computer application	Smart EDU hub AI  powered education platform		
+30	Anslam sibi S
+UG Students(8th Sem):
+Sundaresan C
+S.Surya
+J.P.Sujith		International Conference on Multi-Agent Systems for Collaborative Intelligence (ICMSCI-2025)	Medicinal Plant Identification and Information Provision using AI	ISBN: 979-8-3315-0981-1	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+List of student publications 
+CAYm2((23-24)
+
+JOURNAL
+S.No	Name of the
+Student &
+Semester	Name of the
+Publisher	Name of the
+Journal/
+Conference, etc.	Paper Title	Volume
+No. &
+Issue No.
+	Name of the
+Award if any
+1	Dr.M.Mayuranathan /AP
+UG Students(8th Sem):
+T. Ragothaman, Agilen Napolean and N. Kalyan Kumar		International Journal for science and Advance Research in Technology (IJSART)	Malware Website Detection Using Ensemble Machine Learning Approach
+
+	Vol 10 Issue 3
+ISSN: 
+2395-1052
+March 2024	
+2	Dr.M.Mayuranathan 
+UG Students(8th Sem):
+Vignesh D, Thirupathi M and M.Shiva Shankar		Journal of Electronics Information Technology Science and Management	Enhancing Customer Retention: A Voting Classifier Apporach’	Vol 14 Issue 3
+ISSN: 
+0258-7982
+March 2024
+	
+3
+	Dr.K.Shanmugam
+UG Students(8th Sem):
+G.Bharath
+ J. Lokesh
+N.Nirmal		International Journal for science and Advance Research in Technology (IJSART)	Innovations In AI-Enhanced Mental Health Care	Volume 9 Issue 9
+ISSN [online]: 2395-1052
+March 2024	
+4	Dr.V.Dhanakoti
+UG Students(8th Sem):
+Aadithya V, 
+Amutha varshini S, Bakkiyalakshmi V
+		International Journal Of Innovative Research In Technology	wwwId-A Practical Internet-Scale Self-Sovereign, Self-Federated Identity System	Volume 10 Issue 10 
+ISSN: 
+2349-6002
+March 2024	
+
+5
+	Dr.V.Dhanakoti
+UG Students(8th Sem):
+Dejaswarooba B, Gokul M,
+ Dev Preeth Singh R		International Journal of Innovative Research in Technology
+	AuthentiGuard: Decentralized Product Authentication System using Blockchain for Counterfeit Detection	Volume 10 Issue 10 
+ISSN: 
+2349-6002
+March
+2024	
+6	Dr.V.Dhanakoti
+UG Students(8th Sem):
+
+R.Maanasa
+P.Mohankumar
+B.Muthu Kiruba		International Journal  of Electronics Information Technology Science And Management	AI as Personal Therapist	Volume 14,Issue 3
+ISSN: 
+0258-7982
+	
+7	Dr.V.Dhanakoti
+UG Students(8th Sem):
+R.Maanasa
+P.Mohankumar
+B.Muthu Kiruba		International Journal of Innovative Research in Technology
+	Analytiguard: Pioneering Data Analytics for Proactive Credit Card Fraud Detection	Volume 10 Issue 10 
+ISSN: 
+0258-7982
+March 2024
+	
+8	Ms.A.Vidhya
+UG Students(8th Sem):
+R.Nishanth
+S.Keerthana
+B.Kavya		Journal Of Electronics Information Technology Science And Management	Breast Cancer Detection Using Ensemble Technique	Volume 14,Issue 3
+ISSN: 
+0258-7982
+March 2024
+	
+9	Dr.K.Shanmugam/AP
+UG Students(8th Sem):
+
+Mercy G, Mohanapriyan P S  Keerthivasan 
+		International Journal  of Electronics Information Technology Science and Management
+	Cloud Sentinel: A Robust Python-based cloud platform for secure and collaborative threat intelligence sharing, anonymization, dataaggregation and collective defense
+	ISSN: 
+0258-7982
+March 2024
+	
+10	Dr.K.Shanmugam,Asst Prof, 
+UG Students(8th Sem):
+Mohana Priya G, P. Mohan Kumar, B. Praveena Shivaani G and N.Pradeep		International Journal  of Electronics Information Technology Science and Management	Next Gen Self Driving Safety with Pothole Detection Via AI and YOLO v8 Deep Learning
+(UGC)	ISSN: 
+0258-7982
+March 2024
+	
+11
+	Dr. B. Vanathi/Prof
+UG Students(8th Sem):
+Rajasundari J,
+Mohammad Abrar Z, 
+Priyadharshini P
+		Journal Of Electronics Information Technology Science And Management	Virtual Fitting Room Using Deep Learning
+(UGC)
+
+
+	ISSN: 
+0258-7982
+March 2024	
+12	Dr. M. Mayuranathan
+UG Students(8th Sem):
+C.R Dan prabhu
+.M.,Bhuvaneshwari
+K.Harthika
+		International Journal of Innovative Research in Technology
+	AI Based Bio Metric Smart Voting System Using Internet of Things	Volume 10 Issue 10 
+ISSN: 
+2349-6002
+March 2024
+	
+13	Dr. V. Dhanakoti
+UG Students(8th Sem):
+R.Dev preeth singh
+M.Gokul
+B.Dejaswarooba
+		Journal Of Electronics Information Technology Science And Management
+	Indian Corporate Stock Prediction Using Linear Regression	Volume 14,Issue 3 
+ISSN:
+0258-7982
+March 2024
+	
+14	Dr. V.Dhanakoti
+UG Students(8th Sem):
+M.Uttam
+		Journal of Xidian University
+	A Review on Role of Big Data Analytics During COVID-19	Volume 18,Issue 4
+ISSN: 
+1001-2400
+April 2024
+	
+15	Ms. Sangeetha G
+UG Students(8th Sem):
+K.Bharath
+S.Balamanikandan
+G.Bharath		Frontiers in Health Informatics	
+Adversarial Training and Boosting Robustness in Machine Learning  systems	Volume 13,Issue 4
+ISSN:  2676-7104
+March 2024
+	
+16	Dr. C.Pabitha
+UG Students(8th Sem):
+V.Nalina
+M.Nandhini
+I.RajaLakshmi		Journal of Advanced Engineering Research
+	IOT based Intelligent Door Lock Ingress Control System with Digital Notification	ISSN: 2393-8447 Volume 10, Issue 2 	
+17	Dr. C. Pabitha
+UG Students(8th Sem):
+N.Logesh
+d.Kiran kumar
+N.Kishore		Journal of Advanced Engineering Research	Decentralized Network of public distribution system using Block Chain
+	ISSN: 2393-8447 Volume 11, Issue 1 	
+18	Ms.Suma.S
+UG Students(8th Sem):
+S. Srijhanyee
+SS.Yaashini
+G.SaiSunitha
+
+		International Journal of Creative Research Thoughts (IJCRT)	Medical Mask Recognition using DL	Volume 12, Issue 4, ISSN: 2320-2882
+ April 2024
+	
+19	Ms.Sathya. G
+UG Students(8th Sem):
+S.Kamesh
+S.Rishikumar
+S.Saai sabathty
+		International Journal of Advanced Research in Science, Communication and Technology IJARSCT	Object detection convert object name to text and text to speech	ISSN:2581-9429
+Volume 4, Issue 4	
+20	Ms.G.Sathya 
+UG Students(8th Sem):
+R.Shivasjankaran
+S.Diviyan
+
+		International Journal of Advanced Research in Science, Communication and Technology(IJARSCT)	Depth sensing Imaging System Autonomous Restored Fog	ISSN 2581-9429
+Volume 4, Issue 4, 
+March 2024	
+21	Ms.M.Sophiya Sugantha Grace
+UG Students(8th Sem):
+R.Dharini
+A.Deepan
+M.Gowthaman
+
+
+		International Journal of Advanced Research in Science ,Communication and Technology(IJARSCT)	AI Resume Analyzer using Natural Language Processing	Volume 4, Issue 4, ISSN (Online) 2581-9429	
+22	Dr V Dhanakoti, V 
+UG Students(8th Sem):
+Aadithya, S Amutha Varshini, V Bakkiyalakshmi
+		International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	Non-Repeating, Normalized Questionnaire Sets Generation and Rendering Based on A Parsed Input Domain with Cryptographically Enforced Secure Access	Vol.4, Issue.2, 
+ISSN (Online) 2581-9429	
+23	Dr. V. Dhanakoti
+UG Students(8th Sem):
+S.Sakthivel
+K.Vedavarshini
+C.Sundaresan		International Journal of New Innovations in Engineering and Technology	Parking Pixels: Python’s Vision for Urban Space Optimization	Vol.24, Issue.4, 	
+24	Mr. N. Leo Bright Tennisson
+UG Students(8th Sem):
+V.Nithish
+M.Parkavi
+A.Priyadharshini		International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	Fortifying Cyber Resilience	Vol 4, Issue 4, ISSN 2581-9429	
+25	Ms.Priyadharshini.M
+UG Students(8th Sem):
+S N .Sriram
+T.Sudhar Aathith
+N.Vigneshwaran		International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	“STEVE JOBS”: Pioneering AI in Software Engineering	Volume 4, ISSUE 2
+ISSN: 2581-9429	
+26	Ms.Vijaypriya.V
+UG Students(8th Sem):
+B.Gokul
+G.Gopinath
+A.Hariharan		International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	An Efficient Segmentation and Classification of Brain Tumor Detection using Deep Learning	Volume 4, Issue 4
+ISSN: 2581-9429 	
+27	Ms.Vijaypriya.V
+UG Students(8th Sem):
+P M .Dhanesh
+V.Giridhar
+B L.Harish		International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	A Multifaceted Approach to Real Tim Online Proctoring with Gaze Tracking, Facial Aspect Ratio Analysis and Object Detection	Volume 4, Issue 4
+ISSN: 2581-9429 	
+28	Ms.Anitha R
+UG Students(8th Sem):
+P S Adithyan
+V A.Akshaya
+A.Bhunesh
+		International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	Enhancing Customer Analytics: A Comprehensive Framework for Effective Churn Prediction	Volume 4, Issue 2
+ISSN: 2581-9429	
+29	Dr.Venkatesh S,
+UG Students(8th Sem):
+Bharath G, 
+Bharath K		International Journal of Advanced Research in Science, Communication and Technology(IJARSCT)	Dermacure – An Advanced skin Disease Detection using Deep Learning Algorithm	ISSN: 2581-9429
+Volume 3, Issue 1,	
+30	Ms.A.Lalitha
+UG Students(8th Sem):
+J.Karthik
+J.Pradeep
+P.Nian Adthith		International Journal for science and Advance Research in Technology (IJSART)	Melanoma Skin Cancer Prediction	Volume 10 Issue 3
+ISSN 2395-1052	
+31	Dr.S. Venkatesh,
+UG Students(8th Sem):
+Akash V, 
+Hariharan S, Jayashri J		International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	Video Surveillance and Security using Artificial Intelligence	ISSN (Online) 2581-9429
+Volume 4, Issue 4, 	
+32	Ms.A.Lalitha
+UG Students(8th Sem):
+E.Pradeepkumar
+V.Rajaramanan
+M K.Ramharis		International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	Driver Drowsinesss Detection using AI	ISSN (Online) 2581-9429
+Volume 4, Issue 4, 	
+33	Ms.Sophiya sugantha Grace
+UG Students(8th Sem):
+Mr. Abishek C, 
+Mr. Harish Kanna P, 4Mr. Varun G		International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	Heritage Harbor with YOLOv8:Preserving Monuments through Audio Tales 
+	Volume 4, Issue 4, ISSN (Online) 2581-9429
+March 2024
+	
+34	Ms. Anitha R1, 
+UG Students(8th Sem):
+Ms.ArchanaM2, Ms. Aswini R3, Ms. Christabell Smylin P4		International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	Deep Learning Based Knee Osteoarthritis Detection and Classification	Volume 4, Issue 4, 
+(Online) 2581-9429
+March 2024	
+35	Ms. Sangeetha G, 
+UG Students(8th Sem):
+2Mr. Akash A, 3Mr. Dany Joseph C, 4Mr. Haarish Raj K		International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	Detection of Gastrointestinal Lesions using Deep Learning	Volume 4, Issue 4, 
+(Online) 2581-9429
+March 2024	
+36	Ms. Christina Sweetline B,
+UG Students(8th Sem):
+ Jagadesh T,
+ Harish S, 4Mr. Vijay Karthikeyan G		International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	Online Auction System	Volume 4, Issue 4, 
+(Online) 2581-9429
+March 2024	
+37	Dr.C.Pabitha4 
+UG Students(8th Sem):
+A.R. Nagaraja
+N. Nirmal
+J. Lokesh		International Journal for science and Advance Research in Technology (IJSART)	Scout And Deal: A Football Transfer Recommendation System	 Volume 10 Issue 3 
+ISSN [online]: 2395-1052
+March 2024	 
+						
+CONFERENCE:NIL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+List of student publications 
+CAYm2((22-23)
+JOURNAL
+1	Dr. S.Benila
+UG Students(8th Sem):
+1.S.Nandini
+2.K.Nithin
+3.B.Pradeepa Illakkiya		International Journal of Research and Analytical Reviews (IJRAR)	Pedestrian Crossing Traffic Lightcontrol System Using Face Detection	E-ISSN 2348-1269, Volume 10, Issue 2	
+2	Dr. Benila S
+UG Students(8th Sem):
+1.Karan Kumar R
+2.Karthikraja N
+3.Kavimukilan M		International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)
+	Survey of Deep Learning Techniques for Vehicle Detection	Volume 3, Issue 1,
+ISSN (Online) 2581-9429	
+3	Ms.A.Vidhya
+UG Students(8th Sem):
+P. Muthusathish
+G. Mythreyan
+M. Premkumar		International Journal of Research and Analytical Reviews (IJRAR)	CNN Based Real Time Sign Language To Text And Speech Conversion	Volume 10, Issue 2,
+E-ISSN 2348-1269	
+4	Ms. S. Suma
+UG Students(8th Sem):
+ S. Ahileshwaran
+P. Devakumar
+R. Dineshkumar		International Journal of Advanced Research in Science	Arrythmia Disease Prediction using Deep Learning Technique	Volume 3, Issue 2,
+ISSN (Online) 2581-9429	
+5	Ms. S. Suma
+UG Students(8th Sem):
+S. Failur Rahuman 
+A. Ghoushick
+R. Hari Ganesh		International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	File Storage System using Hybrid Cryptography	Volume 3, Issue 2,
+ISSN (Online) 2581-9429	
+6	MsAnitha R
+UG Students(8th Sem):
+Aarthika K
+ S.Aaslin Praise  Gowtham S		Journal Of Electronics Information Technology Science And Management	Smart Stretcher System Using IOT	VOLUME 13, ISSUE 3,
+ISSN NO : 0258-7982	
+7	Dr. M. Mayuranathan 
+UG Students(8th Sem):
+Annamalai J
+Ashwin R
+ Darrel P		International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	Global Disaster Tracker	Volume 3, Issue 2,ISSN (Online) 2581-9429	
+8	Mrs. Sathya G 
+UG Students(8th Sem):
+Tharani S
+ Shivani S
+ Sharmi S		International Research Journal of Education and Technology	Facial Recognition For Criminal Detection Using Deep Learning	Volume: 05 Issue: 04 | 
+ISSN (Online) 2581-7795	
+9	Ms.S.Shanthi
+UG Students(8th Sem):
+S.Navin
+A.Ragul
+S.J.Ragunath		International
+Journal of Ceative Research Thoughts	Cognitive Radio network for minimizing network Traffic	Vol 11,Issue:4,ISSN No:2320-2882	
+10	Ms.S.Shanthi
+UG Students(8th Sem):
+J.Ajith
+A.Chran Kumar
+K.Deepak Krishna
+N.Gokul
+
+		International Journal of Advanced Research in Science, Communication and Technology (IJARSCT)	Intelligent video surveillance using Deep Learning	Volume 3, Issue 2,ISSN (Online) 2581-9429	
+11	Ms.Ms. S. Suma
+UG Students(8th Sem):
+S.Reshma
+S.Santhosh
+S.Roshini
+		International Journal of Current Science	Browsecure	Volume:13,Issue.3,ISSN No:2250-1770	
+12	Ms.G.Sangeetha
+UG Students(8th Sem):
+S.Hariharan
+C.Hemnath
+K.Kabilesh		Science, Technology and Development	Organ Donation And Matching System	Volume XII,Issue IV, ISSN : 0950-0707	
+13	Ms.G.Sangeetha
+UG Students(8th Sem):
+S.Shantha kumar
+S.Harshavardhan
+D.Varun		International Journal of Creative Research Thoughts (IJCRT) www.ijcrt.org	Human Activity Recognition Using DNN Classifier And Feature Analysis	Volume 11, Issue 3 ISSN: 2320-2882	
+14	Dr.S.Venkatesh
+UG Students(8th Sem):
+R.K.Rithanya
+S.Subash
+P.Surendar
+		Science, Technology and Development	Smart Blind Stick Integration with IOT & SOS	Volume XII,Issue IV, ISSN : 0950-0707	
+15	Dr.M.Mayuranathan
+UG Students(8th Sem):
+R.Aagash
+P.Dillibabu
+R.Balaji
+		International Journal of Creative Research Thoughts 	A mobile application for product verification using QR code and NFC Tags in Supply chain Management using BlockChain	Volume 10,Issue 5,
+ISSN No:2320-2882	
+16	Mr.N.Leo Bright Tennission 
+UG Students(8th Sem):
+K.Prem prasad
+E.Praveen Kumar
+K.Naveen Kumar		International Journal of Ceative Research Thoughts	Analysis and Prediction of Employee Attrition	Volume: 11
+Issue: 04 
+ISSN (Online) 2320-2882	
+17	Mr.N.Leo Bright Tennission 
+UG Students(8th Sem):
+Kanuparthi Saranya
+K.Kavi Bharathi
+D.Manoranjani		Journal of Electronics Technology Science and Management	Smart Protection in Agricultural Fields	Volume: 13
+Issue: 04 
+ISSN (Online) 1258-7982	
+18	Mrs. M. Priyadharshini 
+UG Students(8th Sem):
+Chrisolus Timonsingh J
+Insuvai V		International Research Journal of Engineering and Technology (IRJET)	An XGBoost-Based Regression Model for Wildfire Impact Prediction	Vol-10, Issue –3, ISSN :2395-0056	
+19	Mr.T.Rajasekar
+UG Students(8th Sem):
+B.Vignesh
+		International Research Journal of Engineering and Technology	Construction Of A Blockchain Web 3.0 Dapp With Nft Using Smart Contract
+	2581-7795 volume 5 issue 03	
+20	Dr.A.Samydurai
+UG Students(8th Sem):
+P.Karthikeyan
+T.Ram Prasath
+DN. Karthikeyan
+		International Journal of Ceative Research Thoughts	Identification of false credit card transaction using machine learning	Volume:11
+Issue: 04 
+ISSN (Online) 2320-2882	
+21	Dr.L.Karthikeyan
+UG Students(8th Sem):
+K.Naveen Kumar
+P.Prasanna
+V.Rajalakshmi
+		International Journal of Research and Analytical reviews	Smart Vehicle Theft Detection and Recognition controlling intelligent system	Volume:10
+Issue: 02
+ISSN (Online) 2348-1269	
+22	Dr.L.Karthikeyan
+UG Students(8th Sem):
+S.J.Nithish
+K.Pooja
+S.Porselvi
+		International Journal of Research and Analytical reviews	Intelligent Vehicle Black Box using IOT	Volume:10
+Issue: 02
+ISSN (Online) 2348-1269	
+23	Dr.B.Muthusenthil
+UG Students(8th Sem):
+Mummaneni sravani
+Konduru Theja Sree
+M.P.Krithik Shri		International  Journal of Advanced Research in  Technology Science communication and Technology	Plant Life:An Intelligent mobile plant disease diagnostic system using Deep Learning	Volume:3
+Issue: 02
+ISSN (Online) 2581-9429	
+24	Mr.K.Shanmugam
+UG Students(8th Sem):
+R.Srinath
+S.Silambarasan
+P.Siddharth		Science,Technology and Development	Smart Monitoring and wireless EV Charging	Volume:XII
+Issue: V
+ISSN (Online) 0950-0707	
+25	Mr.K.Shanmugam
+UG Students(8th Sem):
+S.Anish Akshai
+R.Brahadeeshram
+P.Harish		International Journal of Education and Technology	Sales forecasting of Non-Stationary time series sales data using Deep Learning Approach	Volume:05
+Issue: 04
+ISSN (Online) 2581-7795	
+26	Dr.Venkatesh
+UG Students(8th Sem):
+Sundar Naveen Kumar.C
+M.Sivanarayanan
+S. Vijaya Kumar		Science,Technology and Development	Automatic rain sensing wiper with drowsiness detection and alert systyem in Helmets	Volume:XII
+Issue: V
+ISSN (Online) 0950-0707	
+27	Ms.V.Prema
+UG Students(8th Sem):
+P.Sai mounish 
+R.Roach Amalan
+K.Ranjith
+		International Journal of Ceative Research Thoughts	Abnormal Event Detection in human behaviour	Volume: 11
+Issue: 04 
+ISSN (Online) 2320-2882	
+28	Ms.R.Anitha 
+UG Students(8th Sem):
+T.Vasanth
+S.Veeraragavan
+K.Vigneshwaran		International Journal of Ceative Research Thoughts	Bone Fracture Detection and Recommendation using CNN	Volume: 11
+Issue: 04 
+ISSN (Online) 2320-2882	
+29	Ms.A.Vidhya
+UG Students(8th Sem):
+C.Akileshwar
+B.Hariharan
+Mohd Aklad		International Journal of Ceative Research Thoughts	Health care system using Blockchain 	Volume: 10
+Issue: 05
+ISSN (Online) 2320-2882	
+30	Dr.G.Kumaresan
+UG Students(8th Sem):
+B.Nithishkumar
+R.Ajin
+J.Gowtham		International Journal of Advanced Research in  Technology Science communication and Technology	Framework for stock price prediction using ML and react JS	Volume: 3
+Issue: 03
+ISSN (Online) 2395-0072	
+31	Ms.A.Lalitha
+UG Students(8th Sem):
+Syed Muntasir SK
+Surya GM
+Roshan R		International Journal of Ceative Research Thoughts	Negative Thinking Detection Using 
+Social Media Charts	Volume: 11
+Issue: 04 
+ISSN (Online) 2320-2882	
+32	V. Prema
+UG Students(8th Sem):
+V. Ripponika
+V. Rishikesh
+M.P. Roshan		International Journal of Ceative Research Thoughts	Diabetic Retinopathy microaneurysms detection using pretrained convoliution neural network	Volume: 11
+Issue: 03
+ISSN (Online) 2320-2882	
+
+
+
+
+
+CONFERENCE
+1	Dr.K.Devi
+UG Students(8th Sem):
+S.Manikandan
+B.Karthikeyan
+M.Karna
+Konduru Gajendra Raju		Fourth National Conference on Communication and System Design	Cryptomining Based Toll Collection and Charging Station System		
+2	Ms.A.Vidhya
+PG Students:
+J.Abinaya		Emerging trends in artificial intelligence and  Block chain Technology	Performance Analysis od NIDS dataset using decision tree classifier		
+3	Dr.C.Pabitha
+UG Students(8th Sem):
+V.Nalina
+N.Nandhini
+I.Rajalakshmi
+		5th International conference on Recent Innovations in Science & Technology(RIST 2023)
+	IOT based intelligent Door lock Ingress control system with digital Notification		
+4	Dr.C.Pabitha
+UG Students(8th Sem):
+D.Kiran kumar
+N.Kishore
+N.Logesh
+		5th International conference on Recent Innovations in Science & Technology(RIST 2023)	Design and Implementation of public Distribution system using Block chain		
+5	Dr B.Muthusenthil
+UG Students(8th Sem):
+J Muthtamiz Selvan		Fourth National Conference on communication and system design(NC2SD), PSG Institute of technology and Applied research	Smart phone based autonomous vision enabled waste segregation system		
