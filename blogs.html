@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en" data-variant="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blogs Board | SRMVEC CSE Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="/src/styles/style.css" />
+  <link rel="stylesheet" href="/src/styles/portal.css" />
+  <style>
+    :root {
+      --brand-blue: #2563EB;
+      --brand-dark: #0F172A;
+      --accent-cyan: #0EA5E9;
+      --card-bg: #FFFFFF;
+      --surface-light: #F8FAFC;
+      --border-subtle: #E2E8F0;
+      --text-muted: #64748B;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+    }
+
+    body {
+      background: #F1F5F9;
+      color: #0F172A;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Page Hero Banner */
+    .blogs-hero-banner {
+      background: linear-gradient(135deg, #002947 0%, #1E3A8A 50%, #004070 100%);
+      color: #FFFFFF;
+      padding: 3.5rem 1rem 3rem 1rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 4px solid #F59E0B;
+    }
+    .blogs-hero-banner h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    .blogs-hero-banner p {
+      color: #93C5FD;
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto 1.5rem auto;
+    }
+    .hero-badges-row {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .hero-badge {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    /* Filter & Controls Bar */
+    .controls-wrapper {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 1.25rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    }
+    .controls-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .search-box-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 260px;
+    }
+    .search-box-wrap input {
+      width: 100%;
+      padding: 0.7rem 1rem 0.7rem 2.6rem;
+      border: 1px solid #CBD5E1;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .search-box-wrap input:focus {
+      border-color: var(--brand-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .search-box-wrap i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .category-filter-select {
+      padding: 0.7rem 1.5rem 0.7rem 1rem;
+      border: 1px solid #CBD5E1;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+      background: #FFFFFF;
+      min-width: 180px;
+      cursor: pointer;
+    }
+    .category-filter-select:focus {
+      border-color: var(--brand-blue);
+    }
+
+    /* Sort Notice Bar */
+    .sort-info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #EFF6FF;
+      border: 1px solid #DBEAFE;
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      font-size: 0.88rem;
+      color: #1E40AF;
+    }
+
+    /* Detailed Cards Grid */
+    .blogs-detailed-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.75rem;
+      margin-bottom: 3rem;
+    }
+
+    .blog-post-card {
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      padding: 1.5rem;
+      position: relative;
+    }
+    .blog-post-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.12);
+      border-color: #93C5FD;
+    }
+
+    .blog-card-header-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .blog-card-category {
+      background: rgba(37,99,235,.08);
+      color: var(--brand-blue);
+      border: 1px solid rgba(37,99,235,.2);
+      border-radius: 999px;
+      font-weight: 700;
+      padding: 0.2rem 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .blog-card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      color: #002947;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+    .blog-card-excerpt {
+      font-size: 0.92rem;
+      color: #475569;
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+      flex-grow: 1;
+    }
+    .blog-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+    .blog-tag-pill {
+      background: #F1F5F9;
+      color: #475569;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+    }
+    .blog-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0.75rem;
+      border-top: 1px solid #F1F5F9;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+    .blog-card-author-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .author-name {
+      font-weight: 600;
+      color: #334155;
+    }
+    .role-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .role-badge.teacher { background: #FEF3C7; color: #92400E; }
+    .role-badge.student { background: #DBEAFE; color: #1E40AF; }
+    .role-badge.admin   { background: #F3E8FF; color: #6D28D9; }
+
+    .blog-card-action {
+      display: flex;
+    }
+    .btn-readmore {
+      width: 100%;
+      background: var(--brand-blue);
+      color: #FFFFFF;
+      border: none;
+      padding: 0.65rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      box-shadow: 0 4px 12px rgba(37,99,235,0.15);
+      transition: all 0.2s ease;
+    }
+    .btn-readmore:hover {
+      background: #1D4ED8;
+      color: #FFFFFF;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(37,99,235,0.25);
+    }
+
+    .no-blogs-notice {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      border: 1px dashed #CBD5E1;
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 768px) {
+      .blogs-detailed-grid {
+        grid-template-columns: 1fr;
+      }
+      .controls-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .category-filter-select {
+        width: 100%;
+      }
+      .sort-info-bar {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="container top-bar-content">
+      <div class="top-utility-links">
+        <a href="index.html">SRMVEC Main Portal</a>
+        <a href="student-corner.html">Students</a>
+        <a href="teachers-corner.html">Faculty & Staff</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="top-bar-search">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" placeholder="Search CSE Portal" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Unified Navigation Header -->
+  <header class="main-header-unified">
+    <div class="container header-nav-container">
+      <div class="brand-group">
+        <div class="brand-text-box">
+          <h1 class="brand-main-title"><a href="index.html" style="color:inherit;text-decoration:none;">CSE Blog</a></h1>
+        </div>
+      </div>
+      <nav class="main-nav-menu">
+        <div class="nav-item"><a href="index.html">Home</a></div>
+        <div class="nav-item"><a href="publications-patents.html">Publications &amp; Patents</a></div>
+        <div class="nav-item"><a href="student-corner.html">Student Corner</a></div>
+        <div class="nav-item"><a href="teachers-corner.html">Teacher's Corner</a></div>
+        <div class="nav-item active"><a href="blogs.html">Blogs Board</a></div>
+        <div class="nav-item"><a href="event1.html">Events Board</a></div>
+        <div class="nav-item"><a href="manage-faculty.html">Manage Faculty</a></div>
+        <div class="nav-item"><a href="contact.html">Contact</a></div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="blogs-hero-banner">
+    <div class="container">
+      <h1>CSE Blogs Board</h1>
+      <p>Explore articles, technical tutorials, and project diaries shared by the Computer Science & Engineering community at SRM Valliammai.</p>
+      <div class="hero-badges-row">
+        <span class="hero-badge"><i class="fa-solid fa-user-graduate"></i> Student Insights</span>
+        <span class="hero-badge"><i class="fa-solid fa-chalkboard-user"></i> Faculty Perspectives</span>
+        <span class="hero-badge"><i class="fa-solid fa-fire"></i> Tech Advancements</span>
+      </div>
+      <div style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem;">
+        <a href="student-corner.html" class="btn-add-event-hero" style="display:inline-flex; align-items:center; gap:0.5rem; background: linear-gradient(135deg, #F59E0B, #D97706); color: white; padding: 0.75rem 1.5rem; border-radius: 50px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); transition: transform 0.2s ease, box-shadow 0.2s ease;">
+          <i class="fa-solid fa-pen-to-square"></i> Write a Blog
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sticky Controls Bar -->
+  <div class="controls-wrapper">
+    <div class="container controls-container">
+      <div class="search-box-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="blogSearchInput" placeholder="Search blogs by title, tags, author, or content..." />
+      </div>
+      <div>
+        <select class="category-filter-select" id="categoryFilter">
+          <option value="ALL">All Categories</option>
+          <option value="AI & ML">AI & ML</option>
+          <option value="Cybersecurity">Cybersecurity</option>
+          <option value="Cloud & DevOps">Cloud & DevOps</option>
+          <option value="Web Development">Web Development</option>
+          <option value="Data Engineering">Data Engineering</option>
+          <option value="Student Life">Student Life</option>
+          <option value="Events & Symposium">Events & Symposium</option>
+          <option value="General">General</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="container" style="padding-top: 1.5rem;">
+
+    <!-- Sort Notice Bar -->
+    <div class="sort-info-bar">
+      <span><i class="fa-solid fa-clock"></i> Articles are ordered by <strong>Published Date</strong> (Newest posts displayed first).</span>
+      <span id="totalBlogsCount">Showing 0 Blogs</span>
+    </div>
+
+    <!-- ═══════════ DETAILED GRID VIEW SECTION ═══════════ -->
+    <section>
+      <div class="blogs-detailed-grid" id="blogsDetailedGrid">
+        <!-- Rendered dynamically by JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="main-footer">
+    <div class="container footer-grid">
+      <div>
+        <h3 style="color:var(--accent-gold); font-size:1.4rem; margin-bottom:1rem;">CSE Portal</h3>
+        <p style="color:#cbd5e1; font-size:0.9rem; line-height:1.6;">A centralized academic, activity, and blog hub for the Department of Computer Science & Engineering, SRM Valliammai Engineering College.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#specializations">Tech Domains</a></li>
+          <li><a href="laboratories.html">Laboratories</a></li>
+          <li><a href="student-corner.html">Student Corner</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Connect & Support</h4>
+        <p>Email: cse.info@valliammai.edu.in</p>
+        <p>Location: National Highway 45, Potheri, SRM Nagar, Kattankulathur, Tamil Nadu 603203</p>
+        <p>Contact: 044-27454784</p>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      © 2026 Department of Computer Science & Engineering, SRMVEC. All Rights Reserved.
+    </div>
+  </footer>
+
+  <script type="module" src="/src/scripts/supabase.js"></script>
+  <script type="module" src="/src/scripts/blog-data.js"></script>
+  <script type="module">
+    let blogsList = [];
+    let filteredBlogs = [];
+
+    async function initBlogsPage() {
+      // Initialize Blog DB
+      if (window.BlogDB) {
+        window.BlogDB.init();
+        
+        // Fetch fresh data async
+        blogsList = await window.BlogDB.fetchBlogsAsync();
+        if (!blogsList || blogsList.length === 0) {
+          blogsList = window.BlogDB.getBlogs();
+        }
+      }
+
+      applyFilters();
+      
+      // Hook up UI inputs
+      document.getElementById('blogSearchInput').addEventListener('input', applyFilters);
+      document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+    }
+
+    function applyFilters() {
+      const query = document.getElementById('blogSearchInput').value.toLowerCase().trim();
+      const category = document.getElementById('categoryFilter').value;
+
+      filteredBlogs = [...blogsList];
+
+      // 1. Filter by category
+      if (category !== 'ALL') {
+        filteredBlogs = filteredBlogs.filter(b => b.category === category);
+      }
+
+      // 2. Filter by search query
+      if (query !== '') {
+        filteredBlogs = filteredBlogs.filter(b => 
+          b.title.toLowerCase().includes(query) ||
+          b.author.toLowerCase().includes(query) ||
+          b.content.toLowerCase().includes(query) ||
+          (b.tags || []).some(t => t.toLowerCase().includes(query))
+        );
+      }
+
+      // Sort by date descending (Newest first)
+      filteredBlogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      renderBlogs();
+    }
+
+    function renderBlogs() {
+      const grid = document.getElementById('blogsDetailedGrid');
+      const totalCount = document.getElementById('totalBlogsCount');
+      grid.innerHTML = '';
+      
+      totalCount.textContent = `Showing ${filteredBlogs.length} Blog${filteredBlogs.length === 1 ? '' : 's'}`;
+
+      if (filteredBlogs.length === 0) {
+        grid.innerHTML = `
+          <div class="no-blogs-notice">
+            <i class="fa-solid fa-newspaper" style="font-size: 2.5rem; color: #cbd5e1; display: block; margin-bottom: 0.75rem;"></i>
+            No blogs found matching the search criteria.
+          </div>
+        `;
+        return;
+      }
+
+      filteredBlogs.forEach(blog => {
+        const tagPills = (blog.tags || [])
+          .map(t => `<span class="blog-tag-pill">${t}</span>`)
+          .join('');
+
+        const roleClass = blog.role || 'student';
+        const roleLabel = blog.role || 'author';
+
+        const card = document.createElement('div');
+        card.className = 'blog-post-card';
+        card.innerHTML = `
+          <div>
+            <div class="blog-card-header-meta">
+              <span class="blog-card-category">${blog.category}</span>
+              <span class="blog-card-date">${window.BlogDB.formatDate(blog.createdAt)}</span>
+            </div>
+            <h3 class="blog-card-title">${blog.title}</h3>
+            <p class="blog-card-excerpt">${window.BlogDB.truncate(blog.content, 180)}</p>
+            <div class="blog-card-tags">
+              ${tagPills}
+            </div>
+          </div>
+          <div>
+            <div class="blog-card-footer">
+              <div class="blog-card-author-info">
+                <span class="author-name"><i class="fa-solid fa-user-pen"></i> ${blog.author}</span>
+                <span class="role-badge ${roleClass}">${roleLabel}</span>
+              </div>
+              <div class="blog-card-views">
+                <i class="fa-regular fa-eye"></i> ${blog.views || 0} views
+              </div>
+            </div>
+            <div class="blog-card-action">
+              <a href="blog-view.html?id=${blog.id}" class="btn-readmore">Read More <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Auto-load on ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initBlogsPage);
+    } else {
+      initBlogsPage();
+    }
+  </script>
+</body>
+</html>
