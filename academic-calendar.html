@@ -234,6 +234,20 @@
       color: var(--calendar-blue);
       font-weight: 700;
     }
+    .day-cell.has-events.holiday {
+      background: #FEE2E2;
+      color: #991B1B;
+    }
+    .day-cell.has-events.holiday::after {
+      background: #991B1B;
+    }
+    .day-cell.has-events.academics {
+      background: #DBEAFE;
+      color: #1E40AF;
+    }
+    .day-cell.has-events.academics::after {
+      background: #1E40AF;
+    }
     .day-cell.has-events::after {
       content: '';
       position: absolute;
@@ -393,6 +407,20 @@
       background: var(--calendar-light-blue);
       color: var(--calendar-blue);
     }
+    .timeline-date-badge.has-events.holiday {
+      background: #FEE2E2;
+      color: #991B1B;
+    }
+    .timeline-date-badge.has-events.holiday span {
+      color: #991B1B;
+    }
+    .timeline-date-badge.has-events.academics {
+      background: #DBEAFE;
+      color: #1E40AF;
+    }
+    .timeline-date-badge.has-events.academics span {
+      color: #1E40AF;
+    }
     .timeline-date-badge span {
       display: block;
       font-size: 1.2rem;
@@ -511,6 +539,7 @@
           <div class="nav-item dropdown">
             <a href="index.html#portal-pages"><i class="fa-solid fa-pen-nib" style="margin-right:.3rem;"></i>CSE Blog <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
             <div class="dropdown-menu">
+              <a href="blogs.html">Blogs Board</a>
               <a href="index.html#blog-corner-section">Blog Corner</a>
               <a href="student-corner.html">Student Corner</a>
               <a href="teachers-corner.html">Teacher's Corner</a>
@@ -772,6 +801,23 @@
           if (hasEvents) {
             dayCell.classList.add('has-events');
             
+            // Determine dominant category type to apply class to dayCell
+            let hasHoliday = false;
+            let hasExam = false;
+            dayData.events.forEach(evt => {
+              const cat = getEventCategory(evt);
+              if (cat.type === 'holiday') {
+                hasHoliday = true;
+              } else if (cat.type === 'academics') {
+                hasExam = true;
+              }
+            });
+            if (hasHoliday) {
+              dayCell.classList.add('holiday');
+            } else if (hasExam) {
+              dayCell.classList.add('academics');
+            }
+            
             // Search filtering check
             if (searchQuery.trim() !== '') {
               const matchesQuery = dayData.events.some(evt => 
@@ -896,10 +942,28 @@
           const weekday = new Date(configMatch.year, configMatch.val - 1, d)
             .toLocaleDateString("en-US", { weekday: 'short' }).toUpperCase();
             
+          let hasHoliday = false;
+          let hasExam = false;
+          displayEvents.forEach(evt => {
+            const cat = getEventCategory(evt);
+            if (cat.type === 'holiday') {
+              hasHoliday = true;
+            } else if (cat.type === 'academics') {
+              hasExam = true;
+            }
+          });
+          
+          let badgeClass = 'timeline-date-badge has-events';
+          if (hasHoliday) {
+            badgeClass += ' holiday';
+          } else if (hasExam) {
+            badgeClass += ' academics';
+          }
+          
           const dateCol = document.createElement('div');
           dateCol.className = 'timeline-date-col';
           dateCol.innerHTML = `
-            <div class="timeline-date-badge has-events">
+            <div class="${badgeClass}">
               <span>${d < 10 ? '0' + d : d}</span>
               ${weekday}
             </div>
