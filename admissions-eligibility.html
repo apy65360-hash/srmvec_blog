@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admissions & Eligibility Criteria | SRM Valliammai Engineering College</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="/src/styles/style.css" />
+  <link rel="stylesheet" href="/src/styles/portal.css" />
+
+  <style>
+    :root {
+      --eligibility-primary: #1e3a8a;
+      --eligibility-accent: #2563eb;
+      --eligibility-gold: #d97706;
+      --eligibility-bg: #f8fafc;
+      --eligibility-surface: #ffffff;
+      --eligibility-border: #e2e8f0;
+      --eligibility-text: #0f172a;
+      --eligibility-muted: #64748b;
+    }
+
+    body {
+      background: var(--eligibility-bg);
+      color: var(--eligibility-text);
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Page Hero */
+    .eligibility-hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0284c7 100%);
+      color: #ffffff;
+      padding: 3.5rem 1rem 3rem 1rem;
+      text-align: center;
+      position: relative;
+    }
+    .eligibility-hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    .eligibility-hero p {
+      color: #93c5fd;
+      font-size: 1.1rem;
+      max-width: 750px;
+      margin: 0 auto 1.5rem auto;
+      line-height: 1.6;
+    }
+    .hero-tags {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .hero-tag {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-size: 0.88rem;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Navigation Header */
+    .page-header-bar {
+      background: #0f172a;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .header-nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .page-links {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
+    .page-links a {
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .page-links a:hover, .page-links a.active {
+      color: #38bdf8;
+    }
+
+    /* Sticky Controls & Filter Tabs Bar */
+    .filter-sticky-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--eligibility-border);
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      padding: 1rem 0;
+    }
+    .filter-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      padding: 0.5rem 1.1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .tab-btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+    .tab-btn.active {
+      background: var(--eligibility-accent);
+      color: #ffffff;
+      border-color: var(--eligibility-accent);
+      box-shadow: 0 4px 12px rgba(37,99,235,0.25);
+    }
+    .search-filter-input {
+      padding: 0.55rem 1rem 0.55rem 2.4rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      min-width: 250px;
+    }
+
+    /* Content Cards */
+    .eligibility-section {
+      padding: 2.5rem 0;
+    }
+    .panel-card {
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid var(--eligibility-border);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 0.75rem;
+    }
+    .panel-header i {
+      font-size: 1.4rem;
+      color: var(--eligibility-accent);
+    }
+    .panel-header h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0;
+      color: var(--eligibility-text);
+    }
+
+    /* Custom Tables */
+    .custom-table-wrapper {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+    }
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.93rem;
+      text-align: left;
+    }
+    .custom-table th {
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 700;
+      padding: 0.85rem 1rem;
+      border-bottom: 2px solid #e2e8f0;
+      white-space: nowrap;
+    }
+    .custom-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+    .custom-table tbody tr:hover {
+      background: #f8fafc;
+    }
+    .badge-nba {
+      background: #dbeafe;
+      color: #1e40af;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      margin-left: 0.4rem;
+      display: inline-block;
+    }
+    .badge-ug {
+      background: #e0e7ff;
+      color: #3730a3;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+    }
+    .badge-pg {
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+    }
+    .pct-pill {
+      font-weight: 700;
+      color: #047857;
+      background: #d1fae5;
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+      display: inline-block;
+    }
+
+    /* Callout & Note Boxes */
+    .callout-box {
+      background: #eff6ff;
+      border-left: 4px solid var(--eligibility-accent);
+      padding: 1.2rem 1.5rem;
+      border-radius: 8px;
+      margin: 1.25rem 0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #1e3a8a;
+    }
+    .callout-box i {
+      margin-right: 0.5rem;
+    }
+
+    /* Grid Layout for Admission Office */
+    .office-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .contact-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .contact-card h4 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: #0f172a;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.92rem;
+      color: #475569;
+    }
+    .contact-item i {
+      color: var(--eligibility-accent);
+      width: 20px;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .eligibility-hero h1 { font-size: 1.8rem; }
+      .filter-container { flex-direction: column; align-items: stretch; }
+      .search-filter-input { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Page Header Bar -->
+  <header class="page-header-bar">
+    <div class="container header-nav-container">
+      <a class="brand-main-title" href="index.html" style="color:#fff; text-decoration:none; font-family:'Space Grotesk',sans-serif; font-size:1.3rem; font-weight:800;">CSE Blog</a>
+      <nav class="page-links">
+        <a href="index.html">Home</a>
+        <a href="student-corner.html">Student Corner</a>
+        <a href="teachers-corner.html">Teacher's Corner</a>
+        <a href="academic-calendar.html">Academic Calendar</a>
+        <a class="active" href="admissions-eligibility.html">Admissions Eligibility</a>
+        <a href="contact.html">Contact</a>
+        <a href="login.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="eligibility-hero">
+    <div class="container">
+      <h1>Admissions &amp; Eligibility Criteria</h1>
+      <p>SRM Valliammai Engineering College (Autonomous) – Approved by AICTE, New Delhi &amp; Affiliated to Anna University, Chennai. Accredited by NAAC with 'A' Grade &amp; NBA.</p>
+      <div class="hero-tags">
+        <span class="hero-tag"><i class="fa-solid fa-graduation-cap"></i> 11 UG Courses</span>
+        <span class="hero-tag"><i class="fa-solid fa-award"></i> 9 PG Courses</span>
+        <span class="hero-tag"><i class="fa-solid fa-building-columns"></i> Counselling Code: 1419</span>
+        <span class="hero-tag"><i class="fa-solid fa-shield-halved"></i> Autonomous Institution</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sticky Controls / Filter Bar -->
+  <div class="filter-sticky-bar">
+    <div class="container filter-container">
+      <div class="filter-tabs">
+        <button class="tab-btn active" onclick="switchSection('all')"><i class="fa-solid fa-layer-group"></i> All Overview</button>
+        <button class="tab-btn" onclick="switchSection('courses')"><i class="fa-solid fa-list-check"></i> Courses &amp; Intake</button>
+        <button class="tab-btn" onclick="switchSection('ug-academic')"><i class="fa-solid fa-book-bookmark"></i> UG Academic</button>
+        <button class="tab-btn" onclick="switchSection('ug-vocational')"><i class="fa-solid fa-tools"></i> UG Vocational</button>
+        <button class="tab-btn" onclick="switchSection('pg-eligibility')"><i class="fa-solid fa-user-graduate"></i> PG Eligibility</button>
+        <button class="tab-btn" onclick="switchSection('admission-office')"><i class="fa-solid fa-headset"></i> Admission Office</button>
+      </div>
+      <div style="position:relative;">
+        <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:0.85rem; top:50%; transform:translateY(-50%); color:#94a3b8;"></i>
+        <input type="text" id="courseSearch" class="search-filter-input" placeholder="Search courses or criteria..." onkeyup="filterTables()" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="container eligibility-section">
+
+    <!-- SECTION 1: COURSES OFFERED & APPROVED INTAKE -->
+    <div class="panel-card content-block" id="sec-courses">
+      <div class="panel-header">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <h2>Courses Offered &amp; Approved Intake (2024-25)</h2>
+      </div>
+      <p style="color:var(--eligibility-muted); margin-bottom: 1.25rem;">
+        SRMVEC offers 11 Under Graduate (UG) programs and 9 Post Graduate (PG) programs. All courses are affiliated to Anna University, Chennai and approved by AICTE, New Delhi.
+      </p>
+
+      <div class="custom-table-wrapper">
+        <table class="custom-table" id="coursesTable">
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Name of the Course</th>
+              <th>Level</th>
+              <th>Year Started</th>
+              <th>Approved Intake</th>
+              <th>Accreditation Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><strong>Computer Science and Engineering (CSE)</strong></td>
+              <td><span class="badge-ug">B.E.</span></td>
+              <td>1999</td>
+              <td><strong>180</strong></td>
+              <td><span class="badge-nba">Accredited by NBA</span></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><strong>Artificial Intelligence and Data Science (AI&amp;DS)</strong></td>
+              <td><span class="badge-ug">B.TECH</span></td>
+              <td>2020</td>
+              <td><strong>120</strong></td>
+              <td>AICTE Approved</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><strong>Cyber Security (CYS)</strong></td>
+              <td><span class="badge-ug">B.E.</span></td>
+              <td>2020</td>
+              <td><strong>60</strong></td>
+              <td>AICTE Approved</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><strong>Information Technology (IT)</strong></td>
+              <td><span class="badge-ug">B.TECH</span></td>
+              <td>1999</td>
+              <td><strong>120</strong></td>
+              <td>AICTE Approved</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td><strong>Electronics and Communication Engineering (ECE)</strong></td>
+              <td><span class="badge-ug">B.E.</span></td>
+              <td>1999</td>
+              <td><strong>180</strong></td>
+              <td><span class="badge-nba">Accredited by NBA</span></td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td><strong>Electrical and Electronics Engineering (EEE)</strong></td>
+              <td><span class="badge-ug">B.E.</span></td>
+              <td>2001</td>
+              <td><strong>60</strong></td>
+              <td><span class="badge-nba">Accredited by NBA</span></td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td><strong>Medical Electronics (MDE)</strong></td>
+              <td><span class="badge-ug">B.E.</span></td>
+              <td>2019</td>
+              <td><strong>60</strong></td>
+              <td>AICTE Approved</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td><strong>Agricultural Engineering (AGRI)</strong></td>
+              <td><span class="badge-ug">B.TECH</span></td>
+              <td>2019</td>
+              <td><strong>60</strong></td>
+              <td>AICTE Approved</td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td><strong>Electronics and Instrumentation Engineering (EIE)</strong></td>
+              <td><span class="badge-ug">B.E.</span></td>
+              <td>2002</td>
+              <td><strong>60</strong></td>
+              <td><span class="badge-nba">Accredited by NBA</span></td>
+            </tr>
+            <tr>
+              <td>10</td>
+              <td><strong>Mechanical Engineering (MECH)</strong></td>
+              <td><span class="badge-ug">B.E.</span></td>
+              <td>2008</td>
+              <td><strong>60</strong></td>
+              <td><span class="badge-nba">Accredited by NBA</span></td>
+            </tr>
+            <tr>
+              <td>11</td>
+              <td><strong>Civil Engineering (CIVIL)</strong></td>
+              <td><span class="badge-ug">B.E.</span></td>
+              <td>2009</td>
+              <td><strong>30</strong></td>
+              <td>AICTE Approved</td>
+            </tr>
+            <tr>
+              <td>12</td>
+              <td><strong>Master of Business Administration (MBA)</strong></td>
+              <td><span class="badge-pg">M.B.A.</span></td>
+              <td>2005</td>
+              <td><strong>240</strong></td>
+              <td>AICTE Approved</td>
+            </tr>
+            <tr>
+              <td>13</td>
+              <td><strong>Master of Computer Applications (MCA)</strong></td>
+              <td><span class="badge-pg">M.C.A.</span></td>
+              <td>2024</td>
+              <td><strong>120</strong></td>
+              <td>AICTE Approved</td>
+            </tr>
+            <tr>
+              <td>14</td>
+              <td><strong>Data Science (DS)</strong></td>
+              <td><span class="badge-pg">M.TECH</span></td>
+              <td>2020</td>
+              <td><strong>12</strong></td>
+              <td>AICTE Approved</td>
+            </tr>
+            <tr>
+              <td>15</td>
+              <td><strong>Computer Science and Engineering (CSE)</strong></td>
+              <td><span class="badge-pg">M.E.</span></td>
+              <td>2012</td>
+              <td><strong>12</strong></td>
+              <td>AICTE Approved</td>
+            </tr>
+            <tr>
+              <td>16</td>
+              <td><strong>Industrial Safety Engineering (ISE)</strong></td>
+              <td><span class="badge-pg">M.E.</span></td>
+              <td>2019</td>
+              <td><strong>18</strong></td>
+              <td>AICTE Approved</td>
+            </tr>
+            <tr>
+              <td>17</td>
+              <td><strong>Power Systems Engineering (PS)</strong></td>
+              <td><span class="badge-pg">M.E.</span></td>
+              <td>2010</td>
+              <td><strong>12</strong></td>
+              <td>AICTE Approved</td>
+            </tr>
+            <tr>
+              <td>18</td>
+              <td><strong>Control &amp; Instrumentation Engineering (C&amp;I)</strong></td>
+              <td><span class="badge-pg">M.E.</span></td>
+              <td>2010</td>
+              <td><strong>12</strong></td>
+              <td>AICTE Approved</td>
+            </tr>
+            <tr>
+              <td>19</td>
+              <td><strong>Communication Systems (CS)</strong></td>
+              <td><span class="badge-pg">M.E.</span></td>
+              <td>2012</td>
+              <td><strong>12</strong></td>
+              <td>AICTE Approved</td>
+            </tr>
+            <tr>
+              <td>20</td>
+              <td><strong>Structural Engineering (STR)</strong></td>
+              <td><span class="badge-pg">M.E.</span></td>
+              <td>2013</td>
+              <td><strong>18</strong></td>
+              <td>AICTE Approved</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECTION 2: UG ELIGIBILITY - HSC (ACADEMIC) -->
+    <div class="panel-card content-block" id="sec-ug-academic">
+      <div class="panel-header">
+        <i class="fa-solid fa-book-bookmark"></i>
+        <h2>B.E. / B.Tech Eligibility – HSC (Academic Stream)</h2>
+      </div>
+      <p style="color:var(--eligibility-muted); margin-bottom: 1rem;">
+        Candidates seeking admission to the 1st year of 4-Year B.E. / B.Tech degree courses through HSC (Academic) must meet the minimum average percentage in <strong>Mathematics, Physics, and Chemistry (MPC) put together</strong> as mandated by the Government of Tamil Nadu &amp; Anna University:
+      </p>
+
+      <div class="custom-table-wrapper">
+        <table class="custom-table" id="ugAcademicTable">
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Community / Category</th>
+              <th>Minimum Average Marks in Mathematics, Physics &amp; Chemistry (Put Together)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><strong>General Category (OC)</strong></td>
+              <td><span class="pct-pill">45.00 %</span></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><strong>Backward Class (BC) including BCM</strong></td>
+              <td><span class="pct-pill">40.00 %</span></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><strong>Most Backward Class &amp; Denotified Communities (MBC &amp; DNC)</strong></td>
+              <td><span class="pct-pill">40.00 %</span></td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><strong>Scheduled Caste / SC (Arunthathiyar) / Scheduled Tribe (SC / SCA / ST)</strong></td>
+              <td><span class="pct-pill">40.00 %</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout-box">
+        <i class="fa-solid fa-circle-info"></i>
+        <strong>Note:</strong> Candidates from other states must possess equivalent qualification recognized by Anna University, Chennai.
+      </div>
+    </div>
+
+    <!-- SECTION 3: UG ELIGIBILITY - HSC (VOCATIONAL) -->
+    <div class="panel-card content-block" id="sec-ug-vocational">
+      <div class="panel-header">
+        <i class="fa-solid fa-gears"></i>
+        <h2>B.E. / B.Tech Eligibility – HSC (Vocational Stream)</h2>
+      </div>
+      <p style="color:var(--eligibility-muted); margin-bottom: 1rem;">
+        Pass in any one of the HSC (Vocational Subjects) with any one Engineering related subject (Mathematics, Physics, or Chemistry), with minimum average percentage in Related Subjects, Vocational Theory, and Practicals put together:
+      </p>
+
+      <div class="custom-table-wrapper">
+        <table class="custom-table" id="ugVocationalTable">
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Community / Category</th>
+              <th>Minimum Average Marks in Related Subjects, Vocational Theory &amp; Practicals</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><strong>General Category (OC)</strong></td>
+              <td><span class="pct-pill">45.00 %</span></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><strong>Backward Class (BC) including BCM</strong></td>
+              <td><span class="pct-pill">40.00 %</span></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><strong>Most Backward Class &amp; DNC</strong></td>
+              <td><span class="pct-pill">40.00 %</span></td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><strong>SC / SCA / ST</strong></td>
+              <td><span class="pct-pill">40.00 %</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECTION 4: PG ELIGIBILITY (M.E. / M.TECH / MBA / MCA) -->
+    <div class="panel-card content-block" id="sec-pg-eligibility">
+      <div class="panel-header">
+        <i class="fa-solid fa-user-graduate"></i>
+        <h2>Post Graduate Eligibility (M.E. / M.Tech. / MBA / MCA)</h2>
+      </div>
+
+      <div class="custom-table-wrapper">
+        <table class="custom-table" id="pgTable">
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Programme</th>
+              <th>Eligibility Requirement</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><strong>M.E. / M.Tech. Programmes</strong></td>
+              <td>
+                A pass in a recognized Bachelor's Degree (B.E. / B.Tech.) or equivalent Engineering degree from any recognized University obtaining at least <strong>50% marks</strong> for Open Category (<strong>45% marks</strong> in case of reserved categories).
+              </td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><strong>Master of Business Administration (MBA)</strong></td>
+              <td>
+                A pass in a recognized Bachelor's Degree of minimum 3 years duration in any discipline and obtained at least <strong>50% marks</strong> for Open Category (<strong>45% marks</strong> for reserved categories).
+              </td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><strong>Master of Computer Applications (MCA)</strong></td>
+              <td>
+                A pass in a recognized Bachelor's Degree of minimum 3 years duration with Mathematics at 10+2 level or Graduation level obtaining at least <strong>50% marks</strong> (<strong>45% marks</strong> for reserved categories).
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout-box" style="background:#fff7ed; border-left-color:var(--eligibility-gold); color:#9a3412;">
+        <i class="fa-solid fa-clipboard-check"></i>
+        <strong>PG Selection Procedure:</strong><br />
+        Candidates are selected based on their performance in the common entrance examination (<strong>TANCET / CEETA-PG</strong>) conducted by Anna University / State Government. Candidates may also apply directly for <strong>Management Quota</strong> admission through the entrance test conducted on campus by SRM Valliammai Engineering College.
+      </div>
+    </div>
+
+    <!-- SECTION 5: ADMISSION OFFICE CONTACT DETAILS -->
+    <div class="panel-card content-block" id="sec-admission-office">
+      <div class="panel-header">
+        <i class="fa-solid fa-building-user"></i>
+        <h2>Admission Office Contact Details</h2>
+      </div>
+      <p style="color:var(--eligibility-muted);">
+        For admission to B.E. / B.Tech. and M.E. / M.Tech. / MBA / MCA courses, application forms, fee structure details and campus visits, please contact:
+      </p>
+
+      <div class="office-grid">
+        <div class="contact-card">
+          <h4><i class="fa-solid fa-user-tie" style="color:var(--eligibility-accent);"></i> The Director / Admission Cell</h4>
+          <p style="margin:0; font-size:0.95rem; line-height:1.6; color:#334155;">
+            <strong>SRM Valliammai Engineering College</strong><br />
+            SRM Nagar, Kattankulathur – 603 203,<br />
+            Chengalpattu District, Tamil Nadu, India.
+          </p>
+        </div>
+
+        <div class="contact-card">
+          <h4><i class="fa-solid fa-phone-volume" style="color:var(--eligibility-accent);"></i> Phone &amp; Mobile Lines</h4>
+          <div class="contact-item">
+            <i class="fa-solid fa-phone"></i>
+            <span><strong>Landline:</strong> 044 – 27456703</span>
+          </div>
+          <div class="contact-item">
+            <i class="fa-solid fa-mobile-screen-button"></i>
+            <span><strong>Mobile 1:</strong> +91 99400 36042</span>
+          </div>
+          <div class="contact-item">
+            <i class="fa-solid fa-mobile-screen-button"></i>
+            <span><strong>Mobile 2:</strong> +91 99400 36043</span>
+          </div>
+          <div class="contact-item">
+            <i class="fa-solid fa-fax"></i>
+            <span><strong>Fax:</strong> 044 – 27451504</span>
+          </div>
+        </div>
+
+        <div class="contact-card">
+          <h4><i class="fa-solid fa-globe" style="color:var(--eligibility-accent);"></i> Official Resources</h4>
+          <div class="contact-item">
+            <i class="fa-solid fa-link"></i>
+            <span><strong>College Portal:</strong> <a href="https://srmvalliammai.ac.in/admissions/admissions-details/#Eligibility" target="_blank" rel="noopener noreferrer" style="color:var(--eligibility-accent); font-weight:600;">Official Admissions Page</a></span>
+          </div>
+          <div class="contact-item">
+            <i class="fa-solid fa-envelope"></i>
+            <span><strong>Email:</strong> srmvalliammai@valliammai.edu.in</span>
+          </div>
+          <div class="contact-item">
+            <i class="fa-solid fa-location-dot"></i>
+            <span><strong>Location:</strong> NH-45, Kattankulathur</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-bottom">
+      © 2026 Department of Computer Science &amp; Engineering, SRMVEC. All Rights Reserved.
+    </div>
+  </footer>
+
+  <script>
+    function switchSection(secId) {
+      // Update active tab button
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      const blocks = document.querySelectorAll('.content-block');
+      if (secId === 'all') {
+        blocks.forEach(block => block.style.display = 'block');
+      } else {
+        blocks.forEach(block => block.style.display = 'none');
+        const target = document.getElementById('sec-' + secId);
+        if (target) target.style.display = 'block';
+      }
+    }
+
+    function filterTables() {
+      const q = document.getElementById('courseSearch').value.toLowerCase();
+      const rows = document.querySelectorAll('.custom-table tbody tr');
+
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        if (text.includes(q)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
