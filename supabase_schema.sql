@@ -68,7 +68,9 @@ CREATE TRIGGER on_auth_user_created
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 
--- 2. BLOGS TABLE
+-- ============================================================
+-- 2. BLOGS TABLE (With Admin Approval & Strict Admin-Only Modifications)
+-- ============================================================
 CREATE TABLE IF NOT EXISTS public.blogs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
@@ -78,7 +80,8 @@ CREATE TABLE IF NOT EXISTS public.blogs (
   author_name TEXT NOT NULL,
   author_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
   author_role TEXT NOT NULL CHECK (author_role IN ('student', 'teacher', 'admin', 'faculty_admin', 'editor')),
-  is_published BOOLEAN DEFAULT TRUE,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  is_published BOOLEAN DEFAULT FALSE,
   views INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -89,6 +92,7 @@ ALTER TABLE public.blogs ENABLE ROW LEVEL SECURITY;
 
 -- Clean up any existing blog policies for clean re-runs
 DROP POLICY IF EXISTS "Public view published blogs" ON public.blogs;
+DROP POLICY IF EXISTS "Authors & Admins view own or pending blogs" ON public.blogs;
 DROP POLICY IF EXISTS "Authenticated users insert blogs" ON public.blogs;
 DROP POLICY IF EXISTS "Authors update own blogs" ON public.blogs;
 DROP POLICY IF EXISTS "Admins update any blog" ON public.blogs;
@@ -97,21 +101,27 @@ DROP POLICY IF EXISTS "Authors delete own blogs" ON public.blogs;
 DROP POLICY IF EXISTS "Admins delete any blog" ON public.blogs;
 DROP POLICY IF EXISTS "Permitted teachers delete blogs" ON public.blogs;
 
--- Blogs Policies:
+-- 1) Public View Policy: Only view blogs that are approved and published
 CREATE POLICY "Public view published blogs" ON public.blogs
-  FOR SELECT USING (is_published = true);
+  FOR SELECT USING (
+    (is_published = true AND (status = 'approved' OR status IS NULL))
+    OR
+    (auth.uid() = author_id)
+    OR
+    EXISTS (
+      SELECT 1 FROM public.profiles
+      WHERE id = auth.uid() AND role IN ('admin', 'faculty_admin', 'editor')
+    )
+  );
 
+-- 2) Insert Policy: Authenticated users can insert (Students insert with pending approval status)
 CREATE POLICY "Authenticated users insert blogs" ON public.blogs
   FOR INSERT TO authenticated
   WITH CHECK (
     auth.uid() = author_id
   );
 
-CREATE POLICY "Authors update own blogs" ON public.blogs
-  FOR UPDATE TO authenticated
-  USING (auth.uid() = author_id)
-  WITH CHECK (auth.uid() = author_id);
-
+-- 3) Strict Update Policy: ONLY Admins can edit/approve/reject blogs (Nobody else can edit)
 CREATE POLICY "Admins update any blog" ON public.blogs
   FOR UPDATE TO authenticated
   USING (
@@ -119,23 +129,15 @@ CREATE POLICY "Admins update any blog" ON public.blogs
       SELECT 1 FROM public.profiles
       WHERE id = auth.uid() AND role IN ('admin', 'faculty_admin', 'editor')
     )
-  );
-
-CREATE POLICY "Permitted teachers update blogs" ON public.blogs
-  FOR UPDATE TO authenticated
-  USING (
+  )
+  WITH CHECK (
     EXISTS (
       SELECT 1 FROM public.profiles
-      WHERE id = auth.uid() 
-      AND role = 'teacher' 
-      AND (permissions->>'can_edit_others')::boolean = true
+      WHERE id = auth.uid() AND role IN ('admin', 'faculty_admin', 'editor')
     )
   );
 
-CREATE POLICY "Authors delete own blogs" ON public.blogs
-  FOR DELETE TO authenticated
-  USING (auth.uid() = author_id);
-
+-- 4) Strict Delete Policy: ONLY Admins can delete blogs (Nobody else can delete)
 CREATE POLICY "Admins delete any blog" ON public.blogs
   FOR DELETE TO authenticated
   USING (
@@ -145,20 +147,9 @@ CREATE POLICY "Admins delete any blog" ON public.blogs
     )
   );
 
-CREATE POLICY "Permitted teachers delete blogs" ON public.blogs
-  FOR DELETE TO authenticated
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles
-      WHERE id = auth.uid() 
-      AND role = 'teacher' 
-      AND (permissions->>'can_delete_others')::boolean = true
-    )
-  );
-
 
 -- ============================================================
--- 3. PUBLICATIONS & PATENTS TABLE
+-- 3. PUBLICATIONS & PATENTS TABLE (Strict Admin Control)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS public.publications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -182,29 +173,43 @@ CREATE TABLE IF NOT EXISTS public.publications (
 -- Enable RLS on publications
 ALTER TABLE public.publications ENABLE ROW LEVEL SECURITY;
 
--- Clean up any existing publication policies for clean re-runs
+-- Clean up policies
 DROP POLICY IF EXISTS "Public view publications" ON public.publications;
 DROP POLICY IF EXISTS "Authenticated users insert publications" ON public.publications;
+DROP POLICY IF EXISTS "Admins insert publications" ON public.publications;
 DROP POLICY IF EXISTS "Authors update own publications" ON public.publications;
+DROP POLICY IF EXISTS "Admins update publications" ON public.publications;
 DROP POLICY IF EXISTS "Authors delete own publications" ON public.publications;
+DROP POLICY IF EXISTS "Admins delete publications" ON public.publications;
 
 -- Publications Policies:
 CREATE POLICY "Public view publications" ON public.publications
   FOR SELECT USING (true);
 
-CREATE POLICY "Authenticated users insert publications" ON public.publications
+-- Only Admins can insert, update, or delete publications
+CREATE POLICY "Admins insert publications" ON public.publications
   FOR INSERT TO authenticated
   WITH CHECK (
-    auth.uid() = author_id
+    EXISTS (
+      SELECT 1 FROM public.profiles
+      WHERE id = auth.uid() AND role IN ('admin', 'faculty_admin', 'editor')
+    )
   );
 
-CREATE POLICY "Authors update own publications" ON public.publications
+CREATE POLICY "Admins update publications" ON public.publications
   FOR UPDATE TO authenticated
-  USING (auth.uid() = author_id)
-  WITH CHECK (auth.uid() = author_id);
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.profiles
+      WHERE id = auth.uid() AND role IN ('admin', 'faculty_admin', 'editor')
+    )
+  );
 
-CREATE POLICY "Authors delete own publications" ON public.publications
+CREATE POLICY "Admins delete publications" ON public.publications
   FOR DELETE TO authenticated
-  USING (auth.uid() = author_id);
-
-
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.profiles
+      WHERE id = auth.uid() AND role IN ('admin', 'faculty_admin', 'editor')
+    )
+  );

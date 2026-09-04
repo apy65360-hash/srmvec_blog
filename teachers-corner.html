@@ -8,6 +8,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" />
   <link rel="stylesheet" href="/src/styles/blogs.css" />
+  <style>
+    .security-notice-box {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-left: 4px solid #7C3AED;
+      padding: 0.85rem 1.1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.88rem;
+      color: #475569;
+    }
+  </style>
 </head>
 <body>
 
@@ -54,13 +66,18 @@
     <div class="portal-header-actions">
       <span class="user-chip"><i class="fa-solid fa-user"></i> <span id="headerUsername"></span></span>
       <a href="blogs.html" class="btn btn-ghost btn-sm"><i class="fa-solid fa-newspaper"></i> Blogs Board</a>
-      <a href="add-event.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-calendar-plus"></i> Add Event</a>
       <a href="index.html" class="btn btn-ghost btn-sm"><i class="fa-solid fa-house"></i> Home</a>
       <button class="btn btn-danger btn-sm" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
     </div>
   </header>
 
   <main class="portal-main">
+
+    <!-- Security Banner -->
+    <div class="security-notice-box">
+      <i class="fa-solid fa-shield-halved" style="color:#7C3AED; margin-right:0.4rem;"></i>
+      <strong>Security &amp; Data Control Policy:</strong> Faculty can publish articles directly to the Blogs Board. Editing or deleting existing data is strictly restricted to Administrators.
+    </div>
 
     <!-- Post New Blog -->
     <div class="section-card">
@@ -117,75 +134,11 @@
         <span id="myBlogCount" style="font-size:.85rem;color:#64748B;font-weight:500;"></span>
       </div>
       <div class="section-card-body" style="padding:0;">
-        <div class="data-table-wrap" id="myBlogsTableWrap">
-          <!-- Populated by JS -->
-        </div>
+        <div class="data-table-wrap" id="myBlogsTableWrap"></div>
       </div>
     </div>
 
   </main>
-</div>
-
-<!-- Edit Blog Modal -->
-<div class="modal-overlay" id="editModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3><i class="fa-solid fa-pen"></i> Edit Blog</h3>
-      <button class="modal-close-btn" id="editModalClose"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="modal-body">
-      <div class="error-msg" id="editError"></div>
-      <form class="blog-form" id="editBlogForm" novalidate>
-        <input type="hidden" id="editBlogId" />
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editTitle">Blog Title *</label>
-            <input type="text" id="editTitle" class="form-control" />
-          </div>
-          <div class="form-group">
-            <label for="editCategory">Category *</label>
-            <select id="editCategory" class="form-control">
-              <option>AI & ML</option>
-              <option>Cybersecurity</option>
-              <option>Cloud & DevOps</option>
-              <option>Web Development</option>
-              <option>Data Engineering</option>
-              <option>Research & Publications</option>
-              <option>Student Life</option>
-              <option>Events & Symposium</option>
-              <option>General</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="editContent">Content *</label>
-          <textarea id="editContent" class="form-control" rows="8"></textarea>
-        </div>
-        <div class="form-group">
-          <label for="editTags">Tags</label>
-          <input type="text" id="editTags" class="form-control" />
-          <span class="form-hint">Comma separated</span>
-        </div>
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" id="editModalCancel">Cancel</button>
-      <button class="btn btn-primary" id="saveEditBtn"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
-    </div>
-  </div>
-</div>
-
-<!-- Delete Confirmation -->
-<div class="confirm-overlay" id="confirmOverlay">
-  <div class="confirm-box">
-    <i class="fa-solid fa-triangle-exclamation"></i>
-    <h3>Delete This Blog?</h3>
-    <p>This action cannot be undone. The blog will be permanently removed.</p>
-    <div class="confirm-actions">
-      <button class="btn btn-ghost" id="cancelDeleteBtn">Cancel</button>
-      <button class="btn btn-danger" id="confirmDeleteBtn"><i class="fa-solid fa-trash"></i> Delete</button>
-    </div>
-  </div>
 </div>
 
 <script type="module" src="/src/scripts/supabase.js"></script>
@@ -194,9 +147,7 @@
 <script type="module" src="/src/scripts/blog-data.js"></script>
 <script type="module">
   let currentUser = null;
-  let pendingDeleteId = null;
 
-  // ── Login ──
   document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const username = document.getElementById('loginUsername').value.trim();
@@ -219,7 +170,6 @@
     renderMyBlogs();
   }
 
-  // ── Check if already logged in ──
   window.addEventListener('DOMContentLoaded', () => {
     const saved = BlogDB.getCurrentUser();
     if (saved && saved.role === 'teacher') {
@@ -228,13 +178,11 @@
     }
   });
 
-  // ── Logout ──
   document.getElementById('logoutBtn').addEventListener('click', () => {
     BlogDB.logout();
     location.reload();
   });
 
-  // ── Toggle post form ──
   document.getElementById('toggleFormBtn').addEventListener('click', () => {
     const body = document.getElementById('postFormBody');
     const btn  = document.getElementById('toggleFormBtn');
@@ -245,8 +193,7 @@
       : '<i class="fa-solid fa-chevron-up"></i> Collapse';
   });
 
-  // ── Post new blog ──
-  document.getElementById('postBlogForm').addEventListener('submit', function(e) {
+  document.getElementById('postBlogForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const title    = document.getElementById('postTitle').value.trim();
     const category = document.getElementById('postCategory').value;
@@ -263,7 +210,7 @@
     }
     errEl.classList.remove('visible');
 
-    BlogDB.createBlog({
+    await BlogDB.createBlog({
       title, category, content, tags,
       author:   currentUser.displayName,
       authorId: currentUser.userId || currentUser.username,
@@ -273,11 +220,10 @@
     this.reset();
     sucEl.textContent = '✅ Blog published successfully!';
     sucEl.classList.add('visible');
-    setTimeout(() => sucEl.classList.remove('visible'), 3000);
+    setTimeout(() => sucEl.classList.remove('visible'), 3500);
     renderMyBlogs();
   });
 
-  // ── Render my blogs table ──
   function renderMyBlogs() {
     const allBlogs = BlogDB.getBlogs();
     const myId = currentUser.userId || currentUser.username;
@@ -302,9 +248,7 @@
         <td>${b.views || 0}</td>
         <td>
           <div class="action-btns">
-            <button class="btn btn-blue btn-sm" onclick="openEdit('${b.id}')"><i class="fa-solid fa-pen"></i> Edit</button>
             <a href="blog-view.html?id=${b.id}" class="btn btn-ghost btn-sm" target="_blank"><i class="fa-solid fa-eye"></i> View</a>
-            <button class="btn btn-danger btn-sm" onclick="requestDelete('${b.id}')"><i class="fa-solid fa-trash"></i></button>
           </div>
         </td>
       </tr>
@@ -324,57 +268,6 @@
         <tbody>${rows}</tbody>
       </table>`;
   }
-
-  // ── Edit modal ──
-  function openEdit(id) {
-    const blog = BlogDB.getBlogById(id);
-    if (!blog) return;
-    document.getElementById('editBlogId').value   = id;
-    document.getElementById('editTitle').value    = blog.title;
-    document.getElementById('editCategory').value = blog.category;
-    document.getElementById('editContent').value  = blog.content;
-    document.getElementById('editTags').value     = (blog.tags || []).join(', ');
-    document.getElementById('editModal').classList.add('open');
-  }
-
-  document.getElementById('editModalClose').addEventListener('click',  () => document.getElementById('editModal').classList.remove('open'));
-  document.getElementById('editModalCancel').addEventListener('click', () => document.getElementById('editModal').classList.remove('open'));
-
-  document.getElementById('saveEditBtn').addEventListener('click', () => {
-    const id       = document.getElementById('editBlogId').value;
-    const title    = document.getElementById('editTitle').value.trim();
-    const category = document.getElementById('editCategory').value;
-    const content  = document.getElementById('editContent').value.trim();
-    const tags     = document.getElementById('editTags').value;
-
-    const errEl = document.getElementById('editError');
-    if (!title || !category || !content) {
-      errEl.textContent = 'All fields are required.';
-      errEl.classList.add('visible');
-      return;
-    }
-    errEl.classList.remove('visible');
-    BlogDB.updateBlog(id, { title, category, content, tags: tags.split(',').map(t=>t.trim()).filter(Boolean) });
-    document.getElementById('editModal').classList.remove('open');
-    renderMyBlogs();
-  });
-
-  // ── Delete ──
-  function requestDelete(id) {
-    pendingDeleteId = id;
-    document.getElementById('confirmOverlay').classList.add('open');
-  }
-
-  document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
-    pendingDeleteId = null;
-    document.getElementById('confirmOverlay').classList.remove('open');
-  });
-
-  document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
-    if (pendingDeleteId) { BlogDB.deleteBlog(pendingDeleteId); pendingDeleteId = null; }
-    document.getElementById('confirmOverlay').classList.remove('open');
-    renderMyBlogs();
-  });
 </script>
 </body>
 </html>

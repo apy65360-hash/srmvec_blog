@@ -8,10 +8,79 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" />
   <link rel="stylesheet" href="/src/styles/blogs.css" />
+  <style>
+    .badge-pending {
+      background: #FEF3C7;
+      color: #92400E;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #FCD34D;
+      display: inline-block;
+    }
+    .badge-approved {
+      background: #D1FAE5;
+      color: #065F46;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #6EE7B7;
+      display: inline-block;
+    }
+    .badge-rejected {
+      background: #FEE2E2;
+      color: #991B1B;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #FCA5A5;
+      display: inline-block;
+    }
+    .btn-approve {
+      background: #10B981;
+      color: #ffffff;
+      border: none;
+      padding: 0.35rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .btn-approve:hover { background: #059669; }
+    .btn-reject {
+      background: #EF4444;
+      color: #ffffff;
+      border: none;
+      padding: 0.35rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .btn-reject:hover { background: #DC2626; }
+    .pending-alert-banner {
+      background: #FFFBEB;
+      border: 1px solid #FCD34D;
+      border-left: 4px solid #F59E0B;
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
 </head>
 <body>
-
-<!-- Admin Access Required -->
 
 <!-- ═══════════════ ADMIN DASHBOARD ═══════════════ -->
 <div class="portal-layout" id="dashboardScreen" style="display:none;">
@@ -20,8 +89,8 @@
     <div class="portal-header-brand">
       <div class="portal-icon" style="background:linear-gradient(135deg,#4C1D95,#7C3AED);"><i class="fa-solid fa-shield-halved"></i></div>
       <div>
-        <h1>Admin Corner</h1>
-        <small>Full Access — All Blogs &amp; Users</small>
+        <h1>Admin Security Control</h1>
+        <small>Article Approval &amp; Data Control</small>
       </div>
     </div>
     <div class="portal-header-actions">
@@ -34,19 +103,36 @@
 
   <main class="portal-main">
 
+    <!-- Pending Approval Banner Notice if pending articles exist -->
+    <div class="pending-alert-banner" id="pendingBanner" style="display:none;">
+      <div>
+        <strong style="color:#92400E; font-size:1.05rem;"><i class="fa-solid fa-bell"></i> Action Required: Student Articles Pending Approval</strong>
+        <p style="margin:0.2rem 0 0 0; color:#78350F; font-size:0.9rem;">
+          <span id="pendingBannerCount">0</span> student article(s) are waiting for your security review before going live.
+        </p>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="filterPendingOnly()"><i class="fa-solid fa-check-double"></i> Review Pending Articles</button>
+    </div>
+
     <!-- Stats Row -->
     <div class="admin-stats-grid" id="statsGrid"></div>
 
     <!-- All Blogs Table -->
     <div class="section-card">
       <div class="section-card-header">
-        <h2><i class="fa-solid fa-database"></i> All Blogs — Full Control</h2>
-        <div style="display:flex;gap:.5rem;align-items:center;">
-          <input type="text" id="filterInput" class="form-control" style="width:200px;font-size:.85rem;padding:.4rem .75rem;" placeholder="Search title or author…" />
+        <h2><i class="fa-solid fa-database"></i> Articles &amp; Data Management</h2>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="filterInput" class="form-control" style="width:180px;font-size:.85rem;padding:.4rem .75rem;" placeholder="Search title or author…" />
+          <select id="filterStatus" class="form-control" style="width:150px;font-size:.85rem;padding:.4rem .75rem;">
+            <option value="">All Statuses</option>
+            <option value="pending">⏳ Pending Approval</option>
+            <option value="approved">✅ Published / Approved</option>
+            <option value="rejected">❌ Rejected</option>
+          </select>
           <select id="filterRole" class="form-control" style="width:130px;font-size:.85rem;padding:.4rem .75rem;">
             <option value="">All Roles</option>
-            <option value="teacher">Teachers</option>
             <option value="student">Students</option>
+            <option value="teacher">Teachers</option>
           </select>
         </div>
       </div>
@@ -110,7 +196,7 @@
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
     <i class="fa-solid fa-triangle-exclamation"></i>
-    <h3>Delete This Blog?</h3>
+    <h3>Delete This Entry?</h3>
     <p>As admin, you are permanently deleting this blog entry. This cannot be undone.</p>
     <div class="confirm-actions">
       <button class="btn btn-ghost" id="cancelDeleteBtn">Cancel</button>
@@ -131,6 +217,7 @@
     renderAllBlogs();
     document.getElementById('filterInput').addEventListener('input', renderAllBlogs);
     document.getElementById('filterRole').addEventListener('change', renderAllBlogs);
+    document.getElementById('filterStatus').addEventListener('change', renderAllBlogs);
   }
 
   window.addEventListener('DOMContentLoaded', () => {
@@ -148,55 +235,91 @@
   });
 
   function renderStats() {
-    const blogs    = BlogDB.getBlogs();
-    const teachers = blogs.filter(b => b.role === 'teacher').length;
-    const students = blogs.filter(b => b.role === 'student').length;
-    const views    = blogs.reduce((s, b) => s + (b.views || 0), 0);
+    const allBlogs = BlogDB.getAllRawBlogs();
+    const pending  = BlogDB.getPendingBlogs();
+    const approved = allBlogs.filter(b => b.status === 'approved' || b.is_published === true);
+    const students = allBlogs.filter(b => b.role === 'student').length;
+    const views    = allBlogs.reduce((s, b) => s + (b.views || 0), 0);
+
+    const banner = document.getElementById('pendingBanner');
+    if (pending.length > 0) {
+      banner.style.display = 'flex';
+      document.getElementById('pendingBannerCount').textContent = pending.length;
+    } else {
+      banner.style.display = 'none';
+    }
 
     document.getElementById('statsGrid').innerHTML = `
-      <div class="admin-stat-card"><span class="num">${blogs.length}</span><span class="lbl">Total Blogs</span></div>
-      <div class="admin-stat-card"><span class="num">${teachers}</span><span class="lbl">Teacher Posts</span></div>
-      <div class="admin-stat-card"><span class="num">${students}</span><span class="lbl">Student Posts</span></div>
+      <div class="admin-stat-card" style="border-left:4px solid #F59E0B;"><span class="num">${pending.length}</span><span class="lbl">Pending Approval</span></div>
+      <div class="admin-stat-card" style="border-left:4px solid #10B981;"><span class="num">${approved.length}</span><span class="lbl">Approved &amp; Live</span></div>
+      <div class="admin-stat-card"><span class="num">${students}</span><span class="lbl">Student Submissions</span></div>
       <div class="admin-stat-card"><span class="num">${views}</span><span class="lbl">Total Views</span></div>
     `;
   }
 
-  function renderAllBlogs() {
-    const query      = (document.getElementById('filterInput')?.value || '').toLowerCase();
-    const roleFilter = document.getElementById('filterRole')?.value || '';
-    let blogs = BlogDB.getBlogs();
+  window.filterPendingOnly = function() {
+    document.getElementById('filterStatus').value = 'pending';
+    renderAllBlogs();
+  };
 
-    if (query)      blogs = blogs.filter(b => b.title.toLowerCase().includes(query) || b.author.toLowerCase().includes(query));
-    if (roleFilter) blogs = blogs.filter(b => b.role === roleFilter);
+  function renderAllBlogs() {
+    const query        = (document.getElementById('filterInput')?.value || '').toLowerCase();
+    const roleFilter   = document.getElementById('filterRole')?.value || '';
+    const statusFilter = document.getElementById('filterStatus')?.value || '';
+
+    let blogs = BlogDB.getAllRawBlogs();
+
+    if (query)        blogs = blogs.filter(b => b.title.toLowerCase().includes(query) || b.author.toLowerCase().includes(query));
+    if (roleFilter)   blogs = blogs.filter(b => b.role === roleFilter);
+    if (statusFilter) blogs = blogs.filter(b => (b.status || (b.is_published ? 'approved' : 'pending')) === statusFilter);
 
     const wrap = document.getElementById('allBlogsTableWrap');
     if (blogs.length === 0) {
-      wrap.innerHTML = `<div class="empty-state"><i class="fa-regular fa-newspaper"></i><p>No blogs match your filters.</p></div>`;
+      wrap.innerHTML = `<div class="empty-state"><i class="fa-regular fa-newspaper"></i><p>No articles match your filters.</p></div>`;
       return;
     }
 
-    const rows = blogs.map(b => `
-      <tr>
-        <td class="td-title">
-          <strong>${b.title}</strong>
-          <span>${BlogDB.truncate(b.content, 80)}</span>
-        </td>
-        <td><span class="tag-chip">${b.category}</span></td>
-        <td>
-          <span class="role-badge ${b.role}">${b.role}</span><br/>
-          <small style="color:#64748B;font-size:.78rem;">${b.author}</small>
-        </td>
-        <td style="font-size:.85rem;">${BlogDB.formatDate(b.createdAt)}</td>
-        <td style="text-align:center;">${b.views || 0}</td>
-        <td>
-          <div class="action-btns">
-            <a href="blog-view.html?id=${b.id}" class="btn btn-ghost btn-sm" target="_blank"><i class="fa-solid fa-eye"></i></a>
-            <button class="btn btn-sm" style="background:#7C3AED;color:#fff;" onclick="openEdit('${b.id}')"><i class="fa-solid fa-pen"></i> Edit</button>
-            <button class="btn btn-danger btn-sm" onclick="requestDelete('${b.id}')"><i class="fa-solid fa-trash"></i></button>
-          </div>
-        </td>
-      </tr>
-    `).join('');
+    const rows = blogs.map(b => {
+      const status = b.status || (b.is_published ? 'approved' : 'pending');
+      let statusBadge = '';
+      let actionButtons = '';
+
+      if (status === 'pending') {
+        statusBadge = `<span class="badge-pending"><i class="fa-solid fa-clock"></i> Pending Approval</span>`;
+        actionButtons = `
+          <button class="btn-approve" onclick="doApprove('${b.id}')"><i class="fa-solid fa-check"></i> Approve</button>
+          <button class="btn-reject" onclick="doReject('${b.id}')"><i class="fa-solid fa-xmark"></i> Reject</button>
+        `;
+      } else if (status === 'approved') {
+        statusBadge = `<span class="badge-approved"><i class="fa-solid fa-circle-check"></i> Approved</span>`;
+      } else {
+        statusBadge = `<span class="badge-rejected"><i class="fa-solid fa-ban"></i> Rejected</span>`;
+      }
+
+      return `
+        <tr>
+          <td class="td-title">
+            <strong>${b.title}</strong>
+            <span>${BlogDB.truncate(b.content, 75)}</span>
+          </td>
+          <td><span class="tag-chip">${b.category}</span></td>
+          <td>
+            <span class="role-badge ${b.role}">${b.role}</span><br/>
+            <small style="color:#64748B;font-size:.78rem;">${b.author}</small>
+          </td>
+          <td>${statusBadge}</td>
+          <td style="font-size:.85rem;">${BlogDB.formatDate(b.createdAt)}</td>
+          <td>
+            <div class="action-btns">
+              ${actionButtons}
+              <a href="blog-view.html?id=${b.id}" class="btn btn-ghost btn-sm" target="_blank" title="View"><i class="fa-solid fa-eye"></i></a>
+              <button class="btn btn-sm" style="background:#7C3AED;color:#fff;" onclick="openEdit('${b.id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn btn-danger btn-sm" onclick="requestDelete('${b.id}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
 
     wrap.innerHTML = `
       <table class="data-table">
@@ -204,15 +327,27 @@
           <th>Blog Title &amp; Excerpt</th>
           <th>Category</th>
           <th>Author &amp; Role</th>
-          <th>Published</th>
-          <th style="text-align:center;">Views</th>
-          <th>Actions</th>
+          <th>Status</th>
+          <th>Submitted Date</th>
+          <th>Admin Actions</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>`;
   }
 
-  function openEdit(id) {
+  window.doApprove = async function(id) {
+    await BlogDB.approveBlog(id);
+    renderStats();
+    renderAllBlogs();
+  };
+
+  window.doReject = async function(id) {
+    await BlogDB.rejectBlog(id);
+    renderStats();
+    renderAllBlogs();
+  };
+
+  window.openEdit = function(id) {
     const blog = BlogDB.getBlogById(id);
     if (!blog) return;
     document.getElementById('editBlogId').value   = id;
@@ -221,12 +356,12 @@
     document.getElementById('editContent').value  = blog.content;
     document.getElementById('editTags').value     = (blog.tags || []).join(', ');
     document.getElementById('editModal').classList.add('open');
-  }
+  };
 
   document.getElementById('editModalClose').addEventListener('click',  () => document.getElementById('editModal').classList.remove('open'));
   document.getElementById('editModalCancel').addEventListener('click', () => document.getElementById('editModal').classList.remove('open'));
 
-  document.getElementById('saveEditBtn').addEventListener('click', () => {
+  document.getElementById('saveEditBtn').addEventListener('click', async () => {
     const id       = document.getElementById('editBlogId').value;
     const title    = document.getElementById('editTitle').value.trim();
     const category = document.getElementById('editCategory').value;
@@ -235,24 +370,24 @@
     const errEl    = document.getElementById('editError');
     if (!title || !content) { errEl.textContent = 'Title and content are required.'; errEl.classList.add('visible'); return; }
     errEl.classList.remove('visible');
-    BlogDB.updateBlog(id, { title, category, content, tags: tags.split(',').map(t=>t.trim()).filter(Boolean) });
+    await BlogDB.updateBlog(id, { title, category, content, tags: tags.split(',').map(t=>t.trim()).filter(Boolean) });
     document.getElementById('editModal').classList.remove('open');
     renderStats();
     renderAllBlogs();
   });
 
-  function requestDelete(id) {
+  window.requestDelete = function(id) {
     pendingDeleteId = id;
     document.getElementById('confirmOverlay').classList.add('open');
-  }
+  };
 
   document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
     pendingDeleteId = null;
     document.getElementById('confirmOverlay').classList.remove('open');
   });
 
-  document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
-    if (pendingDeleteId) { BlogDB.deleteBlog(pendingDeleteId); pendingDeleteId = null; }
+  document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+    if (pendingDeleteId) { await BlogDB.deleteBlog(pendingDeleteId); pendingDeleteId = null; }
     document.getElementById('confirmOverlay').classList.remove('open');
     renderStats();
     renderAllBlogs();

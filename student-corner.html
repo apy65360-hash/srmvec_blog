@@ -8,6 +8,48 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" />
   <link rel="stylesheet" href="/src/styles/blogs.css" />
+  <style>
+    .badge-pending {
+      background: #FEF3C7;
+      color: #92400E;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #FCD34D;
+      display: inline-block;
+    }
+    .badge-approved {
+      background: #D1FAE5;
+      color: #065F46;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #6EE7B7;
+      display: inline-block;
+    }
+    .badge-rejected {
+      background: #FEE2E2;
+      color: #991B1B;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #FCA5A5;
+      display: inline-block;
+    }
+    .security-notice-box {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-left: 4px solid #3B82F6;
+      padding: 0.85rem 1.1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.88rem;
+      color: #475569;
+    }
+  </style>
 </head>
 <body>
 
@@ -61,13 +103,19 @@
 
   <main class="portal-main">
 
-    <!-- Tabs: My Blogs | All Blogs -->
+    <!-- Security Policy Banner -->
+    <div class="security-notice-box">
+      <i class="fa-solid fa-shield-halved" style="color:#2563EB; margin-right:0.4rem;"></i>
+      <strong>Security &amp; Moderation Policy:</strong> All student article submissions are subject to administrator approval before being published on the public Blogs Board. Modifying or deleting existing system data is restricted exclusively to Administrators.
+    </div>
+
+    <!-- Tabs: My Submissions | All Published Blogs -->
     <div style="display:flex;gap:.75rem;margin-bottom:1.5rem;border-bottom:2px solid #E2E8F0;padding-bottom:.5rem;">
       <button class="btn btn-primary" id="tabMyBlogs" onclick="switchTab('my')">
-        <i class="fa-solid fa-user-pen"></i> My Blogs
+        <i class="fa-solid fa-user-pen"></i> My Submissions
       </button>
       <button class="btn btn-ghost" id="tabAllBlogs" onclick="switchTab('all')">
-        <i class="fa-solid fa-globe"></i> Browse All Blogs
+        <i class="fa-solid fa-globe"></i> Browse Live Blogs
       </button>
     </div>
 
@@ -77,7 +125,7 @@
       <!-- Post New Blog -->
       <div class="section-card">
         <div class="section-card-header">
-          <h2><i class="fa-solid fa-pen-to-square"></i> Write a New Blog Post</h2>
+          <h2><i class="fa-solid fa-pen-to-square"></i> Submit an Article for Approval</h2>
           <button class="btn btn-ghost btn-sm" id="toggleFormBtn"><i class="fa-solid fa-chevron-down"></i> Expand</button>
         </div>
         <div class="section-card-body" id="postFormBody" style="display:none;">
@@ -115,7 +163,7 @@
             </div>
             <div style="display:flex;gap:.75rem;justify-content:flex-end;">
               <button type="reset" class="btn btn-ghost">Clear</button>
-              <button type="submit" class="btn btn-blue"><i class="fa-solid fa-upload"></i> Publish Post</button>
+              <button type="submit" class="btn btn-blue"><i class="fa-solid fa-paper-plane"></i> Submit for Approval</button>
             </div>
           </form>
         </div>
@@ -124,7 +172,7 @@
       <!-- My Blogs Table -->
       <div class="section-card">
         <div class="section-card-header">
-          <h2><i class="fa-solid fa-newspaper"></i> My Published Blogs</h2>
+          <h2><i class="fa-solid fa-newspaper"></i> My Submissions &amp; Status</h2>
           <span id="myBlogCount" style="font-size:.85rem;color:#64748B;font-weight:500;"></span>
         </div>
         <div class="section-card-body" style="padding:0;">
@@ -138,7 +186,7 @@
     <div id="allBlogsTab" style="display:none;">
       <div class="section-card">
         <div class="section-card-header">
-          <h2><i class="fa-solid fa-globe"></i> All Published Blogs</h2>
+          <h2><i class="fa-solid fa-globe"></i> All Published Live Blogs</h2>
           <span id="allBlogCount" style="font-size:.85rem;color:#64748B;font-weight:500;"></span>
         </div>
         <div class="section-card-body" style="padding:0;">
@@ -150,76 +198,13 @@
   </main>
 </div>
 
-<!-- Edit Blog Modal -->
-<div class="modal-overlay" id="editModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3><i class="fa-solid fa-pen"></i> Edit Your Blog</h3>
-      <button class="modal-close-btn" id="editModalClose"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="modal-body">
-      <div class="error-msg" id="editError"></div>
-      <form class="blog-form" id="editBlogForm" novalidate>
-        <input type="hidden" id="editBlogId" />
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editTitle">Blog Title *</label>
-            <input type="text" id="editTitle" class="form-control" />
-          </div>
-          <div class="form-group">
-            <label for="editCategory">Category *</label>
-            <select id="editCategory" class="form-control">
-              <option>AI & ML</option>
-              <option>Cybersecurity</option>
-              <option>Cloud & DevOps</option>
-              <option>Web Development</option>
-              <option>Data Engineering</option>
-              <option>Student Life</option>
-              <option>Events & Symposium</option>
-              <option>General</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="editContent">Content *</label>
-          <textarea id="editContent" class="form-control" rows="8"></textarea>
-        </div>
-        <div class="form-group">
-          <label for="editTags">Tags</label>
-          <input type="text" id="editTags" class="form-control" />
-          <span class="form-hint">Comma separated</span>
-        </div>
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" id="editModalCancel">Cancel</button>
-      <button class="btn btn-blue" id="saveEditBtn"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
-    </div>
-  </div>
-</div>
-
-<!-- Delete Confirmation -->
-<div class="confirm-overlay" id="confirmOverlay">
-  <div class="confirm-box">
-    <i class="fa-solid fa-triangle-exclamation"></i>
-    <h3>Delete This Blog?</h3>
-    <p>This action cannot be undone. Your blog will be permanently removed.</p>
-    <div class="confirm-actions">
-      <button class="btn btn-ghost" id="cancelDeleteBtn">Cancel</button>
-      <button class="btn btn-danger" id="confirmDeleteBtn"><i class="fa-solid fa-trash"></i> Delete</button>
-    </div>
-  </div>
-</div>
-
 <script type="module" src="/src/scripts/supabase.js"></script>
 <script type="module" src="/src/scripts/users.js"></script>
 <script type="module" src="/src/scripts/auth.js"></script>
 <script type="module" src="/src/scripts/blog-data.js"></script>
 <script type="module">
   let currentUser = null;
-  let pendingDeleteId = null;
 
-  // ── Login ──
   document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const username = document.getElementById('loginUsername').value.trim();
@@ -250,14 +235,12 @@
     }
   });
 
-  // ── Logout ──
   document.getElementById('logoutBtn').addEventListener('click', () => {
     BlogDB.logout();
     location.reload();
   });
 
-  // ── Tab Switch ──
-  function switchTab(tab) {
+  window.switchTab = function(tab) {
     if (tab === 'my') {
       document.getElementById('myBlogsTab').style.display  = '';
       document.getElementById('allBlogsTab').style.display = 'none';
@@ -270,9 +253,8 @@
       document.getElementById('tabAllBlogs').className = 'btn btn-blue';
       renderAllBlogs();
     }
-  }
+  };
 
-  // ── Toggle form ──
   document.getElementById('toggleFormBtn').addEventListener('click', () => {
     const body = document.getElementById('postFormBody');
     const btn  = document.getElementById('toggleFormBtn');
@@ -283,8 +265,7 @@
       : '<i class="fa-solid fa-chevron-up"></i> Collapse';
   });
 
-  // ── Post new blog ──
-  document.getElementById('postBlogForm').addEventListener('submit', function(e) {
+  document.getElementById('postBlogForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const title    = document.getElementById('postTitle').value.trim();
     const category = document.getElementById('postCategory').value;
@@ -301,7 +282,7 @@
     }
     errEl.classList.remove('visible');
 
-    BlogDB.createBlog({
+    await BlogDB.createBlog({
       title, category, content, tags,
       author:   currentUser.displayName,
       authorId: currentUser.userId || currentUser.username,
@@ -309,76 +290,34 @@
     });
 
     this.reset();
-    sucEl.textContent = '✅ Blog published successfully!';
+    sucEl.innerHTML = '✅ Article submitted successfully! It is now pending admin approval before going live.';
     sucEl.classList.add('visible');
-    setTimeout(() => sucEl.classList.remove('visible'), 3000);
+    setTimeout(() => sucEl.classList.remove('visible'), 5000);
     renderMyBlogs();
   });
 
-  // ── Render MY blogs ──
   function renderMyBlogs() {
     const myId     = currentUser.userId || currentUser.username;
-    const myBlogs  = BlogDB.getBlogs().filter(b => b.authorId === myId);
+    const myBlogs  = BlogDB.getAuthorBlogs(myId);
 
-    document.getElementById('myBlogCount').textContent = `${myBlogs.length} post${myBlogs.length !== 1 ? 's' : ''}`;
+    document.getElementById('myBlogCount').textContent = `${myBlogs.length} submission${myBlogs.length !== 1 ? 's' : ''}`;
 
     const wrap = document.getElementById('myBlogsTableWrap');
     if (myBlogs.length === 0) {
-      wrap.innerHTML = `<div class="empty-state"><i class="fa-regular fa-newspaper"></i><p>You haven't written any blogs yet. Use the form above to share your ideas!</p></div>`;
+      wrap.innerHTML = `<div class="empty-state"><i class="fa-regular fa-newspaper"></i><p>You haven't submitted any articles yet. Use the form above to submit your article for admin review!</p></div>`;
       return;
     }
 
-    const rows = myBlogs.map(b => `
-      <tr>
-        <td class="td-title">
-          <strong>${b.title}</strong>
-          <span>${BlogDB.truncate(b.content, 70)}</span>
-        </td>
-        <td><span class="tag-chip">${b.category}</span></td>
-        <td>${BlogDB.formatDate(b.createdAt)}</td>
-        <td>${b.views || 0}</td>
-        <td>
-          <div class="action-btns">
-            <button class="btn btn-blue btn-sm" onclick="openEdit('${b.id}')"><i class="fa-solid fa-pen"></i> Edit</button>
-            <a href="blog-view.html?id=${b.id}" class="btn btn-ghost btn-sm" target="_blank"><i class="fa-solid fa-eye"></i> View</a>
-            <button class="btn btn-danger btn-sm" onclick="requestDelete('${b.id}')"><i class="fa-solid fa-trash"></i></button>
-          </div>
-        </td>
-      </tr>
-    `).join('');
-
-    wrap.innerHTML = `
-      <table class="data-table">
-        <thead><tr>
-          <th>Blog Title &amp; Excerpt</th>
-          <th>Category</th>
-          <th>Published</th>
-          <th>Views</th>
-          <th>Actions</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-      </table>`;
-  }
-
-  // ── Render ALL blogs (view-only, no edit/delete for others) ──
-  function renderAllBlogs() {
-    const myId    = currentUser.userId || currentUser.username;
-    const allBlogs = BlogDB.getBlogs();
-
-    document.getElementById('allBlogCount').textContent = `${allBlogs.length} total blog${allBlogs.length !== 1 ? 's' : ''}`;
-
-    const wrap = document.getElementById('allBlogsTableWrap');
-    if (allBlogs.length === 0) {
-      wrap.innerHTML = `<div class="empty-state"><i class="fa-regular fa-newspaper"></i><p>No blogs posted yet.</p></div>`;
-      return;
-    }
-
-    const rows = allBlogs.map(b => {
-      const isOwn = b.authorId === myId;
-      const actions = isOwn
-        ? `<button class="btn btn-blue btn-sm" onclick="openEdit('${b.id}')"><i class="fa-solid fa-pen"></i> Edit</button>
-           <button class="btn btn-danger btn-sm" onclick="requestDelete('${b.id}')"><i class="fa-solid fa-trash"></i></button>`
-        : `<span style="font-size:0.78rem;color:#94A3B8;"><i class="fa-solid fa-lock"></i> View Only</span>`;
+    const rows = myBlogs.map(b => {
+      const status = b.status || (b.is_published ? 'approved' : 'pending');
+      let statusBadge = '';
+      if (status === 'pending') {
+        statusBadge = `<span class="badge-pending"><i class="fa-solid fa-clock"></i> Pending Admin Approval</span>`;
+      } else if (status === 'approved') {
+        statusBadge = `<span class="badge-approved"><i class="fa-solid fa-circle-check"></i> Published</span>`;
+      } else {
+        statusBadge = `<span class="badge-rejected"><i class="fa-solid fa-ban"></i> Rejected</span>`;
+      }
 
       return `
         <tr>
@@ -387,19 +326,60 @@
             <span>${BlogDB.truncate(b.content, 70)}</span>
           </td>
           <td><span class="tag-chip">${b.category}</span></td>
-          <td>
-            <span class="role-badge ${b.role}">${b.role}</span><br />
-            <small style="color:#64748B;">${b.author}</small>
-          </td>
+          <td>${statusBadge}</td>
           <td>${BlogDB.formatDate(b.createdAt)}</td>
           <td>
             <div class="action-btns">
-              <a href="blog-view.html?id=${b.id}" class="btn btn-ghost btn-sm" target="_blank"><i class="fa-solid fa-eye"></i> Read</a>
-              ${actions}
+              <a href="blog-view.html?id=${b.id}" class="btn btn-ghost btn-sm" target="_blank"><i class="fa-solid fa-eye"></i> View</a>
             </div>
           </td>
-        </tr>`;
+        </tr>
+      `;
     }).join('');
+
+    wrap.innerHTML = `
+      <table class="data-table">
+        <thead><tr>
+          <th>Blog Title &amp; Excerpt</th>
+          <th>Category</th>
+          <th>Approval Status</th>
+          <th>Submitted Date</th>
+          <th>Actions</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  function renderAllBlogs() {
+    const allBlogs = BlogDB.getBlogs();
+
+    document.getElementById('allBlogCount').textContent = `${allBlogs.length} published blog${allBlogs.length !== 1 ? 's' : ''}`;
+
+    const wrap = document.getElementById('allBlogsTableWrap');
+    if (allBlogs.length === 0) {
+      wrap.innerHTML = `<div class="empty-state"><i class="fa-regular fa-newspaper"></i><p>No published blogs yet.</p></div>`;
+      return;
+    }
+
+    const rows = allBlogs.map(b => `
+      <tr>
+        <td class="td-title">
+          <strong>${b.title}</strong>
+          <span>${BlogDB.truncate(b.content, 70)}</span>
+        </td>
+        <td><span class="tag-chip">${b.category}</span></td>
+        <td>
+          <span class="role-badge ${b.role}">${b.role}</span><br />
+          <small style="color:#64748B;">${b.author}</small>
+        </td>
+        <td>${BlogDB.formatDate(b.createdAt)}</td>
+        <td>
+          <div class="action-btns">
+            <a href="blog-view.html?id=${b.id}" class="btn btn-ghost btn-sm" target="_blank"><i class="fa-solid fa-eye"></i> Read</a>
+          </div>
+        </td>
+      </tr>
+    `).join('');
 
     wrap.innerHTML = `
       <table class="data-table">
@@ -413,57 +393,6 @@
         <tbody>${rows}</tbody>
       </table>`;
   }
-
-  // ── Edit Modal ──
-  function openEdit(id) {
-    const blog = BlogDB.getBlogById(id);
-    if (!blog) return;
-    document.getElementById('editBlogId').value   = id;
-    document.getElementById('editTitle').value    = blog.title;
-    document.getElementById('editCategory').value = blog.category;
-    document.getElementById('editContent').value  = blog.content;
-    document.getElementById('editTags').value     = (blog.tags || []).join(', ');
-    document.getElementById('editModal').classList.add('open');
-  }
-
-  document.getElementById('editModalClose').addEventListener('click',  () => document.getElementById('editModal').classList.remove('open'));
-  document.getElementById('editModalCancel').addEventListener('click', () => document.getElementById('editModal').classList.remove('open'));
-
-  document.getElementById('saveEditBtn').addEventListener('click', () => {
-    const id       = document.getElementById('editBlogId').value;
-    const title    = document.getElementById('editTitle').value.trim();
-    const category = document.getElementById('editCategory').value;
-    const content  = document.getElementById('editContent').value.trim();
-    const tags     = document.getElementById('editTags').value;
-    const errEl    = document.getElementById('editError');
-
-    if (!title || !category || !content) {
-      errEl.textContent = 'All fields are required.';
-      errEl.classList.add('visible');
-      return;
-    }
-    errEl.classList.remove('visible');
-    BlogDB.updateBlog(id, { title, category, content, tags: tags.split(',').map(t=>t.trim()).filter(Boolean) });
-    document.getElementById('editModal').classList.remove('open');
-    renderMyBlogs();
-  });
-
-  // ── Delete ──
-  function requestDelete(id) {
-    pendingDeleteId = id;
-    document.getElementById('confirmOverlay').classList.add('open');
-  }
-
-  document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
-    pendingDeleteId = null;
-    document.getElementById('confirmOverlay').classList.remove('open');
-  });
-
-  document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
-    if (pendingDeleteId) { BlogDB.deleteBlog(pendingDeleteId); pendingDeleteId = null; }
-    document.getElementById('confirmOverlay').classList.remove('open');
-    renderMyBlogs();
-  });
 </script>
 </body>
 </html>
