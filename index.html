@@ -16,6 +16,7 @@
   
   <link rel="stylesheet" href="/src/styles/style.css" />
   <link rel="stylesheet" href="/src/styles/portal.css" />
+  <link rel="stylesheet" href="/src/styles/explore-motion.css" />
 </head>
 <body class="is-loading">
 
@@ -89,8 +90,13 @@
         </div>
       </div>
 
+      <!-- Hamburger button — visible only on ≤1024px via CSS -->
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mainNavMenu">
+        <i class="fa-solid fa-bars" id="navToggleIcon"></i>
+      </button>
+
       <!-- Right Navigation Menu with Chevron Dropdowns -->
-      <nav class="main-nav-menu">
+      <nav class="main-nav-menu" id="mainNavMenu">
         <div class="nav-item dropdown">
           <a href="#">About <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
           <div class="dropdown-menu">
@@ -100,11 +106,11 @@
           </div>
         </div>
         <div class="nav-item dropdown">
-          <a href="#">Admissions <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+          <a href="admissions-eligibility.html">Admissions <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
           <div class="dropdown-menu">
-            <a href="#">B.E. Computer Science</a>
-            <a href="#">M.E. Computer Science</a>
-            <a href="#">Eligibility & Cutoffs</a>
+            <a href="admissions-eligibility.html#sec-courses">B.E. Computer Science</a>
+            <a href="admissions-eligibility.html#sec-pg-eligibility">M.E. Computer Science</a>
+            <a href="admissions-eligibility.html">Eligibility &amp; Cutoffs</a>
           </div>
         </div>
         <div class="nav-item dropdown">
@@ -136,6 +142,7 @@
 
     </div>
   </header>
+
 
   <!-- FULL-BLEED MAXIMIZED ANIMATED GRAPHICAL TECH HERO SLIDER -->
   <section class="hero-slider-wrapper">
@@ -295,13 +302,14 @@
 
     <!-- EVENTS EMBED SLIDER -->
     <section class="events-embed-wrapper" id="events-section">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem; padding:0 0.5rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem; padding:0 0.5rem; flex-wrap:wrap; gap:0.75rem;">
         <div>
           <h2 style="margin:0; font-family:'Space Grotesk', sans-serif; font-size:1.6rem; font-weight:700; color:var(--text-color);"><i class="fa-solid fa-calendar-days" style="color:#2563EB; margin-right:0.5rem;"></i> Upcoming CSE Events</h2>
           <p style="margin:0.25rem 0 0 0; color:var(--text-muted); font-size:0.9rem;">Live slider of upcoming departmental symposiums, workshops &amp; competitions</p>
         </div>
-        <a href="add-event.html" style="display:inline-flex; align-items:center; gap:0.5rem; background:linear-gradient(135deg, #2563EB, #0EA5E9); color:white; padding:0.6rem 1.2rem; border-radius:10px; font-size:0.95rem; font-weight:600; text-decoration:none; box-shadow:0 4px 12px rgba(37,99,235,0.25); transition:all 0.2s ease;">
+        <a href="add-event.html" style="display:inline-flex; align-items:center; gap:0.5rem; background:linear-gradient(135deg, #2563EB, #0EA5E9); color:white; padding:0.6rem 1.2rem; border-radius:10px; font-size:0.95rem; font-weight:600; text-decoration:none; box-shadow:0 4px 12px rgba(37,99,235,0.25); transition:all 0.2s ease; flex-shrink:0;">
           <i class="fa-solid fa-calendar-plus"></i> Add Event
+
         </a>
       </div>
       <iframe src="event-slider.html" title="Upcoming Events" class="events-iframe"></iframe>
@@ -496,6 +504,260 @@
     </div>
   </footer>
 
+  <!-- ════════════════════════════════════════════════════════════════
+       3D MOVING MOTION PORTAL EXPLORER SHOWCASE MODAL
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="explore-motion-modal" id="exploreMotionModal" role="dialog" aria-modal="true" aria-label="3D Portal Motion Showcase">
+    <canvas id="exploreBgCanvas" class="explore-motion-canvas"></canvas>
+
+    <!-- Modal Header -->
+    <header class="explore-motion-header">
+      <div class="explore-motion-title-group">
+        <div class="explore-motion-icon"><i class="fa-solid fa-compass-drafting"></i></div>
+        <div>
+          <h3 class="explore-motion-title">SRMVEC CSE Portal — 3D Motion Explorer</h3>
+          <p class="explore-motion-subtitle">Live interactive preview of all department pages &amp; portals in continuous 3D motion</p>
+        </div>
+      </div>
+      <div class="explore-motion-controls">
+        <button class="explore-ctrl-btn" id="toggleMotionBtn"><i class="fa-solid fa-pause"></i> Pause Motion</button>
+        <button class="explore-close-btn" id="exploreCloseBtn" aria-label="Close Showcase"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    </header>
+
+    <!-- Motion Showcase Body (3 Continuous Moving Tracks) -->
+    <div class="explore-motion-body">
+      
+      <!-- Track 1: Moving Left (Admissions, Blogs, Overview, Tickers) -->
+      <div class="motion-track-wrapper">
+        <div class="motion-track track-left">
+          
+          <a href="admissions-eligibility.html" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-gold"><i class="fa-solid fa-graduation-cap"></i> Admissions 2026</span>
+              <h4 class="motion-card-title">Admissions &amp; Eligibility Criteria</h4>
+              <p class="motion-card-desc">Explore B.E. &amp; M.E. CSE courses, intake capacity, academic cutoffs &amp; admission contacts.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">Visit Page <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <a href="blogs.html" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-blue"><i class="fa-solid fa-newspaper"></i> CSE Blogs Board</span>
+              <h4 class="motion-card-title">Community Articles &amp; Research</h4>
+              <p class="motion-card-desc">Read high-impact articles written by CSE students and faculty on AI, Cloud &amp; Security.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">Browse Articles <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <a href="#specializations" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-purple"><i class="fa-solid fa-brain"></i> Tech Specializations</span>
+              <h4 class="motion-card-title">AI, Cloud &amp; Cyber Defense</h4>
+              <p class="motion-card-desc">State-of-the-art curriculum in Neural Networks, Deep Learning, DevOps &amp; Cryptography.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">View Domains <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <a href="#announcements-section" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-rose"><i class="fa-solid fa-bullhorn"></i> Live Ticker Stream</span>
+              <h4 class="motion-card-title">Department Announcements</h4>
+              <p class="motion-card-desc">Real-time alerts, IA exam schedules, dress codes, and placement mock test drives.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">View Notices <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <!-- Loop Duplication -->
+          <a href="admissions-eligibility.html" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-gold"><i class="fa-solid fa-graduation-cap"></i> Admissions 2026</span>
+              <h4 class="motion-card-title">Admissions &amp; Eligibility Criteria</h4>
+              <p class="motion-card-desc">Explore B.E. &amp; M.E. CSE courses, intake capacity, academic cutoffs &amp; admission contacts.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">Visit Page <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <a href="blogs.html" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-blue"><i class="fa-solid fa-newspaper"></i> CSE Blogs Board</span>
+              <h4 class="motion-card-title">Community Articles &amp; Research</h4>
+              <p class="motion-card-desc">Read high-impact articles written by CSE students and faculty on AI, Cloud &amp; Security.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">Browse Articles <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- Track 2: Moving Right with 3D perspective (Events, Labs, Faculty, Publications) -->
+      <div class="motion-track-wrapper">
+        <div class="motion-track track-right">
+
+          <a href="event1.html" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-green"><i class="fa-solid fa-calendar-days"></i> Symposiums &amp; Events</span>
+              <h4 class="motion-card-title">Events &amp; Competitions Board</h4>
+              <p class="motion-card-desc">National inter-collegiate symposiums: CSEISMIC, AUGUSTA, CYNOSURE &amp; CanFig UI Workshops.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">Explore Events <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <a href="laboratories.html" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-purple"><i class="fa-solid fa-flask"></i> High-Tech Infrastructure</span>
+              <h4 class="motion-card-title">CSE Department Laboratories</h4>
+              <p class="motion-card-desc">Explore 15+ specialized computing labs equipped with modern GPUs, IoT kits &amp; cloud servers.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">View Labs <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <a href="manage-faculty.html" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-gold"><i class="fa-solid fa-chalkboard-user"></i> Faculty Directory</span>
+              <h4 class="motion-card-title">Department Faculty Profiles</h4>
+              <p class="motion-card-desc">Meet our distinguished HoD, Professors &amp; Researchers driving technical excellence.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">View Directory <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <a href="publications-patents.html" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-blue"><i class="fa-solid fa-file-invoice"></i> Research Portal</span>
+              <h4 class="motion-card-title">Publications &amp; Patents</h4>
+              <p class="motion-card-desc">Discover international journals, Scopus-indexed research papers &amp; registered patents.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">View Patents <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <!-- Loop Duplication -->
+          <a href="event1.html" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-green"><i class="fa-solid fa-calendar-days"></i> Symposiums &amp; Events</span>
+              <h4 class="motion-card-title">Events &amp; Competitions Board</h4>
+              <p class="motion-card-desc">National inter-collegiate symposiums: CSEISMIC, AUGUSTA, CYNOSURE &amp; CanFig UI Workshops.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">Explore Events <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <a href="laboratories.html" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-purple"><i class="fa-solid fa-flask"></i> High-Tech Infrastructure</span>
+              <h4 class="motion-card-title">CSE Department Laboratories</h4>
+              <p class="motion-card-desc">Explore 15+ specialized computing labs equipped with modern GPUs, IoT kits &amp; cloud servers.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">View Labs <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- Track 3: Moving Left Fast (Academic Calendar, Student Corner, Teacher Corner, Dashboard) -->
+      <div class="motion-track-wrapper">
+        <div class="motion-track track-left-fast">
+
+          <a href="academic-calendar.html" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-rose"><i class="fa-solid fa-calendar-check"></i> Schedules</span>
+              <h4 class="motion-card-title">Academic Calendar 2026</h4>
+              <p class="motion-card-desc">Comprehensive monthly &amp; semester schedule for exams, practicals, holidays &amp; events.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">Open Calendar <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <a href="student-corner.html" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-blue"><i class="fa-solid fa-user-graduate"></i> Student Portal</span>
+              <h4 class="motion-card-title">Student Corner &amp; Submissions</h4>
+              <p class="motion-card-desc">Publish articles, track submission approval status, and engage with the CSE community.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">Open Student Corner <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <a href="teachers-corner.html" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-purple"><i class="fa-solid fa-pen-nib"></i> Faculty Portal</span>
+              <h4 class="motion-card-title">Teacher's Corner</h4>
+              <p class="motion-card-desc">Faculty publishing studio to share academic guidance, research notes &amp; course updates.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">Open Teacher Corner <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <a href="dashboard.html" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-gold"><i class="fa-solid fa-chart-line"></i> Analytics</span>
+              <h4 class="motion-card-title">Student Academic Dashboard</h4>
+              <p class="motion-card-desc">Interactive stats on student achievements, placement records &amp; department metrics.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">Open Dashboard <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <!-- Loop Duplication -->
+          <a href="academic-calendar.html" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-rose"><i class="fa-solid fa-calendar-check"></i> Schedules</span>
+              <h4 class="motion-card-title">Academic Calendar 2026</h4>
+              <p class="motion-card-desc">Comprehensive monthly &amp; semester schedule for exams, practicals, holidays &amp; events.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">Open Calendar <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <a href="student-corner.html" class="motion-card">
+            <div>
+              <span class="motion-card-badge badge-blue"><i class="fa-solid fa-user-graduate"></i> Student Portal</span>
+              <h4 class="motion-card-title">Student Corner &amp; Submissions</h4>
+              <p class="motion-card-desc">Publish articles, track submission approval status, and engage with the CSE community.</p>
+            </div>
+            <div class="motion-card-footer">
+              <span class="motion-card-cta">Open Student Corner <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Modal Footer Hint -->
+    <footer class="explore-motion-footer">
+      <i class="fa-solid fa-lightbulb"></i> <strong>Interactive Tip:</strong> Hover over any moving card to halt motion, preview details in 3D, and click to visit that page instantly.
+    </footer>
+  </div>
+
   </div>
 
   <!-- Supabase & Auth JS -->
@@ -508,14 +770,63 @@
   <script type="module" src="/src/scripts/tech-hero.js"></script>
   <!-- Announcements JS -->
   <script type="module" src="/src/scripts/announcements.js"></script>
+  <!-- Explore Motion JS -->
+  <script type="module" src="/src/scripts/explore-motion.js"></script>
   <script>
     window.addEventListener('DOMContentLoaded', () => {
+      // ── Intro screen dismiss ──
       window.setTimeout(() => {
         document.body.classList.add('intro-done');
         document.body.classList.remove('is-loading');
       }, 700);
+
+      // ── Hamburger nav toggle ──
+      const navToggle = document.getElementById('navToggle');
+      const navMenu   = document.getElementById('mainNavMenu');
+      const navIcon   = document.getElementById('navToggleIcon');
+
+      if (navToggle && navMenu) {
+        navToggle.addEventListener('click', () => {
+          const isOpen = navMenu.classList.toggle('open');
+          navToggle.setAttribute('aria-expanded', isOpen);
+          navIcon.className = isOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+        });
+
+        // Close menu when any nav link is clicked
+        navMenu.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            navMenu.classList.remove('open');
+            navToggle.setAttribute('aria-expanded', 'false');
+            navIcon.className = 'fa-solid fa-bars';
+          });
+        });
+
+        // Close menu on click outside
+        document.addEventListener('click', (e) => {
+          if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+            navMenu.classList.remove('open');
+            navToggle.setAttribute('aria-expanded', 'false');
+            navIcon.className = 'fa-solid fa-bars';
+          }
+        });
+      }
+
+      // ── Dropdown toggle on mobile tap (instead of hover) ──
+      document.querySelectorAll('.nav-item.dropdown > a').forEach(link => {
+        link.addEventListener('click', (e) => {
+          if (window.innerWidth <= 1024) {
+            e.preventDefault();
+            const parent = link.closest('.nav-item.dropdown');
+            const wasOpen = parent.classList.contains('open');
+            // Close all
+            document.querySelectorAll('.nav-item.dropdown').forEach(d => d.classList.remove('open'));
+            if (!wasOpen) parent.classList.add('open');
+          }
+        });
+      });
     });
   </script>
+
 
 </body>
 </html>
