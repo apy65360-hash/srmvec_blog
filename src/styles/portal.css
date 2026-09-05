@@ -470,7 +470,8 @@ textarea.form-control {
   color: var(--text-dark);
 }
 
-@media (max-width: 992px) {
+/* ── Responsive — desktop/laptop untouched ── */
+@media (max-width: 1024px) {
   .two-column-layout { grid-template-columns: 1fr; }
   .role-choice-grid { grid-template-columns: 1fr; }
   .stat-grid { grid-template-columns: repeat(2, 1fr); }
@@ -480,7 +481,24 @@ textarea.form-control {
   .admin-layout { flex-direction: column; }
   .admin-sidebar { width: 100%; height: auto; position: static; }
   .admin-main { padding: 1.25rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Login card: comfortable on phones */
+  .login-card {
+    padding: 1.75rem 1.25rem;
+    border-radius: 14px;
+  }
+  .login-card h1 { font-size: 1.4rem; }
+
+  /* Page hero: smaller padding + text */
+  .page-hero { padding: 2rem 0; }
+  .page-hero h1 { font-size: 1.7rem; }
+}
+
+@media (max-width: 480px) {
   .stat-grid { grid-template-columns: 1fr; }
+  .login-card { padding: 1.5rem 1rem; }
+  .login-card h1 { font-size: 1.25rem; }
 }
 
 /* --- ACADEMIC CALENDAR STATUS PILLS --- */

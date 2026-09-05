@@ -283,6 +283,12 @@
     }
 
     @media (max-width: 768px) {
+      .blogs-hero-banner h1 {
+        font-size: 1.7rem;
+      }
+      .blogs-hero-banner p {
+        font-size: 0.95rem;
+      }
       .blogs-detailed-grid {
         grid-template-columns: 1fr;
       }
@@ -298,8 +304,25 @@
         gap: 0.5rem;
         align-items: flex-start;
       }
+      .blogs-hero-banner {
+        padding: 2.5rem 1rem 2rem 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .blogs-hero-banner h1 {
+        font-size: 1.35rem;
+      }
+      .hero-badges-row {
+        gap: 0.5rem;
+      }
+      .hero-badge {
+        font-size: 0.78rem;
+        padding: 0.3rem 0.75rem;
+      }
     }
   </style>
+
 </head>
 <body>
 
@@ -327,7 +350,13 @@
           <h1 class="brand-main-title"><a href="index.html" style="color:inherit;text-decoration:none;">CSE Blog</a></h1>
         </div>
       </div>
-      <nav class="main-nav-menu">
+
+      <!-- Hamburger button — visible only on ≤1024px via CSS -->
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mainNavMenu">
+        <i class="fa-solid fa-bars" id="navToggleIcon"></i>
+      </button>
+
+      <nav class="main-nav-menu" id="mainNavMenu">
         <div class="nav-item"><a href="index.html">Home</a></div>
         <div class="nav-item"><a href="publications-patents.html">Publications &amp; Patents</a></div>
         <div class="nav-item"><a href="student-corner.html">Student Corner</a></div>
@@ -339,6 +368,7 @@
       </nav>
     </div>
   </header>
+
 
   <!-- Hero Section -->
   <section class="blogs-hero-banner">
@@ -545,5 +575,37 @@
       initBlogsPage();
     }
   </script>
+
+  <!-- Hamburger nav toggle -->
+  <script>
+    (function() {
+      const navToggle = document.getElementById('navToggle');
+      const navMenu   = document.getElementById('mainNavMenu');
+      const navIcon   = document.getElementById('navToggleIcon');
+
+      if (navToggle && navMenu) {
+        navToggle.addEventListener('click', () => {
+          const isOpen = navMenu.classList.toggle('open');
+          navToggle.setAttribute('aria-expanded', isOpen);
+          navIcon.className = isOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+        });
+        navMenu.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            navMenu.classList.remove('open');
+            navToggle.setAttribute('aria-expanded', 'false');
+            navIcon.className = 'fa-solid fa-bars';
+          });
+        });
+        document.addEventListener('click', (e) => {
+          if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
+            navMenu.classList.remove('open');
+            navToggle.setAttribute('aria-expanded', 'false');
+            navIcon.className = 'fa-solid fa-bars';
+          }
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
+
