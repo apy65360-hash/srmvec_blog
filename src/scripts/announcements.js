@@ -190,10 +190,10 @@ function wireAdminForm() {
 
   // Show form only if teacher/admin
   try {
-    const userRaw = localStorage.getItem('cse_auth_user');
+    const userRaw = sessionStorage.getItem('srmvec_portal_session') || sessionStorage.getItem('srmvec_current_user') || localStorage.getItem('cse_auth_user');
     if (userRaw) {
       const user = JSON.parse(userRaw);
-      if (user && (user.role === 'teacher' || user.role === 'admin')) {
+      if (user && ['admin', 'faculty_admin', 'editor'].includes(user.role)) {
         wrap.style.display = 'block';
       }
     }

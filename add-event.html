@@ -133,7 +133,7 @@
   <script type="module">
     import { EventsStore } from "/src/scripts/events-store.js";
 
-    Auth.requireLogin(["teacher"]);
+    Auth.requireLogin(["admin", "faculty_admin", "editor"]);
     Auth.renderUserBadge();
 
     const posterFileInput = document.getElementById("eventPosterFile");
