@@ -521,9 +521,22 @@
   function buildRows(data) {
     const tbody = document.getElementById("facultyTableBody");
     tbody.innerHTML = "";
+    const isAdmin = Auth.isAdmin();
+
     data.forEach((f, i) => {
       const tr = document.createElement("tr");
       tr.dataset.idx = i;
+
+      const actions = isAdmin
+        ? `<div class="table-actions">
+             <button class="btn btn-primary btn-sm" type="button" data-action="view"><i class="fa-solid fa-eye"></i> View</button>
+             <button class="btn btn-warning btn-sm" type="button" data-action="edit"><i class="fa-solid fa-pen"></i> Edit</button>
+             <button class="btn btn-danger btn-sm" type="button" data-action="delete"><i class="fa-solid fa-trash"></i></button>
+           </div>`
+        : `<div class="table-actions">
+             <button class="btn btn-primary btn-sm" type="button" data-action="view"><i class="fa-solid fa-eye"></i> View Profile</button>
+           </div>`;
+
       tr.innerHTML = `
         <td>${i + 1}</td>
         <td>
@@ -536,16 +549,16 @@
         <td>${f.designation}</td>
         <td style="color:#64748b;font-size:.87rem;">${f.spec}</td>
         <td style="font-size:.84rem;">${f.email}</td>
-        <td>
-          <div class="table-actions">
-            <button class="btn btn-primary btn-sm" type="button" data-action="view"><i class="fa-solid fa-eye"></i> View</button>
-            <button class="btn btn-warning btn-sm" type="button" data-action="edit"><i class="fa-solid fa-pen"></i> Edit</button>
-            <button class="btn btn-danger btn-sm" type="button" data-action="delete"><i class="fa-solid fa-trash"></i></button>
-          </div>
-        </td>`;
+        <td>${actions}</td>`;
       tbody.appendChild(tr);
     });
     document.getElementById("countAll").textContent = `(${data.length})`;
+
+    // Hide Add Faculty button for non-admins
+    const addBtn = document.getElementById("toggleAddFaculty");
+    if (addBtn) {
+      addBtn.style.display = isAdmin ? "inline-flex" : "none";
+    }
   }
 
   // Apply colour to avatar cells
@@ -643,6 +656,29 @@
   overlay.addEventListener("click", e => { if (e.target === overlay) closeModal(); });
   document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(); hideEdit(); } });
 
+  // ── Persistence Helper ──
+  const FACULTY_STORAGE_KEY = "srmvec_faculty_data";
+  (function initFacultyStorage() {
+    try {
+      const stored = localStorage.getItem(FACULTY_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          FACULTY.length = 0;
+          FACULTY.push(...parsed);
+        }
+      } else {
+        localStorage.setItem(FACULTY_STORAGE_KEY, JSON.stringify(FACULTY));
+      }
+    } catch (e) {}
+  })();
+
+  function saveFacultyStorage() {
+    try {
+      localStorage.setItem(FACULTY_STORAGE_KEY, JSON.stringify(FACULTY));
+    } catch (e) {}
+  }
+
   // ── Edit Popover ──
   const editPopover = document.getElementById("editPopover");
   let activeEditRow = null;
@@ -663,6 +699,10 @@
   }
 
   document.getElementById("editSaveBtn").addEventListener("click", () => {
+    if (!Auth.isAdmin()) {
+      alert("Security Alert: Only administrators are authorized to edit faculty data.");
+      return;
+    }
     if (!activeEditRow) return;
     const idx = parseInt(activeEditRow.dataset.idx, 10);
     const data = filtered();
@@ -675,6 +715,7 @@
         FACULTY[masterIdx].designation = data[idx].designation;
         FACULTY[masterIdx].email = data[idx].email;
       }
+      saveFacultyStorage();
     }
     hideEdit();
     refresh();
@@ -699,11 +740,22 @@
       const allIdx = FACULTY.findIndex(x => x.id === f.id);
       openModal(f, allIdx);
     } else if (btn.dataset.action === "edit") {
+      if (!Auth.isAdmin()) {
+        alert("Security Alert: Only administrators are authorized to edit faculty data.");
+        return;
+      }
       showEdit(tr, f);
     } else if (btn.dataset.action === "delete") {
+      if (!Auth.isAdmin()) {
+        alert("Security Alert: Access Denied. Only administrators are authorized to delete faculty data.");
+        return;
+      }
       if (window.confirm(`Remove ${f.name} from the faculty list?`)) {
         const masterIdx = FACULTY.findIndex(x => x.id === f.id);
-        if (masterIdx >= 0) FACULTY.splice(masterIdx, 1);
+        if (masterIdx >= 0) {
+          FACULTY.splice(masterIdx, 1);
+          saveFacultyStorage();
+        }
         refresh();
       }
     }
@@ -711,6 +763,10 @@
 
   // ── Add Faculty Form ──
   document.getElementById("toggleAddFaculty").addEventListener("click", () => {
+    if (!Auth.isAdmin()) {
+      alert("Security Alert: Only administrators are authorized to add new faculty.");
+      return;
+    }
     const form = document.getElementById("addFacultyForm");
     form.style.display = form.style.display === "none" ? "grid" : "none";
   });
@@ -719,6 +775,10 @@
   });
   document.getElementById("addFacultyForm").addEventListener("submit", function(e) {
     e.preventDefault();
+    if (!Auth.isAdmin()) {
+      alert("Security Alert: Only administrators are authorized to add new faculty.");
+      return;
+    }
     const newFaculty = {
       id: "CSE" + String(FACULTY.length + 1).padStart(3, "0"),
       name: document.getElementById("facultyName").value,
@@ -731,6 +791,7 @@
       tags: [document.getElementById("facultySpec").value || "CSE"].filter(Boolean)
     };
     FACULTY.push(newFaculty);
+    saveFacultyStorage();
     this.reset();
     this.style.display = "none";
     currentFilter = "all";
@@ -740,8 +801,8 @@
     refresh();
   });
 
-  // ── Auth (graceful fallback) ──
-  try { Auth.requireLogin(["admin"]); Auth.renderUserBadge(); } catch(_) {}
+  // Render user badge safely
+  try { Auth.renderUserBadge(); } catch(e) {}
 
   // Initial render
   refresh();
