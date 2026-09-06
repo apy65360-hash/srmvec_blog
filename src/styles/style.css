@@ -122,17 +122,16 @@ a:hover {
   padding: 0 1.25rem;
 }
 
-/* --- SOCIAL BAR (FIXED LEFT, VERTICAL) --- */
+/* --- SOCIAL BAR (FIXED LEFT ON HERO IMAGE) --- */
 .social-sidebar {
-  position: fixed;
-  left: 1.25rem;
-  right: auto;
+  position: absolute;
+  left: 1.5rem;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  z-index: 300;
+  z-index: 10;
   align-items: center;
   padding: 0.65rem 0.5rem;
   border-radius: 999px;
@@ -404,6 +403,7 @@ a:hover {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  padding-left: 3.75rem;
 }
 
 .tech-mode-tag {
