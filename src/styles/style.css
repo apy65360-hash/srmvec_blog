@@ -122,12 +122,13 @@ a:hover {
   padding: 0 1.25rem;
 }
 
-/* --- SOCIAL BAR (FIXED TOP RIGHT, VERTICAL) --- */
+/* --- SOCIAL BAR (FIXED LEFT, VERTICAL) --- */
 .social-sidebar {
   position: fixed;
   left: 1.25rem;
-  right: 1.25rem;
-  top: 7.5rem;
+  right: auto;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
