@@ -126,6 +126,7 @@ a:hover {
 .social-sidebar {
   position: fixed;
   left: 1.25rem;
+  right: 1.25rem;
   top: 7.5rem;
   display: flex;
   flex-direction: column;
