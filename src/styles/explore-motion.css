@@ -5,23 +5,28 @@
 .explore-motion-modal {
   position: fixed;
   inset: 0;
-  z-index: 99999;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999;
   background: #030712; /* Deep dark background */
-  display: flex;
+  display: none;
   flex-direction: column;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
   overflow: hidden;
   font-family: 'Space Grotesk', 'Inter', sans-serif;
   color: #FFFFFF;
 }
 
 .explore-motion-modal.open {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  animation: fadeInExploreModal 0.25s ease forwards;
+}
+
+@keyframes fadeInExploreModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* Background particle canvas */

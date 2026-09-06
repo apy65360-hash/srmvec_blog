@@ -4,7 +4,6 @@
  */
 
 export function initExploreMotion() {
-  const exploreBtns = document.querySelectorAll('.btn-hero-gold, [data-action="explore-motion"]');
   const modal = document.getElementById('exploreMotionModal');
   const closeBtn = document.getElementById('exploreCloseBtn');
   const toggleMotionBtn = document.getElementById('toggleMotionBtn');
@@ -15,22 +14,37 @@ export function initExploreMotion() {
   let isPaused = false;
   let animId = null;
 
-  // Open modal on explore button click
-  exploreBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      modal.classList.add('open');
-      document.body.style.overflow = 'hidden';
-      startCanvasAnimation();
+  function openModal() {
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    const tracks = modal.querySelectorAll('.motion-track');
+    tracks.forEach(t => {
+      t.style.animationPlayState = 'running';
     });
-  });
+    startCanvasAnimation();
+  }
 
-  // Close modal
   function closeModal() {
     modal.classList.remove('open');
     document.body.style.overflow = '';
-    if (animId) cancelAnimationFrame(animId);
+    if (animId) {
+      cancelAnimationFrame(animId);
+      animId = null;
+    }
   }
+
+  // Expose global helper for direct JS calls
+  window.open3DExplorer = openModal;
+  window.close3DExplorer = closeModal;
+
+  // Delegated click handling for any explore button across the entire page
+  document.addEventListener('click', (e) => {
+    const trigger = e.target.closest('.btn-hero-gold, [data-action="explore-motion"], a[href="#explore-motion"], a[href="#3d-explorer"]');
+    if (trigger) {
+      e.preventDefault();
+      openModal();
+    }
+  });
 
   if (closeBtn) closeBtn.addEventListener('click', closeModal);
 
