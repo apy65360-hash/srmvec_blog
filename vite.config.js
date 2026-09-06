@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import fs from 'fs';
 
-const rootDir = import.meta.dirname || process.cwd();
+const rootDir = process.cwd();
 
 // Discover all HTML entry points in the root directory dynamically
 const htmlFiles = fs.readdirSync(rootDir)
