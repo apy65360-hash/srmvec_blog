@@ -356,3 +356,102 @@
   color: #F59E0B;
   margin-right: 0.4rem;
 }
+
+/* ── Mobile Responsive Optimizations for 3D Explorer ── */
+@media (max-width: 768px) {
+  .explore-motion-header {
+    padding: 0.75rem 1rem;
+    height: auto;
+    min-height: 60px;
+  }
+
+  .explore-motion-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+  }
+
+  .explore-motion-title {
+    font-size: 1.05rem;
+  }
+
+  .explore-motion-subtitle {
+    font-size: 0.72rem;
+  }
+
+  .explore-ctrl-btn {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .explore-close-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 0.95rem;
+  }
+
+  .explore-motion-body {
+    gap: 0.85rem;
+    padding: 0.5rem 0;
+  }
+
+  .motion-track-wrapper {
+    height: 160px;
+    min-height: 160px;
+    perspective: 800px;
+  }
+
+  .motion-track {
+    height: 150px;
+    gap: 1.1rem;
+  }
+
+  .motion-card {
+    flex: 0 0 270px;
+    width: 270px;
+    min-width: 270px;
+    height: 145px;
+    min-height: 145px;
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+  }
+
+  .motion-card-badge {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .motion-card-title {
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .motion-card-desc {
+    font-size: 0.75rem;
+    line-height: 1.35;
+  }
+
+  .motion-card-cta {
+    font-size: 0.75rem;
+  }
+
+  .explore-motion-footer {
+    height: 40px;
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .motion-card {
+    flex: 0 0 240px;
+    width: 240px;
+    min-width: 240px;
+  }
+
+  .motion-track-wrapper::before,
+  .motion-track-wrapper::after {
+    width: 60px;
+  }
+}
