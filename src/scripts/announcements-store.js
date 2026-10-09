@@ -58,6 +58,7 @@ const SEED_DATA = [
     postedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
   },
 ];
+const SEED_IDS = new Set(SEED_DATA.map(item => item.id));
 
 /** ── Core CRUD ─────────────────────────────────── */
 export const AnnouncementsStore = {
@@ -135,7 +136,12 @@ export const AnnouncementsStore = {
       this._save(SEED_DATA);
       return [...SEED_DATA];
     }
-    return items.filter(item => !(item && String(item.id || '').startsWith('ann_calendar_')));
+    const nonCalendarItems = items.filter(item => !(item && String(item.id || '').startsWith('ann_calendar_')));
+    const syncedItems = syncSeedAnnouncements(nonCalendarItems);
+    if (JSON.stringify(nonCalendarItems) !== JSON.stringify(syncedItems)) {
+      this._save(syncedItems);
+    }
+    return syncedItems;
   },
 
   /** Request Notification permission & send one */
@@ -157,6 +163,11 @@ export const AnnouncementsStore = {
 };
 
 let _subscribers = [];
+
+function syncSeedAnnouncements(items = []) {
+  const customItems = items.filter(item => !SEED_IDS.has(item?.id));
+  return [...SEED_DATA, ...customItems];
+}
 
 function buildCalendarAnnouncements() {
   const now = new Date();
