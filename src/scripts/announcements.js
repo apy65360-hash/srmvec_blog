@@ -49,16 +49,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // 8. Admin post form
   wireAdminForm();
 
-  // 9. Subscribe to store → re-render everything on change
-  AnnouncementsStore.subscribe(() => {
+  // 9. Popup messages and interactive lightbox modal for announcements
+  initAnnouncementPopups();
+  initAnnouncementModal();
+
+  // 10. Subscribe to store → re-render everything on change
+  AnnouncementsStore.subscribe((all) => {
     renderTicker();
     renderColumn(activeFilter);
     renderStats();
     renderUrgent();
   });
-
-  // 10. Mark all seen after 5s
-  setTimeout(() => AnnouncementsStore.markAllSeen(), 5000);
 });
 
 // ── Active filter state ───────────────────────────────────────────────────────
@@ -315,6 +316,227 @@ function initCanvasEffect() {
     requestAnimationFrame(draw);
   }
   draw();
+}
+
+// ── Announcement Popup Toast Messages ─────────────────────────────────────────
+function getOrCreatePopupContainer() {
+  let container = document.getElementById('ann-popup-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'ann-popup-container';
+    container.className = 'ann-popup-container';
+    document.body.appendChild(container);
+  }
+  return container;
+}
+
+export function showAnnouncementToast(item) {
+  if (!item) return;
+  const container = getOrCreatePopupContainer();
+  const meta = getCategoryMeta(item.category);
+  const isHigh = item.priority === 'high';
+
+  const toast = document.createElement('div');
+  toast.className = `ann-popup-toast ${isHigh ? 'ann-popup--urgent' : ''}`;
+  toast.setAttribute('data-id', item.id);
+
+  toast.innerHTML = `
+    <div class="ann-popup-top">
+      <span class="ann-popup-tag" style="background:${meta.bg}; color:${meta.color}; border:1px solid ${meta.color}40;">
+        <i class="fa-solid ${meta.icon}"></i> ${escHtml(item.category)}
+      </span>
+      <button type="button" class="ann-popup-close" aria-label="Close notification">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <h5 class="ann-popup-title">${escHtml(item.title)}</h5>
+    <p class="ann-popup-body">${escHtml(item.body)}</p>
+    <div class="ann-popup-footer">
+      <span><i class="fa-solid fa-clock"></i> ${timeAgo(item.postedAt)}</span>
+      <span class="ann-popup-cta">View Details &rarr;</span>
+    </div>
+  `;
+
+  // Close button click
+  const closeBtn = toast.querySelector('.ann-popup-close');
+  closeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dismissToast(toast, item.id);
+  });
+
+  // Clicking toast opens full modal
+  toast.addEventListener('click', () => {
+    dismissToast(toast, item.id);
+    openAnnouncementModal(item);
+  });
+
+  container.appendChild(toast);
+
+  // Trigger animation
+  requestAnimationFrame(() => {
+    toast.classList.add('show');
+  });
+
+  // Auto dismiss after 9 seconds if not interacted
+  const timer = setTimeout(() => {
+    dismissToast(toast, item.id);
+  }, 9000);
+
+  toast._timer = timer;
+}
+
+function dismissToast(toast, id) {
+  if (toast._timer) clearTimeout(toast._timer);
+  toast.classList.remove('show');
+  AnnouncementsStore.markItemSeen(id);
+  setTimeout(() => {
+    if (toast.parentNode) toast.parentNode.removeChild(toast);
+  }, 350);
+}
+
+function initAnnouncementPopups() {
+  // Check for unread announcements on page visit and pop up the latest unread one
+  const unseen = AnnouncementsStore.getUnseenItems();
+  if (unseen && unseen.length > 0) {
+    // Show newest unread announcement with gentle delay
+    setTimeout(() => {
+      showAnnouncementToast(unseen[0]);
+    }, 1800);
+
+    // If there is another urgent unread announcement, show after 5s
+    if (unseen.length > 1 && unseen[1].priority === 'high') {
+      setTimeout(() => {
+        showAnnouncementToast(unseen[1]);
+      }, 5500);
+    }
+  }
+
+  // Also listen for any newly added announcement
+  AnnouncementsStore.subscribe((all) => {
+    if (all && all.length > 0) {
+      const newest = all[0];
+      const seenRaw = localStorage.getItem('cse_announcements_seen_v1');
+      const seen = seenRaw ? JSON.parse(seenRaw) : [];
+      if (!seen.includes(newest.id)) {
+        showAnnouncementToast(newest);
+      }
+    }
+  });
+}
+
+// ── Announcement Detail Modal ─────────────────────────────────────────────────
+function getOrCreateAnnouncementModal() {
+  let modalWrap = document.getElementById('annDetailModalWrap');
+  if (!modalWrap) {
+    modalWrap = document.createElement('div');
+    modalWrap.id = 'annDetailModalWrap';
+    modalWrap.className = 'ann-detail-modal-wrap';
+    modalWrap.innerHTML = `
+      <div class="ann-detail-backdrop" id="annModalBackdrop"></div>
+      <div class="ann-detail-box" role="dialog" aria-modal="true">
+        <button type="button" class="ann-modal-close-btn" id="annModalCloseBtn" aria-label="Close dialog">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div id="annModalCategoryBadgeWrap"></div>
+        <h3 class="ann-modal-title" id="annModalTitle"></h3>
+        <div class="ann-modal-meta">
+          <span><i class="fa-regular fa-clock" style="color:var(--accent-blue);"></i> <span id="annModalTime"></span></span>
+          <span><i class="fa-solid fa-user-circle" style="color:var(--accent-blue);"></i> <span id="annModalAuthor"></span></span>
+          <span id="annModalUrgentBadge" style="display:none; color:#DC2626; font-weight:700;"><i class="fa-solid fa-triangle-exclamation"></i> URGENT</span>
+        </div>
+        <p class="ann-modal-body-text" id="annModalBody"></p>
+        <div class="ann-modal-actions">
+          <a id="annModalFullPageLink" href="announcement-view.html" class="ann-btn-secondary" style="font-size:0.82rem; padding:0.45rem 1rem; border-radius:50px; border:1px solid #CBD5E1; color:#334155; text-decoration:none; font-weight:600;">
+            Open Page View &rarr;
+          </a>
+          <button type="button" class="ann-modal-done-btn" id="annModalDoneBtn">
+            Got it
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modalWrap);
+
+    // Close listeners
+    const close = () => {
+      modalWrap.classList.remove('open');
+      document.body.style.overflow = '';
+    };
+
+    modalWrap.querySelector('#annModalCloseBtn').addEventListener('click', close);
+    modalWrap.querySelector('#annModalBackdrop').addEventListener('click', close);
+    modalWrap.querySelector('#annModalDoneBtn').addEventListener('click', close);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modalWrap.classList.contains('open')) close();
+    });
+  }
+  return modalWrap;
+}
+
+export function openAnnouncementModal(item) {
+  if (!item) return;
+  const modalWrap = getOrCreateAnnouncementModal();
+  const meta = getCategoryMeta(item.category);
+
+  const titleEl = modalWrap.querySelector('#annModalTitle');
+  const bodyEl = modalWrap.querySelector('#annModalBody');
+  const timeEl = modalWrap.querySelector('#annModalTime');
+  const authorEl = modalWrap.querySelector('#annModalAuthor');
+  const catWrap = modalWrap.querySelector('#annModalCategoryBadgeWrap');
+  const urgentBadge = modalWrap.querySelector('#annModalUrgentBadge');
+  const pageLink = modalWrap.querySelector('#annModalFullPageLink');
+
+  titleEl.textContent = item.title;
+  bodyEl.textContent = item.body;
+  timeEl.textContent = new Date(item.postedAt).toLocaleString('en-IN', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+  authorEl.textContent = item.author || 'Department';
+
+  catWrap.innerHTML = `
+    <span class="ann-cat-pill" style="background:${meta.bg}; color:${meta.color}; border:1px solid ${meta.color}40; margin-bottom:0.25rem;">
+      <i class="fa-solid ${meta.icon}"></i> ${escHtml(item.category)}
+    </span>
+  `;
+
+  if (item.priority === 'high') {
+    urgentBadge.style.display = 'inline-flex';
+  } else {
+    urgentBadge.style.display = 'none';
+  }
+
+  if (pageLink) {
+    pageLink.href = `announcement-view.html?id=${encodeURIComponent(item.id)}`;
+  }
+
+  modalWrap.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Mark as seen
+  AnnouncementsStore.markItemSeen(item.id);
+}
+
+function initAnnouncementModal() {
+  getOrCreateAnnouncementModal();
+
+  // Attach click listener to announcement articles in column
+  const list = document.getElementById('ann-list');
+  if (list) {
+    list.addEventListener('click', (e) => {
+      const card = e.target.closest('.ann-item');
+      if (!card) return;
+      const id = card.getAttribute('data-id');
+      const all = AnnouncementsStore.getAll();
+      const item = all.find(a => String(a.id) === String(id));
+      if (item) {
+        openAnnouncementModal(item);
+      }
+    });
+  }
 }
 
 // ── Utility ───────────────────────────────────────────────────────────────────

@@ -118,6 +118,30 @@ export const AnnouncementsStore = {
     localStorage.setItem(SEEN_KEY, JSON.stringify(ids));
   },
 
+  /** Mark a specific announcement as seen */
+  markItemSeen(id) {
+    if (!id) return;
+    try {
+      const seenRaw = localStorage.getItem(SEEN_KEY);
+      const seen = seenRaw ? JSON.parse(seenRaw) : [];
+      if (!seen.includes(id)) {
+        seen.push(id);
+        localStorage.setItem(SEEN_KEY, JSON.stringify(seen));
+      }
+    } catch {}
+  },
+
+  /** Return array of unseen announcement objects */
+  getUnseenItems() {
+    try {
+      const seenRaw = localStorage.getItem(SEEN_KEY);
+      const seen = seenRaw ? JSON.parse(seenRaw) : [];
+      return this.getAll().filter(a => !seen.includes(a.id));
+    } catch {
+      return [];
+    }
+  },
+
   /** Return count of unseen announcements */
   unseenCount() {
     const seenRaw = localStorage.getItem(SEEN_KEY);
