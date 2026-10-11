@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Achievements & Honors | SRMVEC CSE Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <link rel="stylesheet" href="/src/styles/style.css" />
+  <link rel="stylesheet" href="/src/styles/portal.css" />
+  <link rel="stylesheet" href="/src/styles/achievements.css" />
+</head>
+<body class="intro-done">
+
+  <!-- TOP INSTITUTIONAL UTILITY BAR -->
+  <div class="top-bar">
+    <div class="container top-bar-content">
+      <div class="top-utility-links">
+        <a href="student-corner.html">Students</a>
+        <a href="teachers-corner.html">Faculty &amp; Staff</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="top-bar-search">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="topSearchInput" placeholder="Search CSE Blog" />
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN UNIFIED HEADER & NAV -->
+  <header class="main-header-unified">
+    <div class="container header-nav-container">
+      
+      <!-- Text Branding -->
+      <div class="brand-group">
+        <div class="brand-text-box">
+          <a href="index.html" style="text-decoration:none; color:inherit;">
+            <h1 class="brand-main-title">CSE Blog</h1>
+          </a>
+        </div>
+      </div>
+
+      <!-- Hamburger button -->
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mainNavMenu">
+        <i class="fa-solid fa-bars" id="navToggleIcon"></i>
+      </button>
+
+      <!-- Right Navigation Menu -->
+      <nav class="main-nav-menu" id="mainNavMenu">
+        <div class="nav-item dropdown">
+          <a href="#">About <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+          <div class="dropdown-menu">
+            <a href="https://srmvalliammai.ac.in/be-computer-science-and-engineering/" target="_blank" rel="noopener noreferrer">Academics &amp; Accreditation</a>
+            <a href="laboratories.html">Laboratories</a>
+            <a href="contact.html">Contact Us</a>
+          </div>
+        </div>
+        <div class="nav-item dropdown">
+          <a href="admissions-eligibility.html">Admissions <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+          <div class="dropdown-menu">
+            <a href="admissions-eligibility.html#sec-courses">B.E. Computer Science</a>
+            <a href="admissions-eligibility.html#sec-pg-eligibility">M.E. Computer Science</a>
+            <a href="admissions-eligibility.html">Eligibility &amp; Cutoffs</a>
+          </div>
+        </div>
+        <div class="nav-item dropdown">
+          <a href="index.html#specializations">Academics <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+          <div class="dropdown-menu">
+            <a href="publications-patents.html">Publications &amp; Patents</a>
+            <a href="academic-calendar.html">Academic Calendar</a>
+            <a href="#">Curriculum &amp; Syllabus</a>
+          </div>
+        </div>
+        <div class="nav-item dropdown">
+          <a href="index.html#portal-pages"><i class="fa-solid fa-pen-nib" style="margin-right:.3rem;"></i>CSE Blog <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+          <div class="dropdown-menu">
+            <a href="blogs.html">Blogs Board</a>
+            <a href="student-corner.html">Student Corner</a>
+            <a href="teachers-corner.html">Teacher's Corner</a>
+            <a href="event1.html">Events Board</a>
+          </div>
+        </div>
+        <div class="nav-item dropdown">
+          <a href="#">Admin Corner <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+          <div class="dropdown-menu">
+            <a href="manage-faculty.html">Manage Faculty</a>
+            <a href="dashboard.html">Student's Data Dashboard</a>
+            <a href="admin-login.html">Admin Login</a>
+          </div>
+        </div>
+        <div class="nav-item">
+          <a href="achievements.html" style="color:var(--ach-gold); font-weight:700;"><i class="fa-solid fa-trophy" style="margin-right:.3rem;"></i>Achievements</a>
+        </div>
+        <div class="nav-item">
+          <a href="index.html" style="color:#0EA5E9; font-weight:600;"><i class="fa-solid fa-house" style="margin-right:.3rem;"></i>Home</a>
+        </div>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- PAGE HERO BANNER -->
+  <section class="achievements-page-hero">
+    <div class="container">
+      <span class="ach-hero-badge"><i class="fa-solid fa-trophy"></i> Hall of Fame &amp; Accolades</span>
+      <h1 class="ach-hero-title">Department Student Achievements</h1>
+      <p class="ach-hero-desc">
+        Celebrating national hackathons, research awards, competitive coding ranks, sports championships and extraordinary milestones achieved by our CSE department scholars.
+      </p>
+      <div class="ach-hero-stats">
+        <div class="ach-stat-chip">
+          <i class="fa-solid fa-medal"></i> <strong id="statTotalAch">0</strong> Total Accolades
+        </div>
+        <div class="ach-stat-chip">
+          <i class="fa-solid fa-graduation-cap"></i> <strong>2024–2026</strong> Academic Records
+        </div>
+        <div class="ach-stat-chip">
+          <i class="fa-solid fa-award"></i> <strong>Tier-1</strong> National Recognition
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN PAGE CONTENT -->
+  <main class="container achievements-page-content">
+
+    <!-- ADMIN / FACULTY QUICK POST FORM (shown when logged in) -->
+    <div class="ach-post-form-wrap" id="achPostFormWrap" style="display:none;">
+      <div class="ach-post-header">
+        <i class="fa-solid fa-circle-plus" style="color:var(--ach-gold); font-size:1.3rem;"></i>
+        <div>
+          <h3 style="margin:0; font-family:'Space Grotesk',sans-serif; color:var(--ach-navy);">Post New Student Achievement</h3>
+          <p style="margin:.15rem 0 0; font-size:.85rem; color:var(--ach-text-muted);">Publish student honors to the department records &amp; front-page moving carousel</p>
+        </div>
+      </div>
+
+      <div class="ach-form-msg" id="achFormMsg"></div>
+
+      <form class="ach-post-form" id="achPostForm">
+        <div class="ach-form-group" style="grid-column: 1 / -1;">
+          <label for="achInputTitle">Achievement Title *</label>
+          <input type="text" id="achInputTitle" placeholder="e.g. 1st Place at National Smart India Hackathon 2026" required />
+        </div>
+
+        <div class="ach-form-group">
+          <label for="achInputStudent">Student / Team Name *</label>
+          <input type="text" id="achInputStudent" placeholder="e.g. Rahul Sharma & Team AlgoCraft" required />
+        </div>
+
+        <div class="ach-form-group">
+          <label for="achInputCategory">Category *</label>
+          <select id="achInputCategory" required>
+            <option value="Technical" selected>Technical & Hackathons</option>
+            <option value="Research">Research & Papers</option>
+            <option value="Academic">Academic & GATE</option>
+            <option value="Placement">Placement & Internships</option>
+            <option value="Sports">Sports & Athletics</option>
+            <option value="Cultural">Cultural & Arts</option>
+            <option value="Other">Other Honors</option>
+          </select>
+        </div>
+
+        <div class="ach-form-group">
+          <label for="achInputDate">Achievement Date *</label>
+          <input type="date" id="achInputDate" required />
+        </div>
+
+        <div class="ach-form-group">
+          <label for="achInputYear">Academic Year</label>
+          <input type="text" id="achInputYear" placeholder="e.g. 2025-26" value="2025-26" />
+        </div>
+
+        <div class="ach-form-group" style="grid-column: 1 / -1;">
+          <label for="achInputImg">Photo / Certificate URL</label>
+          <input type="url" id="achInputImg" placeholder="https://example.com/photo.jpg (direct image link or Unsplash URL)" />
+        </div>
+
+        <div class="ach-form-group" style="grid-column: 1 / -1;">
+          <label for="achInputShort">Short Summary (Displayed on Cards &amp; Home Slider) *</label>
+          <input type="text" id="achInputShort" placeholder="1-2 lines summarizing the accolade..." required />
+        </div>
+
+        <div class="ach-form-group" style="grid-column: 1 / -1;">
+          <label for="achInputDesc">Complete Description &amp; Event Details *</label>
+          <textarea id="achInputDesc" rows="4" placeholder="Detailed story of the achievement, judges, prize money, competing colleges, mentors..." required></textarea>
+        </div>
+
+        <div style="grid-column: 1 / -1; display:flex; justify-content:flex-end; gap:.8rem;">
+          <button type="button" class="ach-btn-secondary" id="achCancelFormBtn">Cancel</button>
+          <button type="submit" class="ach-form-submit" id="achSubmitBtn">
+            <i class="fa-solid fa-paper-plane"></i> Publish Achievement
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- FILTER & SEARCH TOOLBAR -->
+    <div class="ach-filter-bar">
+      <div class="ach-filter-pills" id="achFilterPills">
+        <button class="ach-pill active" data-cat="all">All Categories</button>
+        <button class="ach-pill" data-cat="Technical"><i class="fa-solid fa-microchip"></i> Technical</button>
+        <button class="ach-pill" data-cat="Research"><i class="fa-solid fa-flask"></i> Research</button>
+        <button class="ach-pill" data-cat="Academic"><i class="fa-solid fa-graduation-cap"></i> Academic</button>
+        <button class="ach-pill" data-cat="Placement"><i class="fa-solid fa-briefcase"></i> Placement</button>
+        <button class="ach-pill" data-cat="Sports"><i class="fa-solid fa-trophy"></i> Sports</button>
+        <button class="ach-pill" data-cat="Cultural"><i class="fa-solid fa-music"></i> Cultural</button>
+      </div>
+
+      <div class="ach-search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="achSearchInput" placeholder="Search achievements, student names, awards..." />
+      </div>
+    </div>
+
+    <!-- ADMIN ACTION BAR (TRIGGER TO OPEN FORM) -->
+    <div id="adminActionRow" style="display:none; justify-content:flex-end; margin-bottom:1.5rem;">
+      <button class="ach-form-submit" id="openPostFormBtn">
+        <i class="fa-solid fa-plus"></i> Add New Achievement
+      </button>
+    </div>
+
+    <!-- ACHIEVEMENTS CARDS GRID -->
+    <div class="ach-grid" id="achGrid">
+      <!-- Cards rendered dynamically by JS -->
+      <div class="ach-grid-card ach-skeleton-card" style="height:380px;"></div>
+      <div class="ach-grid-card ach-skeleton-card" style="height:380px;"></div>
+      <div class="ach-grid-card ach-skeleton-card" style="height:380px;"></div>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div class="ach-empty-state" id="achEmptyState" style="display:none;">
+      <i class="fa-solid fa-award"></i>
+      <h3>No achievements found</h3>
+      <p>Try resetting the category filter or searching for another keyword.</p>
+      <button class="ach-btn-secondary" id="resetFilterBtn">View All Categories</button>
+    </div>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       ACHIEVEMENT DETAIL LIGHTBOX MODAL
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="ach-detail-modal" id="achDetailModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="ach-modal-backdrop" id="achModalBackdrop"></div>
+    <div class="ach-modal-dialog">
+      <button class="ach-modal-close" id="achModalCloseBtn" aria-label="Close dialog">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="ach-modal-img-wrap">
+        <img src="" alt="" id="modalImg" class="ach-modal-img" />
+        <span class="ach-modal-cat-badge" id="modalCategoryBadge">Technical</span>
+      </div>
+
+      <div class="ach-modal-body">
+        <div class="ach-modal-meta">
+          <span><i class="fa-solid fa-calendar-day"></i> <span id="modalDate"></span></span>
+          <span><i class="fa-solid fa-user-graduate"></i> <strong id="modalStudentName"></strong></span>
+          <span id="modalYearWrap"><i class="fa-solid fa-school"></i> <span id="modalYear"></span></span>
+        </div>
+
+        <h2 class="ach-modal-title" id="modalTitle"></h2>
+        
+        <div class="ach-modal-desc-box">
+          <p id="modalDesc"></p>
+        </div>
+
+        <div class="ach-modal-footer">
+          <button class="ach-btn-secondary" id="modalCopyLinkBtn">
+            <i class="fa-solid fa-share-nodes"></i> Share Achievement
+          </button>
+          <button class="ach-card-read-btn" id="modalCloseActionBtn" style="padding:.55rem 1.4rem;">
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Institutional Footer -->
+  <footer class="footer" style="margin-top:4rem;">
+    <div class="container footer-grid">
+      <div>
+        <h4>Department Contact</h4>
+        <p>Department of Computer Science &amp; Engineering<br />SRM Valliammai Engineering College<br />Kattankulathur, Chengalpattu Dist.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#specializations">Tech Domains</a></li>
+          <li><a href="laboratories.html">Laboratories</a></li>
+          <li><a href="student-corner.html">Student Corner</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="achievements.html">Achievements</a></li>
+          <li><a href="index.html#portal-pages">All Portal Pages</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Connect &amp; Support</h4>
+        <p><i class="fa-solid fa-envelope" style="color:var(--accent-gold);margin-right:.45rem;"></i>cse.info@valliammai.edu.in</p>
+        <p style="margin-top:.45rem;"><i class="fa-solid fa-location-dot" style="color:var(--accent-gold);margin-right:.45rem;"></i>NH 45, Potheri, Kattankulathur, Tamil Nadu 603203</p>
+        <p style="margin-top:.45rem;"><i class="fa-solid fa-phone" style="color:var(--accent-gold);margin-right:.45rem;"></i>044-27454784</p>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      &copy; 2026 Department of Computer Science &amp; Engineering, SRMVEC. All Rights Reserved.
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="/src/scripts/supabase.js"></script>
+  <script type="module" src="/src/scripts/auth.js"></script>
+  <script type="module" src="/src/scripts/achievements.js"></script>
+
+  <script type="module">
+    import {
+      fetchAllAchievements,
+      fetchAchievementById,
+      postAchievement,
+      deleteAchievement
+    } from '/src/scripts/achievements.js';
+
+    // ── Sample Seed Data (Fallback & Demo Records) ──────────────────────────
+    const SEED_ACHIEVEMENTS = [
+      {
+        id: 'ach-1',
+        title: 'National Hackathon Champions — HackIndia 2026',
+        category: 'Technical',
+        student_name: 'Team AlgoRhythm (Aditya, Kaviya, Sanjay)',
+        year: '2025-26',
+        achievement_date: '2026-09-15',
+        image_url: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80',
+        short_desc: 'Won 1st prize worth ₹1,00,000 competing against 500+ universities across India for an AI-powered disaster management drone system.',
+        description: 'Our final-year CSE students represented SRM Valliammai Engineering College at HackIndia 2026 Grand Finale held in Bengaluru. Developing a real-time edge-AI drone vision pipeline that coordinates relief supply deliveries during floods, the team clinched 1st Place amongst 500+ national finalists. The jury commended the hardware-software integration and decentralized telemetry engine built from scratch in 36 hours.'
+      },
+      {
+        id: 'ach-2',
+        title: 'Best Research Paper Award — IEEE ICCCNT 2026',
+        category: 'Research',
+        student_name: 'Priya Ramesh (Final Year CSE)',
+        year: '2025-26',
+        achievement_date: '2026-08-20',
+        image_url: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80',
+        short_desc: 'Published & awarded Best Paper for novel Transformer-based retinal scan segmentation in healthcare diagnostics.',
+        description: 'Priya Ramesh, mentored by Dr. K. Elangovan, received the prestigious Best Paper Award at the IEEE International Conference on Computing, Communication and Networking Technologies (ICCCNT 2026). Her paper, "Lightweight Vision Transformers for Early-Stage Diabetic Retinopathy Screening on Low-Power Microcontrollers", was indexed in IEEE Xplore and recognized for its high clinical accuracy and open-source accessibility.'
+      },
+      {
+        id: 'ach-3',
+        title: 'All India Rank 12 — GATE CS 2026',
+        category: 'Academic',
+        student_name: 'Arun Kumar M',
+        year: '2025-26',
+        achievement_date: '2026-07-10',
+        image_url: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800&q=80',
+        short_desc: 'Secured AIR 12 nationwide in GATE 2026 Computer Science with an extraordinary normalized score of 89.5.',
+        description: 'Arun Kumar M made the department proud by securing All India Rank 12 in the Graduate Aptitude Test in Engineering (GATE 2026) in Computer Science & Information Technology. Out of over 1.2 lakh applicants nationwide, Arun demonstrated exceptional mastery across Algorithms, Operating Systems, Computer Architecture, and Theory of Computation.'
+      },
+      {
+        id: 'ach-4',
+        title: 'Inter-College Badminton Championship — Anna University Zone 8',
+        category: 'Sports',
+        student_name: 'CSE Boys Badminton Squad',
+        year: '2025-26',
+        achievement_date: '2026-06-05',
+        image_url: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80',
+        short_desc: 'Clinched Gold Trophy at the Anna University Zone 8 Men\'s Badminton Tournament without conceding a single set in the finals.',
+        description: 'The CSE department badminton squad brought home the Zone 8 Championship Gold trophy following an intense 5-game knockout tournament. The team defeated 14 competing engineering colleges, demonstrating athletic discipline and teamwork alongside rigorous academic commitments.'
+      },
+      {
+        id: 'ach-5',
+        title: 'Grand Finalists — Smart India Hackathon (SIH 2026)',
+        category: 'Technical',
+        student_name: 'Team Invictus & Team Phoenix',
+        year: '2025-26',
+        achievement_date: '2026-05-20',
+        image_url: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80',
+        short_desc: 'Two CSE teams selected for national finals by Ministry of Education for Smart Cyber Shield problem statements.',
+        description: 'Selected from tens of thousands of problem-statement submissions across the country, two distinct teams from SRMVEC CSE advanced to the Grand Finale of Smart India Hackathon 2026 Software Edition. Their solutions tackled Automated Fake-News Telemetry in Regional Languages and Quantum-Resilient Blockchain voting authentication.'
+      },
+      {
+        id: 'ach-6',
+        title: 'Super Dream Placement at Amazon Web Services (₹32 LPA)',
+        category: 'Placement',
+        student_name: 'Divya Bharathi S',
+        year: '2024-25',
+        achievement_date: '2026-04-12',
+        image_url: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80',
+        short_desc: 'Offered Software Development Engineer role at AWS Cloud Infrastructure team through campus drive.',
+        description: 'Final year CSE scholar Divya Bharathi secured a super dream placement offer with AWS as a Software Development Engineer (SDE-1) with a compensation package of ₹32 LPA. During her academic tenure, Divya served as lead of the CSE Cloud Computing Club and contributed to several open-source distributed systems projects.'
+      }
+    ];
+
+    const CAT_ICONS = {
+      Technical:  'fa-microchip',
+      Research:   'fa-flask',
+      Academic:   'fa-graduation-cap',
+      Sports:     'fa-trophy',
+      Cultural:   'fa-music',
+      Placement:  'fa-briefcase',
+      Other:      'fa-star',
+    };
+
+    let allAchievements = [];
+    let currentFilter = 'all';
+    let currentSearch = '';
+
+    // ── Helper functions ──────────────────────────────────────────────────
+    function esc(s = '') {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function formatDate(dStr) {
+      if (!dStr) return '';
+      const d = new Date(dStr + 'T00:00:00');
+      return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    // ── Render Cards Grid ────────────────────────────────────────────────
+    function renderGrid() {
+      const grid = document.getElementById('achGrid');
+      const emptyState = document.getElementById('achEmptyState');
+      if (!grid) return;
+
+      const filtered = allAchievements.filter(item => {
+        const matchesCat = currentFilter === 'all' || item.category.toLowerCase() === currentFilter.toLowerCase();
+        const q = currentSearch.toLowerCase().trim();
+        const matchesSearch = !q ||
+          item.title.toLowerCase().includes(q) ||
+          item.student_name.toLowerCase().includes(q) ||
+          (item.short_desc && item.short_desc.toLowerCase().includes(q)) ||
+          (item.description && item.description.toLowerCase().includes(q)) ||
+          (item.category && item.category.toLowerCase().includes(q));
+        return matchesCat && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+
+      grid.innerHTML = filtered.map(item => {
+        const icon = CAT_ICONS[item.category] || 'fa-award';
+        const img = item.image_url || 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80';
+        return `
+          <article class="ach-grid-card" data-id="${esc(item.id)}">
+            <div class="ach-grid-img-wrap">
+              <img
+                src="${esc(img)}"
+                alt="${esc(item.title)}"
+                loading="lazy"
+                onerror="this.src='https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80'"
+              />
+              <div class="ach-card-img-overlay">
+                <button type="button" class="ach-card-read-btn open-detail-btn" data-id="${esc(item.id)}">
+                  Read Me <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+            <div class="ach-grid-card-body">
+              <div class="ach-grid-top-row">
+                <span class="ach-card-category" data-cat="${esc(item.category)}">
+                  <i class="fa-solid ${icon}"></i> ${esc(item.category)}
+                </span>
+                <span class="ach-card-date">
+                  <i class="fa-regular fa-calendar"></i> ${formatDate(item.achievement_date)}
+                </span>
+              </div>
+              <h3 class="ach-grid-title">${esc(item.title)}</h3>
+              <p class="ach-grid-desc">${esc(item.short_desc || item.description)}</p>
+              <div class="ach-grid-footer">
+                <span class="ach-grid-student">
+                  <i class="fa-solid fa-user-graduate"></i> ${esc(item.student_name)}
+                </span>
+                <button type="button" class="ach-card-details-trigger open-detail-btn" data-id="${esc(item.id)}">
+                  View Full Story &rarr;
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      // Attach click listeners to all buttons
+      grid.querySelectorAll('.open-detail-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute('data-id');
+          openDetailModal(id);
+        });
+      });
+
+      // Also whole card click opens modal
+      grid.querySelectorAll('.ach-grid-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('button')) return;
+          const id = card.getAttribute('data-id');
+          openDetailModal(id);
+        });
+      });
+    }
+
+    // ── Open Detail Modal ────────────────────────────────────────────────
+    function openDetailModal(id) {
+      const item = allAchievements.find(a => String(a.id) === String(id));
+      if (!item) return;
+
+      const modal = document.getElementById('achDetailModal');
+      const img = document.getElementById('modalImg');
+      const catBadge = document.getElementById('modalCategoryBadge');
+      const title = document.getElementById('modalTitle');
+      const desc = document.getElementById('modalDesc');
+      const student = document.getElementById('modalStudentName');
+      const date = document.getElementById('modalDate');
+      const year = document.getElementById('modalYear');
+      const yearWrap = document.getElementById('modalYearWrap');
+
+      img.src = item.image_url || 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80';
+      img.alt = item.title;
+      catBadge.textContent = item.category;
+      title.textContent = item.title;
+      desc.textContent = item.description || item.short_desc;
+      student.textContent = item.student_name;
+      date.textContent = formatDate(item.achievement_date);
+      
+      if (item.year) {
+        year.textContent = item.year;
+        yearWrap.style.display = 'inline-flex';
+      } else {
+        yearWrap.style.display = 'none';
+      }
+
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+
+      // Update URL hash for easy sharing & deep link
+      window.history.replaceState(null, '', `#achievement-${item.id}`);
+    }
+
+    function closeDetailModal() {
+      const modal = document.getElementById('achDetailModal');
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (window.location.hash.startsWith('#achievement-')) {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+    }
+
+    // ── Check Hash On Load ────────────────────────────────────────────────
+    function checkHashForModal() {
+      const hash = window.location.hash;
+      if (hash && hash.startsWith('#achievement-')) {
+        const id = hash.replace('#achievement-', '');
+        setTimeout(() => {
+          openDetailModal(id);
+        }, 200);
+      }
+    }
+
+    // ── Auth Check for Admin Post Form ────────────────────────────────────
+    function checkAuth() {
+      const postWrap = document.getElementById('achPostFormWrap');
+      const actionRow = document.getElementById('adminActionRow');
+      const profile = window.userProfile;
+      const user = window.currentUser;
+
+      const canPost = user && profile && ['admin', 'faculty_admin', 'editor', 'teacher'].includes(profile.role);
+      if (canPost && actionRow) {
+        actionRow.style.display = 'flex';
+      }
+    }
+
+    // ── Initialize Page ──────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Setup hamburger nav toggle
+      const navToggle = document.getElementById('navToggle');
+      const navMenu = document.getElementById('mainNavMenu');
+      const navIcon = document.getElementById('navToggleIcon');
+      if (navToggle && navMenu) {
+        navToggle.addEventListener('click', () => {
+          const isOpen = navMenu.classList.toggle('open');
+          navToggle.setAttribute('aria-expanded', isOpen);
+          navIcon.className = isOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+        });
+      }
+
+      // 2. Fetch data from Supabase or fallback
+      let data = [];
+      try {
+        data = await fetchAllAchievements();
+      } catch (err) {
+        console.warn('Supabase fetch failed:', err);
+      }
+
+      if (!data || data.length === 0) {
+        allAchievements = SEED_ACHIEVEMENTS;
+      } else {
+        // Merge Supabase data with seed achievements so visitor always sees comprehensive records
+        const ids = new Set(data.map(d => String(d.id)));
+        const extraSeeds = SEED_ACHIEVEMENTS.filter(s => !ids.has(String(s.id)));
+        allAchievements = [...data, ...extraSeeds];
+      }
+
+      // Update total accolades stat
+      const statTotal = document.getElementById('statTotalAch');
+      if (statTotal) statTotal.textContent = allAchievements.length;
+
+      // Render grid
+      renderGrid();
+
+      // Check deep link hash
+      checkHashForModal();
+
+      // Filter pills
+      document.querySelectorAll('.ach-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          document.querySelectorAll('.ach-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          currentFilter = pill.getAttribute('data-cat');
+          renderGrid();
+        });
+      });
+
+      // Search input
+      const searchInput = document.getElementById('achSearchInput');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          currentSearch = e.target.value;
+          renderGrid();
+        });
+      }
+
+      // Reset filter button
+      const resetBtn = document.getElementById('resetFilterBtn');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          currentFilter = 'all';
+          currentSearch = '';
+          if (searchInput) searchInput.value = '';
+          document.querySelectorAll('.ach-pill').forEach(p => p.classList.remove('active'));
+          document.querySelector('.ach-pill[data-cat="all"]')?.classList.add('active');
+          renderGrid();
+        });
+      }
+
+      // Modal close triggers
+      document.getElementById('achModalCloseBtn')?.addEventListener('click', closeDetailModal);
+      document.getElementById('achModalBackdrop')?.addEventListener('click', closeDetailModal);
+      document.getElementById('modalCloseActionBtn')?.addEventListener('click', closeDetailModal);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeDetailModal();
+      });
+
+      // Share button in modal
+      document.getElementById('modalCopyLinkBtn')?.addEventListener('click', () => {
+        navigator.clipboard.writeText(window.location.href);
+        const btn = document.getElementById('modalCopyLinkBtn');
+        const origText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied Link!';
+        setTimeout(() => { btn.innerHTML = origText; }, 2000);
+      });
+
+      // Auth trigger
+      setTimeout(checkAuth, 600);
+      window.addEventListener('authStateChanged', checkAuth);
+
+      // Admin open post form
+      const openPostBtn = document.getElementById('openPostFormBtn');
+      const postWrap = document.getElementById('achPostFormWrap');
+      const cancelFormBtn = document.getElementById('achCancelFormBtn');
+      if (openPostBtn && postWrap) {
+        openPostBtn.addEventListener('click', () => {
+          postWrap.style.display = 'block';
+          postWrap.scrollIntoView({ behavior: 'smooth' });
+        });
+      }
+      if (cancelFormBtn && postWrap) {
+        cancelFormBtn.addEventListener('click', () => {
+          postWrap.style.display = 'none';
+        });
+      }
+
+      // Admin post form submit
+      const postForm = document.getElementById('achPostForm');
+      const msgBox = document.getElementById('achFormMsg');
+      if (postForm) {
+        postForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const submitBtn = document.getElementById('achSubmitBtn');
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publishing...';
+
+          const newAch = {
+            title: document.getElementById('achInputTitle').value.trim(),
+            student_name: document.getElementById('achInputStudent').value.trim(),
+            category: document.getElementById('achInputCategory').value,
+            achievement_date: document.getElementById('achInputDate').value,
+            year: document.getElementById('achInputYear').value.trim() || '2025-26',
+            image_url: document.getElementById('achInputImg').value.trim() || 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80',
+            short_desc: document.getElementById('achInputShort').value.trim(),
+            description: document.getElementById('achInputDesc').value.trim(),
+            is_published: true
+          };
+
+          const res = await postAchievement(newAch);
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publish Achievement';
+
+          if (res.error) {
+            msgBox.className = 'ach-form-msg error';
+            msgBox.textContent = 'Error publishing: ' + res.error;
+            msgBox.style.display = 'block';
+          } else {
+            msgBox.className = 'ach-form-msg success';
+            msgBox.textContent = '🎉 Achievement posted successfully! It is now featured in the department records and front page slider.';
+            msgBox.style.display = 'block';
+            postForm.reset();
+            
+            // Prepend new item
+            const added = res.data || { ...newAch, id: 'ach-' + Date.now() };
+            allAchievements.unshift(added);
+            renderGrid();
+            
+            setTimeout(() => {
+              postWrap.style.display = 'none';
+              msgBox.style.display = 'none';
+            }, 3000);
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

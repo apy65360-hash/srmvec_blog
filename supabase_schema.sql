@@ -213,3 +213,81 @@ CREATE POLICY "Admins delete publications" ON public.publications
       WHERE id = auth.uid() AND role IN ('admin', 'faculty_admin', 'editor')
     )
   );
+
+-- ═══════════════════════════════════════════════════════════════════════
+-- ACHIEVEMENTS TABLE
+-- ═══════════════════════════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS public.achievements (
+  id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title            TEXT NOT NULL,
+  description      TEXT NOT NULL,
+  short_desc       TEXT NOT NULL,
+  image_url        TEXT,
+  achievement_date DATE NOT NULL,
+  category         TEXT NOT NULL CHECK (category IN ('Academic', 'Sports', 'Cultural', 'Technical', 'Research', 'Placement', 'Other')),
+  student_name     TEXT NOT NULL,
+  year             TEXT,
+  posted_by        UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+  is_published     BOOLEAN DEFAULT TRUE,
+  created_at       TIMESTAMPTZ DEFAULT NOW(),
+  updated_at       TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Row-Level Security
+ALTER TABLE public.achievements ENABLE ROW LEVEL SECURITY;
+
+-- Everyone can read published achievements
+CREATE POLICY "achievements_select_published"
+  ON public.achievements
+  FOR SELECT
+  USING (is_published = TRUE);
+
+-- Only admin/faculty_admin/editor can insert
+CREATE POLICY "achievements_insert_admin"
+  ON public.achievements
+  FOR INSERT
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM public.profiles p
+      WHERE p.id = auth.uid()
+        AND p.role IN ('admin', 'faculty_admin', 'editor')
+    )
+  );
+
+-- Only admin/faculty_admin/editor can update
+CREATE POLICY "achievements_update_admin"
+  ON public.achievements
+  FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.profiles p
+      WHERE p.id = auth.uid()
+        AND p.role IN ('admin', 'faculty_admin', 'editor')
+    )
+  );
+
+-- Only admin/faculty_admin/editor can delete
+CREATE POLICY "achievements_delete_admin"
+  ON public.achievements
+  FOR DELETE
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.profiles p
+      WHERE p.id = auth.uid()
+        AND p.role IN ('admin', 'faculty_admin', 'editor')
+    )
+  );
+
+-- Auto-update updated_at on row change
+CREATE OR REPLACE FUNCTION public.achievements_set_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER achievements_updated_at
+  BEFORE UPDATE ON public.achievements
+  FOR EACH ROW EXECUTE FUNCTION public.achievements_set_updated_at();

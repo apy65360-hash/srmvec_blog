@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="/src/styles/style.css" />
   <link rel="stylesheet" href="/src/styles/portal.css" />
   <link rel="stylesheet" href="/src/styles/explore-motion.css" />
+  <link rel="stylesheet" href="/src/styles/achievements.css" />
 </head>
 <body class="is-loading">
 
@@ -115,6 +116,9 @@
             <a href="dashboard.html">Student's Data Dashboard</a>
             <a href="admin-login.html">Admin Login</a>
           </div>
+        </div>
+        <div class="nav-item">
+          <a href="achievements.html"><i class="fa-solid fa-trophy" style="margin-right:.3rem;color:#F59E0B;"></i>Achievements</a>
         </div>
         <div class="nav-item">
           <a href="#" data-action="explore-motion" style="color:#F59E0B;font-weight:700;"><i class="fa-solid fa-compass-drafting" style="margin-right:.3rem;"></i> 3D Explorer</a>
@@ -217,25 +221,87 @@
   <!-- Main Content Area -->
   <main class="container main-content">
     
-    <!-- METRICS STATS BAR -->
-    <section class="stats-banner-wrapper">
-      <div class="hero-stats-panel">
-        <div class="stat-card">
-          <span class="stat-number" data-target="95" data-suffix="%">0%</span>
-          <span class="stat-label">Placement Record</span>
+    <!-- ═══════════ ACHIEVEMENTS SHOWCASE (LATEST 3 MOVING MOTION) ═══════════ -->
+    <section class="achievements-showcase-section" id="achievements-showcase">
+      <div class="ach-showcase-header">
+        <div>
+          <span class="section-kicker">🏆 Student Excellence</span>
+          <h2 class="section-title">Department Achievements</h2>
         </div>
-        <div class="stat-card">
-          <span class="stat-number" data-target="200" data-suffix="+">0+</span>
-          <span class="stat-label">Research Papers</span>
+        <a href="achievements.html" class="ach-view-all-btn">
+          <i class="fa-solid fa-trophy"></i> View All Achievements &rarr;
+        </a>
+      </div>
+
+      <div class="ach-carousel-viewport" aria-label="Student Achievements Carousel">
+        <div class="ach-carousel-track" id="achCarouselTrack">
+          <!-- Initial Cards (Dynamic Infinite Slider Initialized by achievements-home.js) -->
+          <div class="ach-card" role="article">
+            <div class="ach-card-img">
+              <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80" alt="National Hackathon Champions" loading="lazy" />
+              <div class="ach-card-img-overlay">
+                <a href="achievements.html#achievement-ach-1" class="ach-card-read-btn">
+                  Read More <i class="fa-solid fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+            <div class="ach-card-body">
+              <span class="ach-card-category" data-cat="Technical"><i class="fa-solid fa-microchip"></i> Technical</span>
+              <h3 class="ach-card-title">National Hackathon Champions — HackIndia 2026</h3>
+              <p class="ach-card-short-desc">Team AlgoRhythm won 1st place worth ₹1,00,000 competing against 500+ teams nationwide with their edge-AI drone telemetry system.</p>
+              <div class="ach-card-meta">
+                <span class="ach-card-meta-name"><i class="fa-solid fa-user-graduate"></i> Team AlgoRhythm</span>
+                <span class="ach-card-meta-date"><i class="fa-regular fa-calendar"></i> 15 Sep 2026</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="ach-card" role="article">
+            <div class="ach-card-img">
+              <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80" alt="Best Research Paper Award" loading="lazy" />
+              <div class="ach-card-img-overlay">
+                <a href="achievements.html#achievement-ach-2" class="ach-card-read-btn">
+                  Read More <i class="fa-solid fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+            <div class="ach-card-body">
+              <span class="ach-card-category" data-cat="Research"><i class="fa-solid fa-flask"></i> Research</span>
+              <h3 class="ach-card-title">Best Research Paper Award — IEEE ICCCNT 2026</h3>
+              <p class="ach-card-short-desc">Published novel Transformer-based retinal scan segmentation in healthcare diagnostics, indexed in IEEE Xplore.</p>
+              <div class="ach-card-meta">
+                <span class="ach-card-meta-name"><i class="fa-solid fa-user-graduate"></i> Priya Ramesh</span>
+                <span class="ach-card-meta-date"><i class="fa-regular fa-calendar"></i> 20 Aug 2026</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="ach-card" role="article">
+            <div class="ach-card-img">
+              <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800&q=80" alt="All India Rank 12 — GATE CS 2026" loading="lazy" />
+              <div class="ach-card-img-overlay">
+                <a href="achievements.html#achievement-ach-3" class="ach-card-read-btn">
+                  Read More <i class="fa-solid fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+            <div class="ach-card-body">
+              <span class="ach-card-category" data-cat="Academic"><i class="fa-solid fa-graduation-cap"></i> Academic</span>
+              <h3 class="ach-card-title">All India Rank 12 — GATE CS 2026</h3>
+              <p class="ach-card-short-desc">Secured AIR 12 nationwide in GATE 2026 Computer Science with an extraordinary normalized score of 89.5.</p>
+              <div class="ach-card-meta">
+                <span class="ach-card-meta-name"><i class="fa-solid fa-user-graduate"></i> Arun Kumar M</span>
+                <span class="ach-card-meta-date"><i class="fa-regular fa-calendar"></i> 10 Jul 2026</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="stat-card">
-          <span class="stat-number" data-target="15" data-suffix="+">0+</span>
-          <span class="stat-label">High-Tech Labs</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-number" data-target="1200" data-suffix="+">0+</span>
-          <span class="stat-label">Active Scholars</span>
-        </div>
+      </div>
+
+      <div class="ach-carousel-controls">
+        <button class="ach-carousel-btn" id="achPrev" aria-label="Previous achievement"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="ach-carousel-dots" id="achDots"></div>
+        <button class="ach-carousel-btn" id="achNext" aria-label="Next achievement"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
     </section>
 
@@ -273,6 +339,11 @@
 
       <div class="page-directory-grid">
 
+        <a class="page-tile" href="achievements.html">
+          <i class="fa-solid fa-trophy" style="color:#F59E0B;"></i>
+          <strong>Achievements</strong>
+          <span>Student awards, hackathons &amp; honors</span>
+        </a>
         <a class="page-tile" href="event1.html">
           <i class="fa-solid fa-calendar-days"></i>
           <strong>Events Board</strong>
@@ -544,6 +615,7 @@
           <li><a href="#">Laboratories</a></li>
           <li><a href="student-corner.html">Student Corner</a></li>
           <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="achievements.html">Achievements</a></li>
           <li><a href="#portal-pages">All Portal Pages</a></li>
         </ul>
       </div>
@@ -917,6 +989,8 @@
   <script type="module" src="/src/scripts/announcements.js"></script>
   <!-- Explore Motion JS -->
   <script type="module" src="/src/scripts/explore-motion.js"></script>
+  <!-- Achievements Home Carousel JS -->
+  <script type="module" src="/src/scripts/achievements-home.js"></script>
   <!-- Global Search JS -->
   <script type="module" src="/src/scripts/global-search.js"></script>
   <script>
