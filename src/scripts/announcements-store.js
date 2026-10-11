@@ -6,6 +6,8 @@
  * - Exposes a subscribe() mechanism so the UI can react live
  */
 
+import { CALENDAR_DATA } from './calendar-data.js';
+
 const STORE_KEY = 'cse_announcements_v1';
 const SEEN_KEY  = 'cse_announcements_seen_v1';
 
@@ -56,6 +58,7 @@ const SEED_DATA = [
     postedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
   },
 ];
+const SEED_IDS = new Set(SEED_DATA.map(item => item.id));
 
 /** ── Core CRUD ─────────────────────────────────── */
 export const AnnouncementsStore = {
@@ -63,22 +66,17 @@ export const AnnouncementsStore = {
   /** Return all announcements sorted newest-first */
   getAll() {
     try {
-      const raw = localStorage.getItem(STORE_KEY);
-      const items = raw ? JSON.parse(raw) : null;
-      if (!items) {
-        // First run – seed data
-        this._save(SEED_DATA);
-        return [...SEED_DATA];
-      }
-      return items.slice().sort((a, b) => new Date(b.postedAt) - new Date(a.postedAt));
+      const items = this._getStoredItems();
+      const autoAnnouncements = buildCalendarAnnouncements();
+      return [...autoAnnouncements, ...items].sort((a, b) => new Date(b.postedAt) - new Date(a.postedAt));
     } catch {
-      return [...SEED_DATA];
+      return [...buildCalendarAnnouncements(), ...SEED_DATA].sort((a, b) => new Date(b.postedAt) - new Date(a.postedAt));
     }
   },
 
   /** Add a new announcement and trigger notification */
   add(data) {
-    const items = this.getAll();
+    const items = this._getStoredItems();
     const newItem = {
       id: `ann_${Date.now()}`,
       title: data.title || 'Untitled Announcement',
@@ -103,7 +101,7 @@ export const AnnouncementsStore = {
 
   /** Remove an announcement by id */
   remove(id) {
-    const updated = this.getAll().filter(a => a.id !== id);
+    const updated = this._getStoredItems().filter(a => a.id !== id);
     this._save(updated);
     _subscribers.forEach(fn => fn(this.getAll()));
   },
@@ -131,6 +129,21 @@ export const AnnouncementsStore = {
     localStorage.setItem(STORE_KEY, JSON.stringify(items));
   },
 
+  _getStoredItems() {
+    const raw = localStorage.getItem(STORE_KEY);
+    const items = raw ? JSON.parse(raw) : null;
+    if (!Array.isArray(items)) {
+      this._save(SEED_DATA);
+      return [...SEED_DATA];
+    }
+    const nonCalendarItems = items.filter(item => !(item && String(item.id || '').startsWith('ann_calendar_')));
+    const syncedItems = syncSeedAnnouncements(nonCalendarItems);
+    if (JSON.stringify(nonCalendarItems) !== JSON.stringify(syncedItems)) {
+      this._save(syncedItems);
+    }
+    return syncedItems;
+  },
+
   /** Request Notification permission & send one */
   async _notify(item) {
     if (!('Notification' in window)) return;
@@ -150,6 +163,77 @@ export const AnnouncementsStore = {
 };
 
 let _subscribers = [];
+
+function syncSeedAnnouncements(items = []) {
+  const customItems = items.filter(item => !SEED_IDS.has(item?.id));
+  return [...SEED_DATA, ...customItems];
+}
+
+function buildCalendarAnnouncements() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = now.getMonth() + 1;
+  const d = now.getDate();
+
+  const today = CALENDAR_DATA.find(entry =>
+    entry.year === y && entry.month === m && entry.day === d
+  );
+
+  const monthShort = now.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+  const dayStr = String(d).padStart(2, '0');
+  const dateTag = `${dayStr} ${monthShort} ${y}`;
+  const postedAt = new Date(y, m - 1, d, 0, 0, 0, 0).toISOString();
+
+  if (!today || !Array.isArray(today.events) || today.events.length === 0) {
+    return [{
+      id: `ann_calendar_${y}_${m}_${d}_status`,
+      title: `Academic Calendar Status • ${dateTag}`,
+      body: 'No special events are scheduled for today in the academic calendar.',
+      category: 'Academic',
+      priority: 'normal',
+      author: 'Academic Calendar',
+      postedAt,
+    }];
+  }
+
+  const category = classifyCalendarCategory(today.events);
+  const priority = classifyCalendarPriority(today.events);
+  const headline = today.events[0];
+  const moreCount = today.events.length - 1;
+  const body = moreCount > 0
+    ? `${headline}. +${moreCount} more event${moreCount > 1 ? 's' : ''} scheduled today.`
+    : headline;
+
+  return [{
+    id: `ann_calendar_${y}_${m}_${d}_events`,
+    title: `Today in Academic Calendar • ${dateTag}`,
+    body,
+    category,
+    priority,
+    author: 'Academic Calendar',
+    postedAt,
+  }];
+}
+
+function classifyCalendarCategory(events = []) {
+  const combined = events.join(' ').toUpperCase();
+  if (combined.includes('HOLIDAY')) return 'Holiday';
+  if (combined.includes('CAT') || combined.includes('EXAMINATION') || combined.includes('ASSESSMENT')) return 'Exam';
+  return 'Academic';
+}
+
+function classifyCalendarPriority(events = []) {
+  const combined = events.join(' ').toUpperCase();
+  if (
+    combined.includes('CAT') ||
+    combined.includes('EXAMINATION') ||
+    combined.includes('ASSESSMENT') ||
+    combined.includes('LAST WORKING DAY')
+  ) {
+    return 'high';
+  }
+  return 'normal';
+}
 
 /** ── Category helpers ──────────────────────────── */
 export const CATEGORY_META = {
