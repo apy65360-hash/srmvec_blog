@@ -68,37 +68,40 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-function buildCard(ach) {
-  const icon = CAT_ICONS[ach.category] || 'fa-star';
+function buildCard(ach, idx = 0) {
+  const icon = CAT_ICONS[ach.category] || 'fa-award';
   const href = `achievements.html#achievement-${ach.id}`;
+  const activeClass = idx === 0 ? ' motion-active' : '';
 
   return `
-<div class="ach-card" role="article">
+<div class="ach-card${activeClass}" data-index="${idx}" role="article">
   <div class="ach-card-img">
     <img
-      src="${escHtml(ach.image_url || 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&q=80')}"
+      src="${escHtml(ach.image_url || 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80')}"
       alt="${escHtml(ach.title)}"
       loading="lazy"
-      onerror="this.src='https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&q=80'"
+      onerror="this.src='https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80'"
     />
     <div class="ach-card-img-overlay">
       <a href="${escHtml(href)}" class="ach-card-read-btn">
-        Read More <i class="fa-solid fa-arrow-right"></i>
+        Read Me <i class="fa-solid fa-arrow-right"></i>
       </a>
     </div>
   </div>
   <div class="ach-card-body">
-    <span class="ach-card-category" data-cat="${escHtml(ach.category)}">
-      <i class="fa-solid ${icon}"></i> ${escHtml(ach.category)}
-    </span>
+    <div class="ach-card-top-row">
+      <span class="ach-card-category" data-cat="${escHtml(ach.category)}">
+        <i class="fa-solid ${icon}"></i> ${escHtml(ach.category)}
+      </span>
+      <span class="ach-card-date">
+        <i class="fa-regular fa-calendar"></i> ${formatDate(ach.achievement_date)}
+      </span>
+    </div>
     <h3 class="ach-card-title">${escHtml(ach.title)}</h3>
     <p class="ach-card-short-desc">${escHtml(ach.short_desc)}</p>
     <div class="ach-card-meta">
       <span class="ach-card-meta-name">
         <i class="fa-solid fa-user-graduate"></i> ${escHtml(ach.student_name)}
-      </span>
-      <span class="ach-card-meta-date">
-        <i class="fa-regular fa-calendar"></i> ${formatDate(ach.achievement_date)}
       </span>
     </div>
   </div>
@@ -111,29 +114,29 @@ let totalCards   = 0;
 let autoTimer    = null;
 let achievements = [];
 
-// Card width + gap used for slide offset
-const CARD_W   = 340;
-const CARD_GAP = 24; // 1.5rem gap
-
-function getCardOffset() {
-  // Recalculate from first real card in DOM
-  const track = document.getElementById('achCarouselTrack');
-  if (!track) return CARD_W + CARD_GAP;
-  const first = track.querySelector('.ach-card:not(.ach-skeleton-card)');
-  if (!first) return CARD_W + CARD_GAP;
-  return first.offsetWidth + CARD_GAP;
-}
-
 function slideTo(idx) {
   const track = document.getElementById('achCarouselTrack');
-  if (!track) return;
+  if (!track || totalCards === 0) return;
 
-  const n = totalCards; // original count
-  // Clamp to 0..n-1
-  currentIndex = ((idx % n) + n) % n;
+  currentIndex = ((idx % totalCards) + totalCards) % totalCards;
 
-  const offset = currentIndex * getCardOffset();
-  track.style.transform = `translateX(-${offset}px)`;
+  // Active motion highlight class
+  const cards = track.querySelectorAll('.ach-card');
+  cards.forEach((card, i) => {
+    card.classList.toggle('motion-active', i === currentIndex);
+  });
+
+  // On mobile/tablet, slide horizontally
+  if (window.innerWidth < 992) {
+    const firstCard = cards[0];
+    if (firstCard) {
+      const cardWidth = firstCard.offsetWidth;
+      const gap = 16;
+      track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
+    }
+  } else {
+    track.style.transform = 'none';
+  }
 
   updateDots();
 }
@@ -152,7 +155,7 @@ function buildDots(n) {
   for (let i = 0; i < n; i++) {
     const btn = document.createElement('button');
     btn.className = `ach-dot${i === 0 ? ' active' : ''}`;
-    btn.setAttribute('aria-label', `Go to achievement ${i + 1}`);
+    btn.setAttribute('aria-label', `View achievement ${i + 1}`);
     btn.addEventListener('click', () => {
       slideTo(i);
       resetAutoplay();
@@ -165,7 +168,7 @@ function startAutoplay() {
   stopAutoplay();
   autoTimer = setInterval(() => {
     slideTo(currentIndex + 1);
-  }, 4000);
+  }, 3500);
 }
 
 function stopAutoplay() {
@@ -182,37 +185,38 @@ function renderCarousel(data) {
   const track = document.getElementById('achCarouselTrack');
   if (!track) return;
 
-  achievements = data;
-  totalCards   = data.length;
+  // Strictly only show latest three achievements on home page
+  const latestThree = (data || []).slice(0, 3);
+  achievements = latestThree;
+  totalCards   = latestThree.length;
 
   if (totalCards === 0) {
-    track.innerHTML = '<p style="color:rgba(255,255,255,.6);padding:2rem;">No achievements yet.</p>';
+    track.innerHTML = '<p style="color:#64748b;padding:2rem;text-align:center;">No achievements published yet.</p>';
     return;
   }
 
-  // Build 3 sets for seamless infinite scroll (original + 2 clones)
-  const cardsHtml = [...data, ...data, ...data].map(buildCard).join('');
-  track.innerHTML = cardsHtml;
+  // Exactly 3 cards — no duplicates
+  track.innerHTML = latestThree.map((item, idx) => buildCard(item, idx)).join('');
 
   currentIndex = 0;
   buildDots(totalCards);
 
-  // Prev / Next
+  // Prev / Next buttons
   const prevBtn = document.getElementById('achPrev');
   const nextBtn = document.getElementById('achNext');
-  if (prevBtn) prevBtn.addEventListener('click', () => { slideTo(currentIndex - 1); resetAutoplay(); });
-  if (nextBtn) nextBtn.addEventListener('click', () => { slideTo(currentIndex + 1); resetAutoplay(); });
+  if (prevBtn) prevBtn.onclick = () => { slideTo(currentIndex - 1); resetAutoplay(); };
+  if (nextBtn) nextBtn.onclick = () => { slideTo(currentIndex + 1); resetAutoplay(); };
 
   // Pause on hover
   const viewport = document.querySelector('.ach-carousel-viewport');
   if (viewport) {
     viewport.addEventListener('mouseenter', stopAutoplay);
     viewport.addEventListener('mouseleave', startAutoplay);
-    viewport.addEventListener('focusin',   stopAutoplay);
-    viewport.addEventListener('focusout',  startAutoplay);
+    viewport.addEventListener('focusin',    stopAutoplay);
+    viewport.addEventListener('focusout',   startAutoplay);
   }
 
-  // Touch support
+  // Touch support for mobile swipe
   let touchStartX = 0;
   if (viewport) {
     viewport.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
@@ -225,7 +229,12 @@ function renderCarousel(data) {
     }, { passive: true });
   }
 
-  // Start autoplay
+  // Window resize handler
+  window.addEventListener('resize', () => {
+    slideTo(currentIndex);
+  });
+
+  // Start animated motion
   startAutoplay();
 }
 

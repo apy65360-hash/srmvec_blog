@@ -26,11 +26,19 @@
    HOME — ACHIEVEMENTS SHOWCASE SECTION
    ══════════════════════════════════════════════════════════════════════ */
 
+/* ══════════════════════════════════════════════════════════════════════
+   HOME — ACHIEVEMENTS SHOWCASE SECTION (SEAMLESS SITE INTEGRATION)
+   ══════════════════════════════════════════════════════════════════════ */
+
 .achievements-showcase-section {
   width: 100%;
-  background: var(--ach-navy);
+  background: #FFFFFF;
+  border: 1px solid var(--ach-border);
   border-top: 4px solid var(--ach-gold);
-  padding: 3.5rem 0 3rem;
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem 1.5rem;
+  margin: 2.5rem 0;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
   overflow: hidden;
   position: relative;
 }
@@ -38,111 +46,110 @@
 /* ── Section header ── */
 .ach-showcase-header {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.4rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #F8FAFC;
 }
 
 .ach-showcase-header .section-kicker {
   display: block;
-  font-size: .78rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: .12em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ach-gold);
-  margin-bottom: .35rem;
+  color: #D97706;
+  margin-bottom: 0.2rem;
 }
 
 .ach-showcase-header .section-title {
   margin: 0;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-size: 1.6rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--ach-navy-light);
+}
+
+.ach-showcase-header .ach-showcase-subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.88rem;
+  color: var(--ach-text-muted);
 }
 
 .ach-view-all-btn {
   display: inline-flex;
   align-items: center;
-  gap: .45rem;
-  padding: .65rem 1.4rem;
-  background: var(--ach-gold);
-  color: var(--ach-navy);
-  border-radius: 50px;
-  font-weight: 700;
-  font-size: .88rem;
+  gap: 0.45rem;
+  padding: 0.55rem 1.15rem;
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.86rem;
   text-decoration: none;
-  transition: background .2s, transform .2s, box-shadow .2s;
+  transition: all 0.2s ease;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
 .ach-view-all-btn:hover {
-  background: var(--ach-gold-dark);
+  background: var(--ach-blue);
+  color: #FFFFFF;
+  border-color: var(--ach-blue);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(245,158,11,.35);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 
 /* ── Carousel viewport ── */
 .ach-carousel-viewport {
   overflow: hidden;
   width: 100%;
-  cursor: grab;
-  user-select: none;
+  padding: 0.25rem 0;
 }
 
-.ach-carousel-viewport:active {
-  cursor: grabbing;
-}
-
-/* ── Carousel track (flex row) ── */
+/* ── Carousel track: 3 columns filling 100% on desktop, zero extra whitespace ── */
 .ach-carousel-track {
-  display: flex;
-  gap: 1.5rem;
-  width: max-content;
-  transition: transform .55s cubic-bezier(.4,0,.2,1);
-  will-change: transform;
-  padding: .5rem .25rem 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ── Achievement card ── */
 .ach-card {
-  min-width: var(--ach-card-w);
-  width: var(--ach-card-w);
-  background: #fff;
-  border-radius: var(--ach-radius);
-  box-shadow: var(--ach-shadow);
+  width: 100%;
+  background: #FFFFFF;
+  border: 1px solid var(--ach-border);
+  border-radius: 14px;
   overflow: hidden;
-  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
   display: flex;
   flex-direction: column;
-  transition: transform .25s, box-shadow .25s;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  position: relative;
 }
 
-.ach-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 40px rgba(0,0,0,.22);
-}
-
-/* ── Skeleton loading state ── */
-.ach-skeleton-card {
-  background: rgba(255,255,255,.07);
-  height: 390px;
-  animation: achSkeleton 1.4s ease-in-out infinite;
-}
-
-@keyframes achSkeleton {
-  0%, 100% { opacity: .5; }
-  50%       { opacity: .85; }
+.ach-card:hover,
+.ach-card.motion-active {
+  transform: translateY(-5px);
+  border-color: #93C5FD;
+  box-shadow: 0 12px 24px -6px rgba(37, 99, 235, 0.16), 0 4px 12px rgba(15, 23, 42, 0.06);
 }
 
 /* ── Card image area ── */
 .ach-card-img {
   position: relative;
-  height: var(--ach-img-h);
+  height: 190px;
+  width: 100%;
   overflow: hidden;
+  background: #002947;
   flex-shrink: 0;
 }
 
@@ -151,86 +158,102 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform .4s;
+  transition: transform 0.4s ease;
 }
 
-.ach-card:hover .ach-card-img img {
-  transform: scale(1.04);
+.ach-card:hover .ach-card-img img,
+.ach-card.motion-active .ach-card-img img {
+  transform: scale(1.05);
 }
 
-/* Gradient overlay at the bottom of the image */
+/* Read Me navigation in the picture */
 .ach-card-img-overlay {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 1.75rem 1rem .8rem;
-  background: linear-gradient(to top, rgba(0,31,53,.88) 0%, transparent 100%);
+  padding: 1.75rem 0.85rem 0.75rem;
+  background: linear-gradient(to top, rgba(0, 31, 53, 0.9) 0%, transparent 100%);
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
 
-/* Read More pill button */
 .ach-card-read-btn {
   display: inline-flex;
   align-items: center;
-  gap: .35rem;
-  padding: .42rem 1rem;
+  gap: 0.35rem;
+  padding: 0.38rem 0.95rem;
   background: var(--ach-gold);
-  color: var(--ach-navy);
+  color: #001F35;
   border-radius: 50px;
-  font-size: .78rem;
+  font-size: 0.78rem;
   font-weight: 700;
   text-decoration: none;
-  transition: background .2s, transform .15s;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   white-space: nowrap;
 }
 
 .ach-card-read-btn:hover {
   background: var(--ach-gold-dark);
-  transform: scale(1.04);
+  color: #FFFFFF;
+  transform: scale(1.05);
 }
 
 /* ── Card body ── */
 .ach-card-body {
-  padding: 1.1rem 1.25rem 1.3rem;
+  padding: 1.1rem 1.15rem 1.25rem;
   display: flex;
   flex-direction: column;
   flex: 1;
-  gap: .55rem;
+  gap: 0.5rem;
+  background: #FFFFFF;
+}
+
+.ach-card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
 /* Category badge */
 .ach-card-category {
   display: inline-flex;
   align-items: center;
-  gap: .3rem;
-  padding: .22rem .65rem;
+  gap: 0.3rem;
+  padding: 0.2rem 0.6rem;
   border-radius: 50px;
-  font-size: .72rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: .06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  background: #EFF6FF;
-  color: var(--ach-blue);
-  width: fit-content;
 }
 
 .ach-card-category[data-cat="Technical"]  { background: #EFF6FF; color: #1D4ED8; }
 .ach-card-category[data-cat="Research"]   { background: #F5F3FF; color: #7C3AED; }
-.ach-card-category[data-cat="Academic"]   { background: #ECFDF5; color: #065F46; }
+.ach-card-category[data-cat="Academic"]   { background: #ECFDF5; color: #047857; }
 .ach-card-category[data-cat="Sports"]     { background: #FFF7ED; color: #C2410C; }
 .ach-card-category[data-cat="Cultural"]   { background: #FDF4FF; color: #86198F; }
-.ach-card-category[data-cat="Placement"]  { background: #FFFBEB; color: #92400E; }
+.ach-card-category[data-cat="Placement"]  { background: #FFFBEB; color: #B45309; }
 .ach-card-category[data-cat="Other"]      { background: #F1F5F9; color: #475569; }
+
+.ach-card-date {
+  font-size: 0.74rem;
+  color: var(--ach-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
 
 /* Title */
 .ach-card-title {
   margin: 0;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 1rem;
+  font-size: 1.02rem;
   font-weight: 700;
-  color: var(--ach-text-dark);
+  color: var(--ach-navy-light);
   line-height: 1.35;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -241,42 +264,36 @@
 /* Short description */
 .ach-card-short-desc {
   margin: 0;
-  font-size: .83rem;
+  font-size: 0.83rem;
   color: var(--ach-text-muted);
   line-height: 1.5;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   flex: 1;
 }
 
-/* Meta row: date + student name */
+/* Meta row: student name */
 .ach-card-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: .3rem;
   margin-top: auto;
-  padding-top: .6rem;
+  padding-top: 0.55rem;
   border-top: 1px solid var(--ach-border);
-  font-size: .76rem;
-  color: var(--ach-text-muted);
+  font-size: 0.78rem;
 }
 
 .ach-card-meta-name {
-  display: flex;
-  align-items: center;
-  gap: .3rem;
+  color: var(--ach-navy-light);
   font-weight: 600;
-  color: var(--ach-text-dark);
-}
-
-.ach-card-meta-date {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: .3rem;
+  gap: 0.35rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ── Carousel controls row ── */
@@ -284,52 +301,94 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
-  margin-top: 1.4rem;
+  gap: 0.85rem;
+  margin-top: 1.25rem;
+  padding-top: 0.5rem;
 }
 
 .ach-carousel-btn {
-  width: 42px;
-  height: 42px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  border: 2px solid rgba(255,255,255,.3);
-  background: rgba(255,255,255,.08);
-  color: #fff;
+  border: 1px solid var(--ach-border);
+  background: #FFFFFF;
+  color: var(--ach-navy-light);
   display: grid;
   place-items: center;
   cursor: pointer;
-  transition: background .2s, border-color .2s, transform .15s;
-  font-size: .95rem;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .ach-carousel-btn:hover {
-  background: var(--ach-gold);
-  border-color: var(--ach-gold);
-  color: var(--ach-navy);
-  transform: scale(1.1);
+  background: var(--ach-navy-light);
+  color: #FFFFFF;
+  border-color: var(--ach-navy-light);
+  transform: scale(1.08);
 }
 
 /* Dot indicators */
 .ach-carousel-dots {
   display: flex;
-  gap: .45rem;
+  gap: 0.4rem;
+  align-items: center;
 }
 
 .ach-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(255,255,255,.3);
-  transition: background .25s, transform .25s, width .25s;
+  background: #CBD5E1;
+  transition: all 0.3s ease;
   cursor: pointer;
   border: none;
   padding: 0;
 }
 
 .ach-dot.active {
-  background: var(--ach-gold);
-  width: 24px;
+  background: var(--ach-blue);
+  width: 22px;
   border-radius: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .ach-carousel-viewport {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .ach-carousel-viewport::-webkit-scrollbar {
+    display: none;
+  }
+  .ach-carousel-track {
+    display: flex;
+    grid-template-columns: none;
+    width: max-content;
+    gap: 1rem;
+    transition: transform 0.45s ease;
+  }
+  .ach-card {
+    min-width: 290px;
+    width: 290px;
+    scroll-snap-align: start;
+  }
+}
+
+@media (max-width: 640px) {
+  .achievements-showcase-section {
+    padding: 1.25rem 1rem;
+  }
+  .ach-showcase-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ach-card {
+    min-width: calc(100vw - 3.5rem);
+    width: calc(100vw - 3.5rem);
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
