@@ -14,47 +14,32 @@
 <body>
 
   <div class="login-wrapper">
-    <div class="login-card">
-      <div class="role-choice-icon teacher" style="margin-bottom:1rem;"><i class="fa-solid fa-user-plus"></i></div>
-      <h1>Teacher Sign Up</h1>
-      <p class="login-sub">Register using your college email ID and a password of your choice.</p>
+    <div class="login-card" style="max-width:540px; text-align:center;">
+      <div class="role-choice-icon teacher" style="margin:0 auto 1.25rem;"><i class="fa-solid fa-lock"></i></div>
+      <h1>Teacher Registration Restricted</h1>
+      <p class="login-sub" style="margin-bottom:1.5rem;">
+        Teachers cannot self-register. Faculty accounts must be created and provisioned by an <strong>Administrator</strong>.
+      </p>
 
-      <div class="form-message" id="signupMessage"></div>
+      <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:left;">
+        <h4 style="margin:0 0 0.4rem 0; color:#1D4ED8; font-size:0.95rem;">
+          <i class="fa-solid fa-circle-info"></i> How to get an account?
+        </h4>
+        <p style="margin:0; font-size:0.88rem; color:#1E293B; line-height:1.5;">
+          Please contact the CSE Department Administrator to have your official faculty account created. Once registered, you can sign in using your college email ID (<code>&lt;nameinitial&gt;.cse@srmvalliammai.ac.in</code>).
+        </p>
+      </div>
 
-      <form id="signupForm" novalidate>
-        <div class="form-row">
-          <label for="signupName">Full Name</label>
-          <input class="form-control" type="text" id="signupName" placeholder="e.g. Dr. Priya Ramesh" required />
-        </div>
-        <div class="form-row">
-          <label for="signupEmail">College Email ID</label>
-          <input class="form-control" type="email" id="signupEmail"
-            placeholder="pr.cse@srmvalliammai.ac.in" required />
-          <small class="form-hint">Format required: &lt;nameinitial&gt;.cse@srmvalliammai.ac.in</small>
-        </div>
-        <div class="form-row">
-          <label for="signupPassword">Password</label>
-          <input class="form-control" type="password" id="signupPassword"
-            placeholder="Choose a secure password" required minlength="6" />
-        </div>
-        <div class="form-row">
-          <label for="signupDesignation">Designation</label>
-          <select class="form-control" id="signupDesignation">
-            <option>Professor</option>
-            <option>Associate Professor</option>
-            <option selected>Assistant Professor</option>
-            <option>Lab Instructor</option>
-          </select>
-        </div>
-        <div class="form-actions">
-          <button class="btn btn-success btn-block" type="submit">
-            <i class="fa-solid fa-user-plus"></i> Create Account
-          </button>
-        </div>
-      </form>
+      <div class="form-actions" style="flex-direction:column; gap:0.6rem;">
+        <a class="btn btn-primary btn-block" href="teacher-login.html">
+          <i class="fa-solid fa-right-to-bracket"></i> Go to Teacher Login
+        </a>
+        <a class="btn btn-muted btn-block" href="admin-login.html?next=manage-faculty.html">
+          <i class="fa-solid fa-shield-halved"></i> Admin Login (to Add Faculty)
+        </a>
+      </div>
 
-      <div class="role-hint">
-        <p>Already registered? <a href="teacher-login.html">Teacher login</a></p>
+      <div class="role-hint" style="margin-top:1.5rem;">
         <p>Student? <a href="student-signup.html">Student sign up</a></p>
         <p style="margin-top:.6rem;"><a href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a></p>
       </div>
@@ -64,42 +49,11 @@
   <script type="module" src="/src/scripts/users.js"></script>
   <script type="module" src="/src/scripts/auth.js"></script>
   <script>
-    document.getElementById("signupForm").addEventListener("submit", function (event) {
-      event.preventDefault();
-      const box      = document.getElementById("signupMessage");
-      const email    = document.getElementById("signupEmail").value.trim().toLowerCase();
-      const password = document.getElementById("signupPassword").value.trim();
-
-      // Strict format and domain enforcement (<nameinitial>.cse@srmvalliammai.ac.in)
-      const teacherEmailRegex = /^[a-z0-9._-]+\.cse@srmvalliammai\.ac\.in$/i;
-      if (!teacherEmailRegex.test(email)) {
-        box.textContent = "Registration rejected: Email must follow the format <nameinitial>.cse@srmvalliammai.ac.in";
-        box.className = "form-message is-visible error";
-        return;
+    // If an administrator is already logged in, redirect them directly to the Manage Faculty dashboard
+    window.addEventListener("DOMContentLoaded", () => {
+      if (window.Auth && typeof window.Auth.isAdmin === "function" && window.Auth.isAdmin()) {
+        location.replace("manage-faculty.html");
       }
-      if (password.length < 6) {
-        box.textContent = "Password must be at least 6 characters.";
-        box.className = "form-message is-visible error";
-        return;
-      }
-
-      function tryRegister() {
-        if (!window.PortalUsers) { setTimeout(tryRegister, 60); return; }
-        const result = PortalUsers.register({
-          name:        document.getElementById("signupName").value,
-          email:       email,
-          password:    password,
-          role:        "teacher",
-          designation: document.getElementById("signupDesignation").value
-        });
-        if (result.error) {
-          box.textContent = result.error;
-          box.className = "form-message is-visible error";
-          return;
-        }
-        location.href = "teacher-login.html?registered=1";
-      }
-      tryRegister();
     });
   </script>
 

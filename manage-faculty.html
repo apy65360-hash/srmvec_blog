@@ -200,8 +200,10 @@
       <option>Assistant Professor (Sel. Grade)</option>
       <option>Assistant Professor</option>
     </select>
-    <label>Email</label>
+    <label>Email (<small>&lt;nameinitial&gt;.cse@srmvalliammai.ac.in</small>)</label>
     <input type="email" id="editEmail" />
+    <label>Reset Login Password</label>
+    <input type="text" id="editPassword" placeholder="Leave blank to keep existing" />
     <div class="edit-actions">
       <button class="btn btn-primary btn-sm" id="editSaveBtn"><i class="fa-solid fa-check"></i> Save</button>
       <button class="btn btn-muted btn-sm" id="editCancelBtn">Cancel</button>
@@ -246,7 +248,7 @@
         </div>
 
         <!-- Add Faculty Form -->
-        <form id="addFacultyForm" class="two-column-layout" style="display:none; margin-bottom:1.5rem;">
+        <form id="addFacultyForm" class="two-column-layout" style="display:none; margin-bottom:1.5rem; background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:1.5rem;">
           <div class="form-row">
             <label for="facultyName">Full Name</label>
             <input class="form-control" type="text" id="facultyName" placeholder="Dr. / Mr. / Mrs. Full Name" required />
@@ -260,19 +262,29 @@
               <option>Associate Professor</option>
               <option>Assistant Professor (Sr. Grade)</option>
               <option>Assistant Professor (Sel. Grade)</option>
-              <option>Assistant Professor</option>
+              <option selected>Assistant Professor</option>
             </select>
           </div>
           <div class="form-row">
-            <label for="facultyEmail">Email</label>
-            <input class="form-control" type="email" id="facultyEmail" placeholder="name.cse@srmvalliammai.ac.in" required />
+            <label for="facultyEmail">College Email ID</label>
+            <input class="form-control" type="email" id="facultyEmail" placeholder="e.g. pr.cse@srmvalliammai.ac.in" required />
+            <small class="form-hint">Strict format: &lt;nameinitial&gt;.cse@srmvalliammai.ac.in</small>
           </div>
           <div class="form-row">
-            <label for="facultySpec">Specialization</label>
+            <label for="facultyId">Staff / Employee ID</label>
+            <input class="form-control" type="text" id="facultyId" placeholder="e.g. CSE104" required />
+          </div>
+          <div class="form-row">
+            <label for="facultyPassword">Teacher Login Password</label>
+            <input class="form-control" type="password" id="facultyPassword" placeholder="Set password for teacher" required minlength="4" />
+            <small class="form-hint">Teacher will use this password + their college email to sign in</small>
+          </div>
+          <div class="form-row">
+            <label for="facultySpec">Area of Specialization</label>
             <input class="form-control" type="text" id="facultySpec" placeholder="e.g. Machine Learning, Networks…" />
           </div>
           <div class="form-actions" style="align-items:flex-end; grid-column:1/-1;">
-            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save Faculty</button>
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save &amp; Create Faculty Account</button>
             <button class="btn btn-muted" type="button" id="cancelAddFaculty">Cancel</button>
           </div>
         </form>
@@ -304,6 +316,14 @@
   <script type="module" src="/src/scripts/users.js"></script>
   <script type="module" src="/src/scripts/auth.js"></script>
   <script>
+  // ── Authentication Guard: Strictly Administrator Only ──
+  window.addEventListener("DOMContentLoaded", () => {
+    if (window.Auth && typeof window.Auth.requireLogin === "function") {
+      const adminUser = window.Auth.requireLogin(['admin', 'faculty_admin', 'editor']);
+      if (!adminUser) return;
+    }
+  });
+
   // ─────────────────────────────────────────────
   //  Faculty Dataset – SRM Valliammai CSE Dept.
   // ─────────────────────────────────────────────
@@ -707,15 +727,30 @@
     const idx = parseInt(activeEditRow.dataset.idx, 10);
     const data = filtered();
     if (data[idx]) {
-      data[idx].designation = document.getElementById("editDesig").value;
-      data[idx].email = document.getElementById("editEmail").value;
+      const newDesig = document.getElementById("editDesig").value;
+      const newEmail = document.getElementById("editEmail").value.trim().toLowerCase();
+      const newPassword = document.getElementById("editPassword").value.trim();
+
+      if (!PortalUsers.isValidTeacherEmail(newEmail)) {
+        alert("Invalid email format. Teacher email must strictly follow: <nameinitial>.cse@srmvalliammai.ac.in");
+        return;
+      }
+
+      data[idx].designation = newDesig;
+      data[idx].email = newEmail;
+
       // reflect in master FACULTY
       const masterIdx = FACULTY.findIndex(f => f.id === data[idx].id);
       if (masterIdx >= 0) {
-        FACULTY[masterIdx].designation = data[idx].designation;
-        FACULTY[masterIdx].email = data[idx].email;
+        FACULTY[masterIdx].designation = newDesig;
+        FACULTY[masterIdx].email = newEmail;
       }
       saveFacultyStorage();
+
+      // Sync with PortalUsers login directory
+      const updates = { designation: newDesig, email: newEmail };
+      if (newPassword) updates.password = newPassword;
+      PortalUsers.updateTeacherByAdmin(data[idx].id, updates);
     }
     hideEdit();
     refresh();
@@ -744,18 +779,21 @@
         alert("Security Alert: Only administrators are authorized to edit faculty data.");
         return;
       }
+      document.getElementById("editPassword").value = "";
       showEdit(tr, f);
     } else if (btn.dataset.action === "delete") {
       if (!Auth.isAdmin()) {
         alert("Security Alert: Access Denied. Only administrators are authorized to delete faculty data.");
         return;
       }
-      if (window.confirm(`Remove ${f.name} from the faculty list?`)) {
+      if (window.confirm(`Remove ${f.name} from the faculty list and revoke their login access?`)) {
         const masterIdx = FACULTY.findIndex(x => x.id === f.id);
         if (masterIdx >= 0) {
           FACULTY.splice(masterIdx, 1);
           saveFacultyStorage();
         }
+        PortalUsers.removeTeacherByAdmin(f.id);
+        PortalUsers.removeTeacherByAdmin(f.email);
         refresh();
       }
     }
@@ -779,19 +817,55 @@
       alert("Security Alert: Only administrators are authorized to add new faculty.");
       return;
     }
+
+    const name     = document.getElementById("facultyName").value.trim();
+    const desig    = document.getElementById("facultyDesignation").value;
+    const email    = document.getElementById("facultyEmail").value.trim().toLowerCase();
+    const empId    = (document.getElementById("facultyId").value.trim() || ("CSE" + String(FACULTY.length + 1).padStart(3, "0"))).toUpperCase();
+    const password = document.getElementById("facultyPassword").value.trim();
+    const spec     = document.getElementById("facultySpec").value.trim() || "—";
+
+    // Strict email format validation
+    if (!PortalUsers.isValidTeacherEmail(email)) {
+      alert("Format Rejected: Teacher email must strictly follow <nameinitial>.cse@srmvalliammai.ac.in");
+      return;
+    }
+
+    if (FACULTY.some(f => (f.email || "").toLowerCase() === email)) {
+      alert("A faculty member with that email already exists in the directory.");
+      return;
+    }
+
     const newFaculty = {
-      id: "CSE" + String(FACULTY.length + 1).padStart(3, "0"),
-      name: document.getElementById("facultyName").value,
-      designation: document.getElementById("facultyDesignation").value,
+      id: empId,
+      name: name,
+      designation: desig,
       qual: "—",
       exp: "New",
-      spec: document.getElementById("facultySpec").value || "—",
-      email: document.getElementById("facultyEmail").value,
+      spec: spec,
+      email: email,
       joined: new Date().getFullYear().toString(),
-      tags: [document.getElementById("facultySpec").value || "CSE"].filter(Boolean)
+      tags: [spec !== "—" ? spec : "CSE"].filter(Boolean)
     };
     FACULTY.push(newFaculty);
     saveFacultyStorage();
+
+    // Register teacher login account via Admin
+    const regResult = PortalUsers.addTeacherByAdmin({
+      id: empId,
+      name: name,
+      email: email,
+      password: password,
+      designation: desig,
+      department: "CSE"
+    });
+
+    if (regResult.error) {
+      alert("Faculty added to directory, but note: " + regResult.error);
+    } else {
+      alert(`Success! Faculty account created for ${name}.\nLogin Email: ${email}\nLogin Password: ${password}`);
+    }
+
     this.reset();
     this.style.display = "none";
     currentFilter = "all";

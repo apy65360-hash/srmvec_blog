@@ -415,12 +415,19 @@ const BlogDB = (() => {
     }
     const directory = window.PortalUsers;
     if (!directory) return null;
-    const user = directory.match(username, password, expectedRole);
+    let user = null;
+    if (expectedRole === 'teacher') {
+      user = directory.matchTeacher(username, password);
+    } else if (expectedRole === 'student') {
+      user = directory.matchStudent(username, password) || directory.match(username, password, expectedRole);
+    } else {
+      user = directory.match(username, password, expectedRole);
+    }
     if (!user) return null;
     return {
-      userId: user.userId,
+      userId: user.userId || user.id,
       id: user.id,
-      username: user.name,
+      username: user.email || user.name,
       displayName: user.name,
       name: user.name,
       role: user.role,

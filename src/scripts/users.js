@@ -188,14 +188,28 @@ const PortalUsers = {
     }) || null;
   },
 
-  // ── Registration ─────────────────────────────────────────────────────────
+  // ── Registration & Admin Teacher Management ──────────────────────────────
 
-  /** Adds a sign-up account. Returns { user } or { error }. */
+  /**
+   * Adds a sign-up account.
+   * NOTE: Teachers CANNOT self-register; only Administrators can create or add teacher accounts.
+   */
   register(details) {
     const name = String(details.name || "").trim();
     const role = String(details.role || "").trim();
 
     if (role === "teacher") {
+      // Check admin authorization
+      const isAdmin = (typeof window !== "undefined" && window.Auth && typeof window.Auth.isAdmin === "function")
+        ? window.Auth.isAdmin()
+        : false;
+
+      if (!details.fromAdmin && !isAdmin) {
+        return {
+          error: "Access Denied: Teachers cannot self-register. Teacher accounts can only be created by an Administrator via the Admin Panel."
+        };
+      }
+
       const email = String(details.email || "").trim().toLowerCase();
       const password = String(details.password || "").trim();
       if (!name || !email || !password) {
@@ -209,14 +223,14 @@ const PortalUsers = {
       })) {
         return { error: "A teacher account with that email already exists." };
       }
-      const id = String(details.id || ("T" + Date.now())).toUpperCase();
+      const id = String(details.id || ("CSE" + Date.now().toString().slice(-4))).toUpperCase();
       const user = {
         userId: "teacher_" + Date.now(),
         id: id,
         name: name,
         role: "teacher",
         department: details.department || "CSE",
-        designation: details.designation || "",
+        designation: details.designation || "Assistant Professor",
         email: email,
         password: password
       };
@@ -254,6 +268,65 @@ const PortalUsers = {
     }
 
     return { error: "Unknown role." };
+  },
+
+  /** Admin-only method to add a new teacher */
+  addTeacherByAdmin(details) {
+    return this.register({
+      ...details,
+      role: "teacher",
+      fromAdmin: true
+    });
+  },
+
+  /** Admin-only method to update an existing teacher's credentials / info */
+  updateTeacherByAdmin(idOrEmail, updates) {
+    const needle = String(idOrEmail || "").trim().toLowerCase();
+    const registered = this.registered();
+    const idx = registered.findIndex(u =>
+      u.role === "teacher" && (u.id.toLowerCase() === needle || (u.email || "").toLowerCase() === needle)
+    );
+
+    if (idx !== -1) {
+      if (updates.email && !this.isValidTeacherEmail(updates.email)) {
+        return { error: "Email must strictly follow: <nameinitial>.cse@srmvalliammai.ac.in" };
+      }
+      registered[idx] = {
+        ...registered[idx],
+        ...updates
+      };
+      localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(registered));
+      return { user: registered[idx] };
+    }
+
+    // Check seed accounts - if updating a seed teacher, save override in registered list
+    const seed = PORTAL_USERS.find(u =>
+      u.role === "teacher" && (u.id.toLowerCase() === needle || (u.email || "").toLowerCase() === needle)
+    );
+    if (seed) {
+      if (updates.email && !this.isValidTeacherEmail(updates.email)) {
+        return { error: "Email must strictly follow: <nameinitial>.cse@srmvalliammai.ac.in" };
+      }
+      const override = {
+        ...seed,
+        ...updates
+      };
+      registered.push(override);
+      localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(registered));
+      return { user: override };
+    }
+
+    return { error: "Teacher account not found." };
+  },
+
+  /** Admin-only method to delete a teacher from login access */
+  removeTeacherByAdmin(idOrEmail) {
+    const needle = String(idOrEmail || "").trim().toLowerCase();
+    const registered = this.registered().filter(u =>
+      !(u.role === "teacher" && (u.id.toLowerCase() === needle || (u.email || "").toLowerCase() === needle))
+    );
+    localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(registered));
+    return { success: true };
   }
 };
 
