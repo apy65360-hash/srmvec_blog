@@ -600,32 +600,31 @@
         });
       }
 
-      // 2. Fetch data from Supabase or fallback
-      let data = [];
-      try {
-        data = await fetchAllAchievements();
-      } catch (err) {
-        console.warn('Supabase fetch failed:', err);
-      }
-
-      if (!data || data.length === 0) {
-        allAchievements = SEED_ACHIEVEMENTS;
-      } else {
-        // Merge Supabase data with seed achievements so visitor always sees comprehensive records
-        const ids = new Set(data.map(d => String(d.id)));
-        const extraSeeds = SEED_ACHIEVEMENTS.filter(s => !ids.has(String(s.id)));
-        allAchievements = [...data, ...extraSeeds];
-      }
-
-      // Update total accolades stat
+      // 2. Render seed records instantly so page never gets stuck or delays
+      allAchievements = [...SEED_ACHIEVEMENTS];
       const statTotal = document.getElementById('statTotalAch');
       if (statTotal) statTotal.textContent = allAchievements.length;
-
-      // Render grid
       renderGrid();
 
-      // Check deep link hash
+      // Check deep link hash immediately
       checkHashForModal();
+
+      // 3. Asynchronously fetch fresh records from Supabase in background
+      (async () => {
+        try {
+          const data = await fetchAllAchievements();
+          if (data && data.length > 0) {
+            const ids = new Set(data.map(d => String(d.id)));
+            const extraSeeds = SEED_ACHIEVEMENTS.filter(s => !ids.has(String(s.id)));
+            allAchievements = [...data, ...extraSeeds];
+            if (statTotal) statTotal.textContent = allAchievements.length;
+            renderGrid();
+            checkHashForModal();
+          }
+        } catch (err) {
+          console.warn('[achievements] Background sync skipped:', err);
+        }
+      })();
 
       // Filter pills
       document.querySelectorAll('.ach-pill').forEach(pill => {

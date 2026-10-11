@@ -7,29 +7,51 @@
 
 import { supabase } from './supabase.js';
 
+// Helper with timeout to prevent page freezes if Supabase is offline or table is pending
+async function withTimeout(promise, ms = 3500) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase query timed out')), ms))
+  ]);
+}
+
 // ── Fetch latest N published achievements ─────────────────────────────────────
 export async function fetchLatestAchievements(limit = 3) {
   if (!supabase) return [];
-  const { data, error } = await supabase
-    .from('achievements')
-    .select('*')
-    .eq('is_published', true)
-    .order('achievement_date', { ascending: false })
-    .limit(limit);
-  if (error) { console.error('[achievements] fetchLatest:', error.message); return []; }
-  return data ?? [];
+  try {
+    const { data, error } = await withTimeout(
+      supabase
+        .from('achievements')
+        .select('*')
+        .eq('is_published', true)
+        .order('achievement_date', { ascending: false })
+        .limit(limit)
+    );
+    if (error) { console.warn('[achievements] fetchLatest warning:', error.message); return []; }
+    return data ?? [];
+  } catch (err) {
+    console.warn('[achievements] fetchLatest fallback triggered:', err.message);
+    return [];
+  }
 }
 
 // ── Fetch all published achievements ──────────────────────────────────────────
 export async function fetchAllAchievements() {
   if (!supabase) return [];
-  const { data, error } = await supabase
-    .from('achievements')
-    .select('*')
-    .eq('is_published', true)
-    .order('achievement_date', { ascending: false });
-  if (error) { console.error('[achievements] fetchAll:', error.message); return []; }
-  return data ?? [];
+  try {
+    const { data, error } = await withTimeout(
+      supabase
+        .from('achievements')
+        .select('*')
+        .eq('is_published', true)
+        .order('achievement_date', { ascending: false })
+    );
+    if (error) { console.warn('[achievements] fetchAll warning:', error.message); return []; }
+    return data ?? [];
+  } catch (err) {
+    console.warn('[achievements] fetchAll fallback triggered:', err.message);
+    return [];
+  }
 }
 
 // ── Fetch a single achievement by id ─────────────────────────────────────────
