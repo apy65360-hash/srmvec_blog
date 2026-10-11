@@ -9,9 +9,16 @@ const Auth = {
   async login(emailOrName, password, role) {
     let supabaseError = null;
 
+    if (role === 'teacher') {
+      const emailLower = String(emailOrName || '').trim().toLowerCase();
+      if (!/^[a-z0-9._-]+\.cse@srmvalliammai\.ac\.in$/i.test(emailLower)) {
+        return { error: 'Teachers must use an email matching <nameinitial>.cse@srmvalliammai.ac.in' };
+      }
+    }
+
     // Try Supabase auth first if available
     if (window.supabase) {
-      const email = emailOrName.includes('@') ? emailOrName.trim() : `${emailOrName.toLowerCase().replace(/\s+/g, '')}@srmvec.ac.in`;
+      const email = emailOrName.includes('@') ? emailOrName.trim() : `${emailOrName.toLowerCase().replace(/\s+/g, '')}@srmvalliammai.ac.in`;
       
       let { data, error } = await window.supabase.auth.signInWithPassword({
         email: email,
@@ -80,7 +87,16 @@ const Auth = {
     }
 
     // Local fallback authentication
-    const user = window.PortalUsers ? window.PortalUsers.match(emailOrName, password, role) : null;
+    let user = null;
+    if (window.PortalUsers) {
+      if (role === 'teacher') {
+        user = window.PortalUsers.matchTeacher(emailOrName, password);
+      } else if (role === 'student') {
+        user = window.PortalUsers.matchStudent(emailOrName, password) || window.PortalUsers.match(emailOrName, password, role);
+      } else {
+        user = window.PortalUsers.match(emailOrName, password, role);
+      }
+    }
     if (!user) {
       return supabaseError ? { error: supabaseError } : null;
     }

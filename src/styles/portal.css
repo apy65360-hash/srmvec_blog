@@ -517,3 +517,10 @@ textarea.form-control {
 .status-pill.eng-today { background: #F0FDFA; color: #0F766E; }
 .status-pill.general-today { background: #F1F5F9; color: #475569; }
 
+/* Helper text shown below form inputs (e.g. email domain restrictions, DOB hint) */
+.form-hint {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-muted, #6b7280);
+  margin-top: 0.25rem;
+}

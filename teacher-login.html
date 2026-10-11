@@ -17,28 +17,35 @@
     <div class="login-card">
       <div class="role-choice-icon teacher" style="margin-bottom:1rem;"><i class="fa-solid fa-chalkboard-user"></i></div>
       <h1>Teacher Login</h1>
-      <p class="login-sub">Sign in with your name and staff ID number.</p>
+      <p class="login-sub">Sign in with your college email ID and password.</p>
 
       <div class="form-message" id="loginMessage"></div>
 
-      <form id="loginForm">
+      <form id="loginForm" novalidate>
         <div class="form-row">
-          <label for="loginName">Name</label>
-          <input class="form-control" type="text" id="loginName" placeholder="e.g. Dr. Priya Ramesh" autocomplete="username" required />
+          <label for="loginEmail">College Email ID</label>
+          <input class="form-control" type="email" id="loginEmail"
+            placeholder="e.g. pr.cse@srmvalliammai.ac.in"
+            autocomplete="username" required />
+          <small class="form-hint">Format: &lt;nameinitial&gt;.cse@srmvalliammai.ac.in</small>
         </div>
         <div class="form-row">
-          <label for="loginId">ID Number (password)</label>
-          <input class="form-control" type="password" id="loginId" placeholder="e.g. CSE101" autocomplete="current-password" required />
+          <label for="loginPassword">Password</label>
+          <input class="form-control" type="password" id="loginPassword"
+            placeholder="Enter your password"
+            autocomplete="current-password" required />
         </div>
         <div class="form-actions">
-          <button class="btn btn-primary btn-block" type="submit"><i class="fa-solid fa-right-to-bracket"></i> Sign In</button>
+          <button class="btn btn-primary btn-block" type="submit">
+            <i class="fa-solid fa-right-to-bracket"></i> Sign In
+          </button>
         </div>
       </form>
 
       <div class="role-hint">
         <p>No account yet? <a href="teacher-signup.html">Create a teacher account</a></p>
         <p>Student? <a href="student-login.html">Student login</a></p>
-        <p>Demo: <code>Dr. Priya Ramesh</code> / <code>CSE101</code></p>
+        <p>Demo: <code>pr.cse@srmvalliammai.ac.in</code> / <code>CSE101</code></p>
         <p style="margin-top:.6rem;"><a href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a></p>
       </div>
     </div>
@@ -52,25 +59,64 @@
       const box = document.getElementById("loginMessage");
 
       if (params.get("registered")) {
-        box.textContent = "Account created. Sign in with your name and ID number.";
+        box.textContent = "Account created. Sign in with your college email and password.";
         box.className = "form-message is-visible success";
       } else if (params.get("denied")) {
         box.textContent = "That page is for faculty accounts. Please sign in as a teacher.";
         box.className = "form-message is-visible error";
       }
 
-      document.getElementById("loginForm").addEventListener("submit", function (event) {
+      document.getElementById("loginForm").addEventListener("submit", async function (event) {
         event.preventDefault();
-        const user = Auth.login(document.getElementById("loginName").value, document.getElementById("loginId").value, "teacher");
-        if (!user) {
-          box.textContent = "No teacher account matches that name and ID number.";
+        box.textContent = "";
+        box.className = "form-message";
+
+        const email    = document.getElementById("loginEmail").value.trim().toLowerCase();
+        const password = document.getElementById("loginPassword").value.trim();
+
+        // Strict format and domain validation: <nameinitial>.cse@srmvalliammai.ac.in
+        const teacherEmailRegex = /^[a-z0-9._-]+\.cse@srmvalliammai\.ac\.in$/i;
+        if (!teacherEmailRegex.test(email)) {
+          box.textContent = "Access denied: Email must follow the format <nameinitial>.cse@srmvalliammai.ac.in";
           box.className = "form-message is-visible error";
           return;
         }
-        location.href = Auth.safeNext(params.get("next")) || Auth.homeFor(user.role);
+
+        // Wait for modules to load, then authenticate
+        function tryLogin() {
+          if (!window.Auth || !window.PortalUsers) {
+            setTimeout(tryLogin, 60);
+            return;
+          }
+          // Try strict local match first (email + password)
+          let user = window.PortalUsers.matchTeacher(email, password);
+          if (user) {
+            const session = window.Auth.startSession(user);
+            location.href = Auth.safeNext(params.get("next")) || Auth.homeFor(session.role);
+            return;
+          }
+          // Fallback: try Supabase if available (for Supabase-registered teachers)
+          if (window.supabase) {
+            window.Auth.login(email, password, "teacher").then(function (session) {
+              if (session && !session.error) {
+                location.href = Auth.safeNext(params.get("next")) || Auth.homeFor(session.role);
+              } else {
+                box.textContent = session && session.error
+                  ? session.error
+                  : "Invalid email or password. Please check your credentials.";
+                box.className = "form-message is-visible error";
+              }
+            });
+          } else {
+            box.textContent = "Invalid email or password. Please check your credentials.";
+            box.className = "form-message is-visible error";
+          }
+        }
+        tryLogin();
       });
     }());
   </script>
 
 </body>
 </html>
+
