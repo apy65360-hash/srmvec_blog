@@ -784,13 +784,14 @@
       }
 
       events.forEach(evt => {
-        const isClosingSoon = new Date(evt.regCloseDate) <= new Date("2026-12-31");
+        const diffDays = (new Date(evt.regCloseDate) - new Date()) / (1000 * 60 * 60 * 24);
+        const isClosingSoon = diffDays >= 0 && diffDays <= 7;
         const card = document.createElement("article");
         card.className = "event-detail-card";
         card.id = `card-${evt.id}`;
         card.innerHTML = `
           <div class="card-poster-wrap" onclick="openDetailsModal('${evt.id}')">
-            <img src="${evt.poster}" alt="${evt.title} Poster" loading="lazy" />
+            <img src="${evt.poster}" alt="${evt.title} Poster" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800&auto=format&fit=crop'" />
             <div class="poster-zoom-overlay"><i class="fa-solid fa-expand"></i> View Details</div>
             <div class="reg-closing-badge ${isClosingSoon ? 'closing-soon' : ''}">
               <i class="fa-solid fa-clock"></i> Reg Closes: ${evt.regCloseFormatted}
@@ -831,7 +832,7 @@
         slide.className = "slider-poster-card";
         slide.onclick = () => openDetailsModal(evt.id);
         slide.innerHTML = `
-          <img class="slider-poster-img" src="${evt.poster}" alt="${evt.title} Poster" loading="lazy" />
+          <img class="slider-poster-img" src="${evt.poster}" alt="${evt.title} Poster" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800&auto=format&fit=crop'" />
           <div class="slider-poster-info">
             <span style="font-size:0.75rem;font-weight:700;color:#2563EB;text-transform:uppercase;">Reg Closes: ${evt.regCloseFormatted}</span>
             <h4 style="font-size:0.95rem;font-weight:700;margin:0.2rem 0 0.4rem 0;color:#0F172A;line-height:1.3;">${evt.title}</h4>

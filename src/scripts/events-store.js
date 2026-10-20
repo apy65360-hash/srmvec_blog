@@ -1,145 +1,173 @@
 // Centralized Event Data Store & Utility Module for SRMVEC CSE Portal
 
+/**
+ * Strict Rule: Filter and validate that an event is future/upcoming.
+ * Events that have already finished in the past are excluded.
+ */
+export function isEventUpcoming(evt) {
+  if (!evt) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // 1. If registration closing date is provided (YYYY-MM-DD), check it
+  if (evt.regCloseDate) {
+    const regDate = new Date(evt.regCloseDate + "T23:59:59");
+    if (!isNaN(regDate.getTime())) {
+      if (regDate >= today) return true;
+    }
+  }
+
+  // 2. Check event date string
+  if (evt.date) {
+    const dateStr = String(evt.date).trim();
+    const parsed = new Date(dateStr);
+    if (!isNaN(parsed.getTime())) {
+      parsed.setHours(23, 59, 59, 999);
+      return parsed >= today;
+    }
+
+    // Handle range/formatted date like "October 17, 2026", "October 15 & 16, 2026", "November 06 & 07, 2026"
+    const yearMatch = dateStr.match(/\b(20\d\d)\b/);
+    if (yearMatch) {
+      const yr = parseInt(yearMatch[1], 10);
+      const currentYear = today.getFullYear();
+      if (yr < currentYear) return false;
+      if (yr > currentYear) return true;
+
+      const months = ["january","february","march","april","may","june","july","august","september","october","november","december"];
+      const lower = dateStr.toLowerCase();
+      let foundMonth = -1;
+      for (let m = 0; m < months.length; m++) {
+        if (lower.includes(months[m]) || lower.includes(months[m].slice(0, 3))) {
+          foundMonth = m;
+          break;
+        }
+      }
+      if (foundMonth !== -1) {
+        const currentMonth = today.getMonth();
+        if (foundMonth < currentMonth) return false;
+        if (foundMonth > currentMonth) return true;
+
+        const days = dateStr.match(/\b\d{1,2}\b/g);
+        if (days) {
+          const maxDay = Math.max(...days.map(d => parseInt(d, 10)).filter(n => n <= 31));
+          return maxDay >= today.getDate();
+        }
+      }
+    }
+  }
+
+  // 3. If regCloseDate exists and is strictly before today, it's past
+  if (evt.regCloseDate) {
+    const regDate = new Date(evt.regCloseDate + "T23:59:59");
+    if (!isNaN(regDate.getTime())) {
+      return regDate >= today;
+    }
+  }
+
+  return false;
+}
+
 const DEFAULT_EVENTS = [
   {
-    id: "eve-3",
-    numericId: 3,
-    title: "CSEISMIC 2020 — Inter-Collegiate Technical Symposium",
-    college: "KCG College of Technology",
+    id: "eve-eliteccom-26",
+    numericId: 101,
+    title: "ELITECCOM-2026 PROJECT EXPO — 5th National Level Symposium",
+    college: "IETE Chennai Centre (Institution of Electronics & Telecommunication Engineers)",
+    dept: "Recent Trends in Electrical, IT, Electronics & Communication and Computers",
+    date: "October 17, 2026",
+    regCloseDate: "2026-10-16",
+    regCloseFormatted: "Oct 16, 2026",
+    time: "9:00 AM - 5:00 PM",
+    venue: "IETE Chennai Centre, Peters Road, Royapettah, Chennai - 600 086",
+    fee: "₹300 / Team (IETE Members) | ₹450 / Team (Others) [Max 3 Members]",
+    prizes: "Cash Awards for Winners & Internship Opportunity with Pantech Solutions",
+    poster: "eventposterimg/eliteccom-2026-project-expo.jpeg",
+    techEvents: ["AI, Data Science, Software & Cybersecurity", "Electronics, IoT & Embedded Systems", "Electrical Engineering, EVs & Smart Grids", "Robotics, Automation & Industry 4.0"],
+    nonTechEvents: ["Open Multidisciplinary Innovation", "Biomedical & Assistive Technologies", "Smart Infrastructure & Resilience"],
+    contact: "Dr. M. Arun, Dr. R. Karthikeyan | IETE Chennai Centre",
+    regUrl: "https://ticketana.he5.in/e/eliteccom-2026-project-expo",
+    description: "5th National Level Symposium on Recent Trends in Electrical, IT, Electronics & Communication and Computers. Project Expo open to all engineering disciplines with cash awards, jury evaluation, and corporate internship selections."
+  },
+  {
+    id: "eve-anveshan-26",
+    numericId: 102,
+    title: "ANVESHAN 2K26 — 24-Hour National Level Hackathon Competition",
+    college: "BGS Institute of Technology, Adichunchanagiri University",
+    dept: "Department of Information Science and Engineering",
+    date: "October 15 & 16, 2026",
+    regCloseDate: "2026-10-16",
+    regCloseFormatted: "Oct 16, 2026",
+    time: "24-Hour Hackathon Competition",
+    venue: "BGSIT Campus, B G Nagara, Mandya - 571448",
+    fee: "Free to Register (₹2,000 only if shortlisted)",
+    prizes: "₹50,000 Cash Prize Pool (1st: ₹25,000 | 2nd: ₹15,000 | 3rd: ₹10,000)",
+    poster: "eventposterimg/anveshan-2k26-hackathon.jpeg",
+    techEvents: ["Digital Safety & Cybersecurity", "AI & Machine Learning", "Energy, EV & Clean Technology", "Healthcare Technologies", "Open Innovation"],
+    nonTechEvents: ["24-Hour Hackathon Sprint", "Mentor Pitch Session", "Live Prototype Showcase"],
+    contact: "Mr. Anil Kumar K B (9740680113), Ms. Smitha K (8296460237), Treeshashree H P (6363894163)",
+    regUrl: "https://instagram.com/anveshan_2026",
+    description: "National Level 24-hour Hackathon competition challenging engineering minds to Think, Code, Build, and Innovate across Digital Safety, AI, Clean Tech, and Healthcare with ₹50,000 total prize pool."
+  },
+  {
+    id: "eve-hackaithon-26",
+    numericId: 103,
+    title: "SRMVEC HACK-AI-THON '26 — National Generative AI Hackathon",
+    college: "SRM Valliammai Engineering College",
     dept: "Department of Computer Science and Engineering",
-    date: "January 10, 2020",
-    regCloseDate: "2020-01-05",
-    regCloseFormatted: "Jan 05, 2020",
-    time: "9:00 AM - 4:30 PM",
-    venue: "KCG College Campus, Karapakkam, Chennai",
-    fee: "Free Online Registration (No On-spot Registrations)",
-    prizes: "Certificates & Trophy Awards",
-    poster: "eventposterimg/eve3.webp",
-    techEvents: ["Technostorm (Paper Presentation)", "Inquizative (Tech Quiz)", "Humblebrag (Web Designing)", "Project Explorer (Project Display)", "Programmer Unknown Coding Ground"],
-    nonTechEvents: ["Technoconnect (Connections)", "Tech Click (Photography)", "Wonder Query (Fandom Quiz)", "Meme Coders (Technical Memes)", "KCG Explorer (Treasure Hunt)"],
-    contact: "+91-77086 06689, +91-90432 33406 | csesymposium@kcgcollege.com",
-    regUrl: "http://www.kcgcsesymposium.com",
-    description: "National level inter-collegiate technical symposium organized by Department of CSE in association with ISTE Students Chapter. Offers paper presentation, web design, coding, photography, and gaming contests."
+    date: "November 06 & 07, 2026",
+    regCloseDate: "2026-11-01",
+    regCloseFormatted: "Nov 01, 2026",
+    time: "9:00 AM - 6:00 PM",
+    venue: "CSE Department Innovation Labs & Central Auditorium, SRMVEC",
+    fee: "Free Entry for Shortlisted Teams",
+    prizes: "₹1,00,000 Prize Pool & Cloud Credits",
+    poster: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=800&auto=format&fit=crop",
+    techEvents: ["Generative AI Sprint", "Autonomous Agents Track", "Edge AI & Vision", "Zero-Knowledge Cyber Security"],
+    nonTechEvents: ["Startup Pitch Battle", "Product Design Showcase"],
+    contact: "cse.events@srmvalliammai.ac.in | 044-27454784",
+    regUrl: "https://srmvalliammai.ac.in/events/hackaithon26",
+    description: "Flagship departmental 36-hour hackathon bringing together developer teams nationwide to build transformative solutions in GenAI, Edge Vision, and Cybersecurity."
   },
   {
-    id: "eve-5",
-    numericId: 5,
-    title: "PHANTAZO '22 — National Level Technical Symposium",
-    college: "J.J. College of Engineering and Technology",
-    dept: "Department of Information Technology & Computer Science",
-    date: "November 05, 2022",
-    regCloseDate: "2022-10-27",
-    regCloseFormatted: "Oct 27, 2022",
-    time: "9:30 AM - 4:00 PM",
-    venue: "J.J. College Campus, Ammapettai, Tiruchirappalli",
-    fee: "Offline: ₹200 / head | Online: ₹150 / head",
-    prizes: "Cash Prizes for Winners",
-    poster: "eventposterimg/eve5.webp",
-    techEvents: ["Paper Bestowal (AR/VR, 3D Biometrics, 5G, Robotics, Space Propulsion)", "Code Debugging", "Technical Word-Hunt"],
-    nonTechEvents: ["Marketing", "Connections", "Surprise Events", "Online Animation & Logo Design"],
-    contact: "956696362, 9443211700, 9940251111 | phantazo2022@gmail.com",
-    regUrl: "https://jjcet.ac.in/event/national-level-technical-symposium-22/",
-    description: "National Level Technical Symposium showcasing research paper presentations across AR/VR, 5G, Space Propulsion, along with coding debugging and creative design tracks."
-  },
-  {
-    id: "eve-4",
-    numericId: 4,
-    title: "CYNOSURE '23 — National Level Technical Symposium",
-    college: "Sri Ramakrishna Institute of Technology",
-    dept: "Department of Computer Science and Engineering (CTEK ACE)",
-    date: "February 09, 2023",
-    regCloseDate: "2023-02-04",
-    regCloseFormatted: "Feb 04, 2023",
-    time: "9:00 AM - 5:00 PM",
-    venue: "Perur Chettipalayam, Pachapalayam, Coimbatore",
-    fee: "₹200 per head",
-    prizes: "Exciting Cash Prizes for Winners",
-    poster: "eventposterimg/eve4.webp",
-    techEvents: ["Code Development", "Code Debugging", "Interview Skills", "Paper Presentation", "Poster & Project Presentation", "Tech Talk"],
-    nonTechEvents: ["Hunt and Seek", "Short Film", "Debate", "Tech Quiz"],
-    contact: "S. Sudeeson (9943442244), S. Thamaraiselvan (9360488660) | cynosure.srit.org",
-    regUrl: "https://cynosure.srit.org",
-    description: "National Level Technical Symposium hosted by Association of CSE (CTEK ACE), featuring code development, mock interviews, tech talks, debates, and short film screenings."
-  },
-  {
-    id: "eve-7",
-    numericId: 7,
-    title: "CanFig — Hands-on Workshop on Figma and Canva",
-    college: "Sri Sai Ram Engineering College",
-    dept: "Department of CSE (IEEE Information Theory & CSI Chapter)",
-    date: "May 23 & 24, 2023",
-    regCloseDate: "2023-05-20",
-    regCloseFormatted: "May 20, 2023",
-    time: "10:00 AM - 4:00 PM",
-    venue: "Beta Hall, Sri Sai Ram Engineering College, Chennai",
-    fee: "Free Entry (Includes Certificate & Contest)",
-    prizes: "Design Contest Awards & Swag",
-    poster: "eventposterimg/eve7.webp",
-    techEvents: ["Figma UI/UX Prototyping Workshop", "Canva Graphic Design", "Interactive Web Layout Creation"],
-    nonTechEvents: ["Live UI Design Challenge", "Poster Design Contest"],
-    contact: "Student Trainers: Anitha G K, Nithya R, Divya P | www.sairam.edu.in",
-    regUrl: "https://sairam.edu.in/canfig2023",
-    description: "Hands-on double-day design workshop teaching students how to harness Figma and Canva for UI design, poster layouts, and social assets, ending in a competitive live design challenge."
-  },
-  {
-    id: "eve-1",
-    numericId: 1,
-    title: "AUGUSTA '24 — National Level Technical Symposium",
-    college: "AAA College of Engineering & Technology",
-    dept: "Department of Computer Science & Engineering",
-    date: "April 03, 2024",
-    regCloseDate: "2024-03-30",
-    regCloseFormatted: "Mar 30, 2024",
+    id: "eve-cyberstorm-26",
+    numericId: 104,
+    title: "CYBERSTORM '26 — National Level Cyber Security & Ethical Hacking Fest",
+    college: "SRM Valliammai Engineering College",
+    dept: "Department of CSE & Center of Cyber Excellence",
+    date: "November 20, 2026",
+    regCloseDate: "2026-11-15",
+    regCloseFormatted: "Nov 15, 2026",
     time: "9:30 AM - 4:30 PM",
-    venue: "AAA College Campus, Amathur, Sivakasi",
-    fee: "₹250/- only (Includes Participation Certificate, Lunch & Refreshments)",
-    prizes: "Exciting Cash Prizes & Trophies",
-    poster: "eventposterimg/eve1.webp",
-    techEvents: ["Bug for Bugs", "UI/UX Architect", "Wisdom Wiz", "Presentino", "The Mystery Maze"],
-    nonTechEvents: ["Kalakalappu Cafe", "Talentia", "Calm Wave", "Prop Hunt", "Rhythm Blast"],
-    contact: "Mr. M. Dev Ananth (+91-73959 55578), Ms. A. Shren Miresan, Mr. R. Golyaram | augusta2k24@aaacet.ac.in",
-    regUrl: "https://www.augusta24.in",
-    description: "Get ready to be Augustified! Flagship national level symposium featuring high-octane technical challenges, UI/UX designing, maze hunts, and cultural competitions."
+    venue: "SRMVEC Campus, Kattankulathur, Chennai",
+    fee: "₹150 per participant",
+    prizes: "₹35,000 Cash Prizes & Bug Hunter Badges",
+    poster: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop",
+    techEvents: ["Capture The Flag (CTF)", "Network Defense War", "Reverse Engineering", "Malware Forensics"],
+    nonTechEvents: ["Cyber Cryptogram", "Tech Debate", "Cipher Escape Room"],
+    contact: "cyberstorm@srmvalliammai.ac.in | +91-98401 23456",
+    regUrl: "https://srmvalliammai.ac.in/events/cyberstorm26",
+    description: "Premier collegiate cybersecurity tournament featuring real-time CTF, malware analysis, forensic investigations, and network breach defense war."
   },
   {
-    id: "eve-6",
-    numericId: 6,
-    title: "DRESTEIN '24 — Technical & Management Fest",
-    college: "Saveetha Engineering College",
-    dept: "Department of CSE & Interdisciplinary Engineering",
-    date: "November 04 - 09, 2024",
-    regCloseDate: "2024-10-28",
-    regCloseFormatted: "Oct 28, 2024",
-    time: "9:00 AM - 5:00 PM",
-    venue: "Saveetha Engineering College, Thandalam, Chennai",
-    fee: "Varies by Track / Pass",
-    prizes: "Attractive Prizes Worth ₹10 Lakhs",
-    poster: "eventposterimg/eve6.webp",
-    techEvents: ["24-Hour AI Hackathon", "Hands-on Tech Workshops", "Paper Presentation", "Poster Presentation", "Project Display"],
-    nonTechEvents: ["Technical & Management Fest Competitions", "Gaming Tournaments"],
-    contact: "drestein@saveetha.ac.in | www.saveetha.ac.in",
-    regUrl: "https://drestein.saveetha.ac.in",
-    description: "15th National Level Inter Collegiate Technical and Management Fest themed 'DReam dESign compeTE wIN' offering massive prize pools worth ₹10 Lakhs."
-  },
-  {
-    id: "eve-2",
-    numericId: 2,
-    title: "KREATIV '26 — TECH BETA: Business x Coding",
-    college: "Kamaraj College of Engineering & Technology",
-    dept: "Department of Computer Science & Engineering",
-    date: "February 13, 2026",
-    regCloseDate: "2026-02-10",
-    regCloseFormatted: "Feb 10, 2026",
-    time: "9:00 AM - 4:30 PM",
-    venue: "Kamaraj College Campus, Virudhunagar",
-    fee: "₹100 per head (Team of 1 to 3 members)",
-    prizes: "₹25,000 Prize Pool",
-    poster: "eventposterimg/eve2.webp",
-    techEvents: ["Project Sprint (Technical Coding & Systems Building)"],
-    nonTechEvents: ["Market-O-Mania (Business Strategy & Pitching)"],
-    contact: "Cloud Nexus & Cyberite Student Chapters | Kamaraj College CSE",
-    regUrl: "https://kamarajengg.edu.in/kreativ26",
-    description: "National Level Technical Symposium uniting software engineering and business strategy with a ₹25k prize pool."
+    id: "eve-cloud-26",
+    numericId: 105,
+    title: "CLOUD CONVERGENCE '26 — DevOps & Cloud Architecture Summit",
+    college: "SRM Valliammai Engineering College",
+    dept: "Department of CSE in association with AWS & Google Cloud Clubs",
+    date: "December 04, 2026",
+    regCloseDate: "2026-11-28",
+    regCloseFormatted: "Nov 28, 2026",
+    time: "10:00 AM - 4:00 PM",
+    venue: "Seminar Hall, New Building, SRMVEC",
+    fee: "Free Registration",
+    prizes: "Cloud Certification Vouchers & Swag Bags",
+    poster: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop",
+    techEvents: ["Kubernetes Cluster Sprint", "Serverless Architecture Challenge", "Infrastructure as Code Showcase"],
+    nonTechEvents: ["Cloud Trivia Battle", "Architecture Design Sprint"],
+    contact: "cloud.club@srmvalliammai.ac.in",
+    regUrl: "https://srmvalliammai.ac.in/events/cloud2026",
+    description: "Annual cloud computing and infrastructure conference featuring hands-on containerization labs, serverless architecture demos, and sponsored certification vouchers."
   }
 ];
 
@@ -159,17 +187,25 @@ export const EventsStore = {
 
     const allEvents = [...DEFAULT_EVENTS, ...customEvents];
     
+    // STRICT RULE: Only return future and upcoming events. Past events are removed.
+    const upcomingEvents = allEvents.filter(evt => isEventUpcoming(evt));
+
     // Sort chronologically by registration closing date (regCloseDate) ASCENDING (earliest closing date first)
-    allEvents.sort((a, b) => {
+    upcomingEvents.sort((a, b) => {
       const dateA = new Date(a.regCloseDate || "9999-12-31");
       const dateB = new Date(b.regCloseDate || "9999-12-31");
       return dateA - dateB;
     });
 
-    return allEvents;
+    return upcomingEvents;
   },
 
   addEvent(eventData) {
+    // STRICT RULE: We can ONLY add future and upcoming events!
+    if (!isEventUpcoming(eventData)) {
+      throw new Error("Validation Error: Only future and upcoming events can be added. Events that have already finished in the past are not allowed.");
+    }
+
     const customEvents = this.getCustomEvents();
     const newId = "eve-custom-" + Date.now();
     
@@ -220,4 +256,6 @@ export const EventsStore = {
 
 if (typeof window !== "undefined") {
   window.EventsStore = EventsStore;
+  window.isEventUpcoming = isEventUpcoming;
 }
+export { DEFAULT_EVENTS };

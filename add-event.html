@@ -56,6 +56,7 @@
               <div class="form-row">
                 <label for="eventRegClose">Registration Closing Date * (Used for Chronological Sorting)</label>
                 <input class="form-control" type="date" id="eventRegClose" required />
+                <small style="display:block; color:#2563EB; font-size:0.8rem; margin-top:0.3rem;"><i class="fa-solid fa-shield-halved"></i> <strong>Policy Rule:</strong> Only future and upcoming events can be added. Past events are strictly blocked.</small>
               </div>
 
               <div class="form-row">
@@ -131,10 +132,17 @@
   <script type="module" src="/src/scripts/users.js"></script>
   <script type="module" src="/src/scripts/auth.js"></script>
   <script type="module">
-    import { EventsStore } from "/src/scripts/events-store.js";
+    import { EventsStore, isEventUpcoming } from "/src/scripts/events-store.js";
 
     Auth.requireLogin(["admin", "faculty_admin", "editor"]);
     Auth.renderUserBadge();
+
+    // Enforce Rule: Restrict minimum date to today or future
+    const regCloseInput = document.getElementById("eventRegClose");
+    const todayStr = new Date().toISOString().split("T")[0];
+    if (regCloseInput) {
+      regCloseInput.min = todayStr;
+    }
 
     const posterFileInput = document.getElementById("eventPosterFile");
     const posterDataUrlInput = document.getElementById("eventPosterDataUrl");
@@ -153,33 +161,45 @@
 
     document.getElementById("addEventForm").addEventListener("submit", function (e) {
       e.preventDefault();
+      const msgBox = document.getElementById("eventMessage");
       
       const newEventData = {
-        title: document.getElementById("eventTitle").value,
-        college: document.getElementById("eventCollege").value,
-        dept: document.getElementById("eventDept").value,
+        title: document.getElementById("eventTitle").value.trim(),
+        college: document.getElementById("eventCollege").value.trim(),
+        dept: document.getElementById("eventDept").value.trim(),
         regCloseDate: document.getElementById("eventRegClose").value,
-        date: document.getElementById("eventDate").value,
-        time: document.getElementById("eventTime").value,
-        venue: document.getElementById("eventVenue").value,
-        fee: document.getElementById("eventFee").value,
-        prizes: document.getElementById("eventPrizes").value,
-        techEvents: document.getElementById("eventTech").value,
-        nonTechEvents: document.getElementById("eventNonTech").value,
-        contact: document.getElementById("eventContact").value,
-        regUrl: document.getElementById("eventRegUrl").value,
+        date: document.getElementById("eventDate").value.trim(),
+        time: document.getElementById("eventTime").value.trim(),
+        venue: document.getElementById("eventVenue").value.trim(),
+        fee: document.getElementById("eventFee").value.trim(),
+        prizes: document.getElementById("eventPrizes").value.trim(),
+        techEvents: document.getElementById("eventTech").value.trim(),
+        nonTechEvents: document.getElementById("eventNonTech").value.trim(),
+        contact: document.getElementById("eventContact").value.trim(),
+        regUrl: document.getElementById("eventRegUrl").value.trim(),
         poster: posterDataUrlInput.value || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800&auto=format&fit=crop",
-        description: document.getElementById("eventDescription").value
+        description: document.getElementById("eventDescription").value.trim()
       };
 
-      const publishedEvent = EventsStore.addEvent(newEventData);
+      // STRICT VALIDATION RULE: Only future/upcoming events are allowed
+      if (!isEventUpcoming(newEventData)) {
+        msgBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <strong>Rule Enforced:</strong> Only future and upcoming events can be added! The specified date has already passed.`;
+        msgBox.className = "form-message is-visible error";
+        return;
+      }
 
-      const msgBox = document.getElementById("eventMessage");
-      msgBox.innerHTML = `<i class="fa-solid fa-circle-check"></i> Event <strong>"${publishedEvent.title}"</strong> successfully published! It is now live on the <a href="event1.html?eventId=${publishedEvent.id}" style="color:inherit;text-decoration:underline;">Events Board</a> and Home Page Slider.`;
-      msgBox.className = "form-message is-visible success";
+      try {
+        const publishedEvent = EventsStore.addEvent(newEventData);
 
-      this.reset();
-      posterDataUrlInput.value = "";
+        msgBox.innerHTML = `<i class="fa-solid fa-circle-check"></i> Event <strong>"${publishedEvent.title}"</strong> successfully published! It is now live on the <a href="event1.html?eventId=${publishedEvent.id}" style="color:inherit;text-decoration:underline;">Events Board</a> and Home Page Slider.`;
+        msgBox.className = "form-message is-visible success";
+
+        this.reset();
+        posterDataUrlInput.value = "";
+      } catch (err) {
+        msgBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> <strong>Validation Failed:</strong> ${err.message}`;
+        msgBox.className = "form-message is-visible error";
+      }
     });
   </script>
 

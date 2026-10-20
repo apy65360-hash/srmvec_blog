@@ -298,17 +298,28 @@
     </main>
   </div>
 
-  <script>
-    // Event data — clicking a poster navigates the top window to event1.html detail view
-    const EVENTS = [
-      { id: "eve-1", title: "AUGUSTA '24 — National Level Technical Symposium",    date: "April 03, 2024",          time: "9:30 AM - 4:30 PM", venue: "AAA College of Engineering & Technology", poster: "eventposterimg/eve1.webp" },
-      { id: "eve-2", title: "KREATIV '26 — Tech Beta: Business x Coding",          date: "February 13, 2026",       time: "9:00 AM - 4:30 PM", venue: "Kamaraj College of Engineering & Technology", poster: "eventposterimg/eve2.webp" },
-      { id: "eve-3", title: "CSEISMIC 2020 — Inter-Collegiate Technical Symposium",date: "January 10, 2020",        time: "9:00 AM - 4:30 PM", venue: "KCG College of Technology", poster: "eventposterimg/eve3.webp" },
-      { id: "eve-4", title: "CYNOSURE '23 — National Level Technical Symposium",   date: "February 09, 2023",       time: "9:00 AM - 5:00 PM", venue: "Sri Ramakrishna Institute of Technology", poster: "eventposterimg/eve4.webp" },
-      { id: "eve-5", title: "PHANTAZO '22 — National Level Technical Symposium",   date: "November 05, 2022",       time: "9:30 AM - 4:00 PM", venue: "J.J. College of Engineering and Technology", poster: "eventposterimg/eve5.webp" },
-      { id: "eve-6", title: "DRESTEIN '24 — Technical & Management Fest",          date: "November 04 - 09, 2024",  time: "9:00 AM - 5:00 PM", venue: "Saveetha Engineering College", poster: "eventposterimg/eve6.webp" },
-      { id: "eve-7", title: "CanFig — Hands-on Workshop on Figma and Canva",       date: "May 27 & 30, 2023",       time: "10:00 AM - 4:00 PM", venue: "Beta Hall, Sri Sai Ram Engineering College", poster: "eventposterimg/eve7.webp" }
+  <script type="module">
+    import { EventsStore, isEventUpcoming, DEFAULT_EVENTS } from "/src/scripts/events-store.js";
+
+    // Fallback events if loaded without module bundler
+    const FALLBACK_EVENTS = [
+      { id: "eve-eliteccom-26", title: "ELITECCOM-2026 PROJECT EXPO — 5th National Level Symposium", date: "October 17, 2026", regCloseDate: "2026-10-16", time: "9:00 AM - 5:00 PM", venue: "IETE Chennai Centre, Royapettah", poster: "eventposterimg/eliteccom-2026-project-expo.jpeg" },
+      { id: "eve-anveshan-26", title: "ANVESHAN 2K26 — 24-Hour National Level Hackathon Competition", date: "October 15 & 16, 2026", regCloseDate: "2026-10-16", time: "24-Hour Hackathon", venue: "BGSIT Campus, B G Nagara, Mandya", poster: "eventposterimg/anveshan-2k26-hackathon.jpeg" },
+      { id: "eve-hackaithon-26", title: "SRMVEC HACK-AI-THON '26 — National Generative AI Hackathon", date: "November 06 & 07, 2026", regCloseDate: "2026-11-01", time: "9:00 AM - 6:00 PM", venue: "CSE Department Innovation Labs, SRMVEC", poster: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=800&auto=format&fit=crop" },
+      { id: "eve-cyberstorm-26", title: "CYBERSTORM '26 — National Level Cyber Security & Ethical Hacking Fest", date: "November 20, 2026", regCloseDate: "2026-11-15", time: "9:30 AM - 4:30 PM", venue: "SRMVEC Campus, Kattankulathur", poster: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop" },
+      { id: "eve-cloud-26", title: "CLOUD CONVERGENCE '26 — DevOps & Cloud Architecture Summit", date: "December 04, 2026", regCloseDate: "2026-11-28", time: "10:00 AM - 4:00 PM", venue: "Seminar Hall, New Building, SRMVEC", poster: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop" }
     ];
+
+    let EVENTS = [];
+    try {
+      EVENTS = EventsStore.getEvents();
+    } catch (e) {
+      EVENTS = (DEFAULT_EVENTS || FALLBACK_EVENTS).filter(evt => isEventUpcoming ? isEventUpcoming(evt) : true);
+    }
+
+    if (!EVENTS || EVENTS.length === 0) {
+      EVENTS = FALLBACK_EVENTS.filter(evt => isEventUpcoming ? isEventUpcoming(evt) : true);
+    }
 
     let currentIndex = 0;
     let autoPlayTimer = null;
@@ -333,7 +344,7 @@
         }
       };
       card.innerHTML = `
-        <div class="poster-image"><img src="${event.poster}" alt="${event.title} poster" loading="lazy"></div>
+        <div class="poster-image"><img src="${event.poster}" alt="${event.title} poster" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800&auto=format&fit=crop'"></div>
         <div class="poster-info">
           <h3>${event.title}</h3>
           <div class="poster-meta">
@@ -354,6 +365,10 @@
 
     function initCarousel() {
       track.innerHTML = "";
+      if (EVENTS.length === 0) {
+        track.innerHTML = `<div style="padding:2.5rem;color:#64748B;font-size:1rem;text-align:center;width:100%;">No upcoming events found. Only future events are displayed.</div>`;
+        return;
+      }
       EVENTS.forEach(event => track.appendChild(renderPoster(event)));
       updateCarouselPosition();
     }
@@ -365,18 +380,20 @@
     function startAutoPlay() {
       if (autoPlayTimer) clearTimeout(autoPlayTimer);
       resetProgressBar();
-      if (!isHovering) {
+      if (!isHovering && EVENTS.length > 1) {
         autoPlayTimer = setTimeout(() => advance(), 5000);
       }
     }
 
     function advance() {
+      if (EVENTS.length <= 1) return;
       currentIndex = (currentIndex + 1) % EVENTS.length;
       updateCarouselPosition();
       startAutoPlay();
     }
 
     function goBack() {
+      if (EVENTS.length <= 1) return;
       currentIndex = (currentIndex - 1 + EVENTS.length) % EVENTS.length;
       updateCarouselPosition();
       startAutoPlay();
