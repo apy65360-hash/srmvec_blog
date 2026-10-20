@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Faculty Login | SRMVEC CSE Blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -52,7 +55,6 @@
           <input class="form-control" type="email" id="facultyEmail"
             placeholder="e.g. pr.cse@srmvalliammai.ac.in"
             autocomplete="email" required />
-          <small class="form-hint">Format: &lt;nameinitial&gt;.cse@srmvalliammai.ac.in</small>
         </div>
         <div class="form-actions">
           <button class="btn btn-primary btn-block" type="submit" id="sendOtpBtn">
@@ -71,7 +73,6 @@
           <input class="form-control otp-code-input" type="text" id="facultyOtp"
             placeholder="••••••" maxlength="6" inputmode="numeric" pattern="[0-9]*"
             autocomplete="one-time-code" required />
-          <small class="form-hint">Check your institutional inbox for the 6-digit OTP.</small>
         </div>
         <div class="form-actions">
           <button class="btn btn-primary btn-block" type="submit" id="verifyOtpBtn">
@@ -86,10 +87,8 @@
       </form>
 
       <div class="role-hint">
-        <p style="color:#64748b;font-size:0.83rem;"><i class="fa-solid fa-shield-halved"></i> Only pre-authorized faculty emails in the institutional roster are permitted.</p>
-        <p>Student? <a href="student-login.html">Student login</a></p>
-        <p>Demo faculty: <code>pr.cse@srmvalliammai.ac.in</code> (Demo OTP: <code>123456</code>)</p>
-        <p style="margin-top:.6rem;"><a href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a></p>
+        <p>Student? <a href="student-login.html">Student Login</a></p>
+        <p style="margin-top:.4rem;"><a href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a></p>
       </div>
     </div>
   </div>

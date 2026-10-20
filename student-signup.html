@@ -2,96 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Student Sign Up | SRMVEC CSE Blog</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="/src/styles/style.css" />
-  <link rel="stylesheet" href="/src/styles/portal.css" />
+  <meta http-equiv="refresh" content="0; url=student-corner.html" />
+  <title>Redirecting to Student Corner...</title>
 </head>
 <body>
-
-  <div class="login-wrapper">
-    <div class="login-card">
-      <div class="role-choice-icon student" style="margin-bottom:1rem;"><i class="fa-solid fa-user-plus"></i></div>
-      <h1>Student Sign Up</h1>
-      <p class="login-sub">Your date of birth is used as your password — no need to set one separately.</p>
-
-      <div class="form-message" id="signupMessage"></div>
-
-      <form id="signupForm" novalidate>
-        <div class="form-row">
-          <label for="signupName">Full Name</label>
-          <input class="form-control" type="text" id="signupName" placeholder="e.g. Arun Krishnamurthy" required />
-        </div>
-        <div class="form-row">
-          <label for="signupId">Register Number</label>
-          <input class="form-control" type="text" id="signupId" placeholder="e.g. CSE2204" required />
-        </div>
-        <div class="form-row">
-          <label for="signupDOB">Date of Birth (used as password)</label>
-          <input class="form-control" type="date" id="signupDOB"
-            autocomplete="bday" required />
-          <small class="form-hint">This will be your login password. Keep it safe.</small>
-        </div>
-        <div class="form-row">
-          <label for="signupYear">Year</label>
-          <select class="form-control" id="signupYear">
-            <option>I Year</option>
-            <option>II Year</option>
-            <option selected>III Year</option>
-            <option>IV Year</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label for="signupEmail">College Email <span style="font-weight:400;font-size:.85em;">(optional)</span></label>
-          <input class="form-control" type="email" id="signupEmail" placeholder="name@srmvec.ac.in" />
-        </div>
-        <div class="form-actions">
-          <button class="btn btn-success btn-block" type="submit">
-            <i class="fa-solid fa-user-plus"></i> Create Account
-          </button>
-        </div>
-      </form>
-
-      <div class="role-hint">
-        <p>Already registered? <a href="student-login.html">Student login</a></p>
-        <p>Faculty member? <a href="teacher-login.html">Teacher login</a></p>
-        <p style="margin-top:.6rem;"><a href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a></p>
-      </div>
-    </div>
-  </div>
-
-  <script type="module" src="/src/scripts/users.js"></script>
-  <script type="module" src="/src/scripts/auth.js"></script>
   <script>
-    document.getElementById("signupForm").addEventListener("submit", function (event) {
-      event.preventDefault();
-      const box = document.getElementById("signupMessage");
-
-      function tryRegister() {
-        if (!window.PortalUsers) { setTimeout(tryRegister, 60); return; }
-        const result = PortalUsers.register({
-          name:  document.getElementById("signupName").value,
-          id:    document.getElementById("signupId").value,
-          dob:   document.getElementById("signupDOB").value,   // ISO YYYY-MM-DD → normalised by register()
-          role:  "student",
-          year:  document.getElementById("signupYear").value,
-          email: document.getElementById("signupEmail").value
-        });
-        if (result.error) {
-          box.textContent = result.error;
-          box.className = "form-message is-visible error";
-          return;
-        }
-        location.href = "student-login.html?registered=1";
-      }
-      tryRegister();
-    });
+    location.replace("student-corner.html" + location.search);
   </script>
-
 </body>
 </html>
-

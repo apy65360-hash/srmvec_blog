@@ -52,7 +52,7 @@ export async function protectRoute({ allowedRoles = [], requirePasswordUpdated =
   if (allowedRoles.includes('teacher')) {
     loginPage = 'teacher-login.html';
   } else if (allowedRoles.includes('student')) {
-    loginPage = 'student-login.html';
+    loginPage = 'student-corner.html';
   } else if (allowedRoles.some(r => ['admin', 'faculty_admin', 'editor'].includes(r))) {
     loginPage = 'admin-login.html';
   }

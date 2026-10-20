@@ -2,6 +2,7 @@
  * Front-end session helper for the CSE Blog portal.
  * Integrated with Supabase Auth and localStorage fallback.
  */
+import './supabase.js';
 const AUTH_STORAGE_KEY = "srmvec_portal_session";
 const BLOGDB_USER_KEY = "srmvec_current_user";
 
@@ -89,15 +90,6 @@ async function validateNewPassword(newPassword, regNo) {
     if (passLower.includes(keyword)) {
       return { valid: false, error: `Password must not contain "${keyword}".` };
     }
-  }
-
-  // Check against 800M+ real-world breached passwords via HIBP
-  const { isPwned, breachCount } = await isPasswordLeaked(newPassword);
-  if (isPwned) {
-    return {
-      valid: false,
-      error: `This password has appeared in ${breachCount.toLocaleString()} known data breaches. Please choose a different, unique password.`
-    };
   }
 
   return { valid: true };
@@ -325,80 +317,309 @@ const Auth = {
     return { error: 'Invalid verification code.' };
   },
 
+  // ── Student Auth Methods ────────────────────────────────────────────────────
+
   /**
-   * Student Login with Register Number + Password
-   * Synthesizes canonical student email and checks for forced password change.
+   * Check if a register number exists in the roster and whether they have
+   * already completed first-login registration.
+   * Returns: { exists: bool, is_registered: bool }
+   */
+  async checkStudentRoster(registerNumber) {
+    const cleanRegNo = String(registerNumber || '').trim().toUpperCase();
+    if (window.supabase) {
+      try {
+        const { data, error } = await window.supabase.rpc('check_student_roster', { p_reg_no: cleanRegNo });
+        if (!error && data) return data;
+      } catch (e) { /* fall through */ }
+    }
+    // Local fallback
+    if (window.PortalUsers) {
+      const local = window.PortalUsers.allStudents().find(s =>
+        (s.id && s.id.toUpperCase() === cleanRegNo) ||
+        (s.register_number && s.register_number.toUpperCase() === cleanRegNo)
+      );
+      if (local) return { exists: true, is_registered: false };
+    }
+    return { exists: false };
+  },
+
+  /**
+   * Verify student identity: checks Full Name against the roster.
+   * Returns: { valid: bool, reason?: 'not_found'|'already_registered'|'name_mismatch' }
+   */
+  async verifyStudentName(registerNumber, fullName) {
+    const cleanRegNo = String(registerNumber || '').trim().toUpperCase();
+    const cleanName  = String(fullName || '').trim();
+    if (window.supabase) {
+      try {
+        const { data, error } = await window.supabase.rpc('verify_student_name', {
+          p_reg_no: cleanRegNo,
+          p_name:   cleanName
+        });
+        if (!error && data) return data;
+      } catch (e) { /* fall through */ }
+    }
+    // Local fallback
+    if (window.PortalUsers) {
+      const local = window.PortalUsers.allStudents().find(s =>
+        (s.id && s.id.toUpperCase() === cleanRegNo) &&
+        s.name && s.name.toUpperCase().replace(/\s+/g, ' ').trim() ===
+                  cleanName.toUpperCase().replace(/\s+/g, ' ').trim()
+      );
+      return local ? { valid: true } : { valid: false, reason: 'name_mismatch' };
+    }
+    return { valid: false, reason: 'not_found' };
+  },
+
+  /**
+   * First-time registration: creates a Supabase auth account with the student's
+   * personal email and chosen password after identity has been verified.
+   * Returns: { emailConfirmRequired: bool, email: string } on success, or { error }
+   */
+  async registerStudent(registerNumber, fullName, email, password) {
+    const cleanRegNo = String(registerNumber || '').trim().toUpperCase();
+    const cleanEmail = String(email || '').trim().toLowerCase();
+    const cleanName  = String(fullName || '').trim();
+
+    if (!cleanRegNo || !cleanEmail || !password) {
+      return { error: 'Register number, email, and password are all required.' };
+    }
+
+    // Fast local validation
+    const validation = await validateNewPassword(password, cleanRegNo);
+    if (!validation.valid) return { error: validation.error };
+
+    if (window.supabase) {
+      try {
+        const { data, error } = await window.supabase.auth.signUp({
+          email: cleanEmail,
+          password,
+          options: {
+            data: {
+              full_name:       cleanName,
+              register_number: cleanRegNo,
+              role:            'student'
+            }
+          }
+        });
+
+        if (error) return { error: error.message };
+
+        // If a session was returned, email confirmation is not required
+        if (data.session && data.user) {
+          const user = {
+            userId:            data.user.id,
+            id:                data.user.id,
+            name:              cleanName,
+            displayName:       cleanName,
+            username:          cleanRegNo,
+            registerNumber:    cleanRegNo,
+            role:              'student',
+            email:             cleanEmail,
+            mustChangePassword: false,
+            permissions:       {}
+          };
+          this.startSession(user);
+          return { emailConfirmRequired: false, email: cleanEmail };
+        }
+
+        // Session is null → Supabase requires email confirmation
+        return { emailConfirmRequired: true, email: cleanEmail };
+
+      } catch (err) {
+        return { error: err.message || 'Registration failed.' };
+      }
+    }
+
+    // Local fallback (offline / demo mode)
+    if (window.PortalUsers) {
+      const result = window.PortalUsers.register({
+        name: cleanName, id: cleanRegNo, role: 'student',
+        email: cleanEmail, dob: password
+      });
+      if (result.error) return result;
+      this.startSession({ ...result.user, registerNumber: cleanRegNo });
+      return { emailConfirmRequired: false, email: cleanEmail };
+    }
+
+    return { error: 'Registration service unavailable.' };
+  },
+
+  /**
+   * Returning student login: looks up the student's personal email by register
+   * number (via Supabase RPC), then signs in with email + password.
    */
   async loginStudent(registerNumber, password) {
     const cleanRegNo = String(registerNumber || '').trim().toUpperCase();
     if (!cleanRegNo || !password) {
-      return { error: 'Please enter both your Register Number and password.' };
+      return { error: 'Please enter your Register Number and password.' };
     }
 
-    const syntheticEmail = `${cleanRegNo.toLowerCase()}@student.srmvec.ac.in`;
-    let supabaseError = null;
-
+    // Resolve personal email from profiles table via secure RPC
+    let studentEmail = null;
     if (window.supabase) {
       try {
-        // Sign in using synthetic email
+        const { data } = await window.supabase.rpc('get_student_email_by_regno', { p_reg_no: cleanRegNo });
+        studentEmail = data || null;
+      } catch (e) { /* fall through */ }
+    }
+
+    if (studentEmail && window.supabase) {
+      try {
         const { data, error } = await window.supabase.auth.signInWithPassword({
-          email: syntheticEmail,
-          password: password
+          email:    studentEmail,
+          password
         });
 
         if (!error && data && data.user) {
           const { data: profile } = await window.supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', data.user.id)
-            .maybeSingle();
-
-          const mustChange = profile?.must_change_password ?? (data.user.user_metadata?.must_change_password ?? false);
+            .from('profiles').select('*').eq('id', data.user.id).maybeSingle();
 
           const user = {
-            userId: data.user.id,
-            id: data.user.id,
-            name: profile?.full_name || data.user.user_metadata?.full_name || cleanRegNo,
-            displayName: profile?.full_name || data.user.user_metadata?.full_name || cleanRegNo,
-            username: cleanRegNo,
-            registerNumber: cleanRegNo,
-            role: 'student',
-            email: syntheticEmail,
-            mustChangePassword: !!mustChange,
-            permissions: profile?.permissions || {}
+            userId:            data.user.id,
+            id:                data.user.id,
+            name:              profile?.full_name || data.user.user_metadata?.full_name || cleanRegNo,
+            displayName:       profile?.full_name || data.user.user_metadata?.full_name || cleanRegNo,
+            username:          cleanRegNo,
+            registerNumber:    cleanRegNo,
+            role:              'student',
+            email:             studentEmail,
+            mustChangePassword: !!(profile?.must_change_password),
+            permissions:       profile?.permissions || {}
           };
-
-          const session = this.startSession(user);
-          return { session, mustChangePassword: !!mustChange };
-        } else if (error) {
-          supabaseError = error.message;
+          return { session: this.startSession(user), mustChangePassword: user.mustChangePassword };
         }
+
+        if (error) return { error: error.message };
+
       } catch (err) {
-        supabaseError = err.message;
+        return { error: err.message || 'Login failed.' };
       }
     }
 
-    // Local fallback for offline/demo students
-    if (window.PortalUsers) {
-      const localStudent = window.PortalUsers.allStudents().find(s => 
-        (s.id && s.id.toUpperCase() === cleanRegNo) || (s.register_number && s.register_number.toUpperCase() === cleanRegNo)
-      );
+    // Email not found in Supabase → student hasn't registered yet
+    if (!studentEmail && window.supabase) {
+      return { error: 'No account found. Please complete first-time registration.' };
+    }
 
-      // Check against DOB or default password SRMVEC#<regNo> or CSE<regNo>
-      if (localStudent) {
-        const defaultPass = `SRMVEC#${cleanRegNo}`;
-        const isMatch = (password === defaultPass) || (password === localStudent.dob) || (password === cleanRegNo);
+    // Local fallback (demo / offline)
+    if (window.PortalUsers) {
+      const local = window.PortalUsers.allStudents().find(s =>
+        (s.id && s.id.toUpperCase() === cleanRegNo) ||
+        (s.register_number && s.register_number.toUpperCase() === cleanRegNo)
+      );
+      if (local) {
+        const isMatch = password === local.dob || password === `SRMVEC#${cleanRegNo}` || password === cleanRegNo;
         if (isMatch) {
-          const isDefault = (password === defaultPass) || (password === localStudent.dob);
-          localStudent.mustChangePassword = isDefault;
-          localStudent.registerNumber = cleanRegNo;
-          const session = this.startSession(localStudent);
-          return { session, mustChangePassword: isDefault };
+          local.registerNumber = cleanRegNo;
+          return { session: this.startSession(local), mustChangePassword: false };
         }
       }
     }
 
-    return { error: supabaseError || 'Invalid Register Number or Password.' };
+    return { error: 'Invalid Register Number or Password.' };
+  },
+
+  /**
+   * Forgot password: looks up the student's registered personal email and sends
+   * a Supabase password-reset link to it.
+   * Returns: { success: true, maskedEmail: '...' } or { error }
+   */
+  async forgotStudentPassword(registerNumber) {
+    const cleanRegNo = String(registerNumber || '').trim().toUpperCase();
+    if (!cleanRegNo) return { error: 'Please enter your Register Number.' };
+
+    if (window.supabase) {
+      try {
+        const { data: email } = await window.supabase.rpc('get_student_email_by_regno', { p_reg_no: cleanRegNo });
+        if (!email) return { error: 'No registered email found. Please contact the administrator.' };
+
+        const { error } = await window.supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${location.origin}/change-password.html?forced=1&next=student-corner.html`
+        });
+        if (error) return { error: error.message };
+
+        // Mask email: ab***@gmail.com
+        const masked = email.replace(/^(.{2}).*(@.+)$/, '$1***$2');
+        return { success: true, maskedEmail: masked };
+      } catch (err) {
+        return { error: err.message || 'Failed to send reset email.' };
+      }
+    }
+    return { error: 'Password reset requires an internet connection.' };
+  },
+
+  /**
+   * Student Login with Register Number + Password (kept for internal calls)
+   * @deprecated Use loginStudent() — this alias will be removed.
+   */
+  async checkStudentLoginType(registerNumber) {
+    const cleanRegNo = String(registerNumber || '').trim().toUpperCase();
+    if (window.supabase) {
+      try {
+        const { data, error } = await window.supabase.rpc('check_student_login_type', { p_reg_no: cleanRegNo });
+        if (!error && data) return data;
+      } catch (e) { /* fall through to local */ }
+    }
+    if (window.PortalUsers) {
+      const local = window.PortalUsers.allStudents().find(s =>
+        (s.id && s.id.toUpperCase() === cleanRegNo) ||
+        (s.register_number && s.register_number.toUpperCase() === cleanRegNo)
+      );
+      if (local) return { exists: true, must_change_password: true };
+    }
+    return { exists: false };
+  },
+
+  /**
+   * First-login: verify student identity by Register Number + Full Name.
+   * If verified, signs in with temp password (register number itself).
+   */
+  async loginStudentFirstTime(registerNumber, fullName) {
+    const cleanRegNo = String(registerNumber || '').trim().toUpperCase();
+    const cleanName  = String(fullName || '').trim();
+    if (!cleanRegNo || !cleanName) {
+      return { error: 'Please enter both your Register Number and Full Name.' };
+    }
+
+    // Verify identity via Supabase RPC
+    if (window.supabase) {
+      try {
+        const { data, error } = await window.supabase.rpc('verify_student_first_login', {
+          p_reg_no: cleanRegNo,
+          p_name: cleanName
+        });
+        if (error) return { error: error.message };
+        if (!data) return { error: 'Verification failed. Please try again.' };
+        if (!data.valid) {
+          if (data.reason === 'not_found')     return { error: 'Register Number not found in records.' };
+          if (data.reason === 'already_set')   return { error: 'already_set' }; // Signal to show password form
+          if (data.reason === 'name_mismatch') return { error: 'Name does not match records. Check spelling.' };
+          return { error: 'Verification failed.' };
+        }
+      } catch (e) {
+        return { error: e.message || 'Verification error.' };
+      }
+    } else {
+      // Local fallback
+      if (window.PortalUsers) {
+        const local = window.PortalUsers.allStudents().find(s =>
+          (s.id && s.id.toUpperCase() === cleanRegNo) &&
+          s.name && s.name.toUpperCase().replace(/\s+/g,' ').trim() === cleanName.toUpperCase().replace(/\s+/g,' ').trim()
+        );
+        if (!local) return { error: 'Name does not match records. Check spelling.' };
+      }
+    }
+
+    // Identity verified — sign in using register number as temp password
+    const result = await this.loginStudent(cleanRegNo, cleanRegNo);
+    if (result && !result.error) return { ...result, mustChangePassword: true };
+
+    // Try SRMVEC# prefix fallback
+    const result2 = await this.loginStudent(cleanRegNo, `SRMVEC#${cleanRegNo}`);
+    if (result2 && !result2.error) return { ...result2, mustChangePassword: true };
+
+    return { error: 'Auto sign-in failed after verification. Please contact the administrator.' };
   },
 
   /**
@@ -604,6 +825,40 @@ const Auth = {
         }
       }
     });
+
+    // Update top institutional utility bar across pages when logged in
+    const user = this.currentUser();
+    const topLinks = document.querySelector(".top-utility-links");
+    if (topLinks && user) {
+      if (user.role === "student") {
+        topLinks.innerHTML = `
+          <span style="color:#e2e8f0;font-weight:600;"><i class="fa-solid fa-user-graduate" style="color:#60a5fa;margin-right:0.35rem;"></i>Hi, ${user.name || user.displayName || 'Student'}</span>
+          <a href="student-corner.html" style="color:#93c5fd;font-weight:600;"><i class="fa-solid fa-pen-nib"></i> Student Corner</a>
+          <a href="#" class="top-auth-logout-link" style="color:#fca5a5;font-weight:600;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        `;
+      } else if (user.role === "teacher") {
+        topLinks.innerHTML = `
+          <span style="color:#e2e8f0;font-weight:600;"><i class="fa-solid fa-chalkboard-user" style="color:#c084fc;margin-right:0.35rem;"></i>Hi, ${user.name || user.displayName || 'Faculty'}</span>
+          <a href="teachers-corner.html" style="color:#d8b4fe;font-weight:600;"><i class="fa-solid fa-pen-nib"></i> Teacher's Corner</a>
+          <a href="#" class="top-auth-logout-link" style="color:#fca5a5;font-weight:600;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        `;
+      } else if (isAdmin) {
+        topLinks.innerHTML = `
+          <span style="color:#e2e8f0;font-weight:600;"><i class="fa-solid fa-shield-halved" style="color:#fbbf24;margin-right:0.35rem;"></i>Hi, Admin</span>
+          <a href="admin-corner.html" style="color:#fde047;font-weight:600;"><i class="fa-solid fa-gauge"></i> Admin Corner</a>
+          <a href="#" class="top-auth-logout-link" style="color:#fca5a5;font-weight:600;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        `;
+      }
+
+      topLinks.querySelectorAll(".top-auth-logout-link").forEach(btn => {
+        btn.onclick = (e) => {
+          e.preventDefault();
+          this.logout().then(() => {
+            location.href = "index.html";
+          });
+        };
+      });
+    }
   },
 
   renderUserBadge() {
@@ -630,4 +885,7 @@ if (typeof window !== "undefined") {
     Auth.updateAdminDropdowns();
   });
 }
+
+export { Auth };
+export default Auth;
 

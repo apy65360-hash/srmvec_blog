@@ -99,6 +99,16 @@ const PortalUsers = {
     return PORTAL_USERS.concat(this.registered());
   },
 
+  /** All student accounts. */
+  allStudents() {
+    return this.all().filter(u => u.role === 'student');
+  },
+
+  /** All teacher accounts. */
+  allTeachers() {
+    return this.all().filter(u => u.role === 'teacher');
+  },
+
   /** Every account whose name or ID equals the input (names are not unique). */
   findAll(nameOrId, role) {
     const needle = String(nameOrId || "").trim().toLowerCase();
@@ -335,4 +345,7 @@ if (typeof window !== "undefined") {
   window.PortalUsers = PortalUsers;
   window.TEACHER_EMAIL_DOMAINS = TEACHER_EMAIL_DOMAINS;
 }
+
+export { PortalUsers };
+export default PortalUsers;
 

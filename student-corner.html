@@ -3,12 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Student Corner — SRMVEC CSE Blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="/src/styles/style.css" />
+  <link rel="stylesheet" href="/src/styles/portal.css" />
   <link rel="stylesheet" href="/src/styles/blogs.css" />
   <style>
+    /* Status Badges */
     .badge-pending {
       background: #FEF3C7;
       color: #92400E;
@@ -49,41 +56,276 @@
       font-size: 0.88rem;
       color: #475569;
     }
+
+    /* Auth Panels inside Login Screen */
+    .view-panel { display: none; }
+    .view-panel.active { display: block; animation: fadeIn .2s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+    .pw-wrap { position: relative; }
+    .pw-wrap .pw-eye {
+      position: absolute; right: .75rem; top: 50%; transform: translateY(-50%);
+      cursor: pointer; color: #94a3b8; font-size: .85rem;
+    }
+    .pw-wrap input { padding-right: 2.4rem; }
+
+    .switch-link {
+      font-size: 0.88rem;
+      color: #2563eb;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .switch-link:hover { text-decoration: underline; }
+    .back-link { font-size: 0.85rem; color: #64748b; cursor: pointer; text-decoration: none; }
+    .back-link:hover { color: #2563eb; }
+
+    /* Modal Popup: Account Already Registered */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+      padding: 1rem;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-box {
+      background: #ffffff;
+      border-radius: 14px;
+      max-width: 400px;
+      width: 100%;
+      padding: 1.75rem 1.5rem;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+      transform: scale(0.95);
+      transition: transform 0.2s ease;
+    }
+    .modal-overlay.open .modal-box {
+      transform: scale(1);
+    }
+    .modal-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #EFF6FF;
+      color: #2563eb;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.5rem;
+    }
+    .modal-text {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .modal-btn {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      background: #2563eb;
+      color: #ffffff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .modal-btn:hover { background: #1d4ed8; }
   </style>
 </head>
 <body>
 
-<!-- ═══════════════ LOGIN SCREEN ═══════════════ -->
+<!-- ═══════════════ AUTHENTICATION SCREEN (Shown When Logged Out) ═══════════════ -->
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
+
     <div class="login-card-header">
-      <div class="login-icon"><i class="fa-solid fa-user-graduate"></i></div>
-      <h2>Student Corner</h2>
-      <p>SRMVEC CSE Blog Portal — Student Access</p>
+      <div class="role-choice-icon student" style="margin-bottom:.8rem;">
+        <i class="fa-solid fa-user-graduate"></i>
+      </div>
+      <h2 id="authTitle">Student Corner</h2>
+      <p id="authSub">Activate your student account to access the Student Corner.</p>
     </div>
-    <div class="error-msg" id="loginError">Invalid username or password. Please try again.</div>
-    <form id="loginForm" novalidate>
-      <div class="form-group">
-        <label for="loginUsername">Register Number</label>
-        <input type="text" id="loginUsername" class="form-control" placeholder="e.g. CSE2201" autocomplete="username" />
+
+    <!-- Alert Message Box -->
+    <div class="form-message" id="authMsg"></div>
+
+    <!-- ── FORM 1: ACTIVATE ACCOUNT (Default for first time students) ── -->
+    <div class="view-panel active" id="panelRegister">
+      <form id="registerForm" novalidate>
+        <div class="form-row">
+          <label for="regInput">Register Number</label>
+          <input class="form-control" type="text" id="regInput"
+            placeholder="Enter your Register Number"
+            autocomplete="username" required />
+        </div>
+
+        <div class="form-row">
+          <label for="nameInput">Full Name</label>
+          <input class="form-control" type="text" id="nameInput"
+            placeholder="Enter full name as per college records"
+            autocomplete="name" required />
+        </div>
+
+        <div class="form-row">
+          <label for="emailInput">Personal Email ID</label>
+          <input class="form-control" type="email" id="emailInput"
+            placeholder="Enter your personal email"
+            autocomplete="email" required />
+        </div>
+
+        <div class="form-row">
+          <label for="pwInput">Set Password</label>
+          <div class="pw-wrap">
+            <input class="form-control" type="password" id="pwInput"
+              placeholder="Minimum 8 characters"
+              autocomplete="new-password" required />
+            <span class="pw-eye" onclick="togglePw('pwInput',this)"><i class="fa-solid fa-eye"></i></span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="pwConfirmInput">Confirm Password</label>
+          <div class="pw-wrap">
+            <input class="form-control" type="password" id="pwConfirmInput"
+              placeholder="Re-enter password"
+              autocomplete="new-password" required />
+            <span class="pw-eye" onclick="togglePw('pwConfirmInput',this)"><i class="fa-solid fa-eye"></i></span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary btn-block" type="submit" id="btnRegister">
+            <i class="fa-solid fa-user-check"></i> Verify &amp; Activate Account
+          </button>
+        </div>
+
+        <div style="text-align:center;margin-top:1.25rem;font-size:0.88rem;color:#64748b;">
+          Already registered? <span class="switch-link" id="linkToLogin">Sign In</span>
+        </div>
+      </form>
+    </div>
+
+    <!-- ── FORM 2: SIGN IN (For registered students) ── -->
+    <div class="view-panel" id="panelLogin">
+      <form id="loginForm" novalidate>
+        <div class="form-row">
+          <label for="loginRegInput">Register Number</label>
+          <input class="form-control" type="text" id="loginRegInput"
+            placeholder="Enter your Register Number"
+            autocomplete="username" required />
+        </div>
+
+        <div class="form-row">
+          <label for="loginPwInput">Password</label>
+          <div class="pw-wrap">
+            <input class="form-control" type="password" id="loginPwInput"
+              placeholder="Enter your password"
+              autocomplete="current-password" required />
+            <span class="pw-eye" onclick="togglePw('loginPwInput',this)"><i class="fa-solid fa-eye"></i></span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary btn-block" type="submit" id="btnLogin">
+            <i class="fa-solid fa-right-to-bracket"></i> Sign In
+          </button>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;font-size:0.85rem;">
+          <span class="switch-link" id="linkForgot">Forgot Password?</span>
+          <span style="color:#64748b;">New student? <span class="switch-link" id="linkToRegister">Activate Account</span></span>
+        </div>
+      </form>
+    </div>
+
+    <!-- ── FORM 3: FORGOT PASSWORD ── -->
+    <div class="view-panel" id="panelForgot">
+      <div id="forgotFormWrap">
+        <div class="form-row">
+          <label for="forgotRegInput">Register Number</label>
+          <input class="form-control" type="text" id="forgotRegInput"
+            placeholder="Enter your Register Number"
+            autocomplete="username" required />
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary btn-block" type="button" id="btnForgot">
+            <i class="fa-solid fa-paper-plane"></i> Send Password Reset Link
+          </button>
+        </div>
+        <div style="text-align:center;margin-top:1.25rem;">
+          <span class="back-link" id="linkBackFromForgot"><i class="fa-solid fa-arrow-left"></i> Back to Sign In</span>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="loginPassword">Password</label>
-        <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" autocomplete="current-password" />
-        <small style="color:#64748b; font-size:0.75rem; display:block; margin-top:0.25rem;">Default password format: SRMVEC#&lt;RegisterNo&gt;</small>
+      <div id="forgotDone" style="display:none;text-align:center;padding:.5rem 0;">
+        <i class="fa-solid fa-circle-check" style="font-size:2.2rem;color:#10b981;margin-bottom:.8rem;"></i>
+        <p style="font-weight:700;font-size:1.05rem;">Reset link dispatched!</p>
+        <p style="color:#64748b;font-size:.88rem;margin-top:.3rem;">Check <span id="forgotMaskedEmail" style="font-weight:600;color:#1e40af;"></span> to reset your password.</p>
+        <div style="margin-top:1.25rem;">
+          <button type="button" class="btn btn-primary btn-block" id="linkBackAfterDone">
+            <i class="fa-solid fa-right-to-bracket"></i> Return to Sign In
+          </button>
+        </div>
       </div>
-      <button type="submit" class="btn btn-blue" style="width:100%;justify-content:center;padding:.8rem;">
-        <i class="fa-solid fa-right-to-bracket"></i> Sign In
-      </button>
-    </form>
-    <p style="text-align:center;margin-top:1.2rem;font-size:0.82rem;color:#94A3B8;">
-      New here? <a href="student-signup.html">Create a student account</a><br />
-      Faculty? <a href="teachers-corner.html">Go to Teacher's Corner</a> &nbsp;•&nbsp; <a href="index.html">Home</a>
+    </div>
+
+    <!-- ── FORM 4: EMAIL CONFIRMATION NOTICE ── -->
+    <div class="view-panel" id="panelConfirm">
+      <div style="text-align:center;padding:1rem 0;">
+        <i class="fa-solid fa-envelope-circle-check" style="font-size:2.5rem;color:#3b82f6;margin-bottom:1rem;"></i>
+        <h3 style="margin-bottom:.5rem;">Verify Your Email</h3>
+        <p style="color:#64748b;font-size:.9rem;">A confirmation link has been sent to:</p>
+        <p style="font-weight:700;color:#1e40af;margin-top:.3rem;" id="confirmEmailDisplay"></p>
+        <button type="button" class="btn btn-primary btn-block" id="btnGoToLoginAfterConfirm" style="margin-top:1.2rem;">
+          <i class="fa-solid fa-right-to-bracket"></i> Go to Sign In
+        </button>
+      </div>
+    </div>
+
+    <p style="text-align:center;margin-top:1.5rem;font-size:0.82rem;color:#94A3B8;">
+      Faculty? <a href="teacher-login.html">Faculty Login</a> &nbsp;•&nbsp; <a href="index.html">Home</a>
     </p>
+
   </div>
 </div>
 
-<!-- ═══════════════ DASHBOARD ═══════════════ -->
+<!-- Modal Popup: Account Already Registered -->
+<div class="modal-overlay" id="registeredModal">
+  <div class="modal-box">
+    <div class="modal-icon">
+      <i class="fa-solid fa-circle-info"></i>
+    </div>
+    <div class="modal-title">Account Already Registered</div>
+    <div class="modal-text">
+      An account is already registered for Register Number <strong id="modalRegNo" style="color:#0f172a;"></strong>.<br />
+      Please sign in with your password.
+    </div>
+    <button type="button" class="modal-btn" id="modalBtnSignIn">
+      <i class="fa-solid fa-right-to-bracket"></i> Proceed to Sign In
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════ DASHBOARD SCREEN (Shown When Logged In) ═══════════════ -->
 <div class="portal-layout" id="dashboardScreen" style="display:none;">
 
   <header class="portal-header">
@@ -203,244 +445,432 @@
 <script type="module" src="/src/scripts/users.js"></script>
 <script type="module" src="/src/scripts/auth.js"></script>
 <script type="module" src="/src/scripts/blog-data.js"></script>
-<script type="module" src="/src/scripts/auth-guard.js"></script>
 <script type="module">
-  let currentUser = null;
+import { Auth } from '/src/scripts/auth.js';
+import '/src/scripts/supabase.js';
 
-  document.getElementById('loginForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const regNo = document.getElementById('loginUsername').value.trim();
-    const password = document.getElementById('loginPassword').value.trim();
+let currentUser = null;
 
-    if (!regNo || !password) {
-      document.getElementById('loginError').textContent = 'Please enter your Register Number and Password.';
-      document.getElementById('loginError').classList.add('visible');
-      return;
-    }
+// Safe password toggle
+window.togglePw = function(id, eye) {
+  const inp = document.getElementById(id);
+  const showing = inp.type === 'text';
+  inp.type = showing ? 'password' : 'text';
+  eye.innerHTML = showing ? '<i class="fa-solid fa-eye"></i>' : '<i class="fa-solid fa-eye-slash"></i>';
+};
 
-    if (window.Auth) {
-      const res = await window.Auth.loginStudent(regNo, password);
-      if (res.error) {
-        document.getElementById('loginError').textContent = res.error;
-        document.getElementById('loginError').classList.add('visible');
-        return;
-      }
+const authMsg = document.getElementById('authMsg');
+const authTitle = document.getElementById('authTitle');
+const authSub = document.getElementById('authSub');
 
-      if (res.mustChangePassword) {
-        location.href = "change-password.html?forced=1";
-        return;
-      }
+const panelRegister = document.getElementById('panelRegister');
+const panelLogin = document.getElementById('panelLogin');
+const panelForgot = document.getElementById('panelForgot');
+const panelConfirm = document.getElementById('panelConfirm');
 
-      currentUser = res.session;
-      BlogDB.setCurrentUser(currentUser);
-      document.getElementById('loginError').classList.remove('visible');
-      showDashboard();
-      return;
-    }
+const registeredModal = document.getElementById('registeredModal');
+const modalRegNo = document.getElementById('modalRegNo');
+const modalBtnSignIn = document.getElementById('modalBtnSignIn');
 
-    // Fallback to BlogDB
-    const user = BlogDB.authenticate(regNo, password, 'student');
-    if (!user) {
-      document.getElementById('loginError').classList.add('visible');
-      return;
-    }
-    document.getElementById('loginError').classList.remove('visible');
-    BlogDB.setCurrentUser(user);
-    currentUser = user;
-    showDashboard();
-  });
+function showMsg(text, type) {
+  authMsg.textContent = text;
+  authMsg.className = `form-message is-visible ${type}`;
+}
+function clearMsg() {
+  authMsg.textContent = '';
+  authMsg.className = 'form-message';
+}
 
-  function showDashboard() {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('dashboardScreen').style.display = '';
-    document.getElementById('headerUsername').textContent = currentUser.displayName || currentUser.name;
-    renderMyBlogs();
+function openRegisteredPopup(regNo) {
+  modalRegNo.textContent = regNo;
+  registeredModal.classList.add('open');
+}
+function closeRegisteredPopup() {
+  registeredModal.classList.remove('open');
+}
+
+modalBtnSignIn.addEventListener('click', () => {
+  closeRegisteredPopup();
+  switchToLogin(modalRegNo.textContent.trim());
+});
+
+function switchToRegister() {
+  clearMsg();
+  authTitle.textContent = 'Student Corner';
+  authSub.textContent = 'Activate your student account to access the Student Corner.';
+  document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+  panelRegister.classList.add('active');
+}
+
+function switchToLogin(prefillReg = '') {
+  clearMsg();
+  authTitle.textContent = 'Student Sign In';
+  authSub.textContent = 'Sign in with your Register Number and password.';
+  document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+  panelLogin.classList.add('active');
+  if (prefillReg) {
+    document.getElementById('loginRegInput').value = prefillReg;
+    document.getElementById('loginPwInput').focus();
   }
+}
 
-  window.addEventListener('DOMContentLoaded', async () => {
-    // Check route guard if available
-    if (window.protectRoute) {
-      const authUser = await window.protectRoute({ allowedRoles: ['student'], requirePasswordUpdated: true });
-      if (authUser) {
-        currentUser = authUser;
-        BlogDB.setCurrentUser(authUser);
-        showDashboard();
+function switchToForgot(prefillReg = '') {
+  clearMsg();
+  authTitle.textContent = 'Reset Password';
+  authSub.textContent = 'Enter your Register Number to receive a reset link.';
+  document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+  panelForgot.classList.add('active');
+  document.getElementById('forgotFormWrap').style.display = 'block';
+  document.getElementById('forgotDone').style.display = 'none';
+  if (prefillReg) {
+    document.getElementById('forgotRegInput').value = prefillReg;
+  }
+}
+
+// Cross-links
+document.getElementById('linkToLogin').addEventListener('click', () => switchToLogin(document.getElementById('regInput').value.trim()));
+document.getElementById('linkToRegister').addEventListener('click', switchToRegister);
+document.getElementById('linkForgot').addEventListener('click', () => switchToForgot(document.getElementById('loginRegInput').value.trim()));
+document.getElementById('linkBackFromForgot').addEventListener('click', () => switchToLogin());
+document.getElementById('linkBackAfterDone').addEventListener('click', () => switchToLogin());
+document.getElementById('btnGoToLoginAfterConfirm').addEventListener('click', () => switchToLogin());
+
+function setLoading(btn, text) {
+  btn.disabled = true;
+  btn._orig = btn.innerHTML;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${text}`;
+}
+function resetBtn(btn) {
+  btn.disabled = false;
+  btn.innerHTML = btn._orig || btn.innerHTML;
+}
+
+// Check Register Number on blur: alert immediately if already registered
+const regInput = document.getElementById('regInput');
+regInput.addEventListener('blur', async function () {
+  const regNo = this.value.trim().toUpperCase();
+  if (!regNo || regNo.length < 3) return;
+  try {
+    const status = await Auth.checkStudentRoster(regNo);
+    if (status && status.exists && status.is_registered) {
+      openRegisteredPopup(regNo);
+    }
+  } catch (e) { /* silent check */ }
+});
+
+// 1. SUBMIT: REGISTER ACCOUNT
+document.getElementById('registerForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const regNo = document.getElementById('regInput').value.trim().toUpperCase();
+  const fullName = document.getElementById('nameInput').value.trim();
+  const email = document.getElementById('emailInput').value.trim();
+  const password = document.getElementById('pwInput').value;
+  const confirm = document.getElementById('pwConfirmInput').value;
+
+  if (!regNo) { showMsg('Please enter your Register Number.', 'error'); return; }
+  if (!fullName) { showMsg('Please enter your Full Name as per college records.', 'error'); return; }
+  if (!email || !email.includes('@')) { showMsg('Please enter a valid personal email address.', 'error'); return; }
+  if (!password) { showMsg('Please set a password.', 'error'); return; }
+  if (password !== confirm) { showMsg('Passwords do not match.', 'error'); return; }
+
+  const btn = document.getElementById('btnRegister');
+  setLoading(btn, 'Verifying details…');
+
+  try {
+    const check = await Auth.verifyStudentName(regNo, fullName);
+
+    if (!check.valid) {
+      resetBtn(btn);
+      if (check.reason === 'already_registered') {
+        openRegisteredPopup(regNo);
         return;
-      }
-    }
-
-    const saved = BlogDB.getCurrentUser();
-    if (saved && saved.role === 'student') {
-      if (saved.mustChangePassword) {
-        location.href = "change-password.html?forced=1";
+      } else if (check.reason === 'not_found') {
+        showMsg('Register Number not found in college records.', 'error');
         return;
-      }
-      currentUser = saved;
-      showDashboard();
-    }
-  });
-
-  document.getElementById('logoutBtn').addEventListener('click', async () => {
-    if (window.Auth) {
-      await window.Auth.logout();
-    }
-    BlogDB.logout();
-    location.reload();
-  });
-
-  window.switchTab = function(tab) {
-    if (tab === 'my') {
-      document.getElementById('myBlogsTab').style.display  = '';
-      document.getElementById('allBlogsTab').style.display = 'none';
-      document.getElementById('tabMyBlogs').className  = 'btn btn-blue';
-      document.getElementById('tabAllBlogs').className = 'btn btn-ghost';
-    } else {
-      document.getElementById('myBlogsTab').style.display  = 'none';
-      document.getElementById('allBlogsTab').style.display = '';
-      document.getElementById('tabMyBlogs').className  = 'btn btn-ghost';
-      document.getElementById('tabAllBlogs').className = 'btn btn-blue';
-      renderAllBlogs();
-    }
-  };
-
-  document.getElementById('toggleFormBtn').addEventListener('click', () => {
-    const body = document.getElementById('postFormBody');
-    const btn  = document.getElementById('toggleFormBtn');
-    const open = body.style.display !== 'none';
-    body.style.display = open ? 'none' : '';
-    btn.innerHTML = open
-      ? '<i class="fa-solid fa-chevron-down"></i> Expand'
-      : '<i class="fa-solid fa-chevron-up"></i> Collapse';
-  });
-
-  document.getElementById('postBlogForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const title    = document.getElementById('postTitle').value.trim();
-    const category = document.getElementById('postCategory').value;
-    const content  = document.getElementById('postContent').value.trim();
-    const tags     = document.getElementById('postTags').value;
-
-    const errEl = document.getElementById('postError');
-    const sucEl = document.getElementById('postSuccess');
-
-    if (!title || !category || !content) {
-      errEl.textContent = 'Title, category, and content are required.';
-      errEl.classList.add('visible');
-      return;
-    }
-    errEl.classList.remove('visible');
-
-    await BlogDB.createBlog({
-      title, category, content, tags,
-      author:   currentUser.displayName,
-      authorId: currentUser.userId || currentUser.username,
-      role:     'student'
-    });
-
-    this.reset();
-    sucEl.innerHTML = '✅ Article submitted successfully! It is now pending admin approval before going live.';
-    sucEl.classList.add('visible');
-    setTimeout(() => sucEl.classList.remove('visible'), 5000);
-    renderMyBlogs();
-  });
-
-  function renderMyBlogs() {
-    const myId     = currentUser.userId || currentUser.username;
-    const myBlogs  = BlogDB.getAuthorBlogs(myId);
-
-    document.getElementById('myBlogCount').textContent = `${myBlogs.length} submission${myBlogs.length !== 1 ? 's' : ''}`;
-
-    const wrap = document.getElementById('myBlogsTableWrap');
-    if (myBlogs.length === 0) {
-      wrap.innerHTML = `<div class="empty-state"><i class="fa-regular fa-newspaper"></i><p>You haven't submitted any articles yet. Use the form above to submit your article for admin review!</p></div>`;
-      return;
-    }
-
-    const rows = myBlogs.map(b => {
-      const status = b.status || (b.is_published ? 'approved' : 'pending');
-      let statusBadge = '';
-      if (status === 'pending') {
-        statusBadge = `<span class="badge-pending"><i class="fa-solid fa-clock"></i> Pending Admin Approval</span>`;
-      } else if (status === 'approved') {
-        statusBadge = `<span class="badge-approved"><i class="fa-solid fa-circle-check"></i> Published</span>`;
+      } else if (check.reason === 'name_mismatch') {
+        showMsg('Full Name does not match college records. Please verify spelling.', 'error');
+        return;
       } else {
-        statusBadge = `<span class="badge-rejected"><i class="fa-solid fa-ban"></i> Rejected</span>`;
+        showMsg('Verification failed. Please try again.', 'error');
+        return;
       }
+    }
 
-      return `
-        <tr>
-          <td class="td-title">
-            <strong>${b.title}</strong>
-            <span>${BlogDB.truncate(b.content, 70)}</span>
-          </td>
-          <td><span class="tag-chip">${b.category}</span></td>
-          <td>${statusBadge}</td>
-          <td>${BlogDB.formatDate(b.createdAt)}</td>
-          <td>
-            <div class="action-btns">
-              <a href="blog-view.html?id=${b.id}" class="btn btn-ghost btn-sm" target="_blank"><i class="fa-solid fa-eye"></i> View</a>
-            </div>
-          </td>
-        </tr>
-      `;
-    }).join('');
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registering…';
+    const result = await Auth.registerStudent(regNo, fullName, email, password);
 
-    wrap.innerHTML = `
-      <table class="data-table">
-        <thead><tr>
-          <th>Blog Title &amp; Excerpt</th>
-          <th>Category</th>
-          <th>Approval Status</th>
-          <th>Submitted Date</th>
-          <th>Actions</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-      </table>`;
-  }
-
-  function renderAllBlogs() {
-    const allBlogs = BlogDB.getBlogs();
-
-    document.getElementById('allBlogCount').textContent = `${allBlogs.length} published blog${allBlogs.length !== 1 ? 's' : ''}`;
-
-    const wrap = document.getElementById('allBlogsTableWrap');
-    if (allBlogs.length === 0) {
-      wrap.innerHTML = `<div class="empty-state"><i class="fa-regular fa-newspaper"></i><p>No published blogs yet.</p></div>`;
+    if (result.error) {
+      resetBtn(btn);
+      if (result.error.toLowerCase().includes('already registered')) {
+        openRegisteredPopup(regNo);
+      } else {
+        showMsg(result.error, 'error');
+      }
       return;
     }
 
-    const rows = allBlogs.map(b => `
-      <tr>
-        <td class="td-title">
-          <strong>${b.title}</strong>
-          <span>${BlogDB.truncate(b.content, 70)}</span>
-        </td>
-        <td><span class="tag-chip">${b.category}</span></td>
-        <td>
-          <span class="role-badge ${b.role}">${b.role}</span><br />
-          <small style="color:#64748B;">${b.author}</small>
-        </td>
-        <td>${BlogDB.formatDate(b.createdAt)}</td>
-        <td>
-          <div class="action-btns">
-            <a href="blog-view.html?id=${b.id}" class="btn btn-ghost btn-sm" target="_blank"><i class="fa-solid fa-eye"></i> Read</a>
-          </div>
-        </td>
-      </tr>
-    `).join('');
+    if (result.emailConfirmRequired) {
+      document.getElementById('confirmEmailDisplay').textContent = result.email;
+      document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+      panelConfirm.classList.add('active');
+      authTitle.textContent = 'Verify Email';
+      authSub.textContent = 'Check your inbox to complete activation.';
+    } else {
+      // Success -> Redirect to Home as requested!
+      location.href = 'index.html';
+    }
 
-    wrap.innerHTML = `
-      <table class="data-table">
-        <thead><tr>
-          <th>Blog Title</th>
-          <th>Category</th>
-          <th>Author</th>
-          <th>Published</th>
-          <th>Actions</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-      </table>`;
+  } catch (err) {
+    resetBtn(btn);
+    showMsg(err.message || 'Registration failed. Please try again.', 'error');
   }
+});
+
+// 2. SUBMIT: SIGN IN
+document.getElementById('loginForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const regNo = document.getElementById('loginRegInput').value.trim().toUpperCase();
+  const password = document.getElementById('loginPwInput').value;
+
+  if (!regNo) { showMsg('Please enter your Register Number.', 'error'); return; }
+  if (!password) { showMsg('Please enter your password.', 'error'); return; }
+
+  const btn = document.getElementById('btnLogin');
+  setLoading(btn, 'Signing in…');
+
+  try {
+    const res = await Auth.loginStudent(regNo, password);
+
+    if (!res || res.error) {
+      if (res?.error && res.error.includes('No account found')) {
+        showMsg('No registered account found. Please activate your account first.', 'error');
+        setTimeout(() => {
+          switchToRegister();
+          document.getElementById('regInput').value = regNo;
+        }, 1200);
+      } else {
+        showMsg(res?.error || 'Invalid Register Number or Password.', 'error');
+      }
+      resetBtn(btn);
+      return;
+    }
+
+    // Login successful -> Redirect to Home!
+    location.href = 'index.html';
+
+  } catch (err) {
+    showMsg(err.message || 'Login failed.', 'error');
+    resetBtn(btn);
+  }
+});
+
+// 3. SUBMIT: FORGOT PASSWORD
+document.getElementById('btnForgot').addEventListener('click', async function () {
+  const regNo = document.getElementById('forgotRegInput').value.trim().toUpperCase();
+  if (!regNo) { showMsg('Please enter your Register Number.', 'error'); return; }
+
+  const btn = this;
+  setLoading(btn, 'Sending…');
+
+  try {
+    const result = await Auth.forgotStudentPassword(regNo);
+
+    if (result.error) {
+      showMsg(result.error, 'error');
+      resetBtn(btn);
+      return;
+    }
+
+    document.getElementById('forgotMaskedEmail').textContent = result.maskedEmail;
+    document.getElementById('forgotFormWrap').style.display = 'none';
+    document.getElementById('forgotDone').style.display = 'block';
+
+  } catch (err) {
+    showMsg(err.message || 'Failed to send reset email.', 'error');
+  }
+  resetBtn(btn);
+});
+
+// ── SHOW DASHBOARD FUNCTION ──
+function showDashboard() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('dashboardScreen').style.display = '';
+  document.getElementById('headerUsername').textContent = currentUser.displayName || currentUser.name;
+  renderMyBlogs();
+}
+
+// ── ON PAGE LOAD CHECK ──
+window.addEventListener('DOMContentLoaded', async () => {
+  const user = Auth.currentUser() || BlogDB.getCurrentUser();
+  if (user && user.role === 'student') {
+    currentUser = user;
+    BlogDB.setCurrentUser(user);
+    showDashboard();
+    return;
+  }
+
+  // Not logged in -> Show Sign Up by default
+  document.getElementById('loginScreen').style.display = '';
+  document.getElementById('dashboardScreen').style.display = 'none';
+
+  const params = new URLSearchParams(location.search);
+  if (params.get('mode') === 'login' || params.get('registered') || params.get('password_reset')) {
+    switchToLogin();
+  } else {
+    switchToRegister();
+  }
+});
+
+// ── LOGOUT HANDLER ──
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await Auth.logout();
+  BlogDB.logout();
+  location.href = 'index.html';
+});
+
+// ── DASHBOARD BLOGS LOGIC ──
+window.switchTab = function(tab) {
+  if (tab === 'my') {
+    document.getElementById('myBlogsTab').style.display  = '';
+    document.getElementById('allBlogsTab').style.display = 'none';
+    document.getElementById('tabMyBlogs').className  = 'btn btn-blue';
+    document.getElementById('tabAllBlogs').className = 'btn btn-ghost';
+  } else {
+    document.getElementById('myBlogsTab').style.display  = 'none';
+    document.getElementById('allBlogsTab').style.display = '';
+    document.getElementById('tabMyBlogs').className  = 'btn btn-ghost';
+    document.getElementById('tabAllBlogs').className = 'btn btn-blue';
+    renderAllBlogs();
+  }
+};
+
+document.getElementById('toggleFormBtn').addEventListener('click', () => {
+  const body = document.getElementById('postFormBody');
+  const btn  = document.getElementById('toggleFormBtn');
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : '';
+  btn.innerHTML = open ? '<i class="fa-solid fa-chevron-down"></i> Expand' : '<i class="fa-solid fa-chevron-up"></i> Collapse';
+});
+
+document.getElementById('postBlogForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const errBox = document.getElementById('postError');
+  const okBox  = document.getElementById('postSuccess');
+  errBox.style.display = 'none';
+  okBox.style.display  = 'none';
+
+  const title    = document.getElementById('postTitle').value.trim();
+  const category = document.getElementById('postCategory').value;
+  const content  = document.getElementById('postContent').value.trim();
+  const tags     = document.getElementById('postTags').value;
+
+  if (!title || !category || !content) {
+    errBox.textContent = 'Please fill in Title, Category, and Content.';
+    errBox.style.display = 'block';
+    return;
+  }
+
+  const newBlog = BlogDB.submitBlog({
+    title,
+    category,
+    content,
+    tags,
+    author: currentUser.name || currentUser.displayName || 'Student',
+    role:   'student',
+    status: 'pending'
+  });
+
+  okBox.textContent = 'Your blog has been submitted for faculty approval!';
+  okBox.style.display = 'block';
+  document.getElementById('postBlogForm').reset();
+  renderMyBlogs();
+});
+
+function renderMyBlogs() {
+  const authorName = currentUser?.name || currentUser?.displayName || '';
+  const myBlogs = (BlogDB.getAuthorBlogs ? BlogDB.getAuthorBlogs(authorName) : (BlogDB.getBlogsByAuthor ? BlogDB.getBlogsByAuthor(authorName) : [])) || [];
+  document.getElementById('myBlogCount').textContent = `${myBlogs.length} submission${myBlogs.length !== 1 ? 's' : ''}`;
+
+  const wrap = document.getElementById('myBlogsTableWrap');
+  if (myBlogs.length === 0) {
+    wrap.innerHTML = `<div class="empty-state"><i class="fa-regular fa-folder-open"></i><p>You haven't submitted any blogs yet.</p></div>`;
+    return;
+  }
+
+  const rows = myBlogs.map(b => `
+    <tr>
+      <td class="td-title">
+        <strong>${b.title}</strong>
+        <span>${BlogDB.truncate(b.content, 80)}</span>
+      </td>
+      <td><span class="tag-chip">${b.category}</span></td>
+      <td><span class="badge-${b.status}">${b.status.toUpperCase()}</span></td>
+      <td>${BlogDB.formatDate(b.createdAt)}</td>
+      <td>
+        <div class="action-btns">
+          <a href="blog-view.html?id=${b.id}" class="btn btn-ghost btn-sm" target="_blank"><i class="fa-solid fa-eye"></i> View</a>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+
+  wrap.innerHTML = `
+    <table class="data-table">
+      <thead><tr>
+        <th>Blog Title &amp; Excerpt</th>
+        <th>Category</th>
+        <th>Approval Status</th>
+        <th>Submitted Date</th>
+        <th>Actions</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function renderAllBlogs() {
+  const allBlogs = BlogDB.getBlogs();
+  document.getElementById('allBlogCount').textContent = `${allBlogs.length} published blog${allBlogs.length !== 1 ? 's' : ''}`;
+
+  const wrap = document.getElementById('allBlogsTableWrap');
+  if (allBlogs.length === 0) {
+    wrap.innerHTML = `<div class="empty-state"><i class="fa-regular fa-newspaper"></i><p>No published blogs yet.</p></div>`;
+    return;
+  }
+
+  const rows = allBlogs.map(b => `
+    <tr>
+      <td class="td-title">
+        <strong>${b.title}</strong>
+        <span>${BlogDB.truncate(b.content, 70)}</span>
+      </td>
+      <td><span class="tag-chip">${b.category}</span></td>
+      <td>
+        <span class="role-badge ${b.role}">${b.role}</span><br />
+        <small style="color:#64748B;">${b.author}</small>
+      </td>
+      <td>${BlogDB.formatDate(b.createdAt)}</td>
+      <td>
+        <div class="action-btns">
+          <a href="blog-view.html?id=${b.id}" class="btn btn-ghost btn-sm" target="_blank"><i class="fa-solid fa-eye"></i> Read</a>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+
+  wrap.innerHTML = `
+    <table class="data-table">
+      <thead><tr>
+        <th>Blog Title</th>
+        <th>Category</th>
+        <th>Author</th>
+        <th>Published</th>
+        <th>Actions</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
 </script>
 </body>
 </html>
