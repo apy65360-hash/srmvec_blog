@@ -116,7 +116,7 @@
           <i class="fa-solid fa-medal"></i> <strong id="statTotalAch">0</strong> Total Accolades
         </div>
         <div class="ach-stat-chip">
-          <i class="fa-solid fa-graduation-cap"></i> <strong>2024–2026</strong> Academic Records
+          <i class="fa-solid fa-graduation-cap"></i> <strong>2026–2027</strong> Academic Records
         </div>
         <div class="ach-stat-chip">
           <i class="fa-solid fa-award"></i> <strong>Tier-1</strong> National Recognition
@@ -325,73 +325,73 @@
       deleteAchievement
     } from '/src/scripts/achievements.js';
 
-    // ── Sample Seed Data (Fallback & Demo Records) ──────────────────────────
+    // ── Department Achievement Records (from achievement pics) ──────────────
     const SEED_ACHIEVEMENTS = [
       {
         id: 'ach-1',
-        title: 'National Hackathon Champions — HackIndia 2026',
+        title: 'First Prize — Tech Heist Technical Quiz at MEDARZT Symposium',
         category: 'Technical',
-        student_name: 'Team AlgoRhythm (Aditya, Kaviya, Sanjay)',
-        year: '2025-26',
-        achievement_date: '2026-09-15',
-        image_url: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80',
-        short_desc: 'Won 1st prize worth ₹1,00,000 competing against 500+ universities across India for an AI-powered disaster management drone system.',
-        description: 'Our final-year CSE students represented SRM Valliammai Engineering College at HackIndia 2026 Grand Finale held in Bengaluru. Developing a real-time edge-AI drone vision pipeline that coordinates relief supply deliveries during floods, the team clinched 1st Place amongst 500+ national finalists. The jury commended the hardware-software integration and decentralized telemetry engine built from scratch in 36 hours.'
+        student_name: 'Pooja S (II Year CSE-2) & Team Dream Scavengers',
+        year: '2026-27',
+        achievement_date: '2026-10-11',
+        image_url: '/images/achievements/medarzt-tech-heist.jpeg',
+        short_desc: 'Pooja S (II Year CSE-2) & Team Dream Scavengers won First Prize and a cash award in the Tech Heist Technical Quiz at MEDARZT.',
+        description: 'Pooja S from II Year CSE-2, representing Team "DREAM SCAVENGERS" alongside interdisciplinary teammates Siva and Vishal (II Year Civil), clinched the First Prize and a cash award of ₹500.00 in "Tech Heist — Technical Quiz". The competition was organized by the Department of Medical Electronics at the MBA 11th Floor Seminar Hall, New Building, evaluating participants on rapid algorithmic problem solving, electronics logic, and engineering fundamentals.'
       },
       {
         id: 'ach-2',
-        title: 'Best Research Paper Award — IEEE ICCCNT 2026',
-        category: 'Research',
-        student_name: 'Priya Ramesh (Final Year CSE)',
-        year: '2025-26',
-        achievement_date: '2026-08-20',
-        image_url: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80',
-        short_desc: 'Published & awarded Best Paper for novel Transformer-based retinal scan segmentation in healthcare diagnostics.',
-        description: 'Priya Ramesh, mentored by Dr. K. Elangovan, received the prestigious Best Paper Award at the IEEE International Conference on Computing, Communication and Networking Technologies (ICCCNT 2026). Her paper, "Lightweight Vision Transformers for Early-Stage Diabetic Retinopathy Screening on Low-Power Microcontrollers", was indexed in IEEE Xplore and recognized for its high clinical accuracy and open-source accessibility.'
+        title: 'Third Place — Tessarion\'s Trail at ZYVERSE 2K26 National Symposium',
+        category: 'Technical',
+        student_name: 'P. Jeeva Kumar & S. Keerthana (II Year CSE - Section 2)',
+        year: '2026-27',
+        achievement_date: '2026-09-12',
+        image_url: '/images/achievements/zyverse-tessarions-trail.jpeg',
+        short_desc: 'P. Jeeva Kumar & S. Keerthana (II CSE Sec-2) bagged 3rd Place in the Tessarion\'s Trail event at ZYVERSE 2K26.',
+        description: 'P. Jeeva Kumar and S. Keerthana of II Year CSE (Section 2) won Third Place in "Tessarion\'s Trail" at ZYVERSE 2K26, a National Level Technical Symposium organized by the Department of Cyber Security at SRM Valliammai Engineering College on 12th September 2026. The students were congratulated by the Head of Department and faculty for their critical problem-solving skills, cryptography cracking, and tactical computing execution.'
       },
       {
         id: 'ach-3',
-        title: 'All India Rank 12 — GATE CS 2026',
-        category: 'Academic',
-        student_name: 'Arun Kumar M',
-        year: '2025-26',
-        achievement_date: '2026-07-10',
-        image_url: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800&q=80',
-        short_desc: 'Secured AIR 12 nationwide in GATE 2026 Computer Science with an extraordinary normalized score of 89.5.',
-        description: 'Arun Kumar M made the department proud by securing All India Rank 12 in the Graduate Aptitude Test in Engineering (GATE 2026) in Computer Science & Information Technology. Out of over 1.2 lakh applicants nationwide, Arun demonstrated exceptional mastery across Algorithms, Operating Systems, Computer Architecture, and Theory of Computation.'
+        title: 'Runners-Up Trophy — TECHQUIZ at CYNEX\'26 National Symposium',
+        category: 'Technical',
+        student_name: 'P. Jeevan Kumar, S. Mohamed Samith Khan & B. Bhumika',
+        year: '2026-27',
+        achievement_date: '2026-09-08',
+        image_url: '/images/achievements/cynex-techquiz-runnerup.jpeg',
+        short_desc: 'CSE students won the Runner-Up Trophy in the National Level TECHQUIZ at CYNEX\'26 hosted by SRMIST Ramapuram.',
+        description: 'A talented delegation from SRM Valliammai Engineering College (CSE) comprising P. Jeevan Kumar (II - CSE Sec - II), S. Mohamed Samith Khan (II - CSE Sec - II), and B. Bhumika (II - Cyber) secured the Runner-Up position in the National Level TECHQUIZ competition at CYNEX\'26. Organized by the Department of Cyber Security at SRM Institute of Science and Technology (SRMIST), Ramapuram, Chennai, the team was honored on stage with the Runner-Up Trophy and certificates for their outstanding performance in competitive tech trivia, systems security, and computer engineering.'
       },
       {
         id: 'ach-4',
-        title: 'Inter-College Badminton Championship — Anna University Zone 8',
-        category: 'Sports',
-        student_name: 'CSE Boys Badminton Squad',
-        year: '2025-26',
-        achievement_date: '2026-06-05',
-        image_url: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80',
-        short_desc: 'Clinched Gold Trophy at the Anna University Zone 8 Men\'s Badminton Tournament without conceding a single set in the finals.',
-        description: 'The CSE department badminton squad brought home the Zone 8 Championship Gold trophy following an intense 5-game knockout tournament. The team defeated 14 competing engineering colleges, demonstrating athletic discipline and teamwork alongside rigorous academic commitments.'
+        title: 'FUTURE CONNECT — School Orientation Quiz Competition & Project Expo',
+        category: 'Academic',
+        student_name: 'Department of CSE Faculty & Student Coordinators',
+        year: '2026-27',
+        achievement_date: '2026-09-01',
+        image_url: '/images/achievements/future-connect-expo.jpeg',
+        short_desc: 'CSE Department organized "Future Connect" hosting higher secondary students for live computing project expos and quiz contests.',
+        description: 'The Department of Computer Science and Engineering at SRM Valliammai Engineering College successfully conducted the "FUTURE CONNECT" School Orientation Programme on 1st September 2026 at the Kattankulathur campus. The outreach event featured an interactive Quiz Competition and a comprehensive Project Expo where CSE students and faculty exhibited hands-on demonstrations of AI models, IoT prototypes, and software innovations to aspiring school students, fostering early interest in technical higher education.'
       },
       {
         id: 'ach-5',
-        title: 'Grand Finalists — Smart India Hackathon (SIH 2026)',
+        title: 'Winners — Tech Debate at VYNTRA 2.0 National Symposium (SIMATS)',
         category: 'Technical',
-        student_name: 'Team Invictus & Team Phoenix',
-        year: '2025-26',
-        achievement_date: '2026-05-20',
-        image_url: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80',
-        short_desc: 'Two CSE teams selected for national finals by Ministry of Education for Smart Cyber Shield problem statements.',
-        description: 'Selected from tens of thousands of problem-statement submissions across the country, two distinct teams from SRMVEC CSE advanced to the Grand Finale of Smart India Hackathon 2026 Software Edition. Their solutions tackled Automated Fake-News Telemetry in Regional Languages and Quantum-Resilient Blockchain voting authentication.'
+        student_name: 'Team CYBORGS (Department of CSE Scholars)',
+        year: '2026-27',
+        achievement_date: '2026-08-28',
+        image_url: '/images/achievements/vyntra-debate-winner.jpeg',
+        short_desc: 'Team CYBORGS emerged as Winners in the National Level Tech Debate at SIMATS Engineering VYNTRA 2.0.',
+        description: 'Scholars from the CSE department representing "Team CYBORGS" achieved Winner status (1st Place) in the Technical Debate competition at VYNTRA 2.0, a National Level Technical Symposium held on 28th August 2026. Organized by the Department of Intelligent Computing (IC) at SIMATS Engineering, Thandalam, Chennai (NBA Tier 1, ABET & IET-UK Accredited), the team competed against premier institutions across Tamil Nadu, demonstrating intellectual rigor, technological articulation, and impromptu debating prowess on current technology dilemmas.'
       },
       {
         id: 'ach-6',
-        title: 'Super Dream Placement at Amazon Web Services (₹32 LPA)',
-        category: 'Placement',
-        student_name: 'Divya Bharathi S',
-        year: '2024-25',
-        achievement_date: '2026-04-12',
-        image_url: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80',
-        short_desc: 'Offered Software Development Engineer role at AWS Cloud Infrastructure team through campus drive.',
-        description: 'Final year CSE scholar Divya Bharathi secured a super dream placement offer with AWS as a Software Development Engineer (SDE-1) with a compensation package of ₹32 LPA. During her academic tenure, Divya served as lead of the CSE Cloud Computing Club and contributed to several open-source distributed systems projects.'
+        title: 'CYBORGS 2K26 — 16th National Level Technical Symposium & Souvenir Release',
+        category: 'Technical',
+        student_name: 'CSE Department Association & Student Office Bearers',
+        year: '2026-27',
+        achievement_date: '2026-08-22',
+        image_url: '/images/achievements/cyborgs-2k26-symposium.jpeg',
+        short_desc: 'Department of CSE hosted the 16th National Level Technical Symposium CYBORGS 2K26 and released the official symposium souvenir.',
+        description: 'The Department of Computer Science and Engineering at SRM Valliammai Engineering College grandly organized and hosted CYBORGS 2K26, the 16th National Level Technical Symposium on 22nd August 2026. The prestigious event brought together hundreds of engineering participants for competitive coding, web design, technical debugging, and paper presentations. The symposium concluded with the official release of the CYBORGS 2K26 Souvenir Proceedings by the college Principal, Head of Department Dr. B. Vanathi, esteemed faculty coordinators, and student organizers.'
       }
     ];
 
@@ -452,7 +452,7 @@
 
       grid.innerHTML = filtered.map(item => {
         const icon = CAT_ICONS[item.category] || 'fa-award';
-        const img = item.image_url || 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80';
+        const img = item.image_url || '/images/achievements/medarzt-tech-heist.jpeg';
         return `
           <article class="ach-grid-card" data-id="${esc(item.id)}">
             <div class="ach-grid-img-wrap">
@@ -460,7 +460,7 @@
                 src="${esc(img)}"
                 alt="${esc(item.title)}"
                 loading="lazy"
-                onerror="this.src='https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80'"
+                onerror="this.src='/images/achievements/medarzt-tech-heist.jpeg'"
               />
               <div class="ach-card-img-overlay">
                 <button type="button" class="ach-card-read-btn open-detail-btn" data-id="${esc(item.id)}">
@@ -526,7 +526,7 @@
       const year = document.getElementById('modalYear');
       const yearWrap = document.getElementById('modalYearWrap');
 
-      img.src = item.image_url || 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80';
+      img.src = item.image_url || '/images/achievements/medarzt-tech-heist.jpeg';
       img.alt = item.title;
       catBadge.textContent = item.category;
       title.textContent = item.title;

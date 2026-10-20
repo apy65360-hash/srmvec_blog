@@ -11,34 +11,34 @@
 
 import { fetchLatestAchievements } from './achievements.js';
 
-// ── Sample placeholder data (shown when Supabase returns 0 results) ────────
+// ── Department Achievement Records (from achievement pics) ──────────────
 const SAMPLE_ACHIEVEMENTS = [
   {
     id: 'ach-1',
-    title: 'National Hackathon Champions — HackIndia 2026',
-    short_desc: 'Team AlgoRhythm won 1st place worth ₹1,00,000 competing against 500+ teams nationwide with their edge-AI drone telemetry system.',
-    image_url: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80',
+    title: 'First Prize — Tech Heist Technical Quiz at MEDARZT Symposium',
+    short_desc: 'Pooja S (II Year CSE-2) & Team Dream Scavengers won First Prize and a cash award in the Tech Heist Technical Quiz at MEDARZT.',
+    image_url: '/images/achievements/medarzt-tech-heist.jpeg',
     category: 'Technical',
-    achievement_date: '2026-09-15',
-    student_name: 'Team AlgoRhythm (Aditya, Kaviya, Sanjay)',
+    achievement_date: '2026-10-11',
+    student_name: 'Pooja S & Team Dream Scavengers',
   },
   {
     id: 'ach-2',
-    title: 'Best Research Paper Award — IEEE ICCCNT 2026',
-    short_desc: 'Published novel Transformer-based retinal scan segmentation in healthcare diagnostics, indexed in IEEE Xplore.',
-    image_url: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80',
-    category: 'Research',
-    achievement_date: '2026-08-20',
-    student_name: 'Priya Ramesh (Final Year CSE)',
+    title: 'Third Place — Tessarion\'s Trail at ZYVERSE 2K26 National Symposium',
+    short_desc: 'P. Jeeva Kumar & S. Keerthana (II CSE Sec-2) bagged 3rd Place in the Tessarion\'s Trail event at ZYVERSE 2K26.',
+    image_url: '/images/achievements/zyverse-tessarions-trail.jpeg',
+    category: 'Technical',
+    achievement_date: '2026-09-12',
+    student_name: 'P. Jeeva Kumar & S. Keerthana',
   },
   {
     id: 'ach-3',
-    title: 'All India Rank 12 — GATE CS 2026',
-    short_desc: 'Secured AIR 12 nationwide in GATE 2026 Computer Science with an extraordinary normalized score of 89.5.',
-    image_url: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800&q=80',
-    category: 'Academic',
-    achievement_date: '2026-07-10',
-    student_name: 'Arun Kumar M',
+    title: 'Runners-Up Trophy — TECHQUIZ at CYNEX\'26 National Symposium',
+    short_desc: 'CSE students won the Runner-Up Trophy in the National Level TECHQUIZ at CYNEX\'26 hosted by SRMIST Ramapuram.',
+    image_url: '/images/achievements/cynex-techquiz-runnerup.jpeg',
+    category: 'Technical',
+    achievement_date: '2026-09-08',
+    student_name: 'P. Jeevan Kumar, S. Mohamed Samith Khan & B. Bhumika',
   },
 ];
 
@@ -77,10 +77,10 @@ function buildCard(ach, idx = 0) {
 <div class="ach-card${activeClass}" data-index="${idx}" role="article">
   <div class="ach-card-img">
     <img
-      src="${escHtml(ach.image_url || 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80')}"
+      src="${escHtml(ach.image_url || '/images/achievements/medarzt-tech-heist.jpeg')}"
       alt="${escHtml(ach.title)}"
       loading="lazy"
-      onerror="this.src='https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80'"
+      onerror="this.src='/images/achievements/medarzt-tech-heist.jpeg'"
     />
     <div class="ach-card-img-overlay">
       <a href="${escHtml(href)}" class="ach-card-read-btn">
