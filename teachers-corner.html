@@ -31,23 +31,17 @@
       <h2>Teacher's Corner</h2>
       <p>SRMVEC CSE Blog Portal — Faculty Access</p>
     </div>
-    <div class="error-msg" id="loginError">Invalid email or password. Please try again.</div>
+    <div class="security-notice-box" style="margin-bottom:1.25rem;">
+      <i class="fa-solid fa-envelope-open-text" style="color:#7C3AED; margin-right:0.4rem;"></i>
+      Faculty authentication uses institutional email verification (OTP). No permanent password is required.
+    </div>
     <form id="loginForm" novalidate>
-      <div class="form-group">
-        <label for="loginUsername">College Email ID</label>
-        <input type="email" id="loginUsername" class="form-control" placeholder="e.g. pr.cse@srmvalliammai.ac.in" autocomplete="username" />
-        <small style="display:block;margin-top:.25rem;color:#64748b;font-size:0.75rem;">Format: &lt;nameinitial&gt;.cse@srmvalliammai.ac.in</small>
-      </div>
-      <div class="form-group">
-        <label for="loginPassword">Password</label>
-        <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" autocomplete="current-password" />
-      </div>
-      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:.8rem;">
-        <i class="fa-solid fa-right-to-bracket"></i> Sign In
-      </button>
+      <a href="teacher-login.html?next=teachers-corner.html" class="btn btn-primary" style="width:100%;justify-content:center;padding:.85rem;text-decoration:none;">
+        <i class="fa-solid fa-paper-plane"></i> Proceed to Faculty OTP Login
+      </a>
     </form>
     <p style="text-align:center;margin-top:1.2rem;font-size:0.82rem;color:#94A3B8;">
-      <i class="fa-solid fa-lock"></i> Teacher accounts are provisioned exclusively by Administrators.<br />
+      <i class="fa-solid fa-shield-halved"></i> Access is restricted exclusively to authorized institutional faculty.<br />
       Student? <a href="student-corner.html">Go to Student Corner</a> &nbsp;•&nbsp; <a href="index.html">Home</a>
     </p>
   </div>
@@ -146,40 +140,46 @@
 <script type="module" src="/src/scripts/users.js"></script>
 <script type="module" src="/src/scripts/auth.js"></script>
 <script type="module" src="/src/scripts/blog-data.js"></script>
+<script type="module" src="/src/scripts/auth-guard.js"></script>
 <script type="module">
   let currentUser = null;
 
   document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    const username = document.getElementById('loginUsername').value.trim();
-    const password = document.getElementById('loginPassword').value;
-    const user = BlogDB.authenticate(username, password, 'teacher');
-    if (!user) {
-      document.getElementById('loginError').classList.add('visible');
-      return;
-    }
-    document.getElementById('loginError').classList.remove('visible');
-    BlogDB.setCurrentUser(user);
-    currentUser = user;
-    showDashboard();
+    // Redirect to faculty OTP login page
+    location.href = "teacher-login.html?next=teachers-corner.html";
   });
 
   function showDashboard() {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('dashboardScreen').style.display = '';
-    document.getElementById('headerUsername').textContent = currentUser.displayName;
+    document.getElementById('headerUsername').textContent = currentUser.displayName || currentUser.name;
     renderMyBlogs();
   }
 
-  window.addEventListener('DOMContentLoaded', () => {
+  window.addEventListener('DOMContentLoaded', async () => {
+    // Check route guard for teacher/faculty_admin roles
+    if (window.protectRoute) {
+      const authUser = await window.protectRoute({ allowedRoles: ['teacher', 'faculty_admin', 'admin', 'editor'] });
+      if (authUser) {
+        currentUser = authUser;
+        BlogDB.setCurrentUser(authUser);
+        showDashboard();
+        return;
+      }
+    }
+
     const saved = BlogDB.getCurrentUser();
-    if (saved && saved.role === 'teacher') {
+    if (saved && (saved.role === 'teacher' || saved.role === 'admin' || saved.role === 'faculty_admin')) {
       currentUser = saved;
       showDashboard();
     }
   });
 
-  document.getElementById('logoutBtn').addEventListener('click', () => {
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    if (window.Auth) {
+      await window.Auth.logout();
+    }
     BlogDB.logout();
     location.reload();
   });

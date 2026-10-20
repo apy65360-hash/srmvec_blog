@@ -64,12 +64,13 @@
     <div class="error-msg" id="loginError">Invalid username or password. Please try again.</div>
     <form id="loginForm" novalidate>
       <div class="form-group">
-        <label for="loginUsername">Name</label>
-        <input type="text" id="loginUsername" class="form-control" placeholder="e.g. Arun Krishnamurthy" autocomplete="username" />
+        <label for="loginUsername">Register Number</label>
+        <input type="text" id="loginUsername" class="form-control" placeholder="e.g. CSE2201" autocomplete="username" />
       </div>
       <div class="form-group">
-        <label for="loginPassword">ID Number (password)</label>
-        <input type="password" id="loginPassword" class="form-control" placeholder="e.g. CSE2201" autocomplete="current-password" />
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" autocomplete="current-password" />
+        <small style="color:#64748b; font-size:0.75rem; display:block; margin-top:0.25rem;">Default password format: SRMVEC#&lt;RegisterNo&gt;</small>
       </div>
       <button type="submit" class="btn btn-blue" style="width:100%;justify-content:center;padding:.8rem;">
         <i class="fa-solid fa-right-to-bracket"></i> Sign In
@@ -202,14 +203,43 @@
 <script type="module" src="/src/scripts/users.js"></script>
 <script type="module" src="/src/scripts/auth.js"></script>
 <script type="module" src="/src/scripts/blog-data.js"></script>
+<script type="module" src="/src/scripts/auth-guard.js"></script>
 <script type="module">
   let currentUser = null;
 
-  document.getElementById('loginForm').addEventListener('submit', function(e) {
+  document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const username = document.getElementById('loginUsername').value.trim();
-    const password = document.getElementById('loginPassword').value;
-    const user = BlogDB.authenticate(username, password, 'student');
+    const regNo = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+
+    if (!regNo || !password) {
+      document.getElementById('loginError').textContent = 'Please enter your Register Number and Password.';
+      document.getElementById('loginError').classList.add('visible');
+      return;
+    }
+
+    if (window.Auth) {
+      const res = await window.Auth.loginStudent(regNo, password);
+      if (res.error) {
+        document.getElementById('loginError').textContent = res.error;
+        document.getElementById('loginError').classList.add('visible');
+        return;
+      }
+
+      if (res.mustChangePassword) {
+        location.href = "change-password.html?forced=1";
+        return;
+      }
+
+      currentUser = res.session;
+      BlogDB.setCurrentUser(currentUser);
+      document.getElementById('loginError').classList.remove('visible');
+      showDashboard();
+      return;
+    }
+
+    // Fallback to BlogDB
+    const user = BlogDB.authenticate(regNo, password, 'student');
     if (!user) {
       document.getElementById('loginError').classList.add('visible');
       return;
@@ -223,19 +253,37 @@
   function showDashboard() {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('dashboardScreen').style.display = '';
-    document.getElementById('headerUsername').textContent = currentUser.displayName;
+    document.getElementById('headerUsername').textContent = currentUser.displayName || currentUser.name;
     renderMyBlogs();
   }
 
-  window.addEventListener('DOMContentLoaded', () => {
+  window.addEventListener('DOMContentLoaded', async () => {
+    // Check route guard if available
+    if (window.protectRoute) {
+      const authUser = await window.protectRoute({ allowedRoles: ['student'], requirePasswordUpdated: true });
+      if (authUser) {
+        currentUser = authUser;
+        BlogDB.setCurrentUser(authUser);
+        showDashboard();
+        return;
+      }
+    }
+
     const saved = BlogDB.getCurrentUser();
     if (saved && saved.role === 'student') {
+      if (saved.mustChangePassword) {
+        location.href = "change-password.html?forced=1";
+        return;
+      }
       currentUser = saved;
       showDashboard();
     }
   });
 
-  document.getElementById('logoutBtn').addEventListener('click', () => {
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    if (window.Auth) {
+      await window.Auth.logout();
+    }
     BlogDB.logout();
     location.reload();
   });

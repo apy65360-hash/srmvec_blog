@@ -1,0 +1,22 @@
+[
+  {
+    "registerNumber": "CSE2201",
+    "name": "Arun Krishnamurthy",
+    "department": "CSE"
+  },
+  {
+    "registerNumber": "CSE2202",
+    "name": "Swetha Raghavan",
+    "department": "CSE"
+  },
+  {
+    "registerNumber": "CSE2203",
+    "name": "Mohammed Irfan",
+    "department": "CSE"
+  },
+  {
+    "registerNumber": "CSE2204",
+    "name": "Divya Bharathi",
+    "department": "CSE"
+  }
+]
