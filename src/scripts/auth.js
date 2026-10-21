@@ -200,11 +200,144 @@ const Auth = {
     return this.startSession(user);
   },
 
+  // ── Faculty / Teacher Auth Methods ─────────────────────────────────────────
+
   /**
-   * Request Email OTP for Faculty login
-   * Restricts OTP dispatch to authorized faculty whitelist and institutional email format.
+   * Register a new faculty account with institutional email + password.
+   * Account is created in Supabase Auth but marked as 'pending' in profiles
+   * until an admin approves it.
+   */
+  async registerTeacher(fullName, email, password) {
+    const FACULTY_REGEX = /^[a-z0-9._-]+(\.cse)?@(srmvalliammai\.ac\.in|srmvec\.ac\.in)$/i;
+    const cleanEmail = String(email || '').trim().toLowerCase();
+    const cleanName  = String(fullName || '').trim();
+
+    if (!FACULTY_REGEX.test(cleanEmail)) {
+      return { error: 'Only institutional emails (@srmvalliammai.ac.in or @srmvec.ac.in) are allowed.' };
+    }
+    if (!password || password.length < 8) {
+      return { error: 'Password must be at least 8 characters.' };
+    }
+
+    if (window.supabase) {
+      try {
+        const { data, error } = await window.supabase.auth.signUp({
+          email: cleanEmail,
+          password,
+          options: {
+            data: { full_name: cleanName, role: 'teacher' }
+          }
+        });
+
+        if (error) {
+          if (error.message && (error.message.includes('already registered') || error.message.includes('already in use') || error.message.includes('User already registered'))) {
+            return { error: 'An account with this email is already registered. Please sign in.' };
+          }
+          return { error: error.message };
+        }
+
+        if (data && data.user) {
+          // Upsert profile row with status: 'pending' — admin must approve before login is allowed
+          try {
+            await window.supabase.from('profiles').upsert([{
+              id:         data.user.id,
+              email:      cleanEmail,
+              full_name:  cleanName,
+              role:       'teacher',
+              status:     'pending'
+            }], { onConflict: 'id' });
+          } catch (e) {
+            console.warn('Profile upsert warning:', e);
+          }
+          // Do NOT start a session — account needs admin approval first
+          return { pendingApproval: true, email: cleanEmail };
+        }
+
+        return { pendingApproval: true, email: cleanEmail };
+      } catch (err) {
+        return { error: err.message || 'Registration failed.' };
+      }
+    }
+    return { error: 'Registration service unavailable.' };
+  },
+
+  /**
+   * Sign in a faculty member with institutional email + password.
+   * Blocks login if account status is 'pending' or 'rejected'.
+   */
+  async loginTeacher(email, password) {
+    const cleanEmail = String(email || '').trim().toLowerCase();
+    if (!cleanEmail || !password) {
+      return { error: 'Please enter your email and password.' };
+    }
+
+    if (window.supabase) {
+      try {
+        const { data, error } = await window.supabase.auth.signInWithPassword({
+          email: cleanEmail,
+          password
+        });
+
+        if (!error && data && data.user) {
+          const { data: profile } = await window.supabase
+            .from('profiles').select('*').eq('id', data.user.id).maybeSingle();
+
+          // Check approval status
+          const status = profile?.status || 'pending';
+          if (status === 'pending') {
+            // Sign them back out — no session allowed until approved
+            await window.supabase.auth.signOut().catch(() => {});
+            return { error: 'pending_approval' };
+          }
+          if (status === 'rejected') {
+            await window.supabase.auth.signOut().catch(() => {});
+            return { error: 'Your account has been rejected. Please contact the administrator.' };
+          }
+
+          const role = profile?.role || data.user.user_metadata?.role || 'teacher';
+          const user = {
+            userId: data.user.id, id: data.user.id,
+            name: profile?.full_name || data.user.user_metadata?.full_name || cleanEmail,
+            displayName: profile?.full_name || data.user.user_metadata?.full_name || cleanEmail,
+            username: cleanEmail, role,
+            email: cleanEmail,
+            mustChangePassword: false,
+            permissions: profile?.permissions || {}
+          };
+          return { session: this.startSession(user) };
+        }
+
+        if (error) {
+          if (error.message && error.message.includes('Invalid login')) {
+            return { error: 'Invalid email or password.' };
+          }
+          return { error: error.message };
+        }
+      } catch (err) {
+        return { error: err.message || 'Login failed.' };
+      }
+    }
+
+    // Local fallback
+    if (window.PortalUsers) {
+      const teacher = window.PortalUsers.allTeachers
+        ? window.PortalUsers.allTeachers().find(t => t.email.toLowerCase() === cleanEmail)
+        : null;
+      if (teacher && (password === teacher.password || password === teacher.id)) {
+        return { session: this.startSession(teacher) };
+      }
+    }
+
+    return { error: 'Invalid email or password.' };
+  },
+
+
+  /**
+   * Request Email OTP for Faculty login (legacy — kept for backward compat)
+   * @deprecated Use loginTeacher() with email + password instead.
    */
   async requestFacultyOtp(email) {
+
     const emailLower = String(email || '').trim().toLowerCase();
     
     // Strict domain and format validation
@@ -398,12 +531,30 @@ const Auth = {
             data: {
               full_name:       cleanName,
               register_number: cleanRegNo,
-              role:            'student'
+              role:            'student',
+              status:          'approved'
             }
           }
         });
 
         if (error) return { error: error.message };
+
+        // Explicitly ensure profile row has status: 'approved' for student
+        if (data && data.user) {
+          try {
+            await window.supabase.from('profiles').upsert([{
+              id:              data.user.id,
+              email:           cleanEmail,
+              full_name:       cleanName,
+              register_number: cleanRegNo,
+              role:            'student',
+              status:          'approved'
+            }], { onConflict: 'id' });
+          } catch (e) {
+            console.warn('Student profile creation notice:', e);
+          }
+        }
+
 
         // If a session was returned, email confirmation is not required
         if (data.session && data.user) {

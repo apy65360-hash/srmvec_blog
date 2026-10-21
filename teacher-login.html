@@ -4,8 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
   <title>Faculty Login | SRMVEC CSE Blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,237 +12,425 @@
   <link rel="stylesheet" href="/src/styles/style.css" />
   <link rel="stylesheet" href="/src/styles/portal.css" />
   <style>
-    .otp-code-input {
-      letter-spacing: 0.35rem;
-      font-size: 1.35rem;
-      font-weight: 700;
-      text-align: center;
-      font-family: monospace;
+    .view-panel { display: none; }
+    .view-panel.active { display: block; }
+    .switch-link { color: #7c3aed; cursor: pointer; font-weight: 600; text-decoration: underline; }
+    .switch-link:hover { color: #6d28d9; }
+    .pw-wrap { position: relative; }
+    .pw-eye {
+      position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%);
+      cursor: pointer; color: #94a3b8; font-size: 0.95rem;
     }
-    .secondary-action {
-      background: none;
-      border: none;
-      color: #6366f1;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      padding: 0;
-      text-decoration: underline;
+    .pw-eye:hover { color: #475569; }
+    .form-message {
+      display: none; padding: 0.75rem 1rem; border-radius: 8px;
+      font-size: 0.88rem; font-weight: 500; margin-bottom: 1rem;
     }
-    .secondary-action:disabled {
-      color: #94a3b8;
-      text-decoration: none;
-      cursor: not-allowed;
+    .form-message.is-visible { display: block; }
+    .form-message.error { background: #FEF2F2; color: #DC2626; border: 1px solid #FCA5A5; }
+    .form-message.success { background: #F0FDF4; color: #16A34A; border: 1px solid #86EFAC; }
+    .form-message.info { background: #EFF6FF; color: #2563EB; border: 1px solid #93C5FD; }
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+      z-index: 9999; align-items: center; justify-content: center;
     }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: #fff; border-radius: 14px; max-width: 400px; width: 100%;
+      padding: 1.75rem 1.5rem; text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+    }
+    .modal-icon {
+      width: 52px; height: 52px; border-radius: 50%; background: #F3E8FF;
+      color: #7c3aed; display: inline-flex; align-items: center;
+      justify-content: center; font-size: 1.5rem; margin-bottom: 1rem;
+    }
+    .modal-title { font-size: 1.2rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem; }
+    .modal-text  { font-size: 0.9rem; color: #64748b; margin-bottom: 1.5rem; line-height: 1.5; }
+    .modal-btn {
+      width: 100%; padding: 0.75rem 1rem; border-radius: 8px;
+      font-weight: 600; font-size: 0.95rem; border: none;
+      background: #7c3aed; color: #fff; cursor: pointer; transition: background 0.2s;
+    }
+    .modal-btn:hover { background: #6d28d9; }
   </style>
 </head>
 <body>
 
-  <div class="login-wrapper">
-    <div class="login-card">
-      <div class="role-choice-icon teacher" style="margin-bottom:1rem;"><i class="fa-solid fa-chalkboard-user"></i></div>
-      <h1>Faculty Login</h1>
-      <p class="login-sub" id="loginSubtitle">Sign in using your institutional email address and One-Time Password (OTP).</p>
+<div class="login-wrapper">
+  <div class="login-card">
 
-      <div class="form-message" id="loginMessage"></div>
+    <div class="login-card-header">
+      <div class="role-choice-icon teacher" style="margin-bottom:.8rem;">
+        <i class="fa-solid fa-chalkboard-user"></i>
+      </div>
+      <h2 id="authTitle">Faculty Login</h2>
+      <p id="authSub">Sign in to the Teacher's Corner with your institutional email.</p>
+    </div>
 
-      <!-- STEP 1: Enter Faculty Email -->
-      <form id="emailForm" novalidate>
+    <div class="form-message" id="authMsg"></div>
+
+    <!-- ── PANEL 1: SIGN IN (default) ── -->
+    <div class="view-panel active" id="panelLogin">
+      <form id="loginForm" novalidate>
         <div class="form-row">
-          <label for="facultyEmail">Institutional Email ID</label>
-          <input class="form-control" type="email" id="facultyEmail"
+          <label for="loginEmail">Institutional Email</label>
+          <input class="form-control" type="email" id="loginEmail"
             placeholder="e.g. pr.cse@srmvalliammai.ac.in"
             autocomplete="email" required />
         </div>
-        <div class="form-actions">
-          <button class="btn btn-primary btn-block" type="submit" id="sendOtpBtn">
-            <i class="fa-solid fa-paper-plane"></i> Send Verification Code
-          </button>
-        </div>
-      </form>
-
-      <!-- STEP 2: Enter 6-digit OTP (Hidden initially) -->
-      <form id="otpForm" style="display:none;" novalidate>
         <div class="form-row">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <label for="facultyOtp">Enter 6-Digit Code</label>
-            <button type="button" class="secondary-action" id="changeEmailBtn">Change Email</button>
+          <label for="loginPw">Password</label>
+          <div class="pw-wrap">
+            <input class="form-control" type="password" id="loginPw"
+              placeholder="Enter your password"
+              autocomplete="current-password" required />
+            <span class="pw-eye" onclick="togglePw('loginPw',this)"><i class="fa-solid fa-eye"></i></span>
           </div>
-          <input class="form-control otp-code-input" type="text" id="facultyOtp"
-            placeholder="••••••" maxlength="6" inputmode="numeric" pattern="[0-9]*"
-            autocomplete="one-time-code" required />
         </div>
         <div class="form-actions">
-          <button class="btn btn-primary btn-block" type="submit" id="verifyOtpBtn">
-            <i class="fa-solid fa-shield-check"></i> Verify &amp; Sign In
+          <button class="btn btn-primary btn-block" type="submit" id="btnLogin">
+            <i class="fa-solid fa-right-to-bracket"></i> Sign In
           </button>
         </div>
-        <div style="text-align:center; margin-top: 1rem;">
-          <span style="font-size:0.85rem; color:#64748b;">Didn't get the code? </span>
-          <button type="button" class="secondary-action" id="resendOtpBtn">Resend Code</button>
-          <span id="countdownText" style="font-size:0.82rem; color:#94a3b8; margin-left:0.3rem;"></span>
+        <div style="text-align:center;margin-top:1rem;font-size:0.88rem;color:#64748b;">
+          <span class="switch-link" id="linkForgot">Forgot password?</span>
+          &nbsp;•&nbsp;
+          New faculty? <span class="switch-link" id="linkToRegister">Create Account</span>
         </div>
       </form>
+    </div>
 
-      <div class="role-hint">
-        <p>Student? <a href="student-login.html">Student Login</a></p>
-        <p style="margin-top:.4rem;"><a href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a></p>
+    <!-- ── PANEL 2: SIGN UP ── -->
+    <div class="view-panel" id="panelRegister">
+      <form id="registerForm" novalidate>
+        <div class="form-row">
+          <label for="regName">Full Name</label>
+          <input class="form-control" type="text" id="regName"
+            placeholder="Your full name" autocomplete="name" required />
+        </div>
+        <div class="form-row">
+          <label for="regEmail">Institutional Email</label>
+          <input class="form-control" type="email" id="regEmail"
+            placeholder="e.g. pr.cse@srmvalliammai.ac.in"
+            autocomplete="email" required />
+        </div>
+        <div class="form-row">
+          <label for="regPw">Set Password</label>
+          <div class="pw-wrap">
+            <input class="form-control" type="password" id="regPw"
+              placeholder="Minimum 8 characters"
+              autocomplete="new-password" required />
+            <span class="pw-eye" onclick="togglePw('regPw',this)"><i class="fa-solid fa-eye"></i></span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="regPwConfirm">Confirm Password</label>
+          <div class="pw-wrap">
+            <input class="form-control" type="password" id="regPwConfirm"
+              placeholder="Re-enter password"
+              autocomplete="new-password" required />
+            <span class="pw-eye" onclick="togglePw('regPwConfirm',this)"><i class="fa-solid fa-eye"></i></span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary btn-block" type="submit" id="btnRegister">
+            <i class="fa-solid fa-user-plus"></i> Create Faculty Account
+          </button>
+        </div>
+        <div style="text-align:center;margin-top:1rem;font-size:0.88rem;color:#64748b;">
+          Already have an account? <span class="switch-link" id="linkToLogin">Sign In</span>
+        </div>
+      </form>
+    </div>
+
+    <!-- ── PANEL 3: FORGOT PASSWORD ── -->
+    <div class="view-panel" id="panelForgot">
+      <div id="forgotFormWrap">
+        <div class="form-row">
+          <label for="forgotEmail">Institutional Email</label>
+          <input class="form-control" type="email" id="forgotEmail"
+            placeholder="Enter your institutional email"
+            autocomplete="email" />
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary btn-block" type="button" id="btnForgot">
+            <i class="fa-solid fa-envelope"></i> Send Reset Link
+          </button>
+        </div>
+        <div style="text-align:center;margin-top:1rem;font-size:0.88rem;color:#64748b;">
+          <span class="switch-link" id="linkBackFromForgot">Back to Sign In</span>
+        </div>
+      </div>
+      <div id="forgotDone" style="display:none;text-align:center;padding:1rem 0;">
+        <i class="fa-solid fa-envelope-circle-check" style="font-size:2.5rem;color:#7c3aed;margin-bottom:1rem;display:block;"></i>
+        <strong>Reset link sent!</strong><br/>
+        Check your inbox at <span id="forgotEmailDisplay" style="color:#7c3aed;font-weight:600;"></span>.
+        <br/><br/>
+        <span class="switch-link" id="linkBackAfterDone">Back to Sign In</span>
       </div>
     </div>
+
+    <!-- ── PANEL 4: EMAIL CONFIRM ── -->
+    <div class="view-panel" id="panelConfirm">
+      <div style="text-align:center;padding:1rem 0;">
+        <i class="fa-solid fa-envelope-open-text" style="font-size:2.5rem;color:#7c3aed;margin-bottom:1rem;display:block;"></i>
+        <strong>Confirm your email</strong><br/>
+        A verification link was sent to<br/>
+        <span id="confirmEmailDisplay" style="color:#7c3aed;font-weight:600;"></span>.
+        <br/><br/>
+        <span style="font-size:0.85rem;color:#64748b;">Click the link in that email, then come back to sign in.</span>
+        <br/><br/>
+        <button class="btn btn-primary" id="btnGoToLoginAfterConfirm">
+          <i class="fa-solid fa-right-to-bracket"></i> Go to Sign In
+        </button>
+      </div>
+    </div>
+
+    <p style="text-align:center;margin-top:1.5rem;font-size:0.82rem;color:#94A3B8;">
+      Student? <a href="student-corner.html">Student Corner</a> &nbsp;•&nbsp; <a href="index.html">Home</a>
+    </p>
+
   </div>
+</div>
 
-  <script type="module" src="/src/scripts/supabase.js"></script>
-  <script type="module" src="/src/scripts/users.js"></script>
-  <script type="module" src="/src/scripts/auth.js"></script>
-  <script>
-    (function () {
-      const params = new URLSearchParams(location.search);
-      const box = document.getElementById("loginMessage");
-      const emailForm = document.getElementById("emailForm");
-      const otpForm = document.getElementById("otpForm");
-      const facultyEmailInput = document.getElementById("facultyEmail");
-      const facultyOtpInput = document.getElementById("facultyOtp");
-      const sendOtpBtn = document.getElementById("sendOtpBtn");
-      const verifyOtpBtn = document.getElementById("verifyOtpBtn");
-      const resendOtpBtn = document.getElementById("resendOtpBtn");
-      const changeEmailBtn = document.getElementById("changeEmailBtn");
-      const countdownText = document.getElementById("countdownText");
-      const subtitle = document.getElementById("loginSubtitle");
+<!-- Modal: Email already registered -->
+<div class="modal-overlay" id="registeredModal">
+  <div class="modal-box">
+    <div class="modal-icon"><i class="fa-solid fa-circle-info"></i></div>
+    <div class="modal-title">Account Already Exists</div>
+    <div class="modal-text">
+      An account is already registered for<br/>
+      <strong id="modalEmail" style="color:#0f172a;"></strong>.<br/>
+      Please sign in with your password.
+    </div>
+    <button type="button" class="modal-btn" id="modalBtnSignIn">
+      <i class="fa-solid fa-right-to-bracket"></i> Proceed to Sign In
+    </button>
+  </div>
+</div>
 
-      let currentEmail = "";
-      let countdownTimer = null;
-      let secondsLeft = 0;
+<script type="module" src="/src/scripts/supabase.js"></script>
+<script type="module" src="/src/scripts/users.js"></script>
+<script type="module" src="/src/scripts/auth.js"></script>
+<script type="module">
+import { Auth } from '/src/scripts/auth.js';
+import '/src/scripts/supabase.js';
 
-      if (params.get("denied")) {
-        box.textContent = "That page is restricted to faculty accounts. Please sign in.";
-        box.className = "form-message is-visible error";
+const params = new URLSearchParams(location.search);
+const nextPage = Auth.safeNext?.(params.get('next')) || 'teachers-corner.html';
+
+window.togglePw = function(id, eye) {
+  const inp = document.getElementById(id);
+  const showing = inp.type === 'text';
+  inp.type = showing ? 'password' : 'text';
+  eye.innerHTML = showing ? '<i class="fa-solid fa-eye"></i>' : '<i class="fa-solid fa-eye-slash"></i>';
+};
+
+const authMsg  = document.getElementById('authMsg');
+const authTitle = document.getElementById('authTitle');
+const authSub  = document.getElementById('authSub');
+
+const panelLogin    = document.getElementById('panelLogin');
+const panelRegister = document.getElementById('panelRegister');
+const panelForgot   = document.getElementById('panelForgot');
+const panelConfirm  = document.getElementById('panelConfirm');
+const registeredModal = document.getElementById('registeredModal');
+const modalEmail    = document.getElementById('modalEmail');
+
+function showMsg(text, type) {
+  authMsg.textContent = text;
+  authMsg.className = `form-message is-visible ${type}`;
+}
+function clearMsg() { authMsg.textContent = ''; authMsg.className = 'form-message'; }
+
+function allPanels() { return [panelLogin, panelRegister, panelForgot, panelConfirm]; }
+
+function switchToLogin(prefillEmail = '') {
+  clearMsg();
+  authTitle.textContent = 'Faculty Login';
+  authSub.textContent = 'Sign in to the Teacher\'s Corner with your institutional email.';
+  allPanels().forEach(p => p.classList.remove('active'));
+  panelLogin.classList.add('active');
+  if (prefillEmail) document.getElementById('loginEmail').value = prefillEmail;
+}
+
+function switchToRegister() {
+  clearMsg();
+  authTitle.textContent = 'Create Faculty Account';
+  authSub.textContent = 'Register with your institutional email to access the Teacher\'s Corner.';
+  allPanels().forEach(p => p.classList.remove('active'));
+  panelRegister.classList.add('active');
+}
+
+function switchToForgot(prefillEmail = '') {
+  clearMsg();
+  authTitle.textContent = 'Reset Password';
+  authSub.textContent = 'Enter your institutional email to receive a reset link.';
+  allPanels().forEach(p => p.classList.remove('active'));
+  panelForgot.classList.add('active');
+  document.getElementById('forgotFormWrap').style.display = 'block';
+  document.getElementById('forgotDone').style.display = 'none';
+  if (prefillEmail) document.getElementById('forgotEmail').value = prefillEmail;
+}
+
+// Cross-links
+document.getElementById('linkToLogin').addEventListener('click', () => switchToLogin());
+document.getElementById('linkToRegister').addEventListener('click', switchToRegister);
+document.getElementById('linkForgot').addEventListener('click', () => switchToForgot(document.getElementById('loginEmail').value.trim()));
+document.getElementById('linkBackFromForgot').addEventListener('click', () => switchToLogin());
+document.getElementById('linkBackAfterDone').addEventListener('click', () => switchToLogin());
+document.getElementById('btnGoToLoginAfterConfirm').addEventListener('click', () => switchToLogin());
+
+// Modal
+document.getElementById('modalBtnSignIn').addEventListener('click', () => {
+  registeredModal.classList.remove('open');
+  switchToLogin(modalEmail.textContent.trim());
+  document.getElementById('loginPw').focus();
+});
+
+function setLoading(btn, text) {
+  btn.disabled = true;
+  btn._orig = btn.innerHTML;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${text}`;
+}
+function resetBtn(btn) {
+  btn.disabled = false;
+  btn.innerHTML = btn._orig || btn.innerHTML;
+}
+
+// FACULTY EMAIL DOMAIN VALIDATION
+const FACULTY_REGEX = /^[a-z0-9._-]+(\.cse)?@(srmvalliammai\.ac\.in|srmvec\.ac\.in)$/i;
+function isValidFacultyEmail(email) {
+  return FACULTY_REGEX.test(email.trim().toLowerCase());
+}
+
+// ── 1. SIGN IN ──
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const password = document.getElementById('loginPw').value;
+
+  if (!email) { showMsg('Please enter your institutional email.', 'error'); return; }
+  if (!isValidFacultyEmail(email)) {
+    showMsg('Please use your institutional email (e.g. pr.cse@srmvalliammai.ac.in).', 'error'); return;
+  }
+  if (!password) { showMsg('Please enter your password.', 'error'); return; }
+
+  const btn = document.getElementById('btnLogin');
+  setLoading(btn, 'Signing in…');
+
+  try {
+    const res = await Auth.loginTeacher(email, password);
+    if (!res || res.error) {
+      resetBtn(btn);
+      if (res?.error === 'pending_approval') {
+        showMsg('⏳ Your account is pending admin approval. You will be able to log in once an administrator approves your account.', 'info');
+      } else {
+        showMsg(res?.error || 'Invalid email or password.', 'error');
       }
+      return;
+    }
+    showMsg('Login successful! Redirecting…', 'success');
+    setTimeout(() => { location.href = nextPage; }, 600);
+  } catch (err) {
+    showMsg(err.message || 'Login failed.', 'error');
+    resetBtn(btn);
+  }
+});
 
-      function showMessage(msg, isError = true) {
-        box.textContent = msg;
-        box.className = "form-message is-visible " + (isError ? "error" : "success");
+// ── 2. SIGN UP ──
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const fullName = document.getElementById('regName').value.trim();
+  const email    = document.getElementById('regEmail').value.trim().toLowerCase();
+  const password = document.getElementById('regPw').value;
+  const confirm  = document.getElementById('regPwConfirm').value;
+
+  if (!fullName) { showMsg('Please enter your full name.', 'error'); return; }
+  if (!email || !isValidFacultyEmail(email)) {
+    showMsg('Please enter a valid institutional email (e.g. pr.cse@srmvalliammai.ac.in).', 'error'); return;
+  }
+  if (!password) { showMsg('Please set a password.', 'error'); return; }
+  if (password.length < 8) { showMsg('Password must be at least 8 characters.', 'error'); return; }
+  if (password !== confirm) { showMsg('Passwords do not match.', 'error'); return; }
+
+  const btn = document.getElementById('btnRegister');
+  setLoading(btn, 'Creating account…');
+
+  try {
+    const res = await Auth.registerTeacher(fullName, email, password);
+    resetBtn(btn);
+    if (!res || res.error) {
+      if (res?.error?.toLowerCase().includes('already registered') || res?.error?.toLowerCase().includes('already in use') || res?.error?.toLowerCase().includes('user already')) {
+        modalEmail.textContent = email;
+        registeredModal.classList.add('open');
+      } else {
+        showMsg(res?.error || 'Registration failed.', 'error');
       }
+      return;
+    }
+    // Account created — show pending approval notice
+    allPanels().forEach(p => p.classList.remove('active'));
+    panelConfirm.classList.add('active');
+    authTitle.textContent = 'Account Submitted';
+    authSub.textContent = 'Your request has been sent to the administrator.';
+    document.getElementById('confirmEmailDisplay').textContent = email;
+    // Reuse confirm panel with a pending message
+    document.querySelector('#panelConfirm div').innerHTML = `
+      <i class="fa-solid fa-hourglass-half" style="font-size:2.5rem;color:#F59E0B;margin-bottom:1rem;display:block;"></i>
+      <strong>Account Pending Approval</strong><br/>
+      Your faculty account for<br/>
+      <span style="color:#7c3aed;font-weight:600;">${email}</span><br/>
+      has been submitted and is awaiting administrator approval.<br/><br/>
+      <span style="font-size:0.85rem;color:#64748b;">You will be able to log in once an admin approves your account.</span>
+      <br/><br/>
+      <button class="btn btn-primary" id="btnGoToLoginAfterConfirm">
+        <i class="fa-solid fa-right-to-bracket"></i> Back to Sign In
+      </button>
+    `;
+    document.getElementById('btnGoToLoginAfterConfirm').addEventListener('click', () => switchToLogin(email));
+  } catch (err) {
+    showMsg(err.message || 'Registration failed.', 'error');
+    resetBtn(btn);
+  }
+});
 
-      function startCountdown(sec = 45) {
-        clearInterval(countdownTimer);
-        secondsLeft = sec;
-        resendOtpBtn.disabled = true;
-        countdownText.textContent = `(${secondsLeft}s)`;
 
-        countdownTimer = setInterval(() => {
-          secondsLeft--;
-          if (secondsLeft <= 0) {
-            clearInterval(countdownTimer);
-            resendOtpBtn.disabled = false;
-            countdownText.textContent = "";
-          } else {
-            countdownText.textContent = `(${secondsLeft}s)`;
-          }
-        }, 1000);
-      }
+// ── 3. FORGOT PASSWORD ──
+document.getElementById('btnForgot').addEventListener('click', async function() {
+  const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+  if (!email) { showMsg('Please enter your institutional email.', 'error'); return; }
+  if (!isValidFacultyEmail(email)) {
+    showMsg('Please enter a valid institutional email.', 'error'); return;
+  }
+  const btn = this;
+  setLoading(btn, 'Sending…');
+  try {
+    const { error } = await window.supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${location.origin}/change-password.html?role=teacher&next=teachers-corner.html`
+    });
+    resetBtn(btn);
+    if (error) { showMsg(error.message, 'error'); return; }
+    document.getElementById('forgotEmailDisplay').textContent = email;
+    document.getElementById('forgotFormWrap').style.display = 'none';
+    document.getElementById('forgotDone').style.display = 'block';
+    clearMsg();
+  } catch (err) {
+    showMsg(err.message || 'Failed to send reset email.', 'error');
+    resetBtn(btn);
+  }
+});
 
-      // Step 1: Send OTP
-      emailForm.addEventListener("submit", async function (e) {
-        e.preventDefault();
-        box.className = "form-message";
-
-        const email = facultyEmailInput.value.trim().toLowerCase();
-        if (!email) {
-          showMessage("Please enter your institutional email.");
-          return;
-        }
-
-        sendOtpBtn.disabled = true;
-        sendOtpBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking roster…';
-
-        try {
-          if (!window.Auth) {
-            await new Promise(r => setTimeout(r, 100));
-          }
-          const res = await window.Auth.requestFacultyOtp(email);
-          if (res.error) {
-            showMessage(res.error, true);
-            sendOtpBtn.disabled = false;
-            sendOtpBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Verification Code';
-            return;
-          }
-
-          currentEmail = email;
-          emailForm.style.display = "none";
-          otpForm.style.display = "block";
-          subtitle.textContent = `Enter the 6-digit code sent to ${currentEmail}`;
-          showMessage(res.message || "Verification code sent to your email.", false);
-          facultyOtpInput.focus();
-          startCountdown(45);
-        } catch (err) {
-          showMessage(err.message || "An unexpected error occurred.");
-          sendOtpBtn.disabled = false;
-          sendOtpBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Verification Code';
-        }
-      });
-
-      // Step 2: Verify OTP
-      otpForm.addEventListener("submit", async function (e) {
-        e.preventDefault();
-        box.className = "form-message";
-
-        const otp = facultyOtpInput.value.trim();
-        if (!otp || otp.length < 6) {
-          showMessage("Please enter the complete 6-digit verification code.");
-          return;
-        }
-
-        verifyOtpBtn.disabled = true;
-        verifyOtpBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying…';
-
-        try {
-          const res = await window.Auth.verifyFacultyOtp(currentEmail, otp);
-          if (res.error) {
-            showMessage(res.error, true);
-            verifyOtpBtn.disabled = false;
-            verifyOtpBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Verify &amp; Sign In';
-            return;
-          }
-
-          showMessage("Verification successful! Redirecting…", false);
-          setTimeout(() => {
-            location.href = window.Auth.safeNext(params.get("next")) || "teachers-corner.html";
-          }, 600);
-        } catch (err) {
-          showMessage(err.message || "Verification failed. Please try again.");
-          verifyOtpBtn.disabled = false;
-          verifyOtpBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Verify &amp; Sign In';
-        }
-      });
-
-      // Resend OTP
-      resendOtpBtn.addEventListener("click", async function () {
-        if (!currentEmail || secondsLeft > 0) return;
-        resendOtpBtn.disabled = true;
-        const res = await window.Auth.requestFacultyOtp(currentEmail);
-        if (res.error) {
-          showMessage(res.error, true);
-          resendOtpBtn.disabled = false;
-        } else {
-          showMessage("New verification code dispatched.", false);
-          startCountdown(45);
-        }
-      });
-
-      // Change Email
-      changeEmailBtn.addEventListener("click", function () {
-        clearInterval(countdownTimer);
-        otpForm.style.display = "none";
-        emailForm.style.display = "block";
-        subtitle.textContent = "Sign in using your institutional email address and One-Time Password (OTP).";
-        sendOtpBtn.disabled = false;
-        sendOtpBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Verification Code';
-        box.className = "form-message";
-        facultyEmailInput.focus();
-      });
-
-    }());
-  </script>
+// If already logged in as teacher, go straight to corner
+window.addEventListener('DOMContentLoaded', async () => {
+  await new Promise(r => setTimeout(r, 150)); // wait for Auth to initialise
+  const user = window.Auth?.currentUser?.();
+  if (user && (user.role === 'teacher' || user.role === 'faculty_admin' || user.role === 'admin')) {
+    location.replace(nextPage);
+  }
+});
+</script>
 
 </body>
 </html>

@@ -118,6 +118,23 @@
     <!-- Stats Row -->
     <div class="admin-stats-grid" id="statsGrid"></div>
 
+    <!-- Faculty Accounts Approval Section -->
+    <div class="section-card" style="margin-bottom:1.5rem;">
+      <div class="section-card-header">
+        <h2><i class="fa-solid fa-chalkboard-user"></i> Faculty Account Requests</h2>
+        <button class="btn btn-ghost btn-sm" id="refreshFacultyBtn" onclick="loadFacultyAccounts()">
+          <i class="fa-solid fa-rotate-right"></i> Refresh
+        </button>
+      </div>
+      <div class="section-card-body" style="padding:0;">
+        <div class="data-table-wrap" id="facultyTableWrap">
+          <div style="padding:1.5rem;text-align:center;color:#94a3b8;font-size:0.9rem;">
+            <i class="fa-solid fa-spinner fa-spin"></i> Loading faculty accounts…
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- All Blogs Table -->
     <div class="section-card">
       <div class="section-card-header">
@@ -144,6 +161,7 @@
 
   </main>
 </div>
+
 
 <!-- Edit Modal -->
 <div class="modal-overlay" id="editModal">
@@ -216,10 +234,103 @@
     document.getElementById('dashboardScreen').style.display = '';
     renderStats();
     renderAllBlogs();
+    loadFacultyAccounts();
     document.getElementById('filterInput').addEventListener('input', renderAllBlogs);
     document.getElementById('filterRole').addEventListener('change', renderAllBlogs);
     document.getElementById('filterStatus').addEventListener('change', renderAllBlogs);
   }
+
+  // ── Faculty Account Approval ────────────────────────────────────────────────
+
+  window.loadFacultyAccounts = async function() {
+    const wrap = document.getElementById('facultyTableWrap');
+    wrap.innerHTML = `<div style="padding:1.5rem;text-align:center;color:#94a3b8;font-size:0.9rem;"><i class="fa-solid fa-spinner fa-spin"></i> Loading…</div>`;
+
+    if (!window.supabase) {
+      wrap.innerHTML = `<div style="padding:1.5rem;color:#64748b;">Supabase not available.</div>`;
+      return;
+    }
+
+    const { data: profiles, error } = await window.supabase
+      .from('profiles')
+      .select('id, full_name, email, role, status, created_at')
+      .in('role', ['teacher', 'faculty'])
+      .order('created_at', { ascending: false });
+
+
+    if (error || !profiles || profiles.length === 0) {
+      wrap.innerHTML = `<div class="empty-state"><i class="fa-solid fa-chalkboard-user"></i><p>No faculty account requests found.</p></div>`;
+      return;
+    }
+
+    const rows = profiles.map(p => {
+      const status = p.status || 'pending';
+      let badge = '';
+      let actions = '';
+
+      if (status === 'pending') {
+        badge = `<span class="badge-pending"><i class="fa-solid fa-clock"></i> Pending</span>`;
+        actions = `
+          <button class="btn-approve" onclick="approveFaculty('${p.id}')"><i class="fa-solid fa-check"></i> Approve</button>
+          <button class="btn-reject"  onclick="rejectFaculty('${p.id}')"><i class="fa-solid fa-xmark"></i> Reject</button>
+        `;
+      } else if (status === 'approved') {
+        badge = `<span class="badge-approved"><i class="fa-solid fa-circle-check"></i> Approved</span>`;
+        actions = `<button class="btn-reject" onclick="rejectFaculty('${p.id}')"><i class="fa-solid fa-ban"></i> Revoke</button>`;
+      } else {
+        badge = `<span class="badge-rejected"><i class="fa-solid fa-ban"></i> Rejected</span>`;
+        actions = `<button class="btn-approve" onclick="approveFaculty('${p.id}')"><i class="fa-solid fa-check"></i> Approve</button>`;
+      }
+
+      const date = p.created_at ? new Date(p.created_at).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+      return `
+        <tr>
+          <td><strong>${p.full_name || '—'}</strong></td>
+          <td style="font-size:.85rem;">${p.email || '—'}</td>
+          <td>${badge}</td>
+          <td style="font-size:.82rem;color:#64748b;">${date}</td>
+          <td><div class="action-btns">${actions}</div></td>
+        </tr>`;
+    }).join('');
+
+    wrap.innerHTML = `
+      <table class="data-table">
+        <thead><tr>
+          <th>Name</th><th>Email</th><th>Status</th><th>Requested</th><th>Actions</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  };
+
+  window.approveFaculty = async function(id) {
+    if (!window.supabase) return;
+    const { data, error } = await window.supabase.rpc('admin_set_faculty_status', {
+      p_target_id: id,
+      p_status: 'approved'
+    });
+    if (error || data?.error) {
+      alert('Error approving: ' + (error?.message || data?.error));
+      return;
+    }
+    loadFacultyAccounts();
+  };
+
+  window.rejectFaculty = async function(id) {
+    if (!window.supabase) return;
+    const { data, error } = await window.supabase.rpc('admin_set_faculty_status', {
+      p_target_id: id,
+      p_status: 'rejected'
+    });
+    if (error || data?.error) {
+      alert('Error rejecting: ' + (error?.message || data?.error));
+      return;
+    }
+    loadFacultyAccounts();
+  };
+
+
+  // ── Blog Management ─────────────────────────────────────────────────────────
+
 
   window.addEventListener('DOMContentLoaded', () => {
     const saved = BlogDB.getCurrentUser();

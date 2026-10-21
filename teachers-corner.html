@@ -31,21 +31,13 @@
       <h2>Teacher's Corner</h2>
       <p>SRMVEC CSE Blog Portal — Faculty Access</p>
     </div>
-    <div class="security-notice-box" style="margin-bottom:1.25rem;">
-      <i class="fa-solid fa-envelope-open-text" style="color:#7C3AED; margin-right:0.4rem;"></i>
-      Faculty authentication uses institutional email verification (OTP). No permanent password is required.
+    <div style="text-align:center;padding:1rem 0;color:#64748b;font-size:0.9rem;">
+      <i class="fa-solid fa-spinner fa-spin" style="margin-right:0.4rem;"></i>
+      Redirecting to faculty login…
     </div>
-    <form id="loginForm" novalidate>
-      <a href="teacher-login.html?next=teachers-corner.html" class="btn btn-primary" style="width:100%;justify-content:center;padding:.85rem;text-decoration:none;">
-        <i class="fa-solid fa-paper-plane"></i> Proceed to Faculty OTP Login
-      </a>
-    </form>
-    <p style="text-align:center;margin-top:1.2rem;font-size:0.82rem;color:#94A3B8;">
-      <i class="fa-solid fa-shield-halved"></i> Access is restricted exclusively to authorized institutional faculty.<br />
-      Student? <a href="student-corner.html">Go to Student Corner</a> &nbsp;•&nbsp; <a href="index.html">Home</a>
-    </p>
   </div>
 </div>
+
 
 <!-- ═══════════════ DASHBOARD ═══════════════ -->
 <div class="portal-layout" id="dashboardScreen" style="display:none;">
@@ -144,12 +136,6 @@
 <script type="module">
   let currentUser = null;
 
-  document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    // Redirect to faculty OTP login page
-    location.href = "teacher-login.html?next=teachers-corner.html";
-  });
-
   function showDashboard() {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('dashboardScreen').style.display = '';
@@ -158,23 +144,44 @@
   }
 
   window.addEventListener('DOMContentLoaded', async () => {
-    // Check route guard for teacher/faculty_admin roles
-    if (window.protectRoute) {
-      const authUser = await window.protectRoute({ allowedRoles: ['teacher', 'faculty_admin', 'admin', 'editor'] });
-      if (authUser) {
-        currentUser = authUser;
-        BlogDB.setCurrentUser(authUser);
-        showDashboard();
-        return;
+    await new Promise(r => setTimeout(r, 200)); // wait for Auth + Supabase to initialise
+
+    // Check Supabase session first
+    if (window.supabase) {
+      const { data: { session } } = await window.supabase.auth.getSession().catch(() => ({ data: { session: null } }));
+      if (session && session.user) {
+        const { data: profile } = await window.supabase
+          .from('profiles').select('*').eq('id', session.user.id).maybeSingle().catch(() => ({ data: null }));
+        const role = profile?.role || session.user.user_metadata?.role || 'teacher';
+        if (role === 'teacher' || role === 'faculty_admin' || role === 'admin' || role === 'editor') {
+          currentUser = {
+            userId: session.user.id, id: session.user.id,
+            name: profile?.full_name || session.user.user_metadata?.full_name || session.user.email,
+            displayName: profile?.full_name || session.user.user_metadata?.full_name || session.user.email,
+            username: session.user.email, role, email: session.user.email,
+            permissions: profile?.permissions || {}
+          };
+          if (window.Auth) window.Auth.startSession(currentUser);
+          if (window.BlogDB) window.BlogDB.setCurrentUser(currentUser);
+          showDashboard();
+          return;
+        }
       }
     }
 
-    const saved = BlogDB.getCurrentUser();
-    if (saved && (saved.role === 'teacher' || saved.role === 'admin' || saved.role === 'faculty_admin')) {
-      currentUser = saved;
+    // Check local session (Auth)
+    const authUser = window.Auth?.currentUser?.();
+    if (authUser && (authUser.role === 'teacher' || authUser.role === 'faculty_admin' || authUser.role === 'admin' || authUser.role === 'editor')) {
+      currentUser = authUser;
+      if (window.BlogDB) window.BlogDB.setCurrentUser(authUser);
       showDashboard();
+      return;
     }
+
+    // Not authenticated — redirect to login
+    location.replace('teacher-login.html?next=teachers-corner.html');
   });
+
 
   document.getElementById('logoutBtn').addEventListener('click', async () => {
     if (window.Auth) {
