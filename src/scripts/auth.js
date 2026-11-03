@@ -780,13 +780,41 @@ const Auth = {
     let studentEmail = isEmail ? cleanInput.toLowerCase() : null;
 
     if (!studentEmail && cleanRegNo) {
-      // Check local device cache
+      // 1. Check local device cache
       try {
         const cached = localStorage.getItem('srmvec_student_email_' + cleanRegNo);
         if (cached && cached.includes('@')) {
           studentEmail = cached.toLowerCase();
         }
       } catch (e) {}
+
+      // 2. Query Supabase profiles if not in local device cache
+      if (!studentEmail && window.supabase) {
+        try {
+          const { data: rpcEmail, error: rpcErr } = await window.supabase.rpc('get_student_email_by_regno', { p_reg_no: cleanRegNo });
+          if (!rpcErr && rpcEmail && typeof rpcEmail === 'string' && rpcEmail.includes('@')) {
+            studentEmail = rpcEmail.trim().toLowerCase();
+          }
+        } catch (e) {}
+
+        if (!studentEmail) {
+          try {
+            const { data: prof, error: profErr } = await window.supabase
+              .from('profiles')
+              .select('email')
+              .eq('role', 'student')
+              .ilike('register_number', cleanRegNo)
+              .maybeSingle();
+            if (!profErr && prof?.email && prof.email.includes('@')) {
+              studentEmail = prof.email.trim().toLowerCase();
+            }
+          } catch (e) {}
+        }
+
+        if (studentEmail) {
+          try { localStorage.setItem('srmvec_student_email_' + cleanRegNo, studentEmail); } catch (e) {}
+        }
+      }
     }
 
     if (studentEmail && window.supabase) {
@@ -868,7 +896,35 @@ const Auth = {
         }
       } catch (e) {}
 
-      // 2. Check local PortalUsers store (offline / demo store)
+      // 2. Query Supabase profiles if not in device cache
+      if (!resolvedEmail && window.supabase) {
+        try {
+          const { data: rpcEmail, error: rpcErr } = await window.supabase.rpc('get_student_email_by_regno', { p_reg_no: cleanRegNo });
+          if (!rpcErr && rpcEmail && typeof rpcEmail === 'string' && rpcEmail.includes('@')) {
+            resolvedEmail = rpcEmail.trim().toLowerCase();
+          }
+        } catch (e) {}
+
+        if (!resolvedEmail) {
+          try {
+            const { data: prof, error: profErr } = await window.supabase
+              .from('profiles')
+              .select('email')
+              .eq('role', 'student')
+              .ilike('register_number', cleanRegNo)
+              .maybeSingle();
+            if (!profErr && prof?.email && prof.email.includes('@')) {
+              resolvedEmail = prof.email.trim().toLowerCase();
+            }
+          } catch (e) {}
+        }
+
+        if (resolvedEmail) {
+          try { localStorage.setItem('srmvec_student_email_' + cleanRegNo, resolvedEmail); } catch (e) {}
+        }
+      }
+
+      // 3. Check local PortalUsers store (offline / demo store)
       if (!resolvedEmail && window.PortalUsers) {
         const local = window.PortalUsers.allStudents().find(s =>
           (s.id && s.id.toUpperCase() === cleanRegNo) ||
