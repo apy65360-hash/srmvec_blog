@@ -772,8 +772,10 @@ const Auth = {
     let studentEmail = null;
     if (window.supabase) {
       try {
-        const { data } = await window.supabase.rpc('get_student_email_by_regno', { p_reg_no: cleanRegNo });
-        studentEmail = data || null;
+        const { data, error } = await window.supabase.rpc('get_student_email_by_regno', { p_reg_no: cleanRegNo });
+        if (!error && data) {
+          studentEmail = String(data).trim().toLowerCase();
+        }
       } catch (e) { /* fall through */ }
     }
 
@@ -840,35 +842,61 @@ const Auth = {
     const cleanRegNo = String(registerNumber || '').trim().toUpperCase();
     if (!cleanRegNo) return { error: 'Invalid Register Number.' };
 
+    let resolvedEmail = null;
+
     if (window.supabase) {
       try {
-        const { data: email } = await window.supabase.rpc('get_student_email_by_regno', { p_reg_no: cleanRegNo });
-        if (!email) return { error: 'Invalid Register Number.' };
+        const { data: email, error: rpcErr } = await window.supabase.rpc('get_student_email_by_regno', { p_reg_no: cleanRegNo });
+        if (!rpcErr && email) {
+          resolvedEmail = String(email).trim().toLowerCase();
+        }
+      } catch (err) { /* fall through */ }
+    }
 
-        const { error } = await window.supabase.auth.resetPasswordForEmail(email, {
+    // Local fallback (offline / demo store)
+    if (!resolvedEmail && window.PortalUsers) {
+      const local = window.PortalUsers.allStudents().find(s =>
+        (s.id && s.id.toUpperCase() === cleanRegNo) ||
+        (s.register_number && s.register_number.toUpperCase() === cleanRegNo)
+      );
+      if (local && local.email) {
+        resolvedEmail = String(local.email).trim().toLowerCase();
+      }
+    }
+
+    if (!resolvedEmail) {
+      return { error: 'Invalid Register Number.' };
+    }
+
+    // In Supabase environment, send password reset link to their personal email
+    if (window.supabase) {
+      try {
+        const { error } = await window.supabase.auth.resetPasswordForEmail(resolvedEmail, {
           redirectTo: `${location.origin}/change-password.html?forced=1&next=student-corner.html`
         });
-        if (error) return { error: 'Invalid Register Number.' };
+        if (error) {
+          if (window.PortalUsers) {
+            const local = window.PortalUsers.allStudents().find(s =>
+              (s.id && s.id.toUpperCase() === cleanRegNo) ||
+              (s.register_number && s.register_number.toUpperCase() === cleanRegNo)
+            );
+            if (local && local.email) {
+              const masked = local.email.replace(/^(.{2}).*(@.+)$/, '$1***$2');
+              return { success: true, maskedEmail: masked };
+            }
+          }
+          return { error: 'Invalid Register Number.' };
+        }
 
-        const masked = email.replace(/^(.{2}).*(@.+)$/, '$1***$2');
+        const masked = resolvedEmail.replace(/^(.{2}).*(@.+)$/, '$1***$2');
         return { success: true, maskedEmail: masked };
       } catch (err) {
         return { error: 'Invalid Register Number.' };
       }
     }
 
-    if (window.PortalUsers) {
-      const local = window.PortalUsers.allStudents().find(s =>
-        (s.id && s.id.toUpperCase() === cleanRegNo) ||
-        (s.register_number && s.register_number.toUpperCase() === cleanRegNo)
-      );
-      if (local && local.email) {
-        const masked = local.email.replace(/^(.{2}).*(@.+)$/, '$1***$2');
-        return { success: true, maskedEmail: masked };
-      }
-    }
-
-    return { error: 'Invalid Register Number.' };
+    const masked = resolvedEmail.replace(/^(.{2}).*(@.+)$/, '$1***$2');
+    return { success: true, maskedEmail: masked };
   },
 
   /**
