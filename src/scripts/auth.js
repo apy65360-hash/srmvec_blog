@@ -716,6 +716,10 @@ const Auth = {
           }
         }
 
+        // Cache student email locally for subsequent device logins
+        try {
+          localStorage.setItem('srmvec_student_email_' + cleanRegNo, cleanEmail);
+        } catch (e) {}
 
         // If a session was returned, email confirmation is not required
         if (data.session && data.user) {
@@ -745,6 +749,9 @@ const Auth = {
 
     // Local fallback (offline / demo mode)
     if (window.PortalUsers) {
+      try {
+        localStorage.setItem('srmvec_student_email_' + cleanRegNo, cleanEmail);
+      } catch (e) {}
       const result = window.PortalUsers.register({
         name: cleanName, id: cleanRegNo, role: 'student',
         email: cleanEmail, dob: password
@@ -758,25 +765,28 @@ const Auth = {
   },
 
   /**
-   * Returning student login: looks up the student's personal email by register
-   * number (via Supabase RPC), then signs in with email + password.
+   * Returning student login: signs in with personal email and password.
+   * Resolves email locally from device cache or PortalUsers when register number is given.
    */
-  async loginStudent(registerNumber, password) {
-    const cleanRegNo = String(registerNumber || '').trim().toUpperCase();
+  async loginStudent(registerNumberOrEmail, password) {
+    const cleanInput = String(registerNumberOrEmail || '').trim();
     const cleanPw = String(password || '').trim();
-    if (!cleanRegNo || !cleanPw) {
+    if (!cleanInput || !cleanPw) {
       return { error: 'Invalid Register Number or password.' };
     }
 
-    // Resolve personal email from profiles table via secure RPC
-    let studentEmail = null;
-    if (window.supabase) {
+    const isEmail = cleanInput.includes('@');
+    const cleanRegNo = isEmail ? null : cleanInput.toUpperCase();
+    let studentEmail = isEmail ? cleanInput.toLowerCase() : null;
+
+    if (!studentEmail && cleanRegNo) {
+      // Check local device cache
       try {
-        const { data, error } = await window.supabase.rpc('get_student_email_by_regno', { p_reg_no: cleanRegNo });
-        if (!error && data) {
-          studentEmail = String(data).trim().toLowerCase();
+        const cached = localStorage.getItem('srmvec_student_email_' + cleanRegNo);
+        if (cached && cached.includes('@')) {
+          studentEmail = cached.toLowerCase();
         }
-      } catch (e) { /* fall through */ }
+      } catch (e) {}
     }
 
     if (studentEmail && window.supabase) {
@@ -790,13 +800,18 @@ const Auth = {
           const { data: profile } = await window.supabase
             .from('profiles').select('*').eq('id', data.user.id).maybeSingle();
 
+          const resolvedRegNo = profile?.register_number || cleanRegNo || data.user.user_metadata?.register_number || '';
+          if (resolvedRegNo) {
+            try { localStorage.setItem('srmvec_student_email_' + resolvedRegNo.toUpperCase(), studentEmail); } catch (e) {}
+          }
+
           const user = {
             userId:            data.user.id,
             id:                data.user.id,
-            name:              profile?.full_name || data.user.user_metadata?.full_name || cleanRegNo,
-            displayName:       profile?.full_name || data.user.user_metadata?.full_name || cleanRegNo,
-            username:          cleanRegNo,
-            registerNumber:    cleanRegNo,
+            name:              profile?.full_name || data.user.user_metadata?.full_name || resolvedRegNo || studentEmail,
+            displayName:       profile?.full_name || data.user.user_metadata?.full_name || resolvedRegNo || studentEmail,
+            username:          resolvedRegNo || studentEmail,
+            registerNumber:    resolvedRegNo,
             role:              'student',
             email:             studentEmail,
             mustChangePassword: !!(profile?.must_change_password),
@@ -804,26 +819,24 @@ const Auth = {
           };
           return { session: this.startSession(user), mustChangePassword: user.mustChangePassword };
         }
-
-        if (error) {
-          return { error: 'Incorrect password.' };
-        }
-
       } catch (err) {
-        return { error: 'Invalid Register Number or password.' };
+        // Fall through to local store
       }
     }
 
     // Local fallback (demo / offline)
     if (window.PortalUsers) {
       const local = window.PortalUsers.allStudents().find(s =>
-        (s.id && s.id.toUpperCase() === cleanRegNo) ||
-        (s.register_number && s.register_number.toUpperCase() === cleanRegNo)
+        (cleanRegNo && (
+          (s.id && s.id.toUpperCase() === cleanRegNo) ||
+          (s.register_number && s.register_number.toUpperCase() === cleanRegNo)
+        )) ||
+        (studentEmail && s.email && s.email.toLowerCase() === studentEmail)
       );
       if (local) {
-        const isMatch = cleanPw === local.dob || cleanPw === `SRMVEC#${cleanRegNo}` || cleanPw === cleanRegNo || cleanPw === local.password;
+        const isMatch = cleanPw === local.dob || cleanPw === `SRMVEC#${cleanRegNo || local.id}` || cleanPw === (cleanRegNo || local.id) || cleanPw === local.password;
         if (isMatch) {
-          local.registerNumber = cleanRegNo;
+          local.registerNumber = cleanRegNo || local.id;
           return { session: this.startSession(local), mustChangePassword: false };
         }
         return { error: 'Incorrect password.' };
@@ -834,33 +847,36 @@ const Auth = {
   },
 
   /**
-   * Forgot password: looks up the student's registered personal email and sends
-   * a Supabase password-reset link to it.
+   * Forgot password: sends a Supabase password-reset link to the student's personal email.
+   * Resolves email locally from device cache or PortalUsers when register number is given.
    * Returns: { success: true, maskedEmail: '...' } or { error }
    */
-  async forgotStudentPassword(registerNumber) {
-    const cleanRegNo = String(registerNumber || '').trim().toUpperCase();
-    if (!cleanRegNo) return { error: 'Invalid Register Number.' };
+  async forgotStudentPassword(registerNumberOrEmail) {
+    const cleanInput = String(registerNumberOrEmail || '').trim();
+    if (!cleanInput) return { error: 'Invalid Register Number.' };
 
-    let resolvedEmail = null;
+    const isEmail = cleanInput.includes('@');
+    const cleanRegNo = isEmail ? null : cleanInput.toUpperCase();
+    let resolvedEmail = isEmail ? cleanInput.toLowerCase() : null;
 
-    if (window.supabase) {
+    if (!resolvedEmail && cleanRegNo) {
+      // 1. Check local device cache
       try {
-        const { data: email, error: rpcErr } = await window.supabase.rpc('get_student_email_by_regno', { p_reg_no: cleanRegNo });
-        if (!rpcErr && email) {
-          resolvedEmail = String(email).trim().toLowerCase();
+        const cached = localStorage.getItem('srmvec_student_email_' + cleanRegNo);
+        if (cached && cached.includes('@')) {
+          resolvedEmail = cached.toLowerCase();
         }
-      } catch (err) { /* fall through */ }
-    }
+      } catch (e) {}
 
-    // Local fallback (offline / demo store)
-    if (!resolvedEmail && window.PortalUsers) {
-      const local = window.PortalUsers.allStudents().find(s =>
-        (s.id && s.id.toUpperCase() === cleanRegNo) ||
-        (s.register_number && s.register_number.toUpperCase() === cleanRegNo)
-      );
-      if (local && local.email) {
-        resolvedEmail = String(local.email).trim().toLowerCase();
+      // 2. Check local PortalUsers store (offline / demo store)
+      if (!resolvedEmail && window.PortalUsers) {
+        const local = window.PortalUsers.allStudents().find(s =>
+          (s.id && s.id.toUpperCase() === cleanRegNo) ||
+          (s.register_number && s.register_number.toUpperCase() === cleanRegNo)
+        );
+        if (local && local.email) {
+          resolvedEmail = String(local.email).trim().toLowerCase();
+        }
       }
     }
 
@@ -877,8 +893,11 @@ const Auth = {
         if (error) {
           if (window.PortalUsers) {
             const local = window.PortalUsers.allStudents().find(s =>
-              (s.id && s.id.toUpperCase() === cleanRegNo) ||
-              (s.register_number && s.register_number.toUpperCase() === cleanRegNo)
+              (cleanRegNo && (
+                (s.id && s.id.toUpperCase() === cleanRegNo) ||
+                (s.register_number && s.register_number.toUpperCase() === cleanRegNo)
+              )) ||
+              (s.email && s.email.toLowerCase() === resolvedEmail)
             );
             if (local && local.email) {
               const masked = local.email.replace(/^(.{2}).*(@.+)$/, '$1***$2');

@@ -898,21 +898,10 @@ END $$;
 
 
 -- ═══════════════════════════════════════════════════════════════════════
--- 12. STUDENT AUTH & PASSWORD RESET HELPER (Resolves Register Number -> Personal Email)
+-- 12. REVOKE & DROP INSECURE PII LOOKUP RPC (Security Advisor 0028/0029 Remediation)
 -- ═══════════════════════════════════════════════════════════════════════
 
-CREATE OR REPLACE FUNCTION public.get_student_email_by_regno(p_reg_no TEXT)
-RETURNS TEXT
-LANGUAGE sql
-SECURITY DEFINER
-STABLE
-SET search_path = ''
-AS $$
-  SELECT email FROM public.profiles
-  WHERE UPPER(TRIM(register_number)) = UPPER(TRIM(p_reg_no))
-    AND role = 'student'
-  LIMIT 1;
-$$;
-
-REVOKE ALL ON FUNCTION public.get_student_email_by_regno(TEXT) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.get_student_email_by_regno(TEXT) TO anon, authenticated, service_role;
+-- Revoke and drop get_student_email_by_regno to prevent unauthenticated/authenticated
+-- PII leakage of student personal email addresses via register number lookups.
+REVOKE ALL ON FUNCTION public.get_student_email_by_regno(text) FROM PUBLIC, anon, authenticated;
+DROP FUNCTION IF EXISTS public.get_student_email_by_regno(text) CASCADE;

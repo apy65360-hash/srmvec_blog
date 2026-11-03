@@ -397,9 +397,9 @@
     <div class="view-panel" id="panelLogin">
       <form id="loginForm" novalidate>
         <div class="form-row">
-          <label for="loginRegInput">Register Number</label>
+          <label for="loginRegInput">Register Number or Personal Email</label>
           <input class="form-control" type="text" id="loginRegInput"
-            placeholder="Enter your Register Number"
+            placeholder="Enter Register Number or Email"
             autocomplete="username" required />
         </div>
 
@@ -430,9 +430,9 @@
     <div class="view-panel" id="panelForgot">
       <div id="forgotFormWrap">
         <div class="form-row">
-          <label for="forgotRegInput">Register Number</label>
+          <label for="forgotRegInput">Personal Email ID or Register Number</label>
           <input class="form-control" type="text" id="forgotRegInput"
-            placeholder="Enter your Register Number"
+            placeholder="Enter your registered personal email or Register No"
             autocomplete="username" required />
         </div>
         <div class="form-actions">
@@ -685,7 +685,7 @@ function switchToLogin(prefillReg = '') {
 function switchToForgot(prefillReg = '') {
   clearMsg();
   authTitle.textContent = 'Reset Password';
-  authSub.textContent = 'Enter your Register Number to receive a reset link.';
+  authSub.textContent = 'Enter your personal email or Register Number to receive a reset link.';
   document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
   panelForgot.classList.add('active');
   document.getElementById('forgotFormWrap').style.display = 'block';
@@ -805,14 +805,14 @@ document.getElementById('loginForm').addEventListener('submit', async function (
 
 // 3. SUBMIT: FORGOT PASSWORD
 document.getElementById('btnForgot').addEventListener('click', async function () {
-  const regNo = document.getElementById('forgotRegInput').value.trim().toUpperCase();
-  if (!regNo) { showMsg('Please enter your Register Number.', 'error'); return; }
+  const inputVal = document.getElementById('forgotRegInput').value.trim();
+  if (!inputVal) { showMsg('Please enter your personal email or Register Number.', 'error'); return; }
 
   const btn = this;
   setLoading(btn, 'Sending…');
 
   try {
-    const result = await Auth.forgotStudentPassword(regNo);
+    const result = await Auth.forgotStudentPassword(inputVal);
 
     if (result.error) {
       showMsg(result.error || 'Invalid Register Number.', 'error');
