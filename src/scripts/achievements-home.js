@@ -9,7 +9,7 @@
  * • Prev / Next button handlers + dot indicators
  */
 
-import { fetchLatestAchievements } from './achievements.js';
+import { fetchLatestAchievements, postAchievement } from './achievements.js';
 
 // ── Department Achievement Records (from achievement pics) ──────────────
 const SAMPLE_ACHIEVEMENTS = [
@@ -239,7 +239,147 @@ function renderCarousel(data) {
 }
 
 // ── Boot ─────────────────────────────────────────────────────────────────────
-async function initAchievementsHome() {
+export async function initAchievementsHome() {
+  let data = [];
+  try {
+    data = await fetchLatestAchievements(3);
+  } catch (err) {
+    console.warn('[achievements-home] Supabase fetch failed:', err);
+  }
+
+  // Fall back to sample data if empty
+  if (!data || data.length === 0) {
+    data = SAMPLE_ACHIEVEMENTS;
+  }
+
+  renderCarousel(data);
+  // Direct navigation to add-achievement.html (matches add-event.html structure)
+}
+
+function setupAddAchievementModal() { return;
+  const openBtn = document.getElementById('openAddAchBtn');
+  const modal = document.getElementById('addAchHomeModal');
+  const closeBtn = document.getElementById('addAchModalCloseBtn');
+  const backdrop = document.getElementById('addAchBackdrop');
+  const cancelBtn = document.getElementById('homeAchCancelBtn');
+  const form = document.getElementById('homeAddAchForm');
+  const dateInput = document.getElementById('homeAchDate');
+  const msgBox = document.getElementById('homeAchFormMsg');
+  const submitBtn = document.getElementById('homeAchSubmitBtn');
+
+  if (!openBtn || !modal) return;
+
+  function openModal(e) {
+    if (e && (e.ctrlKey || e.metaKey)) return;
+    if (e) e.preventDefault();
+    if (dateInput && !dateInput.value) {
+      dateInput.value = new Date().toISOString().split('T')[0];
+    }
+    if (msgBox) {
+      msgBox.style.display = 'none';
+      msgBox.textContent = '';
+    }
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    const firstInput = document.getElementById('homeAchTitle');
+    if (firstInput) setTimeout(() => firstInput.focus(), 100);
+  }
+
+  function closeModal() {
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', openModal);
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (backdrop) backdrop.addEventListener('click', closeModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      closeModal();
+    }
+  });
+
+  // Handle form submission
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publishing...';
+      }
+
+      const newAch = {
+        title: document.getElementById('homeAchTitle').value.trim(),
+        student_name: document.getElementById('homeAchStudent').value.trim(),
+        category: document.getElementById('homeAchCategory').value,
+        achievement_date: document.getElementById('homeAchDate').value,
+        year: document.getElementById('homeAchYear').value.trim() || '2026-27',
+        image_url: document.getElementById('homeAchImg').value.trim() || '/images/achievements/medarzt-tech-heist.jpeg',
+        short_desc: document.getElementById('homeAchShort').value.trim(),
+        description: document.getElementById('homeAchDesc').value.trim(),
+        is_published: true
+      };
+
+      try {
+        const res = await postAchievement(newAch);
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publish Achievement';
+        }
+
+        if (res && res.error) {
+          if (msgBox) {
+            msgBox.className = 'ach-form-msg error';
+            msgBox.style.display = 'block';
+            msgBox.textContent = 'Error: ' + res.error;
+          }
+        } else {
+          if (msgBox) {
+            msgBox.className = 'ach-form-msg success';
+            msgBox.style.display = 'block';
+            msgBox.innerHTML = '<i class="fa-solid fa-circle-check"></i> <strong>Achievement Published!</strong> Added to showcase.';
+          }
+
+          const addedRecord = res?.data || { ...newAch, id: 'ach-' + Date.now() };
+          achievements.unshift(addedRecord);
+          renderCarousel(achievements.slice(0, 3));
+          slideTo(0);
+
+          window.dispatchEvent(new CustomEvent('achievementAdded', { detail: addedRecord }));
+
+          setTimeout(() => {
+            closeModal();
+            form.reset();
+          }, 1200);
+        }
+      } catch (err) {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publish Achievement';
+        }
+        if (msgBox) {
+          msgBox.className = 'ach-form-msg error';
+          msgBox.style.display = 'block';
+          msgBox.textContent = 'Submission error: ' + err.message;
+        }
+      }
+    });
+  }
+}
+
+// Global listener to update carousel if added from another tab/page
+window.addEventListener('achievementAdded', (e) => {
+  if (e.detail) {
+    achievements.unshift(e.detail);
+    renderCarousel(achievements.slice(0, 3));
+  }
+});
+
+/* unused */ async function originalInitAchievementsHome() { return;
   let data = [];
   try {
     data = await fetchLatestAchievements(3);

@@ -3,60 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Teacher Sign Up | SRMVEC CSE Blog</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="/src/styles/style.css" />
-  <link rel="stylesheet" href="/src/styles/portal.css" />
+  <meta http-equiv="refresh" content="0; url=teacher-login.html?tab=setup" />
+  <title>Faculty Account Setup | SRMVEC CSE Blog</title>
 </head>
-<body>
-
-  <div class="login-wrapper">
-    <div class="login-card" style="max-width:540px; text-align:center;">
-      <div class="role-choice-icon teacher" style="margin:0 auto 1.25rem;"><i class="fa-solid fa-lock"></i></div>
-      <h1>Teacher Registration Restricted</h1>
-      <p class="login-sub" style="margin-bottom:1.5rem;">
-        Teachers cannot self-register. Faculty accounts must be created and provisioned by an <strong>Administrator</strong>.
-      </p>
-
-      <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:12px; padding:1.25rem; margin-bottom:1.5rem; text-align:left;">
-        <h4 style="margin:0 0 0.4rem 0; color:#1D4ED8; font-size:0.95rem;">
-          <i class="fa-solid fa-circle-info"></i> How to get an account?
-        </h4>
-        <p style="margin:0; font-size:0.88rem; color:#1E293B; line-height:1.5;">
-          Please contact the CSE Department Administrator to have your official faculty account created. Once registered, you can sign in using your college email ID (<code>&lt;nameinitial&gt;.cse@srmvalliammai.ac.in</code>).
-        </p>
-      </div>
-
-      <div class="form-actions" style="flex-direction:column; gap:0.6rem;">
-        <a class="btn btn-primary btn-block" href="teacher-login.html">
-          <i class="fa-solid fa-right-to-bracket"></i> Go to Teacher Login
-        </a>
-        <a class="btn btn-muted btn-block" href="admin-login.html?next=manage-faculty.html">
-          <i class="fa-solid fa-shield-halved"></i> Admin Login (to Add Faculty)
-        </a>
-      </div>
-
-      <div class="role-hint" style="margin-top:1.5rem;">
-        <p>Student? <a href="student-signup.html">Student sign up</a></p>
-        <p style="margin-top:.6rem;"><a href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a></p>
-      </div>
-    </div>
-  </div>
-
-  <script type="module" src="/src/scripts/users.js"></script>
-  <script type="module" src="/src/scripts/auth.js"></script>
+<body style="background:#f1f5f9; font-family:sans-serif; text-align:center; padding-top:4rem;">
+  <p>Redirecting to official Faculty Account Setup...</p>
   <script>
-    // If an administrator is already logged in, redirect them directly to the Manage Faculty dashboard
-    window.addEventListener("DOMContentLoaded", () => {
-      if (window.Auth && typeof window.Auth.isAdmin === "function" && window.Auth.isAdmin()) {
-        location.replace("manage-faculty.html");
-      }
-    });
+    location.replace("teacher-login.html?tab=setup" + (location.search ? "&" + location.search.slice(1) : ""));
   </script>
-
 </body>
 </html>
-

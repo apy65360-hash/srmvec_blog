@@ -75,7 +75,7 @@ export async function postAchievement(data) {
     .select()
     .single();
   if (error) { console.error('[achievements] postAchievement:', error.message); }
-  return { data: inserted, error };
+  return { data: inserted, error: error ? error.message : null };
 }
 
 // ── Delete an achievement by id ───────────────────────────────────────────────
@@ -86,5 +86,5 @@ export async function deleteAchievement(id) {
     .delete()
     .eq('id', id);
   if (error) { console.error('[achievements] deleteAchievement:', error.message); }
-  return { error };
+  return { error: error ? error.message : null };
 }

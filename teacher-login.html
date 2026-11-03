@@ -7,219 +7,514 @@
   <title>Faculty Login | SRMVEC CSE Blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="/src/styles/style.css" />
   <link rel="stylesheet" href="/src/styles/portal.css" />
   <style>
+    /* ── Page shell: navy gradient matching the site ── */
+    body {
+      background: linear-gradient(160deg, var(--primary-navy, #002947) 0%, #001F35 55%, #00375c 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    /* ── Subtle top bar to echo the site header ── */
+    .faculty-topbar {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.9rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .faculty-topbar a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(255,255,255,0.75);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .faculty-topbar a:hover { color: var(--accent-gold, #F59E0B); }
+    .faculty-topbar .topbar-brand {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #ffffff;
+    }
+    .faculty-topbar .topbar-sep {
+      color: rgba(255,255,255,0.25);
+      margin: 0 0.15rem;
+    }
+
+    /* ── Wrapper ── */
+    .simple-auth-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem 3rem;
+    }
+
+    /* ── Card ── */
+    .simple-auth-card {
+      background: #ffffff;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35), 0 8px 16px rgba(0,0,0,0.18);
+      width: 100%;
+      max-width: 430px;
+      overflow: hidden;
+    }
+
+    /* ── Navy header strip inside the card ── */
+    .simple-card-header {
+      background: linear-gradient(135deg, var(--primary-navy, #002947) 0%, #003d6b 100%);
+      padding: 1.75rem 2rem 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .simple-card-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-gold, #F59E0B), #FBBF24, var(--accent-gold, #F59E0B));
+    }
+    .simple-card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: rgba(245, 158, 11, 0.18);
+      border: 1.5px solid rgba(245, 158, 11, 0.35);
+      color: var(--accent-gold, #F59E0B);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 0.85rem;
+    }
+    .simple-card-header h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0 0 0.3rem;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .simple-card-header p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.65);
+      margin: 0;
+    }
+
+    /* ── Form body ── */
+    .simple-card-body {
+      padding: 1.75rem 2rem 2rem;
+    }
+
     .view-panel { display: none; }
-    .view-panel.active { display: block; }
-    .switch-link { color: #7c3aed; cursor: pointer; font-weight: 600; text-decoration: underline; }
-    .switch-link:hover { color: #6d28d9; }
+    .view-panel.active { display: block; animation: simpleFade 0.2s ease-out; }
+    @keyframes simpleFade {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Alert messages ── */
+    .form-message {
+      display: none;
+      padding: 0.7rem 0.95rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 1.2rem;
+      line-height: 1.4;
+    }
+    .form-message.is-visible { display: flex; align-items: flex-start; gap: 0.5rem; }
+    .form-message.error   { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .form-message.success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+    .form-message.info    { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .form-message.warning { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+
+    /* ── Password eye toggle ── */
     .pw-wrap { position: relative; }
     .pw-eye {
-      position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%);
-      cursor: pointer; color: #94a3b8; font-size: 0.95rem;
+      position: absolute; right: 0.85rem; top: 50%; transform: translateY(-50%);
+      cursor: pointer; color: #94a3b8; font-size: 0.88rem;
     }
-    .pw-eye:hover { color: #475569; }
-    .form-message {
-      display: none; padding: 0.75rem 1rem; border-radius: 8px;
-      font-size: 0.88rem; font-weight: 500; margin-bottom: 1rem;
+    .pw-eye:hover { color: var(--primary-navy, #002947); }
+
+    /* ── Switch links ── */
+    .switch-link {
+      color: var(--accent-blue, #2563eb);
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
     }
-    .form-message.is-visible { display: block; }
-    .form-message.error { background: #FEF2F2; color: #DC2626; border: 1px solid #FCA5A5; }
-    .form-message.success { background: #F0FDF4; color: #16A34A; border: 1px solid #86EFAC; }
-    .form-message.info { background: #EFF6FF; color: #2563EB; border: 1px solid #93C5FD; }
-    .modal-overlay {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
-      z-index: 9999; align-items: center; justify-content: center;
+    .switch-link:hover { color: #1d4ed8; }
+
+    /* ── Form rows ── */
+    .form-row { margin-bottom: 1.1rem; }
+    .form-row label {
+      display: block;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--primary-navy, #002947);
+      margin-bottom: 0.38rem;
     }
-    .modal-overlay.open { display: flex; }
-    .modal-box {
-      background: #fff; border-radius: 14px; max-width: 400px; width: 100%;
-      padding: 1.75rem 1.5rem; text-align: center;
-      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+    .form-control {
+      width: 100%;
+      padding: 0.68rem 0.9rem;
+      border: 1.5px solid var(--border-color, #e2e8f0);
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-family: inherit;
+      color: var(--text-dark, #0f172a);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      background: #ffffff;
+      box-sizing: border-box;
     }
-    .modal-icon {
-      width: 52px; height: 52px; border-radius: 50%; background: #F3E8FF;
-      color: #7c3aed; display: inline-flex; align-items: center;
-      justify-content: center; font-size: 1.5rem; margin-bottom: 1rem;
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary-navy, #002947);
+      box-shadow: 0 0 0 3px rgba(0, 41, 71, 0.1);
     }
-    .modal-title { font-size: 1.2rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem; }
-    .modal-text  { font-size: 0.9rem; color: #64748b; margin-bottom: 1.5rem; line-height: 1.5; }
-    .modal-btn {
-      width: 100%; padding: 0.75rem 1rem; border-radius: 8px;
-      font-weight: 600; font-size: 0.95rem; border: none;
-      background: #7c3aed; color: #fff; cursor: pointer; transition: background 0.2s;
+
+    /* ── Buttons ── */
+    .btn-block {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.78rem 1rem;
+      font-size: 0.93rem;
+      font-weight: 700;
+      border-radius: 9px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif;
+      letter-spacing: 0.01em;
+      transition: filter 0.15s, transform 0.1s;
     }
-    .modal-btn:hover { background: #6d28d9; }
+    .btn-block:hover { filter: brightness(1.07); transform: translateY(-1px); }
+    .btn-block:active { transform: scale(0.99); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-navy, #002947) 0%, #003d6b 100%);
+      color: #ffffff;
+    }
+    .btn-muted {
+      background: var(--surface, #f8fafc);
+      color: var(--text-muted, #475569);
+      border: 1px solid var(--border-color, #e2e8f0);
+    }
+    .btn-muted:hover { background: #f1f5f9; }
+
+    /* ── Footer links ── */
+    .card-footer-links {
+      text-align: center;
+      margin-top: 1.2rem;
+      font-size: 0.85rem;
+      color: var(--text-muted, #64748b);
+      line-height: 1.7;
+    }
+
+    /* ── OTP info box ── */
+    .otp-info-box {
+      background: #f0f6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 0.7rem 0.9rem;
+      font-size: 0.84rem;
+      color: #1d4ed8;
+      margin-bottom: 1.15rem;
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* ── Back link at bottom of card ── */
+    .faculty-back-link {
+      display: block;
+      text-align: center;
+      padding: 0.9rem;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.5);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .faculty-back-link:hover { color: var(--accent-gold, #F59E0B); }
   </style>
 </head>
 <body>
 
-<div class="login-wrapper">
-  <div class="login-card">
+<!-- Topbar echoing the site nav -->
+<nav class="faculty-topbar">
+  <a href="index.html"><i class="fa-solid fa-house"></i></a>
+  <span class="topbar-sep">/</span>
+  <span class="topbar-brand">SRMVEC CSE</span>
+  <span class="topbar-sep">·</span>
+  <a href="login.html"><i class="fa-solid fa-arrow-left"></i> Portal Login</a>
+</nav>
 
-    <div class="login-card-header">
-      <div class="role-choice-icon teacher" style="margin-bottom:.8rem;">
+<div class="simple-auth-wrapper">
+  <div class="simple-auth-card">
+
+    <!-- Card Header -->
+    <div class="simple-card-header">
+      <div class="simple-card-icon">
         <i class="fa-solid fa-chalkboard-user"></i>
       </div>
-      <h2 id="authTitle">Faculty Login</h2>
-      <p id="authSub">Sign in to the Teacher's Corner with your institutional email.</p>
+      <h2 id="cardHeaderTitle">Faculty Login</h2>
+      <p id="cardHeaderSub">Sign in to access Teacher's Corner</p>
     </div>
 
-    <div class="form-message" id="authMsg"></div>
+    <!-- Alert / Message Banner -->
+    <div class="simple-card-body">
+    <div class="form-message" id="authMsg">
+      <i class="fa-solid fa-circle-info" id="authMsgIcon" style="margin-top:0.15rem; flex-shrink:0;"></i>
+      <span id="authMsgText"></span>
+    </div>
 
-    <!-- ── PANEL 1: SIGN IN (default) ── -->
+    <!-- ══════════════════════════════════════════════════════════════
+         1. SIGN IN (DEFAULT)
+         ══════════════════════════════════════════════════════════════ -->
     <div class="view-panel active" id="panelLogin">
       <form id="loginForm" novalidate>
         <div class="form-row">
-          <label for="loginEmail">Institutional Email</label>
+          <label for="loginEmail">Enter your mail id</label>
           <input class="form-control" type="email" id="loginEmail"
-            placeholder="e.g. pr.cse@srmvalliammai.ac.in"
+            placeholder="e.g. name.cse@srmvalliammai.ac.in"
             autocomplete="email" required />
         </div>
+
         <div class="form-row">
           <label for="loginPw">Password</label>
           <div class="pw-wrap">
             <input class="form-control" type="password" id="loginPw"
               placeholder="Enter your password"
               autocomplete="current-password" required />
-            <span class="pw-eye" onclick="togglePw('loginPw',this)"><i class="fa-solid fa-eye"></i></span>
+            <span class="pw-eye" onclick="togglePw('loginPw', this)"><i class="fa-solid fa-eye"></i></span>
           </div>
         </div>
-        <div class="form-actions">
-          <button class="btn btn-primary btn-block" type="submit" id="btnLogin">
+
+        <div style="margin-top: 1.5rem;">
+          <button class="btn-block btn-primary" type="submit" id="btnLogin">
             <i class="fa-solid fa-right-to-bracket"></i> Sign In
           </button>
         </div>
-        <div style="text-align:center;margin-top:1rem;font-size:0.88rem;color:#64748b;">
-          <span class="switch-link" id="linkForgot">Forgot password?</span>
-          &nbsp;•&nbsp;
-          New faculty? <span class="switch-link" id="linkToRegister">Create Account</span>
+
+        <div class="card-footer-links">
+          <span class="switch-link" id="linkToForgot">Forgot password?</span>
+          <br />
+          Don't have an account? <span class="switch-link" id="linkToSignUp">Sign Up</span>
         </div>
       </form>
     </div>
 
-    <!-- ── PANEL 2: SIGN UP ── -->
-    <div class="view-panel" id="panelRegister">
-      <form id="registerForm" novalidate>
-        <div class="form-row">
-          <label for="regName">Full Name</label>
-          <input class="form-control" type="text" id="regName"
-            placeholder="Your full name" autocomplete="name" required />
-        </div>
-        <div class="form-row">
-          <label for="regEmail">Institutional Email</label>
-          <input class="form-control" type="email" id="regEmail"
-            placeholder="e.g. pr.cse@srmvalliammai.ac.in"
-            autocomplete="email" required />
-        </div>
-        <div class="form-row">
-          <label for="regPw">Set Password</label>
-          <div class="pw-wrap">
-            <input class="form-control" type="password" id="regPw"
-              placeholder="Minimum 8 characters"
-              autocomplete="new-password" required />
-            <span class="pw-eye" onclick="togglePw('regPw',this)"><i class="fa-solid fa-eye"></i></span>
+    <!-- ══════════════════════════════════════════════════════════════
+         2. SIGN UP (ENTER NAME, POSITION OPTIONS, MAIL ID)
+         ══════════════════════════════════════════════════════════════ -->
+    <div class="view-panel" id="panelSignUp">
+      
+      <!-- Sub-step 1: Details Entry -->
+      <div id="signUpStep1">
+        <form id="signUpForm1" novalidate>
+          <div class="form-row">
+            <label for="regName">Enter your name</label>
+            <input class="form-control" type="text" id="regName"
+              placeholder="e.g. Dr. B. Vanathi"
+              autocomplete="name" required />
           </div>
-        </div>
-        <div class="form-row">
-          <label for="regPwConfirm">Confirm Password</label>
-          <div class="pw-wrap">
-            <input class="form-control" type="password" id="regPwConfirm"
-              placeholder="Re-enter password"
-              autocomplete="new-password" required />
-            <span class="pw-eye" onclick="togglePw('regPwConfirm',this)"><i class="fa-solid fa-eye"></i></span>
+
+          <div class="form-row">
+            <label for="regPosition">Position</label>
+            <select class="form-control" id="regPosition" required>
+              <option value="">-- Choose Position --</option>
+              <option value="Professor &amp; Head">Professor &amp; Head</option>
+              <option value="Professor">Professor</option>
+              <option value="Associate Professor">Associate Professor</option>
+              <option value="Assistant Professor (Selection Grade)">Assistant Professor (Selection Grade)</option>
+              <option value="Assistant Professor (Senior Grade)">Assistant Professor (Senior Grade)</option>
+              <option value="Assistant Professor (Ordinary Grade)">Assistant Professor (Ordinary Grade)</option>
+              <option value="Teaching Research Associate (TRA)">Teaching Research Associate (TRA)</option>
+            </select>
           </div>
-        </div>
-        <div class="form-actions">
-          <button class="btn btn-primary btn-block" type="submit" id="btnRegister">
-            <i class="fa-solid fa-user-plus"></i> Create Faculty Account
-          </button>
-        </div>
-        <div style="text-align:center;margin-top:1rem;font-size:0.88rem;color:#64748b;">
-          Already have an account? <span class="switch-link" id="linkToLogin">Sign In</span>
-        </div>
-      </form>
+
+          <div class="form-row">
+            <label for="regEmail">Mail ID</label>
+            <input class="form-control" type="email" id="regEmail"
+              placeholder="e.g. name.cse@srmvalliammai.ac.in"
+              autocomplete="email" required />
+          </div>
+
+          <div style="margin-top: 1.5rem;">
+            <button class="btn-block btn-primary" type="submit" id="btnSendSignUpOtp">
+              <i class="fa-solid fa-paper-plane"></i> Send OTP
+            </button>
+          </div>
+
+          <div class="card-footer-links">
+            Already have an account? <span class="switch-link" id="linkToLoginFromSignUp">Sign In</span>
+          </div>
+        </form>
+      </div>
+
+      <!-- Sub-step 2: OTP Verification & Set Password -->
+      <div id="signUpStep2" style="display:none;">
+        <form id="signUpForm2" novalidate>
+          <div class="otp-info-box">
+            <i class="fa-solid fa-envelope"></i>
+            Enter the 6-digit code sent to <strong id="signUpTargetEmail"></strong>.
+          </div>
+
+          <div class="form-row">
+            <label for="signUpOtp">Enter 6-Digit OTP</label>
+            <input class="form-control" type="text" id="signUpOtp"
+              maxlength="6" placeholder="• • • • • •"
+              style="letter-spacing: 0.35em; font-size: 1.3rem; font-weight: 700; text-align: center; font-family: monospace;"
+              required />
+          </div>
+
+          <div class="form-row">
+            <label for="signUpNewPw">Set Password</label>
+            <div class="pw-wrap">
+              <input class="form-control" type="password" id="signUpNewPw"
+                placeholder="Minimum 8 characters"
+                autocomplete="new-password" required />
+              <span class="pw-eye" onclick="togglePw('signUpNewPw', this)"><i class="fa-solid fa-eye"></i></span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label for="signUpConfirmPw">Confirm Password</label>
+            <div class="pw-wrap">
+              <input class="form-control" type="password" id="signUpConfirmPw"
+                placeholder="Re-enter password"
+                autocomplete="new-password" required />
+              <span class="pw-eye" onclick="togglePw('signUpConfirmPw', this)"><i class="fa-solid fa-eye"></i></span>
+            </div>
+          </div>
+
+          <div style="margin-top: 1.4rem;">
+            <button class="btn-block btn-primary" type="submit" id="btnCompleteSignUp">
+              <i class="fa-solid fa-check-circle"></i> Complete Sign Up
+            </button>
+          </div>
+
+          <div style="text-align:center; margin-top:0.85rem;">
+            <button type="button" class="btn-block btn-muted" id="btnBackToSignUp1" style="font-size:0.86rem; padding:0.5rem 0.75rem;">
+              <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+          </div>
+        </form>
+      </div>
+
     </div>
 
-    <!-- ── PANEL 3: FORGOT PASSWORD ── -->
+    <!-- ══════════════════════════════════════════════════════════════
+         3. FORGOT PASSWORD (MAIL ID + OTP)
+         ══════════════════════════════════════════════════════════════ -->
     <div class="view-panel" id="panelForgot">
-      <div id="forgotFormWrap">
-        <div class="form-row">
-          <label for="forgotEmail">Institutional Email</label>
-          <input class="form-control" type="email" id="forgotEmail"
-            placeholder="Enter your institutional email"
-            autocomplete="email" />
-        </div>
-        <div class="form-actions">
-          <button class="btn btn-primary btn-block" type="button" id="btnForgot">
-            <i class="fa-solid fa-envelope"></i> Send Reset Link
-          </button>
-        </div>
-        <div style="text-align:center;margin-top:1rem;font-size:0.88rem;color:#64748b;">
-          <span class="switch-link" id="linkBackFromForgot">Back to Sign In</span>
-        </div>
+      
+      <!-- Sub-step 1: Enter Mail ID -->
+      <div id="forgotStep1">
+        <form id="forgotForm1" novalidate>
+          <div class="form-row">
+            <label for="forgotEmail">Enter your mail id</label>
+            <input class="form-control" type="email" id="forgotEmail"
+              placeholder="e.g. name.cse@srmvalliammai.ac.in"
+              autocomplete="email" required />
+          </div>
+
+          <div style="margin-top: 1.5rem;">
+            <button class="btn-block btn-primary" type="submit" id="btnSendForgotOtp">
+              <i class="fa-solid fa-paper-plane"></i> Send OTP
+            </button>
+          </div>
+
+          <div class="card-footer-links">
+            Remember your password? <span class="switch-link" id="linkToLoginFromForgot">Back to Sign In</span>
+          </div>
+        </form>
       </div>
-      <div id="forgotDone" style="display:none;text-align:center;padding:1rem 0;">
-        <i class="fa-solid fa-envelope-circle-check" style="font-size:2.5rem;color:#7c3aed;margin-bottom:1rem;display:block;"></i>
-        <strong>Reset link sent!</strong><br/>
-        Check your inbox at <span id="forgotEmailDisplay" style="color:#7c3aed;font-weight:600;"></span>.
-        <br/><br/>
-        <span class="switch-link" id="linkBackAfterDone">Back to Sign In</span>
+
+      <!-- Sub-step 2: Enter OTP & Reset Password -->
+      <div id="forgotStep2" style="display:none;">
+        <form id="forgotForm2" novalidate>
+          <div class="otp-info-box">
+            <i class="fa-solid fa-envelope"></i>
+            Reset code sent to <strong id="forgotEmailDisplay"></strong>.
+          </div>
+
+          <div class="form-row">
+            <label for="forgotOtp">Enter 6-Digit OTP</label>
+            <input class="form-control" type="text" id="forgotOtp"
+              maxlength="6" placeholder="• • • • • •"
+              style="letter-spacing: 0.35em; font-size: 1.3rem; font-weight: 700; text-align: center; font-family: monospace;"
+              required />
+          </div>
+
+          <div class="form-row">
+            <label for="forgotNewPw">Set New Password</label>
+            <div class="pw-wrap">
+              <input class="form-control" type="password" id="forgotNewPw"
+                placeholder="Minimum 8 characters"
+                autocomplete="new-password" required />
+              <span class="pw-eye" onclick="togglePw('forgotNewPw', this)"><i class="fa-solid fa-eye"></i></span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label for="forgotConfirmPw">Confirm Password</label>
+            <div class="pw-wrap">
+              <input class="form-control" type="password" id="forgotConfirmPw"
+                placeholder="Re-enter password"
+                autocomplete="new-password" required />
+              <span class="pw-eye" onclick="togglePw('forgotConfirmPw', this)"><i class="fa-solid fa-eye"></i></span>
+            </div>
+          </div>
+
+          <div style="margin-top: 1.4rem;">
+            <button class="btn-block btn-primary" type="submit" id="btnCompleteForgot">
+              <i class="fa-solid fa-check"></i> Reset Password
+            </button>
+          </div>
+
+          <div style="text-align:center; margin-top:0.85rem;">
+            <button type="button" class="btn-block btn-muted" id="btnBackToForgot1" style="font-size:0.86rem; padding:0.5rem 0.75rem;">
+              <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+          </div>
+        </form>
       </div>
+
     </div>
 
-    <!-- ── PANEL 4: EMAIL CONFIRM ── -->
-    <div class="view-panel" id="panelConfirm">
-      <div style="text-align:center;padding:1rem 0;">
-        <i class="fa-solid fa-envelope-open-text" style="font-size:2.5rem;color:#7c3aed;margin-bottom:1rem;display:block;"></i>
-        <strong>Confirm your email</strong><br/>
-        A verification link was sent to<br/>
-        <span id="confirmEmailDisplay" style="color:#7c3aed;font-weight:600;"></span>.
-        <br/><br/>
-        <span style="font-size:0.85rem;color:#64748b;">Click the link in that email, then come back to sign in.</span>
-        <br/><br/>
-        <button class="btn btn-primary" id="btnGoToLoginAfterConfirm">
-          <i class="fa-solid fa-right-to-bracket"></i> Go to Sign In
-        </button>
-      </div>
-    </div>
+  </div><!-- /.simple-card-body -->
 
-    <p style="text-align:center;margin-top:1.5rem;font-size:0.82rem;color:#94A3B8;">
-      Student? <a href="student-corner.html">Student Corner</a> &nbsp;•&nbsp; <a href="index.html">Home</a>
-    </p>
+  </div><!-- /.simple-auth-card -->
+</div><!-- /.simple-auth-wrapper -->
 
-  </div>
-</div>
-
-<!-- Modal: Email already registered -->
-<div class="modal-overlay" id="registeredModal">
-  <div class="modal-box">
-    <div class="modal-icon"><i class="fa-solid fa-circle-info"></i></div>
-    <div class="modal-title">Account Already Exists</div>
-    <div class="modal-text">
-      An account is already registered for<br/>
-      <strong id="modalEmail" style="color:#0f172a;"></strong>.<br/>
-      Please sign in with your password.
-    </div>
-    <button type="button" class="modal-btn" id="modalBtnSignIn">
-      <i class="fa-solid fa-right-to-bracket"></i> Proceed to Sign In
-    </button>
-  </div>
-</div>
+<a class="faculty-back-link" href="login.html"><i class="fa-solid fa-arrow-left"></i> Back to Portal Login</a>
 
 <script type="module" src="/src/scripts/supabase.js"></script>
 <script type="module" src="/src/scripts/users.js"></script>
 <script type="module" src="/src/scripts/auth.js"></script>
 <script type="module">
 import { Auth } from '/src/scripts/auth.js';
-import '/src/scripts/supabase.js';
+import { PortalUsers } from '/src/scripts/users.js';
 
 const params = new URLSearchParams(location.search);
 const nextPage = Auth.safeNext?.(params.get('next')) || 'teachers-corner.html';
 
+// ── Password Visibility Toggle ──
 window.togglePw = function(id, eye) {
   const inp = document.getElementById(id);
   const showing = inp.type === 'text';
@@ -227,204 +522,351 @@ window.togglePw = function(id, eye) {
   eye.innerHTML = showing ? '<i class="fa-solid fa-eye"></i>' : '<i class="fa-solid fa-eye-slash"></i>';
 };
 
-const authMsg  = document.getElementById('authMsg');
-const authTitle = document.getElementById('authTitle');
-const authSub  = document.getElementById('authSub');
+// ── DOM References ──
+const authMsg = document.getElementById('authMsg');
+const authMsgText = document.getElementById('authMsgText');
+const authMsgIcon = document.getElementById('authMsgIcon');
 
-const panelLogin    = document.getElementById('panelLogin');
-const panelRegister = document.getElementById('panelRegister');
-const panelForgot   = document.getElementById('panelForgot');
-const panelConfirm  = document.getElementById('panelConfirm');
-const registeredModal = document.getElementById('registeredModal');
-const modalEmail    = document.getElementById('modalEmail');
+const cardHeaderTitle = document.getElementById('cardHeaderTitle');
+const cardHeaderSub   = document.getElementById('cardHeaderSub');
 
-function showMsg(text, type) {
-  authMsg.textContent = text;
+const panelLogin  = document.getElementById('panelLogin');
+const panelSignUp = document.getElementById('panelSignUp');
+const panelForgot = document.getElementById('panelForgot');
+
+const signUpStep1 = document.getElementById('signUpStep1');
+const signUpStep2 = document.getElementById('signUpStep2');
+
+const forgotStep1 = document.getElementById('forgotStep1');
+const forgotStep2 = document.getElementById('forgotStep2');
+
+function showMsg(text, type = 'error') {
+  authMsgText.textContent = text;
   authMsg.className = `form-message is-visible ${type}`;
-}
-function clearMsg() { authMsg.textContent = ''; authMsg.className = 'form-message'; }
-
-function allPanels() { return [panelLogin, panelRegister, panelForgot, panelConfirm]; }
-
-function switchToLogin(prefillEmail = '') {
-  clearMsg();
-  authTitle.textContent = 'Faculty Login';
-  authSub.textContent = 'Sign in to the Teacher\'s Corner with your institutional email.';
-  allPanels().forEach(p => p.classList.remove('active'));
-  panelLogin.classList.add('active');
-  if (prefillEmail) document.getElementById('loginEmail').value = prefillEmail;
+  if (type === 'error') {
+    authMsgIcon.className = 'fa-solid fa-circle-exclamation';
+  } else if (type === 'success') {
+    authMsgIcon.className = 'fa-solid fa-circle-check';
+  } else {
+    authMsgIcon.className = 'fa-solid fa-circle-info';
+  }
 }
 
-function switchToRegister() {
-  clearMsg();
-  authTitle.textContent = 'Create Faculty Account';
-  authSub.textContent = 'Register with your institutional email to access the Teacher\'s Corner.';
-  allPanels().forEach(p => p.classList.remove('active'));
-  panelRegister.classList.add('active');
+function clearMsg() {
+  authMsgText.textContent = '';
+  authMsg.className = 'form-message';
 }
-
-function switchToForgot(prefillEmail = '') {
-  clearMsg();
-  authTitle.textContent = 'Reset Password';
-  authSub.textContent = 'Enter your institutional email to receive a reset link.';
-  allPanels().forEach(p => p.classList.remove('active'));
-  panelForgot.classList.add('active');
-  document.getElementById('forgotFormWrap').style.display = 'block';
-  document.getElementById('forgotDone').style.display = 'none';
-  if (prefillEmail) document.getElementById('forgotEmail').value = prefillEmail;
-}
-
-// Cross-links
-document.getElementById('linkToLogin').addEventListener('click', () => switchToLogin());
-document.getElementById('linkToRegister').addEventListener('click', switchToRegister);
-document.getElementById('linkForgot').addEventListener('click', () => switchToForgot(document.getElementById('loginEmail').value.trim()));
-document.getElementById('linkBackFromForgot').addEventListener('click', () => switchToLogin());
-document.getElementById('linkBackAfterDone').addEventListener('click', () => switchToLogin());
-document.getElementById('btnGoToLoginAfterConfirm').addEventListener('click', () => switchToLogin());
-
-// Modal
-document.getElementById('modalBtnSignIn').addEventListener('click', () => {
-  registeredModal.classList.remove('open');
-  switchToLogin(modalEmail.textContent.trim());
-  document.getElementById('loginPw').focus();
-});
 
 function setLoading(btn, text) {
   btn.disabled = true;
   btn._orig = btn.innerHTML;
   btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${text}`;
 }
+
 function resetBtn(btn) {
   btn.disabled = false;
   btn.innerHTML = btn._orig || btn.innerHTML;
 }
 
-// FACULTY EMAIL DOMAIN VALIDATION
-const FACULTY_REGEX = /^[a-z0-9._-]+(\.cse)?@(srmvalliammai\.ac\.in|srmvec\.ac\.in)$/i;
-function isValidFacultyEmail(email) {
-  return FACULTY_REGEX.test(email.trim().toLowerCase());
+// ── Switch View Mode ──
+function setView(view) {
+  clearMsg();
+  [panelLogin, panelSignUp, panelForgot].forEach(p => p.classList.remove('active'));
+
+  if (view === 'signup') {
+    cardHeaderTitle.textContent = 'Faculty Sign Up';
+    cardHeaderSub.textContent = 'Create your faculty account';
+    panelSignUp.classList.add('active');
+    signUpStep1.style.display = 'block';
+    signUpStep2.style.display = 'none';
+  } else if (view === 'forgot') {
+    cardHeaderTitle.textContent = 'Reset Password';
+    cardHeaderSub.textContent = 'Enter your mail id to receive an OTP';
+    panelForgot.classList.add('active');
+    forgotStep1.style.display = 'block';
+    forgotStep2.style.display = 'none';
+  } else {
+    cardHeaderTitle.textContent = 'Faculty Login';
+    cardHeaderSub.textContent = 'Sign in to access Teacher\'s Corner';
+    panelLogin.classList.add('active');
+  }
 }
 
-// ── 1. SIGN IN ──
+document.getElementById('linkToSignUp').addEventListener('click', () => setView('signup'));
+document.getElementById('linkToForgot').addEventListener('click', () => setView('forgot'));
+document.getElementById('linkToLoginFromSignUp').addEventListener('click', () => setView('login'));
+document.getElementById('linkToLoginFromForgot').addEventListener('click', () => setView('login'));
+
+if (params.get('tab') === 'setup' || params.get('tab') === 'signup') {
+  setView('signup');
+} else if (params.get('tab') === 'forgot') {
+  setView('forgot');
+}
+
+
+// ══════════════════════════════════════════════════════════════
+// 1. SIGN IN (MAIL ID + PASSWORD)
+// ══════════════════════════════════════════════════════════════
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
   e.preventDefault();
+  clearMsg();
+
   const email = document.getElementById('loginEmail').value.trim().toLowerCase();
   const password = document.getElementById('loginPw').value;
 
-  if (!email) { showMsg('Please enter your institutional email.', 'error'); return; }
-  if (!isValidFacultyEmail(email)) {
-    showMsg('Please use your institutional email (e.g. pr.cse@srmvalliammai.ac.in).', 'error'); return;
+  if (!email) {
+    showMsg('Please enter your mail id.', 'error');
+    return;
   }
-  if (!password) { showMsg('Please enter your password.', 'error'); return; }
+  if (!PortalUsers.isValidTeacherEmail(email)) {
+    showMsg('Invalid mail id.', 'error');
+    return;
+  }
+  if (!password) {
+    showMsg('Please enter your password.', 'error');
+    return;
+  }
 
   const btn = document.getElementById('btnLogin');
   setLoading(btn, 'Signing in…');
 
   try {
     const res = await Auth.loginTeacher(email, password);
-    if (!res || res.error) {
-      resetBtn(btn);
-      if (res?.error === 'pending_approval') {
-        showMsg('⏳ Your account is pending admin approval. You will be able to log in once an administrator approves your account.', 'info');
-      } else {
-        showMsg(res?.error || 'Invalid email or password.', 'error');
-      }
+    resetBtn(btn);
+
+    if (res?.error) {
+      showMsg(res.error || 'Invalid mail id or incorrect password.', 'error');
       return;
     }
+
     showMsg('Login successful! Redirecting…', 'success');
-    setTimeout(() => { location.href = nextPage; }, 600);
+    setTimeout(() => {
+      location.href = nextPage;
+    }, 400);
+
   } catch (err) {
-    showMsg(err.message || 'Login failed.', 'error');
     resetBtn(btn);
+    showMsg(err.message || 'Login failed.', 'error');
   }
 });
 
-// ── 2. SIGN UP ──
-document.getElementById('registerForm').addEventListener('submit', async function(e) {
+
+// ══════════════════════════════════════════════════════════════
+// 2. SIGN UP (ENTER NAME, CHOOSE POSITION, ENTER MAIL ID + OTP)
+// ══════════════════════════════════════════════════════════════
+let activeSignUpEmail = '';
+let activeSignUpName = '';
+
+// Step 1: Submit Details & Request OTP
+document.getElementById('signUpForm1').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const fullName = document.getElementById('regName').value.trim();
+  clearMsg();
+
+  const name     = document.getElementById('regName').value.trim();
+  const position = document.getElementById('regPosition').value.trim();
   const email    = document.getElementById('regEmail').value.trim().toLowerCase();
-  const password = document.getElementById('regPw').value;
-  const confirm  = document.getElementById('regPwConfirm').value;
 
-  if (!fullName) { showMsg('Please enter your full name.', 'error'); return; }
-  if (!email || !isValidFacultyEmail(email)) {
-    showMsg('Please enter a valid institutional email (e.g. pr.cse@srmvalliammai.ac.in).', 'error'); return;
+  if (!name || !position) {
+    showMsg('Invalid details.', 'error');
+    return;
   }
-  if (!password) { showMsg('Please set a password.', 'error'); return; }
-  if (password.length < 8) { showMsg('Password must be at least 8 characters.', 'error'); return; }
-  if (password !== confirm) { showMsg('Passwords do not match.', 'error'); return; }
+  if (!email || !PortalUsers.isValidTeacherEmail(email)) {
+    showMsg('Invalid mail id.', 'error');
+    return;
+  }
 
-  const btn = document.getElementById('btnRegister');
-  setLoading(btn, 'Creating account…');
+  const btn = document.getElementById('btnSendSignUpOtp');
+  setLoading(btn, 'Sending OTP…');
 
   try {
-    const res = await Auth.registerTeacher(fullName, email, password);
+    const res = await Auth.requestFacultySignupOtp(name, position, email);
     resetBtn(btn);
-    if (!res || res.error) {
-      if (res?.error?.toLowerCase().includes('already registered') || res?.error?.toLowerCase().includes('already in use') || res?.error?.toLowerCase().includes('user already')) {
-        modalEmail.textContent = email;
-        registeredModal.classList.add('open');
-      } else {
-        showMsg(res?.error || 'Registration failed.', 'error');
-      }
+
+    if (res?.error) {
+      showMsg(res.error, 'error');
       return;
     }
-    // Account created — show pending approval notice
-    allPanels().forEach(p => p.classList.remove('active'));
-    panelConfirm.classList.add('active');
-    authTitle.textContent = 'Account Submitted';
-    authSub.textContent = 'Your request has been sent to the administrator.';
-    document.getElementById('confirmEmailDisplay').textContent = email;
-    // Reuse confirm panel with a pending message
-    document.querySelector('#panelConfirm div').innerHTML = `
-      <i class="fa-solid fa-hourglass-half" style="font-size:2.5rem;color:#F59E0B;margin-bottom:1rem;display:block;"></i>
-      <strong>Account Pending Approval</strong><br/>
-      Your faculty account for<br/>
-      <span style="color:#7c3aed;font-weight:600;">${email}</span><br/>
-      has been submitted and is awaiting administrator approval.<br/><br/>
-      <span style="font-size:0.85rem;color:#64748b;">You will be able to log in once an admin approves your account.</span>
-      <br/><br/>
-      <button class="btn btn-primary" id="btnGoToLoginAfterConfirm">
-        <i class="fa-solid fa-right-to-bracket"></i> Back to Sign In
-      </button>
-    `;
-    document.getElementById('btnGoToLoginAfterConfirm').addEventListener('click', () => switchToLogin(email));
+
+    activeSignUpEmail = email;
+    activeSignUpName = res.name || name;
+    document.getElementById('signUpTargetEmail').textContent = email;
+
+    // Transition to Step 2
+    signUpStep1.style.display = 'none';
+    signUpStep2.style.display = 'block';
+
+    showMsg(`Verification code dispatched to ${email}.`, 'info');
+    document.getElementById('signUpOtp').focus();
+
   } catch (err) {
-    showMsg(err.message || 'Registration failed.', 'error');
     resetBtn(btn);
+    showMsg(err.message || 'Failed to dispatch verification code.', 'error');
   }
 });
 
+document.getElementById('btnBackToSignUp1').addEventListener('click', () => {
+  signUpStep1.style.display = 'block';
+  signUpStep2.style.display = 'none';
+  clearMsg();
+});
 
-// ── 3. FORGOT PASSWORD ──
-document.getElementById('btnForgot').addEventListener('click', async function() {
-  const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
-  if (!email) { showMsg('Please enter your institutional email.', 'error'); return; }
-  if (!isValidFacultyEmail(email)) {
-    showMsg('Please enter a valid institutional email.', 'error'); return;
+// Step 2: Verify OTP & Set Password
+document.getElementById('signUpForm2').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  clearMsg();
+
+  const otp = document.getElementById('signUpOtp').value.trim();
+  const newPw = document.getElementById('signUpNewPw').value;
+  const confirmPw = document.getElementById('signUpConfirmPw').value;
+
+  if (!otp || otp.length < 6) {
+    showMsg('Invalid verification code.', 'error');
+    return;
   }
-  const btn = this;
-  setLoading(btn, 'Sending…');
+  if (!newPw || newPw.length < 8) {
+    showMsg('Password must be at least 8 characters.', 'error');
+    return;
+  }
+  if (newPw !== confirmPw) {
+    showMsg('Passwords do not match.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btnCompleteSignUp');
+  setLoading(btn, 'Setting password…');
+
   try {
-    const { error } = await window.supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${location.origin}/change-password.html?role=teacher&next=teachers-corner.html`
-    });
+    // 1. Verify OTP
+    const vRes = await Auth.verifyFacultyOtp(activeSignUpEmail, otp);
+    if (vRes?.error) {
+      resetBtn(btn);
+      showMsg(vRes.error, 'error');
+      return;
+    }
+
+    // 2. Set password & create account
+    const pwRes = await Auth.completeFacultyPasswordSetup(activeSignUpEmail, newPw);
     resetBtn(btn);
-    if (error) { showMsg(error.message, 'error'); return; }
-    document.getElementById('forgotEmailDisplay').textContent = email;
-    document.getElementById('forgotFormWrap').style.display = 'none';
-    document.getElementById('forgotDone').style.display = 'block';
-    clearMsg();
+
+    if (pwRes?.error) {
+      showMsg(pwRes.error, 'error');
+      return;
+    }
+
+    showMsg('Account successfully created! Signing you in…', 'success');
+    setTimeout(() => {
+      location.href = nextPage;
+    }, 500);
+
   } catch (err) {
-    showMsg(err.message || 'Failed to send reset email.', 'error');
     resetBtn(btn);
+    showMsg(err.message || 'Sign up failed.', 'error');
   }
 });
 
-// If already logged in as teacher, go straight to corner
+
+// ══════════════════════════════════════════════════════════════
+// 3. FORGOT PASSWORD (MAIL ID + OTP + NEW PASSWORD)
+// ══════════════════════════════════════════════════════════════
+let activeForgotEmail = '';
+
+document.getElementById('forgotForm1').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  clearMsg();
+
+  const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+  if (!email || !PortalUsers.isValidTeacherEmail(email)) {
+    showMsg('Invalid mail id.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btnSendForgotOtp');
+  setLoading(btn, 'Sending OTP…');
+
+  try {
+    const res = await Auth.requestFacultyForgotOtp(email);
+    resetBtn(btn);
+
+    if (res?.error) {
+      showMsg(res.error, 'error');
+      return;
+    }
+
+    activeForgotEmail = email;
+    document.getElementById('forgotEmailDisplay').textContent = email;
+
+    forgotStep1.style.display = 'none';
+    forgotStep2.style.display = 'block';
+
+    showMsg(`Reset code sent to ${email}.`, 'info');
+    document.getElementById('forgotOtp').focus();
+
+  } catch (err) {
+    resetBtn(btn);
+    showMsg(err.message || 'Failed to dispatch reset code.', 'error');
+  }
+});
+
+document.getElementById('btnBackToForgot1').addEventListener('click', () => {
+  forgotStep1.style.display = 'block';
+  forgotStep2.style.display = 'none';
+  clearMsg();
+});
+
+document.getElementById('forgotForm2').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  clearMsg();
+
+  const otp = document.getElementById('forgotOtp').value.trim();
+  const newPw = document.getElementById('forgotNewPw').value;
+  const confirmPw = document.getElementById('forgotConfirmPw').value;
+
+  if (!otp || otp.length < 6) {
+    showMsg('Invalid verification code.', 'error');
+    return;
+  }
+  if (!newPw || newPw.length < 8) {
+    showMsg('Password must be at least 8 characters.', 'error');
+    return;
+  }
+  if (newPw !== confirmPw) {
+    showMsg('Passwords do not match.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btnCompleteForgot');
+  setLoading(btn, 'Updating password…');
+
+  try {
+    const vRes = await Auth.verifyFacultyOtp(activeForgotEmail, otp);
+    if (vRes?.error) {
+      resetBtn(btn);
+      showMsg(vRes.error, 'error');
+      return;
+    }
+
+    const resetRes = await Auth.completeFacultyPasswordSetup(activeForgotEmail, newPw);
+    resetBtn(btn);
+
+    if (resetRes?.error) {
+      showMsg(resetRes.error, 'error');
+      return;
+    }
+
+    showMsg('Password updated successfully! Signing you in…', 'success');
+    setTimeout(() => {
+      location.href = nextPage;
+    }, 500);
+
+  } catch (err) {
+    resetBtn(btn);
+    showMsg(err.message || 'Failed to reset password.', 'error');
+  }
+});
+
+// Auto redirect if already logged in
 window.addEventListener('DOMContentLoaded', async () => {
-  await new Promise(r => setTimeout(r, 150)); // wait for Auth to initialise
+  await new Promise(r => setTimeout(r, 120));
   const user = window.Auth?.currentUser?.();
   if (user && (user.role === 'teacher' || user.role === 'faculty_admin' || user.role === 'admin')) {
     location.replace(nextPage);

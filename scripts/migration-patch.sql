@@ -790,14 +790,14 @@ CREATE POLICY "achievements_delete_admin" ON public.achievements
 CREATE OR REPLACE FUNCTION public.achievements_set_updated_at()
 RETURNS TRIGGER
 LANGUAGE plpgsql
-SECURITY DEFINER
+SECURITY INVOKER
 SET search_path = ''
-AS $$
+AS $
 BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$$;
+$;
 
 REVOKE ALL ON FUNCTION public.achievements_set_updated_at() FROM PUBLIC, anon, authenticated;
 
@@ -835,6 +835,61 @@ BEGIN
   ) LOOP
     EXECUTE 'REVOKE ALL ON FUNCTION ' || r.func_signature || ' FROM PUBLIC, anon, authenticated';
   END LOOP;
+END $$;
+
+
+-- ═══════════════════════════════════════════════════════════════════════
+-- 11. ADDITIONAL SECURITY HARDENING (Lints 0028/0029 — SECURITY INVOKER & Legacy Cleanup)
+-- ═══════════════════════════════════════════════════════════════════════
+
+-- Downgrade achievements_set_updated_at to SECURITY INVOKER (it only stamps updated_at —
+-- no cross-schema reads, no elevated privilege needed).
+CREATE OR REPLACE FUNCTION public.achievements_set_updated_at()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path = ''
+AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.achievements_set_updated_at() FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON FUNCTION public.faculty_set_updated_at() FROM PUBLIC, anon, authenticated;
+
+-- Drop legacy functions flagged by the security advisor as callable by anon/authenticated.
+-- These were created in earlier migrations and are superseded by trigger-based auth lifecycle.
+DO $$
+BEGIN
+  -- set_new_profile_status: superseded by handle_new_user trigger
+  IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON p.pronamespace = n.oid
+             WHERE n.nspname = 'public' AND p.proname = 'set_new_profile_status') THEN
+    EXECUTE 'REVOKE ALL ON FUNCTION public.set_new_profile_status() FROM PUBLIC, anon, authenticated';
+    EXECUTE 'DROP FUNCTION IF EXISTS public.set_new_profile_status() CASCADE';
+  END IF;
+
+  -- verify_student_name: superseded by server-side trigger enforce logic
+  IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON p.pronamespace = n.oid
+             WHERE n.nspname = 'public' AND p.proname = 'verify_student_name') THEN
+    EXECUTE 'REVOKE ALL ON FUNCTION public.verify_student_name(text, text) FROM PUBLIC, anon, authenticated';
+    EXECUTE 'DROP FUNCTION IF EXISTS public.verify_student_name(text, text) CASCADE';
+  END IF;
+
+  -- admin_set_faculty_status: superseded by direct admin RLS policies on profiles
+  IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON p.pronamespace = n.oid
+             WHERE n.nspname = 'public' AND p.proname = 'admin_set_faculty_status') THEN
+    EXECUTE 'REVOKE ALL ON FUNCTION public.admin_set_faculty_status(uuid, text) FROM PUBLIC, anon, authenticated';
+    EXECUTE 'DROP FUNCTION IF EXISTS public.admin_set_faculty_status(uuid, text) CASCADE';
+  END IF;
+
+  -- rls_auto_enable: Supabase internal helper, safe to drop
+  IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON p.pronamespace = n.oid
+             WHERE n.nspname = 'public' AND p.proname = 'rls_auto_enable') THEN
+    EXECUTE 'REVOKE ALL ON FUNCTION public.rls_auto_enable() FROM PUBLIC, anon, authenticated';
+    EXECUTE 'DROP FUNCTION IF EXISTS public.rls_auto_enable() CASCADE';
+  END IF;
 END $$;
 
 COMMIT;

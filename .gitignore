@@ -12,15 +12,20 @@
 # Sensitive script containing credentials / local testing helpers
 src/scripts/test-admin-auth.js
 
-# Student roster, credentials, and provisioning dumps (privacy protection)
+# Student & Faculty roster, credentials, and provisioning dumps (privacy protection)
 *.xlsx
 *.xls
 *.csv
 *provision*.sql
 *student*.sql
+*faculty*.sql
 *roster*.sql
+*faculty-roster*.json
+!scripts/students-roster.json.example
+!scripts/faculty-roster.json.example
 scripts/generate_*.py
 scripts/*student*
+scripts/*faculty*roster*
 
 # OS files
 .DS_Store

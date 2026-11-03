@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add New Student Achievement | SRMVEC CSE Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <link rel="stylesheet" href="/src/styles/style.css" />
+  <link rel="stylesheet" href="/src/styles/portal.css" />
+  <link rel="stylesheet" href="/src/styles/achievements.css" />
+  <style>
+    .add-ach-container {
+      max-width: 860px;
+      margin: 2.5rem auto 4rem;
+      padding: 0 1rem;
+    }
+    .add-ach-card {
+      background: #FFFFFF;
+      border: 1px solid var(--ach-border);
+      border-top: 5px solid var(--ach-gold);
+      border-radius: 16px;
+      padding: 2.25rem 2.5rem;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+    }
+    .add-ach-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--ach-border);
+    }
+    .add-ach-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+      color: #D97706;
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);
+    }
+    .add-ach-header h2 {
+      margin: 0;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--ach-navy);
+    }
+    .add-ach-header p {
+      margin: 0.25rem 0 0;
+      font-size: 0.9rem;
+      color: var(--ach-text-muted);
+    }
+    .preview-box {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      border: 1px dashed var(--ach-border);
+      border-radius: 8px;
+      background: #F8FAFC;
+      display: none;
+      align-items: center;
+      gap: 1rem;
+    }
+    .preview-box img {
+      width: 80px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+    .preview-box span {
+      font-size: 0.85rem;
+      color: var(--ach-text-muted);
+    }
+    @media (max-width: 640px) {
+      .add-ach-card {
+        padding: 1.5rem 1.25rem;
+      }
+      .ach-post-form {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</head>
+<body class="intro-done">
+
+  <!-- TOP INSTITUTIONAL UTILITY BAR -->
+  <div class="top-bar">
+    <div class="container top-bar-content">
+      <div class="top-utility-links">
+        <a href="student-corner.html">Students</a>
+        <a href="teachers-corner.html">Faculty &amp; Staff</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="top-bar-search">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="topSearchInput" placeholder="Search CSE Blog" />
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN UNIFIED HEADER & NAV -->
+  <header class="main-header-unified">
+    <div class="container header-nav-container">
+      
+      <!-- Text Branding -->
+      <div class="brand-group">
+        <div class="brand-text-box">
+          <a href="index.html" style="text-decoration:none; color:inherit;">
+            <h1 class="brand-main-title">CSE Blog</h1>
+          </a>
+        </div>
+      </div>
+
+      <!-- Hamburger button -->
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mainNavMenu">
+        <i class="fa-solid fa-bars" id="navToggleIcon"></i>
+      </button>
+
+      <!-- Right Navigation Menu -->
+      <nav class="main-nav-menu" id="mainNavMenu">
+        <div class="nav-item dropdown">
+          <a href="#">About <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+          <div class="dropdown-menu">
+            <a href="https://srmvalliammai.ac.in/be-computer-science-and-engineering/" target="_blank" rel="noopener noreferrer">Academics &amp; Accreditation</a>
+            <a href="laboratories.html">Laboratories</a>
+            <a href="contact.html">Contact Us</a>
+          </div>
+        </div>
+        <div class="nav-item dropdown">
+          <a href="admissions-eligibility.html">Admissions <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+          <div class="dropdown-menu">
+            <a href="admissions-eligibility.html#sec-courses">B.E. Computer Science</a>
+            <a href="admissions-eligibility.html#sec-pg-eligibility">M.E. Computer Science</a>
+            <a href="admissions-eligibility.html">Eligibility &amp; Cutoffs</a>
+          </div>
+        </div>
+        <div class="nav-item dropdown">
+          <a href="index.html#specializations">Academics <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+          <div class="dropdown-menu">
+            <a href="publications-patents.html">Publications &amp; Patents</a>
+            <a href="academic-calendar.html">Academic Calendar</a>
+            <a href="#">Curriculum &amp; Syllabus</a>
+          </div>
+        </div>
+        <div class="nav-item dropdown">
+          <a href="index.html#portal-pages"><i class="fa-solid fa-pen-nib" style="margin-right:.3rem;"></i>CSE Blog <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+          <div class="dropdown-menu">
+            <a href="blogs.html">Blogs Board</a>
+            <a href="student-corner.html">Student Corner</a>
+            <a href="teachers-corner.html">Teacher's Corner</a>
+            <a href="achievements.html">Achievements</a>
+            <a href="event1.html">Events Board</a>
+          </div>
+        </div>
+        <div class="nav-item dropdown">
+          <a href="#">Admin Corner <i class="fa-solid fa-chevron-down nav-chevron"></i></a>
+          <div class="dropdown-menu">
+            <a href="manage-faculty.html">Manage Faculty</a>
+            <a href="dashboard.html">Student's Data Dashboard</a>
+            <a href="admin-login.html">Admin Login</a>
+          </div>
+        </div>
+        <div class="nav-item">
+          <a href="index.html" style="color:#0EA5E9; font-weight:600;"><i class="fa-solid fa-house" style="margin-right:.3rem;"></i>Home</a>
+        </div>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- FORM CONTAINER -->
+  <main class="add-ach-container">
+    <div class="add-ach-card">
+      <div class="add-ach-header">
+        <div class="add-ach-icon">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+        <div>
+          <h2>Add New Student Achievement</h2>
+          <p>Submit hackathon victories, symposium wins, research milestones, and accolades to feature on the Home Page and Department Records.</p>
+        </div>
+      </div>
+
+      <div id="achAuthBanner" style="display:none; padding:0.75rem 1rem; margin-bottom:1.5rem; background:#EFF6FF; border:1px solid #BFDBFE; border-radius:10px; font-size:0.875rem; color:#1E40AF;"></div>
+      <div class="ach-form-msg" id="achFormMsg"></div>
+
+      <form class="ach-post-form" id="addAchievementForm">
+        <div class="ach-form-group full-col">
+          <label for="achInputTitle">Achievement Title *</label>
+          <input type="text" id="achInputTitle" placeholder="e.g. First Prize — Tech Heist Technical Quiz at MEDARZT Symposium" required />
+        </div>
+
+        <div class="ach-form-group">
+          <label for="achInputStudent">Student / Team Name *</label>
+          <input type="text" id="achInputStudent" placeholder="e.g. Pooja S (II Year CSE-2) & Team Dream Scavengers" required />
+        </div>
+
+        <div class="ach-form-group">
+          <label for="achInputCategory">Category *</label>
+          <select id="achInputCategory" required>
+            <option value="Technical" selected>Technical &amp; Hackathons</option>
+            <option value="Research">Research &amp; Papers</option>
+            <option value="Academic">Academic &amp; GATE</option>
+            <option value="Placement">Placement &amp; Internships</option>
+            <option value="Sports">Sports &amp; Athletics</option>
+            <option value="Cultural">Cultural &amp; Arts</option>
+            <option value="Other">Other Honors</option>
+          </select>
+        </div>
+
+        <div class="ach-form-group">
+          <label for="achInputDate">Achievement Date *</label>
+          <input type="date" id="achInputDate" required />
+        </div>
+
+        <div class="ach-form-group">
+          <label for="achInputYear">Academic Year</label>
+          <input type="text" id="achInputYear" placeholder="e.g. 2026-27" value="2026-27" />
+        </div>
+
+        <div class="ach-form-group full-col">
+          <label for="achInputImg">Photo / Certificate Image URL or Upload</label>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <input type="url" id="achInputImg" style="flex:1; min-width:260px;" placeholder="https://example.com/photo.jpeg (or choose file below)" />
+            <label class="ach-btn-secondary" style="margin:0; cursor:pointer;">
+              <i class="fa-solid fa-upload"></i> Upload Image
+              <input type="file" id="achInputFile" accept="image/*" style="display:none;" />
+            </label>
+          </div>
+          <div class="preview-box" id="previewBox">
+            <img id="previewImg" src="" alt="Selected Preview" />
+            <span id="previewText">Image preview ready</span>
+          </div>
+        </div>
+
+        <div class="ach-form-group full-col">
+          <label for="achInputShort">Short Summary (Displayed on Cards &amp; Home Slider) *</label>
+          <input type="text" id="achInputShort" placeholder="1-2 sentences summarizing the achievement..." required />
+        </div>
+
+        <div class="ach-form-group full-col">
+          <label for="achInputDesc">Complete Description &amp; Event Details *</label>
+          <textarea id="achInputDesc" rows="5" placeholder="Detailed story of the achievement, judges, prize money, competing colleges, mentors..." required></textarea>
+        </div>
+
+        <div class="full-col" style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; margin-top:1rem; padding-top:1.25rem; border-top:1px solid #F1F5F9;">
+          <a href="index.html#achievements-showcase" class="ach-btn-secondary" style="text-decoration:none;">
+            <i class="fa-solid fa-arrow-left"></i> Back to Home
+          </a>
+          <div style="display:flex; gap:0.75rem;">
+            <a href="achievements.html" class="ach-btn-secondary" style="text-decoration:none;">
+              <i class="fa-solid fa-trophy"></i> View Achievements
+            </a>
+            <button type="submit" class="ach-form-submit" id="achSubmitBtn">
+              <i class="fa-solid fa-paper-plane"></i> Publish Achievement
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Institutional Footer -->
+  <footer class="footer" style="margin-top:4rem;">
+    <div class="container footer-grid">
+      <div>
+        <h4>Department Contact</h4>
+        <p>Department of Computer Science &amp; Engineering<br />SRM Valliammai Engineering College<br />Kattankulathur, Chengalpattu Dist.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="achievements.html">Achievements Corner</a></li>
+          <li><a href="add-achievement.html">Add New Achievement</a></li>
+          <li><a href="event1.html">Events Board</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Connect &amp; Support</h4>
+        <p><i class="fa-solid fa-envelope" style="color:var(--accent-gold);margin-right:.45rem;"></i>cse.info@valliammai.edu.in</p>
+        <p style="margin-top:.45rem;"><i class="fa-solid fa-location-dot" style="color:var(--accent-gold);margin-right:.45rem;"></i>NH 45, Potheri, Kattankulathur, Tamil Nadu 603203</p>
+        <p style="margin-top:.45rem;"><i class="fa-solid fa-phone" style="color:var(--accent-gold);margin-right:.45rem;"></i>044-27454784</p>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      &copy; 2026 Department of Computer Science &amp; Engineering, SRMVEC. All Rights Reserved.
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="/src/scripts/supabase.js"></script>
+  <script type="module" src="/src/scripts/auth.js"></script>
+  <script type="module">
+    import { postAchievement } from '/src/scripts/achievements.js';
+    import { supabase } from '/src/scripts/supabase.js';
+    import { Auth } from '/src/scripts/auth.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 0. Auth check: verify user is authenticated (Supabase or Auth session)
+      let authenticatedUser = null;
+      if (supabase) {
+        try {
+          const { data } = await supabase.auth.getSession();
+          if (data?.session?.user) {
+            authenticatedUser = data.session.user;
+          }
+        } catch (e) {
+          console.warn('Session lookup notice:', e);
+        }
+      }
+      if (!authenticatedUser && window.Auth) {
+        const local = window.Auth.currentUser();
+        if (local) {
+          authenticatedUser = local;
+        }
+      }
+
+      // If unauthenticated, redirect to portal login with return destination
+      if (!authenticatedUser) {
+        window.location.replace('login.html?next=' + encodeURIComponent('add-achievement.html'));
+        return;
+      }
+
+      // Show signed-in user indicator
+      const authBanner = document.getElementById('achAuthBanner');
+      if (authBanner) {
+        const uName = authenticatedUser.user_metadata?.full_name || authenticatedUser.name || authenticatedUser.displayName || authenticatedUser.email || 'Member';
+        const uRole = (authenticatedUser.user_metadata?.role || authenticatedUser.role || 'Member').toUpperCase();
+        authBanner.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+            <span><i class="fa-solid fa-circle-user" style="color:#2563EB; margin-right:0.4rem;"></i> Signed in as <strong>${uName}</strong> <span style="background:#DBEAFE; color:#1E40AF; padding:2px 8px; border-radius:999px; font-size:0.75rem; font-weight:700; margin-left:0.3rem;">${uRole}</span></span>
+            <span style="font-size:0.8rem; color:#64748B;"><i class="fa-solid fa-shield-halved" style="color:#10B981;"></i> Submissions are verified by faculty</span>
+          </div>
+        `;
+        authBanner.style.display = 'block';
+      }
+
+      // 1. Hamburger nav toggle
+      const navToggle = document.getElementById('navToggle');
+      const navMenu = document.getElementById('mainNavMenu');
+      const navIcon = document.getElementById('navToggleIcon');
+      if (navToggle && navMenu) {
+        navToggle.addEventListener('click', () => {
+          const isOpen = navMenu.classList.toggle('open');
+          navToggle.setAttribute('aria-expanded', isOpen);
+          navIcon.className = isOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+        });
+      }
+
+      // 2. Set default date to today
+      const dateInput = document.getElementById('achInputDate');
+      if (dateInput && !dateInput.value) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+      }
+
+      // 3. Image file upload handler
+      const fileInput = document.getElementById('achInputFile');
+      const urlInput = document.getElementById('achInputImg');
+      const previewBox = document.getElementById('previewBox');
+      const previewImg = document.getElementById('previewImg');
+      const previewText = document.getElementById('previewText');
+
+      if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+              urlInput.value = evt.target.result;
+              previewImg.src = evt.target.result;
+              previewText.textContent = `Uploaded file: ${file.name}`;
+              previewBox.style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      if (urlInput) {
+        urlInput.addEventListener('input', () => {
+          const val = urlInput.value.trim();
+          if (val) {
+            previewImg.src = val;
+            previewText.textContent = 'Image URL linked';
+            previewBox.style.display = 'flex';
+          } else {
+            previewBox.style.display = 'none';
+          }
+        });
+      }
+
+      // 4. Form Submit
+      const form = document.getElementById('addAchievementForm');
+      const msgBox = document.getElementById('achFormMsg');
+      const submitBtn = document.getElementById('achSubmitBtn');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+
+        const newAch = {
+          title: document.getElementById('achInputTitle').value.trim(),
+          student_name: document.getElementById('achInputStudent').value.trim(),
+          category: document.getElementById('achInputCategory').value,
+          achievement_date: document.getElementById('achInputDate').value,
+          year: document.getElementById('achInputYear').value.trim() || '2026-27',
+          image_url: urlInput.value.trim() || 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80',
+          short_desc: document.getElementById('achInputShort').value.trim(),
+          description: document.getElementById('achInputDesc').value.trim(),
+          is_published: false
+        };
+
+        try {
+          const res = await postAchievement(newAch);
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit for Review';
+
+          if (res && res.error) {
+            msgBox.className = 'ach-form-msg error';
+            msgBox.style.display = 'block';
+            msgBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> Error submitting: ${res.error}`;
+          } else {
+            msgBox.className = 'ach-form-msg success';
+            msgBox.style.display = 'block';
+            msgBox.innerHTML = `🎉 <strong>Achievement submitted successfully!</strong> It has been queued for faculty review. Once approved, it will be published live to the <a href="achievements.html" style="color:inherit;font-weight:700;text-decoration:underline;">Achievements Corner</a> and Home Page slider.`;
+            form.reset();
+            previewBox.style.display = 'none';
+            dateInput.value = new Date().toISOString().split('T')[0];
+          }
+        } catch (err) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit for Review';
+          msgBox.className = 'ach-form-msg error';
+          msgBox.style.display = 'block';
+          msgBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> Network error: ${err.message}`;
+        }
+      });
+    });</script>
+</body>
+</html>

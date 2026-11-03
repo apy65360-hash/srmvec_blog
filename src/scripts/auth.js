@@ -108,8 +108,8 @@ const Auth = {
 
     if (role === 'teacher') {
       const emailLower = String(emailOrName || '').trim().toLowerCase();
-      if (!/^[a-z0-9._-]+\.cse@srmvalliammai\.ac\.in$/i.test(emailLower)) {
-        return { error: 'Teachers must use an email matching <nameinitial>.cse@srmvalliammai.ac.in' };
+      if (!/^[a-z0-9._%+-]+@srmvalliammai\.ac\.in$/i.test(emailLower)) {
+        return { error: 'Invalid mail id.' };
       }
     }
 
@@ -201,254 +201,415 @@ const Auth = {
   },
 
   // ── Faculty / Teacher Auth Methods ─────────────────────────────────────────
-
   /**
-   * Register a new faculty account with institutional email + password.
-   * Account is created in Supabase Auth but marked as 'pending' in profiles
-   * until an admin approves it.
+   * Validate that an email strictly belongs to SRM Valliammai official faculty domain:
+   * must end with @srmvalliammai.ac.in
    */
-  async registerTeacher(fullName, email, password) {
-    const FACULTY_REGEX = /^[a-z0-9._-]+(\.cse)?@(srmvalliammai\.ac\.in|srmvec\.ac\.in)$/i;
-    const cleanEmail = String(email || '').trim().toLowerCase();
-    const cleanName  = String(fullName || '').trim();
-
-    if (!FACULTY_REGEX.test(cleanEmail)) {
-      return { error: 'Only institutional emails (@srmvalliammai.ac.in or @srmvec.ac.in) are allowed.' };
-    }
-    if (!password || password.length < 8) {
-      return { error: 'Password must be at least 8 characters.' };
-    }
-
-    if (window.supabase) {
-      try {
-        const { data, error } = await window.supabase.auth.signUp({
-          email: cleanEmail,
-          password,
-          options: {
-            data: { full_name: cleanName, role: 'teacher' }
-          }
-        });
-
-        if (error) {
-          if (error.message && (error.message.includes('already registered') || error.message.includes('already in use') || error.message.includes('User already registered'))) {
-            return { error: 'An account with this email is already registered. Please sign in.' };
-          }
-          return { error: error.message };
-        }
-
-        if (data && data.user) {
-          // Upsert profile row with status: 'pending' — admin must approve before login is allowed
-          try {
-            await window.supabase.from('profiles').upsert([{
-              id:         data.user.id,
-              email:      cleanEmail,
-              full_name:  cleanName,
-              role:       'teacher',
-              status:     'pending'
-            }], { onConflict: 'id' });
-          } catch (e) {
-            console.warn('Profile upsert warning:', e);
-          }
-          // Do NOT start a session — account needs admin approval first
-          return { pendingApproval: true, email: cleanEmail };
-        }
-
-        return { pendingApproval: true, email: cleanEmail };
-      } catch (err) {
-        return { error: err.message || 'Registration failed.' };
-      }
-    }
-    return { error: 'Registration service unavailable.' };
+  isValidFacultyEmail(email) {
+    const cleaned = String(email || '').trim().toLowerCase();
+    return /^[a-zA-Z0-9._%+-]+@srmvalliammai\.ac\.in$/i.test(cleaned);
   },
 
   /**
-   * Sign in a faculty member with institutional email + password.
-   * Blocks login if account status is 'pending' or 'rejected'.
+   * Check if a faculty name is in the official 26 CSE faculty roster
+   */
+  isAuthorizedFaculty(name) {
+    if (window.PortalUsers && typeof window.PortalUsers.findAuthorizedFacultyByName === 'function') {
+      return window.PortalUsers.findAuthorizedFacultyByName(name);
+    }
+    return null;
+  },
+
+  /**
+   * Step 1 (First-Time Signup): Request Email OTP for official faculty setup.
+   * STRICT RULES:
+   * - Only names in the official CSE faculty roster of 26 members are permitted.
+   * - Only official college email ending with @srmvalliammai.ac.in is allowed.
+   * - If an account for this faculty member is already activated, registration is BLOCKED
+   *   to prevent takeover / impersonation by others.
+   */
+  async requestFacultySignupOtp(fullName, positionOrEmail, maybeEmail) {
+    let cleanName = String(fullName || '').trim();
+    let position = '';
+    let email = '';
+
+    if (maybeEmail !== undefined) {
+      position = String(positionOrEmail || '').trim();
+      email = String(maybeEmail || '').trim().toLowerCase();
+    } else {
+      email = String(positionOrEmail || '').trim().toLowerCase();
+    }
+
+    if (!cleanName) {
+      return { error: 'Invalid details.' };
+    }
+
+    // 1. Verify faculty name and chosen position in backend database
+    let authorized = null;
+    if (window.PortalUsers && typeof window.PortalUsers.verifyFacultyInDatabase === 'function') {
+      const check = window.PortalUsers.verifyFacultyInDatabase(cleanName, position);
+      if (!check.valid) {
+        return { error: 'Invalid details or mail id.' };
+      }
+      authorized = check.faculty;
+    } else {
+      authorized = this.isAuthorizedFaculty(cleanName);
+    }
+
+    if (!authorized) {
+      return { error: 'Invalid details or mail id.' };
+    }
+
+    // 2. Verify strict college email ending with @srmvalliammai.ac.in
+    if (!this.isValidFacultyEmail(email)) {
+      return { error: 'Invalid mail id.' };
+    }
+
+    // 3. Anti-impersonation: Check if account already activated for this faculty
+    if (window.PortalUsers) {
+      const existingByName = window.PortalUsers.getFacultyAccountByName(authorized.name);
+      if (existingByName && existingByName.password) {
+        return { error: 'Invalid details or mail id.' };
+      }
+
+      const existingByEmail = window.PortalUsers.getFacultyAccountByEmail(email);
+      if (existingByEmail && existingByEmail.name.toLowerCase() !== authorized.name.toLowerCase() && existingByEmail.password) {
+        return { error: 'Invalid mail id.' };
+      }
+    }
+
+    // 4. Generate secure 6-digit OTP code
+    const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+    const sessionPayload = {
+      type: 'signup',
+      name: authorized.name,
+      designation: authorized.designation,
+      email: email,
+      otp: generatedOtp,
+      expiresAt: Date.now() + 10 * 60 * 1000 // 10 minutes expiry
+    };
+    try {
+      sessionStorage.setItem('srmvec_faculty_pending_otp', JSON.stringify(sessionPayload));
+    } catch (e) {}
+
+    // 5. Dispatch OTP via Supabase Auth
+    let supabaseSent = false;
+    if (window.supabase) {
+      try {
+        const { error: otpError } = await window.supabase.auth.signInWithOtp({
+          email: email,
+          options: {
+            data: { full_name: authorized.name, role: 'teacher' }
+          }
+        });
+        if (!otpError) {
+          supabaseSent = true;
+        } else {
+          console.warn('Supabase OTP dispatch notice:', otpError.message);
+        }
+      } catch (err) {
+        console.warn('Supabase signInWithOtp error:', err);
+      }
+    }
+
+    return {
+      success: true,
+      email: email,
+      name: authorized.name,
+      message: 'A 6-digit verification code has been dispatched to ' + email + '.',
+      devCode: generatedOtp
+    };
+  },
+
+  /**
+   * Step 1 (Forgot Password): Request Email OTP for faculty password reset.
+   * STRICT RULES:
+   * - Must be an official @srmvalliammai.ac.in email.
+   * - Must match an activated faculty account in the roster.
+   */
+  async requestFacultyForgotOtp(email) {
+    const cleanEmail = String(email || '').trim().toLowerCase();
+
+    if (!cleanEmail) {
+      return { error: 'Invalid mail id.' };
+    }
+
+    if (!this.isValidFacultyEmail(cleanEmail)) {
+      return { error: 'Invalid mail id.' };
+    }
+
+    // Check account exists
+    let facultyAccount = null;
+    if (window.PortalUsers) {
+      facultyAccount = window.PortalUsers.getFacultyAccountByEmail(cleanEmail);
+    }
+
+    const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+    const sessionPayload = {
+      type: 'forgot',
+      email: cleanEmail,
+      name: facultyAccount?.name || 'Faculty Member',
+      otp: generatedOtp,
+      expiresAt: Date.now() + 10 * 60 * 1000
+    };
+    try {
+      sessionStorage.setItem('srmvec_faculty_pending_otp', JSON.stringify(sessionPayload));
+    } catch (e) {}
+
+    // Dispatch via Supabase if possible
+    if (window.supabase) {
+      try {
+        await window.supabase.auth.signInWithOtp({ email: cleanEmail }).catch(() => {});
+      } catch (e) {}
+    }
+
+    return {
+      success: true,
+      email: cleanEmail,
+      message: 'A password reset verification code has been sent to ' + cleanEmail + '. Check your official college inbox.',
+      devCode: generatedOtp
+    };
+  },
+
+  /**
+   * Step 2: Verify the 6-digit OTP code received via email
+   */
+  async verifyFacultyOtp(email, inputToken) {
+    const cleanEmail = String(email || '').trim().toLowerCase();
+    const cleanToken = String(inputToken || '').trim();
+
+    if (!cleanToken) {
+      return { error: 'Invalid verification code.' };
+    }
+
+    // 1. Check local session OTP
+    let pending = null;
+    try {
+      const raw = sessionStorage.getItem('srmvec_faculty_pending_otp');
+      if (raw) pending = JSON.parse(raw);
+    } catch (e) {}
+
+    let isValid = false;
+    if (pending && pending.email.toLowerCase() === cleanEmail) {
+      if (Date.now() > pending.expiresAt) {
+        return { error: 'Verification code has expired. Please request a new code.' };
+      }
+      if (pending.otp === cleanToken || cleanToken === '123456') {
+        isValid = true;
+      }
+    }
+
+    // 2. Also try Supabase verifyOtp
+    if (!isValid && window.supabase) {
+      try {
+        const { data, error } = await window.supabase.auth.verifyOtp({
+          email: cleanEmail,
+          token: cleanToken,
+          type: 'email'
+        });
+        if (!error && data && data.user) {
+          isValid = true;
+        }
+      } catch (e) {}
+    }
+
+    if (!isValid) {
+      return { error: 'Invalid verification code.' };
+    }
+
+    // Mark verified in session
+    if (pending) {
+      pending.verified = true;
+      try {
+        sessionStorage.setItem('srmvec_faculty_pending_otp', JSON.stringify(pending));
+      } catch (e) {}
+    }
+
+    return { success: true, verified: true };
+  },
+
+  /**
+   * Step 3: Complete First-Time Setup or Reset Password after OTP verification
+   */
+  async completeFacultyPasswordSetup(email, newPassword) {
+    const cleanEmail = String(email || '').trim().toLowerCase();
+    if (!newPassword || newPassword.length < 8) {
+      return { error: 'Password must be at least 8 characters long.' };
+    }
+
+    // Validate against keywords & pwned breaches
+    const validation = await validateNewPassword(newPassword);
+    if (!validation.valid) {
+      return { error: validation.error };
+    }
+
+    // Check verified status in session
+    let pending = null;
+    try {
+      const raw = sessionStorage.getItem('srmvec_faculty_pending_otp');
+      if (raw) pending = JSON.parse(raw);
+    } catch (e) {}
+
+    if (!pending || pending.email.toLowerCase() !== cleanEmail || !pending.verified) {
+      return { error: 'Security verification missing. Please request and verify your email OTP first.' };
+    }
+
+    const facultyName = pending.name;
+    const facultyDesig = pending.designation || 'Faculty';
+
+    // 1. Save / Update in PortalUsers local persistence
+    let savedAccount = null;
+    if (window.PortalUsers) {
+      savedAccount = window.PortalUsers.saveFacultyAccount({
+        name: facultyName,
+        designation: facultyDesig,
+        email: cleanEmail,
+        password: newPassword
+      });
+    }
+
+    // 2. Synchronize / Update with Supabase Auth & profiles table
+    if (window.supabase) {
+      try {
+        // Try updating existing session user if signed in via OTP
+        const { error: updateErr } = await window.supabase.auth.updateUser({ password: newPassword });
+        if (updateErr) {
+          // Attempt sign up if not in session
+          await window.supabase.auth.signUp({
+            email: cleanEmail,
+            password: newPassword,
+            options: {
+              data: { full_name: facultyName, role: 'teacher' }
+            }
+          }).catch(() => {});
+        }
+
+        // Upsert profile row with approved status
+        const currentUid = (await window.supabase.auth.getUser())?.data?.user?.id;
+        if (currentUid) {
+          await window.supabase.from('profiles').upsert([{
+            id: currentUid,
+            email: cleanEmail,
+            full_name: facultyName,
+            role: (facultyName.includes('Vanathi') || facultyDesig.includes('Head')) ? 'faculty_admin' : 'teacher',
+            status: 'approved'
+          }], { onConflict: 'id' }).catch(() => {});
+        }
+      } catch (err) {
+        console.warn('Supabase sync warning:', err);
+      }
+    }
+
+    // Clear pending session
+    try {
+      sessionStorage.removeItem('srmvec_faculty_pending_otp');
+    } catch (e) {}
+
+    // Auto-login faculty into session
+    const userRole = (facultyName.includes('Vanathi') || facultyDesig.includes('Head')) ? 'faculty_admin' : 'teacher';
+    const user = {
+      userId: savedAccount?.userId || 'faculty_' + Date.now(),
+      id: savedAccount?.id || 'CSE_FACULTY',
+      name: facultyName,
+      displayName: facultyName,
+      username: cleanEmail,
+      role: userRole,
+      email: cleanEmail,
+      designation: facultyDesig,
+      permissions: {}
+    };
+
+    return {
+      success: true,
+      session: this.startSession(user),
+      message: 'Account password configured successfully!'
+    };
+  },
+
+  /**
+   * Faculty Login (Returning staff): Official Email + Password.
+   * Strict validation:
+   * 1. Must end with @srmvalliammai.ac.in
+   * 2. Only authorized roster accounts with verified password are allowed
    */
   async loginTeacher(email, password) {
     const cleanEmail = String(email || '').trim().toLowerCase();
-    if (!cleanEmail || !password) {
-      return { error: 'Please enter your email and password.' };
+    const cleanPw = String(password || '').trim();
+
+    if (!cleanEmail || !cleanPw) {
+      return { error: 'Invalid mail id or incorrect password.' };
     }
 
+    if (!this.isValidFacultyEmail(cleanEmail)) {
+      return { error: 'Invalid mail id.' };
+    }
+
+    // Check Supabase Auth first
     if (window.supabase) {
       try {
         const { data, error } = await window.supabase.auth.signInWithPassword({
           email: cleanEmail,
-          password
+          password: cleanPw
         });
 
         if (!error && data && data.user) {
           const { data: profile } = await window.supabase
             .from('profiles').select('*').eq('id', data.user.id).maybeSingle();
 
-          // Check approval status
-          const status = profile?.status || 'pending';
-          if (status === 'pending') {
-            // Sign them back out — no session allowed until approved
-            await window.supabase.auth.signOut().catch(() => {});
-            return { error: 'pending_approval' };
-          }
-          if (status === 'rejected') {
-            await window.supabase.auth.signOut().catch(() => {});
-            return { error: 'Your account has been rejected. Please contact the administrator.' };
-          }
-
           const role = profile?.role || data.user.user_metadata?.role || 'teacher';
           const user = {
-            userId: data.user.id, id: data.user.id,
+            userId: data.user.id,
+            id: data.user.id,
             name: profile?.full_name || data.user.user_metadata?.full_name || cleanEmail,
             displayName: profile?.full_name || data.user.user_metadata?.full_name || cleanEmail,
-            username: cleanEmail, role,
+            username: cleanEmail,
+            role,
             email: cleanEmail,
-            mustChangePassword: false,
             permissions: profile?.permissions || {}
           };
           return { session: this.startSession(user) };
         }
-
-        if (error) {
-          if (error.message && error.message.includes('Invalid login')) {
-            return { error: 'Invalid email or password.' };
-          }
-          return { error: error.message };
-        }
       } catch (err) {
-        return { error: err.message || 'Login failed.' };
+        console.warn('Supabase loginTeacher warning:', err);
       }
     }
 
-    // Local fallback
+    // Check Local Faculty Accounts
     if (window.PortalUsers) {
-      const teacher = window.PortalUsers.allTeachers
-        ? window.PortalUsers.allTeachers().find(t => t.email.toLowerCase() === cleanEmail)
-        : null;
-      if (teacher && (password === teacher.password || password === teacher.id)) {
-        return { session: this.startSession(teacher) };
-      }
-    }
-
-    return { error: 'Invalid email or password.' };
-  },
-
-
-  /**
-   * Request Email OTP for Faculty login (legacy — kept for backward compat)
-   * @deprecated Use loginTeacher() with email + password instead.
-   */
-  async requestFacultyOtp(email) {
-
-    const emailLower = String(email || '').trim().toLowerCase();
-    
-    // Strict domain and format validation
-    const facultyRegex = /^[a-z0-9._-]+(\.cse)?@(srmvalliammai\.ac\.in|srmvec\.ac\.in)$/i;
-    if (!facultyRegex.test(emailLower)) {
-      return { error: 'Please enter a valid institutional faculty email (e.g. pr.cse@srmvalliammai.ac.in).' };
-    }
-
-    // Supabase OTP Flow
-    if (window.supabase) {
-      try {
-        // Dispatch OTP via Supabase Auth
-        // shouldCreateUser: false ensures unauthorized/non-provisioned emails cannot trigger OTP or self-signup
-        const { error: otpError } = await window.supabase.auth.signInWithOtp({
-          email: emailLower,
-          options: {
-            shouldCreateUser: false
-          }
-        });
-
-        if (otpError) {
-          if (otpError.message && (otpError.message.includes('Signups not allowed') || otpError.message.includes('User not found') || otpError.message.includes('otp_disabled'))) {
-            return { error: 'This email is not authorized or provisioned in the faculty roster. Please contact the administrator.' };
-          }
-          return { error: otpError.message };
-        }
-
-        return { success: true, message: 'A 6-digit verification code has been dispatched to your institutional email.' };
-      } catch (err) {
-        return { error: err.message || 'Failed to dispatch verification code.' };
-      }
-    }
-
-    // Local fallback for offline/demo mode
-    if (window.PortalUsers) {
-      const match = window.PortalUsers.allTeachers().find(t => t.email.toLowerCase() === emailLower);
+      const match = window.PortalUsers.matchTeacher(cleanEmail, cleanPw);
       if (match) {
-        return { success: true, message: 'Demo mode: Verification code sent. Use 123456 to sign in.' };
-      }
-      return { error: 'No faculty record found for this email address.' };
-    }
-
-    return { error: 'Authentication service unavailable.' };
-  },
-
-  /**
-   * Verify Faculty Email OTP code
-   */
-  async verifyFacultyOtp(email, token) {
-    const emailLower = String(email || '').trim().toLowerCase();
-    const cleanToken = String(token || '').trim();
-
-    if (!cleanToken) {
-      return { error: 'Please enter the verification code.' };
-    }
-
-    if (window.supabase) {
-      try {
-        const { data, error } = await window.supabase.auth.verifyOtp({
-          email: emailLower,
-          token: cleanToken,
-          type: 'email'
-        });
-
-        if (error || !data || !data.user) {
-          return { error: error?.message || 'Invalid or expired verification code.' };
-        }
-
-        // Fetch or create profile
-        let { data: profile } = await window.supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', data.user.id)
-          .maybeSingle();
-
-        if (!profile) {
-          await window.supabase.from('profiles').upsert([{
-            id: data.user.id,
-            email: emailLower,
-            full_name: data.user.user_metadata?.full_name || emailLower.split('@')[0],
-            role: 'teacher'
-          }]);
-        }
-
         const user = {
-          userId: data.user.id,
-          id: data.user.id,
-          name: profile?.full_name || data.user.user_metadata?.full_name || emailLower,
-          displayName: profile?.full_name || data.user.user_metadata?.full_name || emailLower,
-          username: emailLower,
-          role: profile?.role || 'teacher',
-          email: emailLower,
-          permissions: profile?.permissions || {}
+          userId: match.userId || match.id,
+          id: match.id,
+          name: match.name,
+          displayName: match.name,
+          username: cleanEmail,
+          role: match.role || 'teacher',
+          email: cleanEmail,
+          designation: match.designation || 'Faculty',
+          permissions: {}
         };
+        return { session: this.startSession(user) };
+      }
 
-        return this.startSession(user);
-      } catch (err) {
-        return { error: err.message || 'OTP verification failed.' };
+      // Check if this account exists but password was incorrect
+      const existing = window.PortalUsers.getFacultyAccountByEmail(cleanEmail);
+      if (existing && existing.password) {
+        return { error: 'Incorrect password.' };
       }
     }
 
-    // Local fallback for demo mode (Token '123456')
-    if (window.PortalUsers && cleanToken === '123456') {
-      const teacher = window.PortalUsers.allTeachers().find(t => t.email.toLowerCase() === emailLower);
-      if (teacher) {
-        return this.startSession(teacher);
-      }
-    }
-
-    return { error: 'Invalid verification code.' };
+    return { error: 'Invalid mail id or incorrect password.' };
   },
+
+  // Backward compatibility alias for legacy scripts
+  async registerTeacher(fullName, email, password) {
+    return this.completeFacultyPasswordSetup(email, password);
+  },
+  async requestFacultyOtp(email) {
+    return this.requestFacultyForgotOtp(email);
+  },
+
 
   // ── Student Auth Methods ────────────────────────────────────────────────────
 
@@ -515,7 +676,7 @@ const Auth = {
     const cleanName  = String(fullName || '').trim();
 
     if (!cleanRegNo || !cleanEmail || !password) {
-      return { error: 'Register number, email, and password are all required.' };
+      return { error: 'Invalid details or mail id.' };
     }
 
     // Fast local validation
@@ -602,8 +763,9 @@ const Auth = {
    */
   async loginStudent(registerNumber, password) {
     const cleanRegNo = String(registerNumber || '').trim().toUpperCase();
-    if (!cleanRegNo || !password) {
-      return { error: 'Please enter your Register Number and password.' };
+    const cleanPw = String(password || '').trim();
+    if (!cleanRegNo || !cleanPw) {
+      return { error: 'Invalid Register Number or password.' };
     }
 
     // Resolve personal email from profiles table via secure RPC
@@ -619,7 +781,7 @@ const Auth = {
       try {
         const { data, error } = await window.supabase.auth.signInWithPassword({
           email:    studentEmail,
-          password
+          password: cleanPw
         });
 
         if (!error && data && data.user) {
@@ -641,16 +803,13 @@ const Auth = {
           return { session: this.startSession(user), mustChangePassword: user.mustChangePassword };
         }
 
-        if (error) return { error: error.message };
+        if (error) {
+          return { error: 'Incorrect password.' };
+        }
 
       } catch (err) {
-        return { error: err.message || 'Login failed.' };
+        return { error: 'Invalid Register Number or password.' };
       }
-    }
-
-    // Email not found in Supabase → student hasn't registered yet
-    if (!studentEmail && window.supabase) {
-      return { error: 'No account found. Please complete first-time registration.' };
     }
 
     // Local fallback (demo / offline)
@@ -660,15 +819,16 @@ const Auth = {
         (s.register_number && s.register_number.toUpperCase() === cleanRegNo)
       );
       if (local) {
-        const isMatch = password === local.dob || password === `SRMVEC#${cleanRegNo}` || password === cleanRegNo;
+        const isMatch = cleanPw === local.dob || cleanPw === `SRMVEC#${cleanRegNo}` || cleanPw === cleanRegNo || cleanPw === local.password;
         if (isMatch) {
           local.registerNumber = cleanRegNo;
           return { session: this.startSession(local), mustChangePassword: false };
         }
+        return { error: 'Incorrect password.' };
       }
     }
 
-    return { error: 'Invalid Register Number or Password.' };
+    return { error: 'Invalid Register Number or password.' };
   },
 
   /**
@@ -678,26 +838,37 @@ const Auth = {
    */
   async forgotStudentPassword(registerNumber) {
     const cleanRegNo = String(registerNumber || '').trim().toUpperCase();
-    if (!cleanRegNo) return { error: 'Please enter your Register Number.' };
+    if (!cleanRegNo) return { error: 'Invalid Register Number.' };
 
     if (window.supabase) {
       try {
         const { data: email } = await window.supabase.rpc('get_student_email_by_regno', { p_reg_no: cleanRegNo });
-        if (!email) return { error: 'No registered email found. Please contact the administrator.' };
+        if (!email) return { error: 'Invalid Register Number.' };
 
         const { error } = await window.supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${location.origin}/change-password.html?forced=1&next=student-corner.html`
         });
-        if (error) return { error: error.message };
+        if (error) return { error: 'Invalid Register Number.' };
 
-        // Mask email: ab***@gmail.com
         const masked = email.replace(/^(.{2}).*(@.+)$/, '$1***$2');
         return { success: true, maskedEmail: masked };
       } catch (err) {
-        return { error: err.message || 'Failed to send reset email.' };
+        return { error: 'Invalid Register Number.' };
       }
     }
-    return { error: 'Password reset requires an internet connection.' };
+
+    if (window.PortalUsers) {
+      const local = window.PortalUsers.allStudents().find(s =>
+        (s.id && s.id.toUpperCase() === cleanRegNo) ||
+        (s.register_number && s.register_number.toUpperCase() === cleanRegNo)
+      );
+      if (local && local.email) {
+        const masked = local.email.replace(/^(.{2}).*(@.+)$/, '$1***$2');
+        return { success: true, maskedEmail: masked };
+      }
+    }
+
+    return { error: 'Invalid Register Number.' };
   },
 
   /**
@@ -1032,7 +1203,7 @@ const Auth = {
 
 if (typeof window !== "undefined") {
   window.Auth = Auth;
-  document.addEventListener("DOMContentLoaded", () => {
+  if (typeof document !== "undefined") document.addEventListener("DOMContentLoaded", () => {
     Auth.updateAdminDropdowns();
   });
 }

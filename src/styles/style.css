@@ -1036,6 +1036,7 @@ mark.search-highlight {
 /* --- BLOG CORNER CAROUSEL (Home Page) --- */
 .blog-corner-section {
   margin: 3.5rem 0;
+  padding: 0 0.5rem;
 }
 
 .blog-corner-header {
@@ -1077,6 +1078,7 @@ mark.search-highlight {
   overflow: hidden;
   border-radius: 16px;
   min-height: 260px;
+  margin: 0 0.25rem;
 }
 
 .blog-carousel-track {

@@ -106,6 +106,8 @@
             <a href="blogs.html">Blogs Board</a>
             <a href="student-corner.html">Student Corner</a>
             <a href="teachers-corner.html">Teacher's Corner</a>
+            <a href="achievements.html">Achievements</a>
+            <a href="add-achievement.html">Add Achievement</a>
             <a href="event1.html">Events Board</a>
           </div>
         </div>
@@ -223,9 +225,14 @@
           <h2 class="section-title">Department Achievements</h2>
           <p class="ach-showcase-subtitle">Recent honors, national hackathons &amp; research milestones by CSE scholars</p>
         </div>
-        <a href="achievements.html" class="ach-view-all-btn">
-          <i class="fa-solid fa-trophy"></i> View All Achievements &rarr;
-        </a>
+        <div class="ach-header-actions">
+          <a href="achievements.html" class="ach-view-all-btn">
+            <i class="fa-solid fa-trophy"></i> View All Achievements &rarr;
+          </a>
+          <a href="add-achievement.html" class="ach-add-btn" title="Add New Student Achievement">
+            <i class="fa-solid fa-plus"></i> Add
+          </a>
+        </div>
       </div>
 
       <div class="ach-carousel-viewport" aria-label="Student Achievements Showcase">
@@ -344,6 +351,11 @@
           <i class="fa-solid fa-trophy" style="color:#F59E0B;"></i>
           <strong>Achievements</strong>
           <span>Student awards, hackathons &amp; honors</span>
+        </a>
+        <a class="page-tile" href="add-achievement.html">
+          <i class="fa-solid fa-medal" style="color:#F59E0B;"></i>
+          <strong>Add Achievement</strong>
+          <span>Submit student awards &amp; honors</span>
         </a>
         <a class="page-tile" href="event1.html">
           <i class="fa-solid fa-calendar-days"></i>
@@ -566,6 +578,7 @@
           <li><a href="student-corner.html">Student Corner</a></li>
           <li><a href="contact.html">Contact Us</a></li>
           <li><a href="achievements.html">Achievements</a></li>
+          <li><a href="add-achievement.html">Add Achievement</a></li>
           <li><a href="#portal-pages">All Portal Pages</a></li>
         </ul>
       </div>
@@ -927,6 +940,95 @@
     </footer>
   </div>
 
+  <!-- ═══════════════════════════════════════════════════════════════
+       QUICK ADD ACHIEVEMENT MODAL (IN-PAGE POPUP FOR HOME)
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="ach-detail-modal" id="addAchHomeModal" style="display:none !important;"><!--
+    <div class="ach-modal-backdrop" id="addAchBackdrop"></div>
+    <div class="ach-modal-dialog" style="max-width:640px;">
+      <button class="ach-modal-close-simple" id="addAchModalCloseBtn" aria-label="Close dialog">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="ach-add-modal-header">
+        <div class="ach-add-icon-wrap">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+        <div>
+          <h3>Add New Student Achievement</h3>
+          <p>Feature student awards, symposium wins &amp; milestones on the home carousel</p>
+        </div>
+      </div>
+
+      <div class="ach-add-modal-body">
+        <div class="ach-form-msg" id="homeAchFormMsg"></div>
+
+        <form class="ach-post-form" id="homeAddAchForm" style="display:grid; grid-template-columns:1fr 1fr; gap:0.9rem;">
+          <div class="ach-form-group" style="grid-column: 1 / -1;">
+            <label for="homeAchTitle">Achievement Title *</label>
+            <input type="text" id="homeAchTitle" placeholder="e.g. 1st Place at National Smart India Hackathon" required />
+          </div>
+
+          <div class="ach-form-group">
+            <label for="homeAchStudent">Student / Team Name *</label>
+            <input type="text" id="homeAchStudent" placeholder="e.g. Pooja S (II Year CSE-2) &amp; Team" required />
+          </div>
+
+          <div class="ach-form-group">
+            <label for="homeAchCategory">Category *</label>
+            <select id="homeAchCategory" required>
+              <option value="Technical" selected>Technical &amp; Hackathons</option>
+              <option value="Research">Research &amp; Papers</option>
+              <option value="Academic">Academic &amp; GATE</option>
+              <option value="Placement">Placement &amp; Internships</option>
+              <option value="Sports">Sports &amp; Athletics</option>
+              <option value="Cultural">Cultural &amp; Arts</option>
+              <option value="Other">Other Honors</option>
+            </select>
+          </div>
+
+          <div class="ach-form-group">
+            <label for="homeAchDate">Date *</label>
+            <input type="date" id="homeAchDate" required />
+          </div>
+
+          <div class="ach-form-group">
+            <label for="homeAchYear">Academic Year</label>
+            <input type="text" id="homeAchYear" placeholder="2026-27" value="2026-27" />
+          </div>
+
+          <div class="ach-form-group" style="grid-column: 1 / -1;">
+            <label for="homeAchImg">Photo / Certificate URL</label>
+            <input type="url" id="homeAchImg" placeholder="https://example.com/photo.jpeg (direct image link)" />
+          </div>
+
+          <div class="ach-form-group" style="grid-column: 1 / -1;">
+            <label for="homeAchShort">Short Summary (Featured on Carousel Cards) *</label>
+            <input type="text" id="homeAchShort" placeholder="1-2 sentences summarizing the accolade..." required />
+          </div>
+
+          <div class="ach-form-group" style="grid-column: 1 / -1;">
+            <label for="homeAchDesc">Complete Description &amp; Event Details *</label>
+            <textarea id="homeAchDesc" rows="3" placeholder="Details about competition, venue, cash award, competing colleges..." required></textarea>
+          </div>
+
+          <div style="grid-column: 1 / -1; display:flex; justify-content:space-between; align-items:center; gap:0.75rem; margin-top:0.5rem; padding-top:0.75rem; border-top:1px solid #F1F5F9; flex-wrap:wrap;">
+            <a href="add-achievement.html" style="font-size:0.84rem; color:var(--ach-blue); text-decoration:none; font-weight:600;">
+              Open Full Page Form &rarr;
+            </a>
+            <div style="display:flex; gap:0.6rem;">
+              <button type="button" class="ach-btn-secondary" id="homeAchCancelBtn">Cancel</button>
+              <button type="submit" class="ach-add-btn" id="homeAchSubmitBtn" style="padding:0.6rem 1.25rem;">
+                <i class="fa-solid fa-paper-plane"></i> Publish Achievement
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  --></div>
   <!-- Supabase & Auth JS -->
   <script type="module" src="/src/scripts/supabase.js"></script>
   <script type="module" src="/src/scripts/auth.js"></script>

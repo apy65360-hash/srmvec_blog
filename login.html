@@ -53,6 +53,14 @@
         box.textContent = "Your account does not have access to that page.";
         box.className = "form-message is-visible error";
       }
+      const next = params.get("next");
+      if (next) {
+        document.querySelectorAll('.role-choice-card a').forEach(a => {
+          const targetUrl = new URL(a.href, location.origin);
+          targetUrl.searchParams.set('next', next);
+          a.href = targetUrl.pathname + targetUrl.search;
+        });
+      }
     }());
   </script>
 

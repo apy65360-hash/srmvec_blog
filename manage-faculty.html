@@ -313,235 +313,146 @@
 
   </div>
 
+  <script type="module" src="/src/scripts/supabase.js"></script>
   <script type="module" src="/src/scripts/users.js"></script>
   <script type="module" src="/src/scripts/auth.js"></script>
-  <script>
+  <script type="module">
+  import { supabase } from '/src/scripts/supabase.js';
+  import { Auth } from '/src/scripts/auth.js';
+  import { PortalUsers } from '/src/scripts/users.js';
+
   // ── Authentication Guard: Strictly Administrator Only ──
   window.addEventListener("DOMContentLoaded", () => {
-    if (window.Auth && typeof window.Auth.requireLogin === "function") {
-      const adminUser = window.Auth.requireLogin(['admin', 'faculty_admin', 'editor']);
+    if (Auth && typeof Auth.requireLogin === "function") {
+      const adminUser = Auth.requireLogin(['admin', 'faculty_admin', 'editor']);
       if (!adminUser) return;
     }
   });
 
-  // ─────────────────────────────────────────────
-  //  Faculty Dataset – SRM Valliammai CSE Dept.
-  // ─────────────────────────────────────────────
-  const FACULTY = [
-    {
-      id: "CSE001", name: "Dr. B. Vanathi",
-      image: "/images/faculty/vanathi.png",
-      designation: "Professor & Head",
-      qual: "Ph.D. (Computer Science)", exp: "25+ Years",
-      spec: "Image Processing & AI",
-      email: "vanathi.cse@srmvalliammai.ac.in",
-      joined: "1999",
-      tags: ["Image Processing", "Artificial Intelligence", "Neural Networks", "Pattern Recognition"]
-    },
-    {
-      id: "CSE002", name: "Dr. A. Samydurai",
-      image: "/images/faculty/samy.png",
-      designation: "Professor",
-      qual: "Ph.D. (Information Technology)", exp: "20+ Years",
-      spec: "Network Security & Cryptography",
-      email: "samydurai.cse@srmvalliammai.ac.in",
-      joined: "2001",
-      tags: ["Network Security", "Cryptography", "Cloud Computing", "IoT"]
-    },
-    {
-      id: "CSE003", name: "Dr. G. Kumaresan",
-      image: "/images/faculty/kumaresan.png",
-      designation: "Professor",
-      qual: "Ph.D. (Computer Science)", exp: "18+ Years",
-      spec: "Data Mining & Machine Learning",
-      email: "kumaresan.cse@srmvalliammai.ac.in",
-      joined: "2004",
-      tags: ["Data Mining", "Machine Learning", "Big Data", "Deep Learning"]
-    },
-    {
-      id: "CSE004", name: "Dr. C. Pabitha",
-      image: "/images/faculty/pabitha.png",
-      designation: "Professor",
-      qual: "Ph.D. (Computer Science & Engineering)", exp: "17+ Years",
-      spec: "Distributed Systems & Cloud",
-      email: "pabitha.cse@srmvalliammai.ac.in",
-      joined: "2005",
-      tags: ["Distributed Systems", "Cloud Computing", "Parallel Processing", "Grid Computing"]
-    },
-    {
-      id: "CSE005", name: "Dr. D. Kavitha",
-      designation: "Associate Professor",
-      qual: "Ph.D. (Computer Science)", exp: "15+ Years",
-      spec: "Natural Language Processing",
-      email: "kavitha.cse@srmvalliammai.ac.in",
-      joined: "2007",
-      tags: ["NLP", "Text Mining", "Information Retrieval", "Sentiment Analysis"]
-    },
-    {
-      id: "CSE006", name: "Mrs. A. Lalitha",
-      image: "/images/faculty/lalitha.jpg",
-      designation: "Associate Professor",
-      qual: "M.E. (Computer Science), Ph.D. (Pursuing)", exp: "14+ Years",
-      spec: "Software Engineering & Testing",
-      email: "lalitha.cse@srmvalliammai.ac.in",
-      joined: "2008",
-      tags: ["Software Engineering", "Testing", "Agile Methods", "UML"]
-    },
-    {
-      id: "CSE007", name: "Mrs. S. Shanthi",
-      image: "/images/faculty/shanthi.png",
-      designation: "Associate Professor",
-      qual: "M.E. (Computer Science)", exp: "13+ Years",
-      spec: "Database Systems & Data Warehousing",
-      email: "shanthi.cse@srmvalliammai.ac.in",
-      joined: "2009",
-      tags: ["DBMS", "Data Warehousing", "SQL Optimization", "NoSQL"]
-    },
-    {
-      id: "CSE008", name: "Mr. N. Leo Bright Tennisson",
-      image: "/images/faculty/leo.png",
-      designation: "Assistant Professor (Sr. Grade)",
-      qual: "M.E. (Computer Science), Ph.D. (Pursuing)", exp: "12+ Years",
-      spec: "Internet of Things & Embedded Systems",
-      email: "leo.cse@srmvalliammai.ac.in",
-      joined: "2010",
-      tags: ["IoT", "Embedded Systems", "Raspberry Pi", "Arduino"]
-    },
-    {
-      id: "CSE009", name: "Dr. R. Priya",
-      designation: "Assistant Professor (Sr. Grade)",
-      qual: "Ph.D. (Computer Science)", exp: "11+ Years",
-      spec: "Cyber Security & Forensics",
-      email: "priya.cse@srmvalliammai.ac.in",
-      joined: "2011",
-      tags: ["Cyber Security", "Digital Forensics", "Ethical Hacking", "Blockchain"]
-    },
-    {
-      id: "CSE010", name: "Mrs. P. Meenakshi",
-      designation: "Assistant Professor (Sr. Grade)",
-      qual: "M.E. (Computer Science & Engineering)", exp: "10+ Years",
-      spec: "Computer Networks & Wireless Systems",
-      email: "meenakshi.cse@srmvalliammai.ac.in",
-      joined: "2012",
-      tags: ["Computer Networks", "Wireless Communication", "5G", "SDN"]
-    },
-    {
-      id: "CSE011", name: "Mr. S. Vijayakumar",
-      designation: "Assistant Professor (Sr. Grade)",
-      qual: "M.E. (CSE), Ph.D. (Pursuing)", exp: "10+ Years",
-      spec: "Compiler Design & Programming Languages",
-      email: "vijayakumar.cse@srmvalliammai.ac.in",
-      joined: "2012",
-      tags: ["Compiler Design", "Programming Languages", "Algorithm Design", "Theory of Computation"]
-    },
-    {
-      id: "CSE012", name: "Mrs. T. Sangeetha",
-      designation: "Assistant Professor (Sel. Grade)",
-      qual: "M.E. (CSE)", exp: "9+ Years",
-      spec: "Mobile Computing & Cloud Applications",
-      email: "sangeetha.cse@srmvalliammai.ac.in",
-      joined: "2013",
-      tags: ["Mobile Computing", "Cloud Apps", "Android", "React Native"]
-    },
-    {
-      id: "CSE013", name: "Dr. K. Muthumanickam",
-      designation: "Assistant Professor (Sel. Grade)",
-      qual: "Ph.D. (IT)", exp: "9+ Years",
-      spec: "Bioinformatics & Computational Biology",
-      email: "muthumanickam.cse@srmvalliammai.ac.in",
-      joined: "2014",
-      tags: ["Bioinformatics", "Computational Biology", "Genomics", "Protein Folding"]
-    },
-    {
-      id: "CSE014", name: "Mrs. R. Anitha",
-      image: "/images/faculty/anitha.png",
-      designation: "Assistant Professor",
-      qual: "M.E. (CSE)", exp: "8+ Years",
-      spec: "Operating Systems & System Software",
-      email: "anitha.cse@srmvalliammai.ac.in",
-      joined: "2015",
-      tags: ["Operating Systems", "Linux", "System Programming", "Virtualization"]
-    },
-    {
-      id: "CSE015", name: "Mr. P. Arulmurugan",
-      designation: "Assistant Professor",
-      qual: "M.E. (CSE), Ph.D. (Pursuing)", exp: "8+ Years",
-      spec: "Deep Learning & Computer Vision",
-      email: "arulmurugan.cse@srmvalliammai.ac.in",
-      joined: "2015",
-      tags: ["Deep Learning", "Computer Vision", "CNN", "Transfer Learning"]
-    },
-    {
-      id: "CSE016", name: "Mrs. M. Revathi",
-      designation: "Assistant Professor",
-      qual: "M.E. (CSE)", exp: "7+ Years",
-      spec: "Web Technologies & Full Stack Development",
-      email: "revathi.cse@srmvalliammai.ac.in",
-      joined: "2016",
-      tags: ["Web Technologies", "Full Stack", "React", "Node.js"]
-    },
-    {
-      id: "CSE017", name: "Mr. V. Sathish Kumar",
-      designation: "Assistant Professor",
-      qual: "M.E. (CSE)", exp: "7+ Years",
-      spec: "Artificial Intelligence & Expert Systems",
-      email: "sathish.cse@srmvalliammai.ac.in",
-      joined: "2016",
-      tags: ["Artificial Intelligence", "Expert Systems", "Knowledge Representation", "Fuzzy Logic"]
-    },
-    {
-      id: "CSE018", name: "Mrs. D. Suganya",
-      designation: "Assistant Professor",
-      qual: "M.E. (Computer Science)", exp: "6+ Years",
-      spec: "Data Science & Analytics",
-      email: "suganya.cse@srmvalliammai.ac.in",
-      joined: "2017",
-      tags: ["Data Science", "Analytics", "Python", "R Programming"]
-    },
-    {
-      id: "CSE019", name: "Mr. B. Ragupathi",
-      designation: "Assistant Professor",
-      qual: "M.E. (CSE)", exp: "5+ Years",
-      spec: "Software Architecture & DevOps",
-      email: "ragupathi.cse@srmvalliammai.ac.in",
-      joined: "2019",
-      tags: ["Software Architecture", "DevOps", "Docker", "Kubernetes"]
-    },
-    {
-      id: "CSE020", name: "Mrs. K. Pavithra",
-      designation: "Assistant Professor",
-      qual: "M.E. (CSE), Ph.D. (Pursuing)", exp: "4+ Years",
-      spec: "Quantum Computing & Algorithms",
-      email: "pavithra.cse@srmvalliammai.ac.in",
-      joined: "2020",
-      tags: ["Quantum Computing", "Algorithms", "Complexity Theory", "Optimization"]
-    }
-  ];
+  // ─────────────────────────────────────────────────────────────
+  //  Dynamic Database-Driven Faculty Directory (Supabase-Powered)
+  //  No sensitive faculty member details are hardcoded in git.
+  // ─────────────────────────────────────────────────────────────
+  let FACULTY = [];
+  const FACULTY_STORAGE_KEY = "srmvec_faculty_data";
 
-  // ── Colour palette helpers ──
   const AV_CLASSES = ["av-0","av-1","av-2","av-3","av-4","av-5","av-6","av-7"];
 
   function initials(name) {
-    return name.replace(/^(Dr\.|Mr\.|Mrs\.|Ms\.)\s*/i, "")
-      .split(/\s+/).slice(0,2)
-      .map(p => p.charAt(0).toUpperCase()).join("");
+    return String(name || "")
+      .replace(/^(Dr\.|Mr\.|Mrs\.|Ms\.)\s*/i, "")
+      .split(/\s+/)
+      .slice(0, 2)
+      .map(p => p.charAt(0).toUpperCase())
+      .join("");
   }
 
   function avClass(idx) { return AV_CLASSES[idx % AV_CLASSES.length]; }
 
   function badgeClass(desig) {
-    if (desig.includes("Head")) return "badge-hod";
-    if (desig === "Professor") return "badge-prof";
-    if (desig.includes("Associate")) return "badge-assoc";
+    const s = String(desig || "").toLowerCase();
+    if (s.includes("head") || s.includes("hod")) return "badge-hod";
+    if (s === "professor") return "badge-prof";
+    if (s.includes("associate")) return "badge-assoc";
     return "badge-asst";
   }
 
+  // ── Storage Cache Helpers ──
+  function loadFacultyStorage() {
+    try {
+      const stored = localStorage.getItem(FACULTY_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  function saveFacultyStorage() {
+    try {
+      localStorage.setItem(FACULTY_STORAGE_KEY, JSON.stringify(FACULTY));
+    } catch (e) {}
+  }
+
+  // ── Load Faculty from Database (Supabase) ──
+  async function loadFaculty() {
+    const tbody = document.getElementById("facultyTableBody");
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2.5rem;color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Loading faculty directory from database…</td></tr>`;
+
+    // 1. Fetch from Supabase database server
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('faculty')
+          .select('*')
+          .order('id', { ascending: true });
+
+        if (!error && Array.isArray(data) && data.length > 0) {
+          FACULTY = data.map(item => ({
+            id: item.id || item.code,
+            name: item.name || item.full_name,
+            image: item.image || item.image_url || '',
+            designation: item.designation || 'Faculty',
+            qual: item.qual || item.qualification || '—',
+            exp: item.exp || item.experience || '—',
+            spec: item.spec || item.specialization || '—',
+            email: item.email || '',
+            joined: item.joined || item.joined_year || '—',
+            tags: Array.isArray(item.tags) ? item.tags : []
+          }));
+          saveFacultyStorage();
+          refresh();
+          return;
+        } else if (error) {
+          console.warn("Notice querying Supabase faculty table:", error.message);
+        }
+      } catch (err) {
+        console.warn("Supabase fetch notice:", err);
+      }
+    }
+
+    // 2. Fallback to client cached storage if database is offline or not configured
+    const cached = loadFacultyStorage();
+    if (cached && cached.length > 0) {
+      FACULTY = cached;
+    } else if (PortalUsers && typeof PortalUsers.authorizedFaculty === 'function') {
+      // Runtime roster fallback
+      FACULTY = PortalUsers.authorizedFaculty().map(f => ({
+        id: f.code || f.id,
+        name: f.name,
+        image: f.image || '',
+        designation: f.designation,
+        qual: f.qual || '—',
+        exp: f.exp || '—',
+        spec: f.spec || f.shortDesig || '—',
+        email: f.email || `${f.name.replace(/[^a-zA-Z]/g, '').toLowerCase().slice(0, 10)}.cse@srmvalliammai.ac.in`,
+        joined: f.joined || '2020',
+        tags: [f.designation, f.dept || 'CSE']
+      }));
+      saveFacultyStorage();
+    } else {
+      FACULTY = [];
+    }
+
+    refresh();
+  }
+
   // ── Build rows ──
-  let rows = [];
   function buildRows(data) {
     const tbody = document.getElementById("facultyTableBody");
     tbody.innerHTML = "";
-    const isAdmin = Auth.isAdmin();
+    const isAdmin = Auth?.isAdmin ? Auth.isAdmin() : true;
+
+    if (!data || data.length === 0) {
+      document.getElementById("noResults").style.display = "block";
+      document.getElementById("facultyTable").style.display = "none";
+      document.getElementById("countAll").textContent = "(0)";
+      return;
+    }
+
+    document.getElementById("noResults").style.display = "none";
+    document.getElementById("facultyTable").style.display = "";
 
     data.forEach((f, i) => {
       const tr = document.createElement("tr");
@@ -574,14 +485,12 @@
     });
     document.getElementById("countAll").textContent = `(${data.length})`;
 
-    // Hide Add Faculty button for non-admins
     const addBtn = document.getElementById("toggleAddFaculty");
     if (addBtn) {
       addBtn.style.display = isAdmin ? "inline-flex" : "none";
     }
   }
 
-  // Apply colour to avatar cells
   function applyAvatarColors() {
     document.querySelectorAll("#facultyTableBody .avatar-initials").forEach((el, i) => {
       el.className = `avatar-initials ${avClass(i)}`;
@@ -595,14 +504,14 @@
   function filtered() {
     return FACULTY.filter(f => {
       const matchFilter = currentFilter === "all" ||
-        f.designation.toLowerCase().includes(currentFilter.toLowerCase());
+        (f.designation || "").toLowerCase().includes(currentFilter.toLowerCase());
       const q = currentSearch.toLowerCase();
       const matchSearch = !q ||
-        f.name.toLowerCase().includes(q) ||
-        f.designation.toLowerCase().includes(q) ||
-        f.spec.toLowerCase().includes(q) ||
-        f.email.toLowerCase().includes(q) ||
-        f.tags.some(t => t.toLowerCase().includes(q));
+        (f.name || "").toLowerCase().includes(q) ||
+        (f.designation || "").toLowerCase().includes(q) ||
+        (f.spec || "").toLowerCase().includes(q) ||
+        (f.email || "").toLowerCase().includes(q) ||
+        (Array.isArray(f.tags) && f.tags.some(t => t.toLowerCase().includes(q)));
       return matchFilter && matchSearch;
     });
   }
@@ -664,10 +573,11 @@
     document.getElementById("modalSpec").textContent = f.spec;
     document.getElementById("modalJoined").textContent = f.joined;
     const tagsEl = document.getElementById("modalTags");
-    tagsEl.innerHTML = f.tags.map(t => `<span class="modal-tag">${t}</span>`).join("");
+    tagsEl.innerHTML = (Array.isArray(f.tags) ? f.tags : []).map(t => `<span class="modal-tag">${t}</span>`).join("");
     overlay.classList.add("open");
     document.body.style.overflow = "hidden";
   }
+
   function closeModal() {
     overlay.classList.remove("open");
     document.body.style.overflow = "";
@@ -675,29 +585,6 @@
   document.getElementById("modalClose").addEventListener("click", closeModal);
   overlay.addEventListener("click", e => { if (e.target === overlay) closeModal(); });
   document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(); hideEdit(); } });
-
-  // ── Persistence Helper ──
-  const FACULTY_STORAGE_KEY = "srmvec_faculty_data";
-  (function initFacultyStorage() {
-    try {
-      const stored = localStorage.getItem(FACULTY_STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          FACULTY.length = 0;
-          FACULTY.push(...parsed);
-        }
-      } else {
-        localStorage.setItem(FACULTY_STORAGE_KEY, JSON.stringify(FACULTY));
-      }
-    } catch (e) {}
-  })();
-
-  function saveFacultyStorage() {
-    try {
-      localStorage.setItem(FACULTY_STORAGE_KEY, JSON.stringify(FACULTY));
-    } catch (e) {}
-  }
 
   // ── Edit Popover ──
   const editPopover = document.getElementById("editPopover");
@@ -718,8 +605,8 @@
     activeEditRow = null;
   }
 
-  document.getElementById("editSaveBtn").addEventListener("click", () => {
-    if (!Auth.isAdmin()) {
+  document.getElementById("editSaveBtn").addEventListener("click", async () => {
+    if (Auth && !Auth.isAdmin()) {
       alert("Security Alert: Only administrators are authorized to edit faculty data.");
       return;
     }
@@ -731,7 +618,7 @@
       const newEmail = document.getElementById("editEmail").value.trim().toLowerCase();
       const newPassword = document.getElementById("editPassword").value.trim();
 
-      if (!PortalUsers.isValidTeacherEmail(newEmail)) {
+      if (PortalUsers && !PortalUsers.isValidTeacherEmail(newEmail)) {
         alert("Invalid email format. Teacher email must strictly follow: <nameinitial>.cse@srmvalliammai.ac.in");
         return;
       }
@@ -739,7 +626,6 @@
       data[idx].designation = newDesig;
       data[idx].email = newEmail;
 
-      // reflect in master FACULTY
       const masterIdx = FACULTY.findIndex(f => f.id === data[idx].id);
       if (masterIdx >= 0) {
         FACULTY[masterIdx].designation = newDesig;
@@ -747,10 +633,29 @@
       }
       saveFacultyStorage();
 
-      // Sync with PortalUsers login directory
-      const updates = { designation: newDesig, email: newEmail };
-      if (newPassword) updates.password = newPassword;
-      PortalUsers.updateTeacherByAdmin(data[idx].id, updates);
+      // Sync with Supabase database server
+      if (supabase) {
+        try {
+          await supabase
+            .from('faculty')
+            .update({ designation: newDesig, email: newEmail, updated_at: new Date().toISOString() })
+            .eq('id', data[idx].id);
+
+          await supabase
+            .from('faculty_whitelist')
+            .upsert({ email: newEmail, full_name: data[idx].name, department: 'CSE' }, { onConflict: 'email' })
+            .catch(() => {});
+        } catch (e) {
+          console.warn("Supabase update error:", e);
+        }
+      }
+
+      // Sync with local PortalUsers directory
+      if (PortalUsers && typeof PortalUsers.updateTeacherByAdmin === 'function') {
+        const updates = { designation: newDesig, email: newEmail };
+        if (newPassword) updates.password = newPassword;
+        PortalUsers.updateTeacherByAdmin(data[idx].id, updates);
+      }
     }
     hideEdit();
     refresh();
@@ -761,8 +666,8 @@
     if (!editPopover.contains(e.target) && !e.target.closest("[data-action='edit']")) hideEdit();
   });
 
-  // ── Table Actions ──
-  document.getElementById("facultyTableBody").addEventListener("click", e => {
+  // ── Table Actions (View / Edit / Delete) ──
+  document.getElementById("facultyTableBody").addEventListener("click", async e => {
     const btn = e.target.closest("button[data-action]");
     if (!btn) return;
     const tr = btn.closest("tr");
@@ -775,14 +680,14 @@
       const allIdx = FACULTY.findIndex(x => x.id === f.id);
       openModal(f, allIdx);
     } else if (btn.dataset.action === "edit") {
-      if (!Auth.isAdmin()) {
+      if (Auth && !Auth.isAdmin()) {
         alert("Security Alert: Only administrators are authorized to edit faculty data.");
         return;
       }
       document.getElementById("editPassword").value = "";
       showEdit(tr, f);
     } else if (btn.dataset.action === "delete") {
-      if (!Auth.isAdmin()) {
+      if (Auth && !Auth.isAdmin()) {
         alert("Security Alert: Access Denied. Only administrators are authorized to delete faculty data.");
         return;
       }
@@ -792,28 +697,43 @@
           FACULTY.splice(masterIdx, 1);
           saveFacultyStorage();
         }
-        PortalUsers.removeTeacherByAdmin(f.id);
-        PortalUsers.removeTeacherByAdmin(f.email);
+
+        // Delete from Supabase database server
+        if (supabase) {
+          try {
+            await supabase.from('faculty').delete().eq('id', f.id);
+            await supabase.from('faculty_whitelist').delete().eq('email', f.email).catch(() => {});
+          } catch (delErr) {
+            console.warn("Supabase delete notice:", delErr);
+          }
+        }
+
+        if (PortalUsers) {
+          PortalUsers.removeTeacherByAdmin?.(f.id);
+          PortalUsers.removeTeacherByAdmin?.(f.email);
+        }
         refresh();
       }
     }
   });
 
-  // ── Add Faculty Form ──
+  // ── Add Faculty Form (Persists to Supabase Database) ──
   document.getElementById("toggleAddFaculty").addEventListener("click", () => {
-    if (!Auth.isAdmin()) {
+    if (Auth && !Auth.isAdmin()) {
       alert("Security Alert: Only administrators are authorized to add new faculty.");
       return;
     }
     const form = document.getElementById("addFacultyForm");
     form.style.display = form.style.display === "none" ? "grid" : "none";
   });
+
   document.getElementById("cancelAddFaculty").addEventListener("click", () => {
     document.getElementById("addFacultyForm").style.display = "none";
   });
-  document.getElementById("addFacultyForm").addEventListener("submit", function(e) {
+
+  document.getElementById("addFacultyForm").addEventListener("submit", async function(e) {
     e.preventDefault();
-    if (!Auth.isAdmin()) {
+    if (Auth && !Auth.isAdmin()) {
       alert("Security Alert: Only administrators are authorized to add new faculty.");
       return;
     }
@@ -825,8 +745,7 @@
     const password = document.getElementById("facultyPassword").value.trim();
     const spec     = document.getElementById("facultySpec").value.trim() || "—";
 
-    // Strict email format validation
-    if (!PortalUsers.isValidTeacherEmail(email)) {
+    if (PortalUsers && !PortalUsers.isValidTeacherEmail(email)) {
       alert("Format Rejected: Teacher email must strictly follow <nameinitial>.cse@srmvalliammai.ac.in");
       return;
     }
@@ -847,23 +766,59 @@
       joined: new Date().getFullYear().toString(),
       tags: [spec !== "—" ? spec : "CSE"].filter(Boolean)
     };
+
     FACULTY.push(newFaculty);
     saveFacultyStorage();
 
-    // Register teacher login account via Admin
-    const regResult = PortalUsers.addTeacherByAdmin({
-      id: empId,
-      name: name,
-      email: email,
-      password: password,
-      designation: desig,
-      department: "CSE"
-    });
+    // Persist to Supabase Database Server
+    if (supabase) {
+      try {
+        const { error: insErr } = await supabase.from('faculty').upsert({
+          id: empId,
+          name: name,
+          designation: desig,
+          email: email,
+          department: "CSE",
+          qual: "—",
+          exp: "New",
+          spec: spec,
+          joined: new Date().getFullYear().toString(),
+          tags: [spec !== "—" ? spec : "CSE"].filter(Boolean),
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'id' });
 
-    if (regResult.error) {
-      alert("Faculty added to directory, but note: " + regResult.error);
+        if (insErr) {
+          console.warn("Supabase faculty insert warning:", insErr.message);
+        }
+
+        // Whitelist for authentication
+        await supabase.from('faculty_whitelist').upsert({
+          email: email,
+          full_name: name,
+          department: 'CSE'
+        }, { onConflict: 'email' }).catch(() => {});
+      } catch (err) {
+        console.warn("Supabase faculty persistence error:", err);
+      }
+    }
+
+    // Register teacher login account via Admin
+    if (PortalUsers && typeof PortalUsers.addTeacherByAdmin === 'function') {
+      const regResult = PortalUsers.addTeacherByAdmin({
+        id: empId,
+        name: name,
+        email: email,
+        password: password,
+        designation: desig,
+        department: "CSE"
+      });
+      if (regResult.error) {
+        alert("Faculty added to directory, but note: " + regResult.error);
+      } else {
+        alert(`Success! Faculty account created for ${name}.\nLogin Email: ${email}\nLogin Password: ${password}`);
+      }
     } else {
-      alert(`Success! Faculty account created for ${name}.\nLogin Email: ${email}\nLogin Password: ${password}`);
+      alert(`Success! Faculty record created for ${name} in Supabase database.`);
     }
 
     this.reset();
@@ -876,10 +831,10 @@
   });
 
   // Render user badge safely
-  try { Auth.renderUserBadge(); } catch(e) {}
+  try { if (Auth?.renderUserBadge) Auth.renderUserBadge(); } catch(e) {}
 
-  // Initial render
-  refresh();
+  // Fetch faculty dynamically from Supabase database
+  loadFaculty();
   </script>
 
 </body>

@@ -84,6 +84,8 @@
             <a href="blogs.html">Blogs Board</a>
             <a href="student-corner.html">Student Corner</a>
             <a href="teachers-corner.html">Teacher's Corner</a>
+            <a href="achievements.html">Achievements</a>
+            <a href="add-achievement.html">Add Achievement</a>
             <a href="event1.html">Events Board</a>
           </div>
         </div>
@@ -216,6 +218,12 @@
       </div>
     </div>
 
+    <!-- ACTION BAR (ADD ACHIEVEMENT BUTTON) -->
+    <div style="display:flex; justify-content:flex-end; margin-bottom:1.5rem; gap:0.75rem;">
+      <a href="add-achievement.html" class="ach-add-btn" style="text-decoration:none;">
+        <i class="fa-solid fa-circle-plus"></i> Add New Achievement
+      </a>
+    </div>
     <!-- ADMIN ACTION BAR (TRIGGER TO OPEN FORM) -->
     <div id="adminActionRow" style="display:none; justify-content:flex-end; margin-bottom:1.5rem;">
       <button class="ach-form-submit" id="openPostFormBtn">
@@ -562,7 +570,13 @@
     // ── Check Hash On Load ────────────────────────────────────────────────
     function checkHashForModal() {
       const hash = window.location.hash;
-      if (hash && hash.startsWith('#achievement-')) {
+      if (hash === '#add' || window.location.search.includes('action=add')) {
+        const postWrap = document.getElementById('achPostFormWrap');
+        if (postWrap) {
+          postWrap.style.display = 'block';
+          setTimeout(() => postWrap.scrollIntoView({ behavior: 'smooth' }), 300);
+        }
+      } else if (hash && hash.startsWith('#achievement-')) {
         const id = hash.replace('#achievement-', '');
         setTimeout(() => {
           openDetailModal(id);

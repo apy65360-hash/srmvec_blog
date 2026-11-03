@@ -1,91 +1,227 @@
 /**
- * Login directory for the CSE Blog portal (single source of truth).
+ * Backend Faculty Database & Authentication Directory for CSE Blog Portal.
  *
- * Teachers  → login with their college email + password (set during sign-up).
- * Students  → login with their register number + date of birth (DD/MM/YYYY).
- *
- * Allowed teacher email domains: @srmvec.ac.in  |  @valliammai.ac.in
- * Accounts created from the sign-up pages are stored in localStorage and merged in
- * by PortalUsers.all(). Edit / replace these seed accounts any time.
+ * Faculty member records are managed securely via Supabase database server.
+ * Frontend forms query and verify against this database without exposing
+ * a public dropdown list of faculty names.
  */
 
-/** Allowed college email domains for teacher accounts. */
-const TEACHER_EMAIL_DOMAINS = ["srmvalliammai.ac.in"];
-
-const PORTAL_USERS = [
-  // --- Teachers / Faculty (staff access) ---
-  // password field stores the bcrypt/plain password set at sign-up.
-  // Seed teachers use their staff-ID as initial password for demo purposes.
-  // Email format: <nameinitial>.cse@srmvalliammai.ac.in
-  {
-    userId: "teacher_seed_1",
-    id: "CSE101",
-    name: "Dr. Priya Ramesh",
-    role: "teacher",
-    designation: "Professor",
-    department: "CSE",
-    email: "pr.cse@srmvalliammai.ac.in",
-    password: "CSE101"           // demo: staff ID as password
-  },
-  {
-    userId: "teacher_seed_2",
-    id: "CSE102",
-    name: "Prof. Karthik Subramanian",
-    role: "teacher",
-    designation: "Associate Professor",
-    department: "CSE",
-    email: "ks.cse@srmvalliammai.ac.in",
-    password: "CSE102"
-  },
-  {
-    userId: "teacher_seed_3",
-    id: "CSE103",
-    name: "Dr. Meena Sundarajan",
-    role: "teacher",
-    designation: "Assistant Professor",
-    department: "CSE",
-    email: "ms.cse@srmvalliammai.ac.in",
-    password: "CSE103"
-  },
-
-  // --- Students ---
-  // dob field is stored as "DD/MM/YYYY" and acts as the password.
-  {
-    userId: "student_seed_1",
-    id: "CSE2201",
-    name: "Arun Krishnamurthy",
-    role: "student",
-    year: "III Year",
-    department: "CSE",
-    email: "arun.cse@srmvec.ac.in",
-    dob: "15/08/2003"            // password = date of birth DD/MM/YYYY
-  },
-  {
-    userId: "student_seed_2",
-    id: "CSE2202",
-    name: "Swetha Raghavan",
-    role: "student",
-    year: "II Year",
-    department: "CSE",
-    email: "swetha.cse@srmvec.ac.in",
-    dob: "22/11/2004"
-  },
-  {
-    userId: "student_seed_3",
-    id: "CSE2203",
-    name: "Mohammed Irfan",
-    role: "student",
-    year: "IV Year",
-    department: "CSE",
-    email: "irfan.cse@srmvec.ac.in",
-    dob: "05/03/2002"
-  }
+export const FACULTY_DATABASE = [
+  { sNo: 1,  name: "Dr. B. Vanathi",                designation: "Professor & Head",                   code: "CSE001", shortDesig: "Prof & Head",          dept: "CSE", image: "/images/faculty/vanathi.png" },
+  { sNo: 2,  name: "Dr. A. Samydurai",              designation: "Professor",                          code: "CSE002", shortDesig: "Professor",            dept: "CSE", image: "/images/faculty/samy.png" },
+  { sNo: 3,  name: "Dr. C. Pabitha",                designation: "Associate Professor",                code: "CSE003", shortDesig: "Asso. Prof",           dept: "CSE", image: "/images/faculty/pabitha.png" },
+  { sNo: 4,  name: "Ms. A. Lalitha",                designation: "Assistant Professor (Selection Grade)", code: "CSE004", shortDesig: "Asst. Prof. (Sel.G)", dept: "CSE", image: "/images/faculty/lalitha.jpg" },
+  { sNo: 5,  name: "Ms. S. Shanthi",                designation: "Assistant Professor (Selection Grade)", code: "CSE005", shortDesig: "Asst. Prof. (Sel.G)", dept: "CSE", image: "/images/faculty/shanthi.png" },
+  { sNo: 6,  name: "Ms. S. Suma",                   designation: "Assistant Professor (Selection Grade)", code: "CSE006", shortDesig: "Asst. Prof. (Sel.G)", dept: "CSE", image: "/images/faculty/suma.png" },
+  { sNo: 7,  name: "Mr. N. Leo Bright Tennisson",   designation: "Assistant Professor (Senior Grade)", code: "CSE007", shortDesig: "Asst. Prof. (Sr.G)",   dept: "CSE", image: "/images/faculty/leo.png" },
+  { sNo: 8,  name: "Dr. S. Venkatesh",              designation: "Assistant Professor (Senior Grade)", code: "CSE008", shortDesig: "Asst. Prof. (Sr.G)",   dept: "CSE", image: "/images/faculty/venkatesh.png" },
+  { sNo: 9,  name: "Ms. V. Prema",                  designation: "Assistant Professor (Senior Grade)", code: "CSE009", shortDesig: "Asst. Prof. (Sr.G)",   dept: "CSE", image: "/images/faculty/prema.png" },
+  { sNo: 10, name: "Ms. S. Anslam Sibi",            designation: "Assistant Professor (Senior Grade)", code: "CSE010", shortDesig: "Asst. Prof. (Sr.G)",   dept: "CSE" },
+  { sNo: 11, name: "Ms. R. Anitha",                 designation: "Assistant Professor (Senior Grade)", code: "CSE011", shortDesig: "Asst. Prof. (Sr.G)",   dept: "CSE", image: "/images/faculty/anitha.png" },
+  { sNo: 12, name: "Mr. K. Maniraj",                designation: "Assistant Professor (Senior Grade)", code: "CSE012", shortDesig: "Asst. Prof. (Sr.G)",   dept: "CSE" },
+  { sNo: 13, name: "Ms. V. Vijaypriya",             designation: "Assistant Professor (Ordinary Grade)", code: "CSE013", shortDesig: "Asst. Prof. (OG)",   dept: "CSE" },
+  { sNo: 14, name: "Ms. M. Sophiya Sugantha Grace", designation: "Assistant Professor (Ordinary Grade)", code: "CSE014", shortDesig: "Asst. Prof. (OG)",   dept: "CSE", image: "/images/faculty/sophiya-sugantha-grace.jpg" },
+  { sNo: 15, name: "Ms. R. Gayathri",               designation: "Assistant Professor (Ordinary Grade)", code: "CSE015", shortDesig: "Asst. Prof. (OG)",   dept: "CSE", image: "/images/faculty/gayathri.jpg" },
+  { sNo: 16, name: "Ms. S. Balaswathy",             designation: "Assistant Professor (Ordinary Grade)", code: "CSE016", shortDesig: "Asst. Prof. (OG)",   dept: "CSE", image: "/images/faculty/balaswathy.jpg" },
+  { sNo: 17, name: "Ms. R. Vijayalakshmi",          designation: "Assistant Professor (Ordinary Grade)", code: "CSE017", shortDesig: "Asst. Prof. (OG)",   dept: "CSE" },
+  { sNo: 18, name: "Mr. D. Keerthy Vasan",          designation: "Assistant Professor (Ordinary Grade)", code: "CSE018", shortDesig: "Asst. Prof. (OG)",   dept: "CSE" },
+  { sNo: 19, name: "Ms. R. Ranjani",                designation: "Assistant Professor (Ordinary Grade)", code: "CSE019", shortDesig: "Asst. Prof. (OG)",   dept: "CSE" },
+  { sNo: 20, name: "Ms. D. Ramya",                  designation: "Assistant Professor (Ordinary Grade)", code: "CSE020", shortDesig: "Asst. Prof. (OG)",   dept: "CSE" },
+  { sNo: 21, name: "Ms. N. Premavathy",             designation: "Assistant Professor (Ordinary Grade)", code: "CSE021", shortDesig: "Asst. Prof. (OG)",   dept: "CSE" },
+  { sNo: 22, name: "Mr. M. Sivanesh",               designation: "Assistant Professor (Ordinary Grade)", code: "CSE022", shortDesig: "Asst. Prof. (OG)",   dept: "CSE" },
+  { sNo: 23, name: "Ms. S. Niranjana",              designation: "Assistant Professor (Ordinary Grade)", code: "CSE023", shortDesig: "Asst. Prof. (OG)",   dept: "CSE" },
+  { sNo: 24, name: "Ms. R. Elakkiya",               designation: "Assistant Professor (Ordinary Grade)", code: "CSE024", shortDesig: "Asst. Prof. (OG)",   dept: "CSE" },
+  { sNo: 25, name: "Ms. M. Subha",                  designation: "Assistant Professor (Ordinary Grade)", code: "CSE025", shortDesig: "Asst. Prof. (OG)",   dept: "CSE" },
+  { sNo: 26, name: "Ms. Mandalam Chitralekha",      designation: "Teaching Research Associate (TRA)",  code: "CSE026", shortDesig: "TRA",                  dept: "CSE" }
 ];
 
+export const AUTHORIZED_CSE_FACULTY = FACULTY_DATABASE;
+export const TEACHER_EMAIL_DOMAINS = ["srmvalliammai.ac.in"];
+
+const FACULTY_ACCOUNTS_KEY = "srmvec_faculty_accounts";
 const REGISTERED_USERS_KEY = "srmvec_registered_users";
 
+/** Normalize name tokens for fuzzy, case-insensitive comparison */
+function normalizeName(str) {
+  return String(str || "")
+    .toLowerCase()
+    .replace(/^(dr\.|dr|prof\.|prof|mr\.|mr|mrs\.|mrs|ms\.|ms)\s*/gi, "")
+    .replace(/[^a-z0-9]/g, "")
+    .trim();
+}
+
+/** Normalize position strings for flexible matching */
+function normalizePosition(str) {
+  const s = String(str || "").toLowerCase();
+  if (s.includes("head") || s.includes("hod")) return "hod";
+  if (s.includes("sel")) return "sel";
+  if (s.includes("sr") || s.includes("senior")) return "sr";
+  if (s.includes("og") || s.includes("ordinary")) return "og";
+  if (s.includes("asso") || s.includes("associate")) return "assoc";
+  if (s.includes("tra") || s.includes("research associate") || s.includes("teaching")) return "tra";
+  if (s.includes("prof") && !s.includes("asst") && !s.includes("assistant")) return "prof";
+  if (s.includes("asst") || s.includes("assistant")) return "asst";
+  return s.replace(/[^a-z0-9]/g, "");
+}
+
 const PortalUsers = {
-  /** Accounts created through the sign-up pages. */
+  /** Return database faculty roster (cached or baseline) */
+  authorizedFaculty() {
+    if (typeof localStorage !== "undefined") {
+      try {
+        const stored = localStorage.getItem("srmvec_faculty_data");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (e) {}
+    }
+    return FACULTY_DATABASE;
+  },
+
+  /** Look up faculty in database by name */
+  findAuthorizedFacultyByName(name) {
+    const target = normalizeName(name);
+    if (!target) return null;
+    const roster = this.authorizedFaculty();
+
+    // Direct match
+    let found = roster.find(f => normalizeName(f.name) === target);
+    if (found) return found;
+
+    // Token-based matching (e.g. "Vanathi B" matches "Dr. B. Vanathi")
+    const words = String(name || "").toLowerCase().replace(/[^a-z]/g, " ").split(/\s+/).filter(w => w.length > 2);
+    if (words.length > 0) {
+      found = roster.find(f => {
+        const fWords = f.name.toLowerCase().replace(/[^a-z]/g, " ").split(/\s+/).filter(w => w.length > 2);
+        return words.every(w => fWords.includes(w)) || fWords.some(fw => words.includes(fw) && fw.length >= 4);
+      });
+    }
+    return found || null;
+  },
+
+  /** Verify both name and chosen position against the backend database */
+  verifyFacultyInDatabase(name, position) {
+    const faculty = this.findAuthorizedFacultyByName(name);
+    if (!faculty) {
+      return { valid: false, reason: "name_not_found", error: "Invalid details or mail id." };
+    }
+
+    if (position) {
+      const normInputPos = normalizePosition(position);
+      const normFacultyPos = normalizePosition(faculty.designation);
+      const normShortPos = normalizePosition(faculty.shortDesig);
+
+      if (normInputPos !== normFacultyPos && normInputPos !== normShortPos) {
+        return {
+          valid: false,
+          reason: "position_mismatch",
+          faculty,
+          error: "Invalid details or mail id."
+        };
+      }
+    }
+
+    return { valid: true, faculty };
+  },
+
+  /** Strict email domain rule: must end with @srmvalliammai.ac.in */
+  isValidTeacherEmail(email) {
+    const cleaned = String(email || "").trim().toLowerCase();
+    return /^[a-z0-9._%+-]+@srmvalliammai\.ac\.in$/i.test(cleaned);
+  },
+
+  isCollegeEmail(email) {
+    return this.isValidTeacherEmail(email);
+  },
+
+  /** Get registered faculty accounts from backend/persistence */
+  getFacultyAccounts() {
+    try {
+      return JSON.parse(localStorage.getItem(FACULTY_ACCOUNTS_KEY)) || [];
+    } catch (e) {
+      return [];
+    }
+  },
+
+  getFacultyAccountByEmail(email) {
+    const cleanEmail = String(email || "").trim().toLowerCase();
+    if (!cleanEmail) return null;
+    return this.getFacultyAccounts().find(a => (a.email || "").toLowerCase() === cleanEmail) || null;
+  },
+
+  getFacultyAccountByName(name) {
+    const target = normalizeName(name);
+    if (!target) return null;
+    return this.getFacultyAccounts().find(a => normalizeName(a.name) === target) || null;
+  },
+
+  /** Save activated faculty credentials in backend persistence */
+  saveFacultyAccount(account) {
+    const accounts = this.getFacultyAccounts();
+    const cleanEmail = String(account.email || "").trim().toLowerCase();
+    const targetName = normalizeName(account.name);
+
+    const existingIdx = accounts.findIndex(a =>
+      (a.email && a.email.toLowerCase() === cleanEmail) ||
+      (a.name && normalizeName(a.name) === targetName)
+    );
+
+    const updated = {
+      userId: account.userId || `faculty_${Date.now()}`,
+      id: account.id || account.code || `CSE${Date.now().toString().slice(-3)}`,
+      name: account.name,
+      designation: account.designation || "Faculty",
+      department: "CSE",
+      email: cleanEmail,
+      password: account.password,
+      role: (account.name.includes("Vanathi") || (account.designation && account.designation.includes("Head"))) ? "faculty_admin" : "teacher",
+      activatedAt: account.activatedAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    if (existingIdx !== -1) {
+      accounts[existingIdx] = { ...accounts[existingIdx], ...updated };
+    } else {
+      accounts.push(updated);
+    }
+
+    localStorage.setItem(FACULTY_ACCOUNTS_KEY, JSON.stringify(accounts));
+    return updated;
+  },
+
+  addTeacherByAdmin(data) {
+    if (!data || !data.email) return { error: "Missing required fields" };
+    const saved = this.saveFacultyAccount(data);
+    return { success: true, account: saved };
+  },
+
+  updateTeacherByAdmin(idOrEmail, updates) {
+    const accounts = this.getFacultyAccounts();
+    const clean = String(idOrEmail || "").trim().toLowerCase();
+    const idx = accounts.findIndex(a => 
+      (a.id && a.id.toLowerCase() === clean) ||
+      (a.email && a.email.toLowerCase() === clean)
+    );
+    if (idx !== -1) {
+      accounts[idx] = { ...accounts[idx], ...updates, updatedAt: new Date().toISOString() };
+      localStorage.setItem(FACULTY_ACCOUNTS_KEY, JSON.stringify(accounts));
+      return { success: true, account: accounts[idx] };
+    }
+    return { error: "Account not found" };
+  },
+
+  removeTeacherByAdmin(idOrEmail) {
+    const accounts = this.getFacultyAccounts();
+    const clean = String(idOrEmail || "").trim().toLowerCase();
+    const filtered = accounts.filter(a =>
+      (a.id && a.id.toLowerCase() !== clean) &&
+      (a.email && a.email.toLowerCase() !== clean)
+    );
+    localStorage.setItem(FACULTY_ACCOUNTS_KEY, JSON.stringify(filtered));
+    return { success: true };
+  },
+
   registered() {
     try {
       return JSON.parse(localStorage.getItem(REGISTERED_USERS_KEY)) || [];
@@ -94,258 +230,38 @@ const PortalUsers = {
     }
   },
 
-  /** Seed accounts plus every signed-up account. */
   all() {
-    return PORTAL_USERS.concat(this.registered());
+    return [...this.getFacultyAccounts(), ...this.registered()];
   },
 
-  /** All student accounts. */
-  allStudents() {
-    return this.all().filter(u => u.role === 'student');
-  },
-
-  /** All teacher accounts. */
   allTeachers() {
-    return this.all().filter(u => u.role === 'teacher');
+    return this.getFacultyAccounts();
   },
 
-  /** Every account whose name or ID equals the input (names are not unique). */
-  findAll(nameOrId, role) {
-    const needle = String(nameOrId || "").trim().toLowerCase();
-    return this.all().filter(function (user) {
-      const matchesRole = !role || user.role === role;
-      return matchesRole && (user.name.toLowerCase() === needle || user.id.toLowerCase() === needle);
-    });
+  allStudents() {
+    return this.registered().filter(u => u.role === "student");
   },
 
-  find(nameOrId, role) {
-    return this.findAll(nameOrId, role)[0] || null;
-  },
-
-  /** The account matching the name/ID whose ID number is the supplied one (legacy). */
-  match(nameOrId, idNumber, role) {
-    const id = String(idNumber || "").trim().toLowerCase();
-    return this.findAll(nameOrId, role).find(function (user) {
-      return user.id.toLowerCase() === id;
-    }) || null;
-  },
-
-  // ── Strict login helpers ─────────────────────────────────────────────────
-
-  /**
-   * Validates that a teacher email strictly matches the required format and domain:
-   * <nameinitial>.cse@srmvalliammai.ac.in
-   * @param {string} email
-   * @returns {boolean}
-   */
-  isValidTeacherEmail(email) {
-    const cleaned = String(email || "").trim().toLowerCase();
-    return /^[a-z0-9._-]+\.cse@srmvalliammai\.ac\.in$/i.test(cleaned);
-  },
-
-  isCollegeEmail(email) {
-    return this.isValidTeacherEmail(email);
-  },
-
-  /**
-   * Normalises a date-of-birth string to DD/MM/YYYY for comparison.
-   * Accepts: DD/MM/YYYY, DDMMYYYY, DD-MM-YYYY, YYYY-MM-DD (ISO).
-   * @param {string} raw
-   * @returns {string|null} normalised "DD/MM/YYYY" or null if unrecognisable
-   */
-  normaliseDOB(raw) {
-    const s = String(raw || "").trim();
-    const slashDash = s.match(/^(\d{2})[\/\-](\d{2})[\/\-](\d{4})$/);
-    if (slashDash) return `${slashDash[1]}/${slashDash[2]}/${slashDash[3]}`;
-    const compact = s.match(/^(\d{2})(\d{2})(\d{4})$/);
-    if (compact) return `${compact[1]}/${compact[2]}/${compact[3]}`;
-    const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-    if (iso) return `${iso[3]}/${iso[2]}/${iso[1]}`;
-    return null;
-  },
-
-  /**
-   * Strict teacher login: college email + password.
-   * @param {string} email     Must be a valid college email.
-   * @param {string} password  The password set during sign-up.
-   * @returns {object|null}
-   */
+  /** Match email + password on sign in */
   matchTeacher(email, password) {
     const emailLower = String(email || "").trim().toLowerCase();
-    if (!this.isCollegeEmail(emailLower)) return null;
+    if (!this.isValidTeacherEmail(emailLower)) return null;
     const pw = String(password || "").trim();
-    return this.all().find(function (u) {
-      return u.role === "teacher" &&
-             (u.email || "").toLowerCase() === emailLower &&
-             (u.password || "") === pw;
-    }) || null;
-  },
 
-  /**
-   * Strict student login: register number + date of birth.
-   * @param {string} regNo  The student's register number (case-insensitive).
-   * @param {string} dob    Date of birth in any accepted format.
-   * @returns {object|null}
-   */
-  matchStudent(regNo, dob) {
-    const regLower = String(regNo || "").trim().toLowerCase();
-    const normDOB = this.normaliseDOB(dob);
-    if (!regLower || !normDOB) return null;
-    return this.all().find(function (u) {
-      return u.role === "student" &&
-             (u.id || "").toLowerCase() === regLower &&
-             (u.dob || "") === normDOB;
-    }) || null;
-  },
-
-  // ── Registration & Admin Teacher Management ──────────────────────────────
-
-  /**
-   * Adds a sign-up account.
-   * NOTE: Teachers CANNOT self-register; only Administrators can create or add teacher accounts.
-   */
-  register(details) {
-    const name = String(details.name || "").trim();
-    const role = String(details.role || "").trim();
-
-    if (role === "teacher") {
-      // Check admin authorization
-      const isAdmin = (typeof window !== "undefined" && window.Auth && typeof window.Auth.isAdmin === "function")
-        ? window.Auth.isAdmin()
-        : false;
-
-      if (!details.fromAdmin && !isAdmin) {
-        return {
-          error: "Access Denied: Teachers cannot self-register. Teacher accounts can only be created by an Administrator via the Admin Panel."
-        };
-      }
-
-      const email = String(details.email || "").trim().toLowerCase();
-      const password = String(details.password || "").trim();
-      if (!name || !email || !password) {
-        return { error: "Full name, college email, and password are required." };
-      }
-      if (!this.isValidTeacherEmail(email)) {
-        return { error: "Email must strictly follow the format: <nameinitial>.cse@srmvalliammai.ac.in" };
-      }
-      if (this.all().some(function (u) {
-        return u.role === "teacher" && (u.email || "").toLowerCase() === email;
-      })) {
-        return { error: "A teacher account with that email already exists." };
-      }
-      const id = String(details.id || ("CSE" + Date.now().toString().slice(-4))).toUpperCase();
-      const user = {
-        userId: "teacher_" + Date.now(),
-        id: id,
-        name: name,
-        role: "teacher",
-        department: details.department || "CSE",
-        designation: details.designation || "Assistant Professor",
-        email: email,
-        password: password
-      };
-      const registered = this.registered();
-      registered.push(user);
-      localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(registered));
-      return { user: user };
+    const account = this.getFacultyAccountByEmail(emailLower);
+    if (account && account.password === pw) {
+      return account;
     }
-
-    if (role === "student") {
-      const id = String(details.id || "").trim().toUpperCase();
-      const dob = this.normaliseDOB(details.dob || "");
-      if (!name || !id || !dob) {
-        return { error: "Full name, register number, and date of birth are required." };
-      }
-      if (this.all().some(function (u) {
-        return u.role === "student" && (u.id || "").toUpperCase() === id;
-      })) {
-        return { error: "A student account with register number " + id + " already exists." };
-      }
-      const user = {
-        userId: "student_" + Date.now(),
-        id: id,
-        name: name,
-        role: "student",
-        department: details.department || "CSE",
-        year: details.year || "",
-        email: String(details.email || "").trim(),
-        dob: dob
-      };
-      const registered = this.registered();
-      registered.push(user);
-      localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(registered));
-      return { user: user };
-    }
-
-    return { error: "Unknown role." };
-  },
-
-  /** Admin-only method to add a new teacher */
-  addTeacherByAdmin(details) {
-    return this.register({
-      ...details,
-      role: "teacher",
-      fromAdmin: true
-    });
-  },
-
-  /** Admin-only method to update an existing teacher's credentials / info */
-  updateTeacherByAdmin(idOrEmail, updates) {
-    const needle = String(idOrEmail || "").trim().toLowerCase();
-    const registered = this.registered();
-    const idx = registered.findIndex(u =>
-      u.role === "teacher" && (u.id.toLowerCase() === needle || (u.email || "").toLowerCase() === needle)
-    );
-
-    if (idx !== -1) {
-      if (updates.email && !this.isValidTeacherEmail(updates.email)) {
-        return { error: "Email must strictly follow: <nameinitial>.cse@srmvalliammai.ac.in" };
-      }
-      registered[idx] = {
-        ...registered[idx],
-        ...updates
-      };
-      localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(registered));
-      return { user: registered[idx] };
-    }
-
-    // Check seed accounts - if updating a seed teacher, save override in registered list
-    const seed = PORTAL_USERS.find(u =>
-      u.role === "teacher" && (u.id.toLowerCase() === needle || (u.email || "").toLowerCase() === needle)
-    );
-    if (seed) {
-      if (updates.email && !this.isValidTeacherEmail(updates.email)) {
-        return { error: "Email must strictly follow: <nameinitial>.cse@srmvalliammai.ac.in" };
-      }
-      const override = {
-        ...seed,
-        ...updates
-      };
-      registered.push(override);
-      localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(registered));
-      return { user: override };
-    }
-
-    return { error: "Teacher account not found." };
-  },
-
-  /** Admin-only method to delete a teacher from login access */
-  removeTeacherByAdmin(idOrEmail) {
-    const needle = String(idOrEmail || "").trim().toLowerCase();
-    const registered = this.registered().filter(u =>
-      !(u.role === "teacher" && (u.id.toLowerCase() === needle || (u.email || "").toLowerCase() === needle))
-    );
-    localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(registered));
-    return { success: true };
+    return null;
   }
 };
 
 if (typeof window !== "undefined") {
-  window.PORTAL_USERS = PORTAL_USERS;
+  window.FACULTY_DATABASE = FACULTY_DATABASE;
+  window.AUTHORIZED_CSE_FACULTY = AUTHORIZED_CSE_FACULTY;
   window.PortalUsers = PortalUsers;
   window.TEACHER_EMAIL_DOMAINS = TEACHER_EMAIL_DOMAINS;
 }
 
 export { PortalUsers };
 export default PortalUsers;
-

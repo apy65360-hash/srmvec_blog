@@ -104,6 +104,48 @@
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 
+/* ── Header action buttons group ── */
+.ach-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+/* ── Compact Add Achievement button alongside View All Achievements ── */
+.ach-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  background: linear-gradient(135deg, #2563EB, #0EA5E9);
+  color: #FFFFFF !important;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.82rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+}
+
+.ach-add-btn i {
+  font-size: 0.78rem;
+}
+
+.ach-add-btn:hover {
+  background: linear-gradient(135deg, #1D4ED8, #0284C7);
+  color: #FFFFFF !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+}
+
+.ach-add-btn:active {
+  transform: translateY(0);
+}
+
 /* ── Carousel viewport ── */
 .ach-carousel-viewport {
   overflow: hidden;
@@ -1077,6 +1119,74 @@
   background: #FEE2E2;
   color: #991B1B;
   border: 1px solid #FECACA;
+}
+
+/* ── Home Page Add Achievement Modal ── */
+.ach-add-modal-header {
+  padding: 1.25rem 1.75rem 1rem;
+  border-bottom: 1px solid var(--ach-border);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: #F8FAFC;
+  border-radius: 20px 20px 0 0;
+  position: relative;
+}
+
+.ach-add-modal-header .ach-add-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+  color: #D97706;
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15);
+}
+
+.ach-add-modal-header h3 {
+  margin: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ach-navy);
+}
+
+.ach-add-modal-header p {
+  margin: 0.15rem 0 0;
+  font-size: 0.82rem;
+  color: var(--ach-text-muted);
+}
+
+.ach-add-modal-body {
+  padding: 1.5rem 1.75rem 1.75rem;
+  max-height: 72vh;
+  overflow-y: auto;
+}
+
+.ach-modal-close-simple {
+  position: absolute;
+  top: 1.15rem;
+  right: 1.25rem;
+  background: #E2E8F0;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #475569;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: all 0.2s ease;
+  z-index: 2;
+  font-size: 0.95rem;
+}
+
+.ach-modal-close-simple:hover {
+  background: #DC2626;
+  color: #FFFFFF;
 }
 
 /* ── Responsive mobile tweaks ── */
