@@ -430,10 +430,13 @@
     <div class="view-panel" id="panelForgot">
       <div id="forgotFormWrap">
         <div class="form-row">
-          <label for="forgotRegInput">Personal Email ID or Register Number</label>
+          <label for="forgotRegInput">Registered Personal Email ID (or Register Number)</label>
           <input class="form-control" type="text" id="forgotRegInput"
-            placeholder="Enter your registered personal email or Register No"
+            placeholder="Enter your registered personal email"
             autocomplete="username" required />
+          <small style="color:#64748b;font-size:0.8rem;margin-top:0.35rem;display:block;">
+            Enter your personal email to receive a password reset link. On previously used devices, your Register Number can also be used.
+          </small>
         </div>
         <div class="form-actions">
           <button class="btn btn-primary btn-block" type="button" id="btnForgot">
@@ -815,7 +818,10 @@ document.getElementById('btnForgot').addEventListener('click', async function ()
     const result = await Auth.forgotStudentPassword(inputVal);
 
     if (result.error) {
-      showMsg(result.error || 'Invalid Register Number.', 'error');
+      const msg = inputVal.includes('@')
+        ? 'Unable to process reset request. Please verify the email.'
+        : 'Register Number not recognized on this device. Please enter your registered Personal Email ID directly.';
+      showMsg(msg, 'error');
       resetBtn(btn);
       return;
     }
