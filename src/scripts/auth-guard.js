@@ -36,6 +36,11 @@ export async function protectRoute({ allowedRoles = [], requirePasswordUpdated =
           registerNumber: profile?.register_number || session.user.user_metadata?.register_number || '',
           mustChangePassword: !!mustChange
         };
+        // Keep the portal session storage in sync with Supabase recovery and
+        // normal sessions so pages using Auth.currentUser() see the same user.
+        if (window.Auth) {
+          window.Auth.startSession(sessionUser);
+        }
       }
     } catch (e) {
       console.warn("Auth guard session check warning:", e);

@@ -650,7 +650,7 @@ const Auth = {
           p_reg_no: cleanRegNo,
           p_name:   cleanName
         });
-        if (!error && data) return data;
+        if (!error && data) return typeof data === 'string' ? JSON.parse(data) : data;
       } catch (e) { /* fall through */ }
     }
     // Local fallback
@@ -849,7 +849,7 @@ const Auth = {
   },
 
   /**
-   * Forgot password: sends a Supabase password-reset link to the student's personal email.
+   * Forgot password: sends a Supabase password-reset link and OTP to the student's personal email.
    * Resolves email locally from device cache or PortalUsers when register number is given.
    * Returns: { success: true, maskedEmail: '...' } or { error }
    */
@@ -888,13 +888,25 @@ const Auth = {
       return { error: 'Invalid Register Number.' };
     }
 
-    // In Supabase environment, send password reset link to their personal email
+    // Supabase recovery links do not contain a user-entered OTP. Send both a
+    // recovery link and a Supabase-managed OTP so either secure path can be used.
     if (window.supabase) {
       try {
-        const { error } = await window.supabase.auth.resetPasswordForEmail(resolvedEmail, {
-          redirectTo: `${location.origin}/change-password.html?forced=1&next=student-corner.html`
-        });
-        if (error) {
+        const redirectTo = new URL('change-password.html', location.origin);
+        redirectTo.searchParams.set('next', 'student-corner.html');
+        redirectTo.searchParams.set('recovery', '1');
+
+        const [{ error: resetError }, { error: otpError }] = await Promise.all([
+          window.supabase.auth.resetPasswordForEmail(resolvedEmail, {
+            redirectTo: redirectTo.toString()
+          }),
+          window.supabase.auth.signInWithOtp({
+            email: resolvedEmail,
+            options: { shouldCreateUser: false }
+          })
+        ]);
+
+        if (resetError && otpError) {
           if (window.PortalUsers) {
             const local = window.PortalUsers.allStudents().find(s =>
               (cleanRegNo && (
@@ -908,18 +920,77 @@ const Auth = {
               return { success: true, maskedEmail: masked };
             }
           }
-          return { error: 'Invalid Register Number.' };
+          return { error: resetError.message || otpError.message || 'Unable to send password reset instructions.' };
         }
 
+        sessionStorage.setItem('srmvec_student_reset_email', JSON.stringify({
+          email: resolvedEmail,
+          expiresAt: Date.now() + 10 * 60 * 1000
+        }));
         const masked = resolvedEmail.replace(/^(.{2}).*(@.+)$/, '$1***$2');
-        return { success: true, maskedEmail: masked };
+        return { success: true, maskedEmail: masked, codeSent: !otpError, linkSent: !resetError };
       } catch (err) {
-        return { error: 'Invalid Register Number.' };
+        return { error: err.message || 'Unable to send password reset instructions.' };
       }
     }
 
     const masked = resolvedEmail.replace(/^(.{2}).*(@.+)$/, '$1***$2');
     return { success: true, maskedEmail: masked };
+  },
+
+  /**
+   * Verify the Supabase-managed reset OTP and persist the resulting auth
+   * session in the portal session storage before opening the password form.
+   */
+  async verifyStudentPasswordResetOtp(email, token) {
+    const cleanEmail = String(email || '').trim().toLowerCase();
+    const cleanToken = String(token || '').trim();
+    if (!cleanEmail || !/^\d{6}$/.test(cleanToken)) {
+      return { error: 'Enter the 6-digit verification code from your email.' };
+    }
+
+    if (!window.supabase) return { error: 'Password reset service unavailable.' };
+
+    let pending = null;
+    try {
+      pending = JSON.parse(sessionStorage.getItem('srmvec_student_reset_email') || 'null');
+    } catch (e) {
+      sessionStorage.removeItem('srmvec_student_reset_email');
+    }
+    if (!pending || pending.email !== cleanEmail || Date.now() > pending.expiresAt) {
+      return { error: 'Verification code expired. Please request a new reset code.' };
+    }
+
+    const { data, error } = await window.supabase.auth.verifyOtp({
+      email: cleanEmail,
+      token: cleanToken,
+      type: 'email'
+    });
+    if (error || !data?.session?.user) {
+      return { error: error?.message || 'Invalid verification code.' };
+    }
+
+    const { data: profile } = await window.supabase
+      .from('profiles')
+      .select('id, email, full_name, role, register_number, must_change_password, permissions')
+      .eq('id', data.session.user.id)
+      .maybeSingle();
+
+    this.startSession({
+      userId: data.session.user.id,
+      id: data.session.user.id,
+      name: profile?.full_name || data.session.user.user_metadata?.full_name || cleanEmail,
+      displayName: profile?.full_name || data.session.user.user_metadata?.full_name || cleanEmail,
+      username: profile?.register_number || cleanEmail,
+      role: profile?.role || 'student',
+      email: cleanEmail,
+      registerNumber: profile?.register_number || data.session.user.user_metadata?.register_number || '',
+      mustChangePassword: false,
+      permissions: profile?.permissions || {}
+    });
+
+    sessionStorage.removeItem('srmvec_student_reset_email');
+    return { success: true };
   },
 
   /**

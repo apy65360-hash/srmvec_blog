@@ -131,6 +131,48 @@ ALTER TABLE public.profiles
 
 CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles(role);
 
+-- Public-safe identity check used before student account activation. It returns
+-- only a status/reason and never exposes profile or email data.
+CREATE OR REPLACE FUNCTION public.verify_student_name(p_reg_no TEXT, p_name TEXT)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+DECLARE
+  v_profile RECORD;
+  v_expected TEXT;
+  v_actual TEXT;
+BEGIN
+  SELECT id, email, full_name, role
+    INTO v_profile
+    FROM public.profiles
+   WHERE UPPER(TRIM(register_number)) = UPPER(TRIM(p_reg_no))
+     AND role = 'student'
+   LIMIT 1;
+
+  IF NOT FOUND THEN
+    RETURN jsonb_build_object('valid', false, 'reason', 'not_found');
+  END IF;
+
+  v_expected := regexp_replace(UPPER(TRIM(v_profile.full_name)), '\s+', ' ', 'g');
+  v_actual := regexp_replace(UPPER(TRIM(p_name)), '\s+', ' ', 'g');
+
+  IF v_expected <> v_actual THEN
+    RETURN jsonb_build_object('valid', false, 'reason', 'name_mismatch');
+  END IF;
+
+  IF v_profile.email NOT LIKE '%@student.srmvec.ac.in' THEN
+    RETURN jsonb_build_object('valid', false, 'reason', 'already_registered');
+  END IF;
+
+  RETURN jsonb_build_object('valid', true);
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.verify_student_name(TEXT, TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.verify_student_name(TEXT, TEXT) TO anon, authenticated;
+
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- 3. PROFILES RLS & SENSITIVE COLUMN PROTECTION
@@ -872,13 +914,6 @@ BEGIN
              WHERE n.nspname = 'public' AND p.proname = 'set_new_profile_status') THEN
     EXECUTE 'REVOKE ALL ON FUNCTION public.set_new_profile_status() FROM PUBLIC, anon, authenticated';
     EXECUTE 'DROP FUNCTION IF EXISTS public.set_new_profile_status() CASCADE';
-  END IF;
-
-  -- verify_student_name: superseded by server-side trigger enforce logic
-  IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON p.pronamespace = n.oid
-             WHERE n.nspname = 'public' AND p.proname = 'verify_student_name') THEN
-    EXECUTE 'REVOKE ALL ON FUNCTION public.verify_student_name(text, text) FROM PUBLIC, anon, authenticated';
-    EXECUTE 'DROP FUNCTION IF EXISTS public.verify_student_name(text, text) CASCADE';
   END IF;
 
   -- admin_set_faculty_status: superseded by direct admin RLS policies on profiles
