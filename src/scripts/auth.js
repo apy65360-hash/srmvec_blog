@@ -888,25 +888,21 @@ const Auth = {
       return { error: 'Invalid Register Number.' };
     }
 
-    // Supabase recovery links do not contain a user-entered OTP. Send both a
-    // recovery link and a Supabase-managed OTP so either secure path can be used.
+    // Supabase's recovery email can contain both {{ .ConfirmationURL }} and
+    // {{ .Token }}. Use one recovery request so the link and code belong to
+    // the same recovery transaction.
     if (window.supabase) {
       try {
         const redirectTo = new URL('change-password.html', location.origin);
         redirectTo.searchParams.set('next', 'student-corner.html');
         redirectTo.searchParams.set('recovery', '1');
 
-        const [{ error: resetError }, { error: otpError }] = await Promise.all([
-          window.supabase.auth.resetPasswordForEmail(resolvedEmail, {
-            redirectTo: redirectTo.toString()
-          }),
-          window.supabase.auth.signInWithOtp({
-            email: resolvedEmail,
-            options: { shouldCreateUser: false }
-          })
-        ]);
+        const { error: resetError } = await window.supabase.auth.resetPasswordForEmail(
+          resolvedEmail,
+          { redirectTo: redirectTo.toString() }
+        );
 
-        if (resetError && otpError) {
+        if (resetError) {
           if (window.PortalUsers) {
             const local = window.PortalUsers.allStudents().find(s =>
               (cleanRegNo && (
@@ -928,7 +924,7 @@ const Auth = {
           expiresAt: Date.now() + 10 * 60 * 1000
         }));
         const masked = resolvedEmail.replace(/^(.{2}).*(@.+)$/, '$1***$2');
-        return { success: true, maskedEmail: masked, codeSent: !otpError, linkSent: !resetError };
+        return { success: true, maskedEmail: masked, codeSent: true, linkSent: true };
       } catch (err) {
         return { error: err.message || 'Unable to send password reset instructions.' };
       }
@@ -964,7 +960,7 @@ const Auth = {
     const { data, error } = await window.supabase.auth.verifyOtp({
       email: cleanEmail,
       token: cleanToken,
-      type: 'email'
+      type: 'recovery'
     });
     if (error || !data?.session?.user) {
       return { error: error?.message || 'Invalid verification code.' };
