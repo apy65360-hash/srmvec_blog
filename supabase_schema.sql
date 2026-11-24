@@ -133,6 +133,9 @@ ALTER TABLE public.profiles
 
 CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles(role);
 
+-- Table-level grants for profiles
+GRANT SELECT, UPDATE ON public.profiles TO authenticated;
+
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- 3. PROFILES RLS & SENSITIVE COLUMN PROTECTION
@@ -578,6 +581,10 @@ CREATE POLICY "blogs_delete_policy" ON public.blogs
 CREATE INDEX IF NOT EXISTS idx_blogs_author_id ON public.blogs(author_id);
 CREATE INDEX IF NOT EXISTS idx_blogs_published_status ON public.blogs(is_published, status);
 
+-- Table-level grants for blogs
+GRANT SELECT ON public.blogs TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.blogs TO authenticated;
+
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- 7. PUBLICATIONS & PATENTS TABLE (Anti-Spoofing & Verified Identity)
@@ -699,6 +706,10 @@ CREATE POLICY "publications_delete_policy" ON public.publications
 CREATE INDEX IF NOT EXISTS idx_publications_author_id ON public.publications(author_id);
 CREATE INDEX IF NOT EXISTS idx_publications_year ON public.publications(year DESC);
 
+-- Table-level grants for publications
+GRANT SELECT ON public.publications TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.publications TO authenticated;
+
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- 8. ACHIEVEMENTS TABLE (Strict Admin Control & Hardened RLS)
@@ -772,6 +783,10 @@ CREATE TRIGGER achievements_updated_at
 
 CREATE INDEX IF NOT EXISTS idx_achievements_posted_by ON public.achievements(posted_by);
 CREATE INDEX IF NOT EXISTS idx_achievements_is_published ON public.achievements(is_published);
+
+-- Table-level grants (required in addition to RLS policies)
+GRANT SELECT ON public.achievements TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.achievements TO authenticated;
 
 
 -- ═══════════════════════════════════════════════════════════════════════
@@ -863,6 +878,10 @@ CREATE TRIGGER faculty_updated_at
 
 CREATE INDEX IF NOT EXISTS idx_faculty_department ON public.faculty(department);
 CREATE INDEX IF NOT EXISTS idx_faculty_email ON public.faculty(email);
+
+-- Table-level grants for faculty
+GRANT SELECT ON public.faculty TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.faculty TO authenticated;
 
 
 -- 11. ADDITIONAL SECURITY HARDENING (Lints 0028/0029 — SECURITY INVOKER & Legacy Cleanup)
