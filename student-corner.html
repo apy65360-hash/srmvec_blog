@@ -448,10 +448,30 @@
         </div>
       </div>
       <div id="forgotDone" style="display:none;text-align:center;padding:.5rem 0;">
-        <i class="fa-solid fa-circle-check" style="font-size:2.2rem;color:#10b981;margin-bottom:.8rem;"></i>
-        <p style="font-weight:700;font-size:1.05rem;">Reset link dispatched!</p>
-        <p style="color:#64748b;font-size:.88rem;margin-top:.3rem;">Check <span id="forgotMaskedEmail" style="font-weight:600;color:#1e40af;"></span> to reset your password.</p>
-        <div style="margin-top:1.25rem;">
+        <div style="display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;background:#ecfdf5;margin-bottom:.85rem;">
+          <i class="fa-solid fa-circle-check" style="font-size:1.6rem;color:#10b981;"></i>
+        </div>
+        <p style="font-weight:700;font-size:1.05rem;margin-bottom:.3rem;">Reset link dispatched!</p>
+        <p style="color:#64748b;font-size:.85rem;margin-top:.3rem;line-height:1.45;">
+          A password reset link was sent to <strong id="forgotMaskedEmail" style="color:#1e40af;"></strong>.
+          Click the link in your inbox to set your new password.
+        </p>
+
+        <!-- Reset Password Page link card -->
+        <div style="background:#f0f7ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:.85rem 1rem;margin:1rem 0;text-align:left;">
+          <p style="font-size:.78rem;font-weight:700;color:#1e40af;margin:0 0 .4rem;text-transform:uppercase;letter-spacing:.04em;">
+            <i class="fa-solid fa-link" style="margin-right:.3rem;"></i> Reset Password Page
+          </p>
+          <p style="font-size:.78rem;color:#475569;margin:0 0 .5rem;line-height:1.45;">
+            Or open the dedicated reset page directly using your verification code:
+          </p>
+          <a id="studentResetPageLink" href="reset-password.html" target="_blank"
+            style="display:inline-flex;align-items:center;gap:.35rem;color:#2563eb;font-weight:600;font-size:.82rem;text-decoration:underline;">
+            Open Reset Password Page <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:.7rem;"></i>
+          </a>
+        </div>
+
+        <div style="margin-top:.75rem;">
           <button type="button" class="btn btn-primary btn-block" id="linkBackAfterDone">
             <i class="fa-solid fa-right-to-bracket"></i> Return to Sign In
           </button>
@@ -829,6 +849,12 @@ document.getElementById('btnForgot').addEventListener('click', async function ()
     document.getElementById('forgotMaskedEmail').textContent = result.maskedEmail;
     document.getElementById('forgotFormWrap').style.display = 'none';
     document.getElementById('forgotDone').style.display = 'block';
+    // Update the reset page link with email pre-filled
+    const studentResetLink = document.getElementById('studentResetPageLink');
+    if (studentResetLink) {
+      const resetUrl = 'reset-password.html?email=' + encodeURIComponent(inputVal.includes('@') ? inputVal.trim().toLowerCase() : '') + '&next=student-corner.html&role=student';
+      studentResetLink.href = resetUrl;
+    }
 
   } catch (err) {
     showMsg('Invalid Register Number.', 'error');
