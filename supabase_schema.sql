@@ -35,7 +35,9 @@ BEGIN
           'Admins delete publications', 'publications_select_public', 'publications_insert_authenticated',
           'publications_update_policy', 'publications_delete_policy',
           'achievements_select_published', 'achievements_insert_admin', 'achievements_update_admin',
-          'achievements_delete_admin'
+          'achievements_delete_admin',
+          'faculty_select_public', 'faculty_insert_admin', 'faculty_update_admin',
+          'faculty_delete_admin'
         )
         OR qual LIKE '%is_admin%'
         OR with_check LIKE '%is_admin%'
@@ -65,7 +67,7 @@ SET search_path = ''
 AS $$
   SELECT EXISTS (
     SELECT 1 FROM public.profiles 
-    WHERE id = (SELECT auth.uid()) AND role IN ('admin', 'faculty_admin')
+    WHERE id = (SELECT auth.uid()) AND role IN ('admin', 'faculty_admin', 'editor')
   );
 $$;
 
@@ -138,15 +140,18 @@ CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles(role);
 
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "profiles_select_policy" ON public.profiles;
 CREATE POLICY "profiles_select_policy" ON public.profiles
   FOR SELECT TO authenticated
   USING (id = (SELECT auth.uid()) OR private.is_admin());
 
+DROP POLICY IF EXISTS "profiles_update_owner" ON public.profiles;
 CREATE POLICY "profiles_update_owner" ON public.profiles
   FOR UPDATE TO authenticated
   USING (id = (SELECT auth.uid()))
   WITH CHECK (id = (SELECT auth.uid()));
 
+DROP POLICY IF EXISTS "profiles_update_admin" ON public.profiles;
 CREATE POLICY "profiles_update_admin" ON public.profiles
   FOR UPDATE TO authenticated
   USING (private.is_admin())
@@ -236,6 +241,7 @@ ALTER TABLE public.faculty_whitelist ENABLE ROW LEVEL SECURITY;
 
 DROP FUNCTION IF EXISTS public.check_faculty_whitelist_email(TEXT);
 
+DROP POLICY IF EXISTS "Admins manage faculty whitelist" ON public.faculty_whitelist;
 CREATE POLICY "Admins manage faculty whitelist"
   ON public.faculty_whitelist
   FOR ALL TO authenticated
@@ -531,6 +537,7 @@ CREATE TRIGGER trg_enforce_blog_author
 
 ALTER TABLE public.blogs ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "blogs_select_policy" ON public.blogs;
 CREATE POLICY "blogs_select_policy" ON public.blogs
   FOR SELECT USING (
     (is_published = TRUE AND (status = 'approved' OR status IS NULL))
@@ -540,6 +547,7 @@ CREATE POLICY "blogs_select_policy" ON public.blogs
     private.is_admin()
   );
 
+DROP POLICY IF EXISTS "blogs_insert_authenticated" ON public.blogs;
 CREATE POLICY "blogs_insert_authenticated" ON public.blogs
   FOR INSERT TO authenticated
   WITH CHECK (
@@ -547,6 +555,7 @@ CREATE POLICY "blogs_insert_authenticated" ON public.blogs
     OR private.is_admin()
   );
 
+DROP POLICY IF EXISTS "blogs_update_policy" ON public.blogs;
 CREATE POLICY "blogs_update_policy" ON public.blogs
   FOR UPDATE TO authenticated
   USING (
@@ -558,6 +567,7 @@ CREATE POLICY "blogs_update_policy" ON public.blogs
     OR private.is_admin()
   );
 
+DROP POLICY IF EXISTS "blogs_delete_policy" ON public.blogs;
 CREATE POLICY "blogs_delete_policy" ON public.blogs
   FOR DELETE TO authenticated
   USING (
@@ -654,9 +664,11 @@ CREATE TRIGGER trg_enforce_publication_author
 
 ALTER TABLE public.publications ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "publications_select_public" ON public.publications;
 CREATE POLICY "publications_select_public" ON public.publications
   FOR SELECT USING (TRUE);
 
+DROP POLICY IF EXISTS "publications_insert_authenticated" ON public.publications;
 CREATE POLICY "publications_insert_authenticated" ON public.publications
   FOR INSERT TO authenticated
   WITH CHECK (
@@ -664,6 +676,7 @@ CREATE POLICY "publications_insert_authenticated" ON public.publications
     OR private.is_admin()
   );
 
+DROP POLICY IF EXISTS "publications_update_policy" ON public.publications;
 CREATE POLICY "publications_update_policy" ON public.publications
   FOR UPDATE TO authenticated
   USING (
@@ -675,6 +688,7 @@ CREATE POLICY "publications_update_policy" ON public.publications
     OR private.is_admin()
   );
 
+DROP POLICY IF EXISTS "publications_delete_policy" ON public.publications;
 CREATE POLICY "publications_delete_policy" ON public.publications
   FOR DELETE TO authenticated
   USING (
@@ -712,22 +726,26 @@ ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ 
 
 ALTER TABLE public.achievements ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "achievements_select_published" ON public.achievements;
 CREATE POLICY "achievements_select_published"
   ON public.achievements
   FOR SELECT
   USING (is_published = TRUE OR private.is_admin());
 
+DROP POLICY IF EXISTS "achievements_insert_admin" ON public.achievements;
 CREATE POLICY "achievements_insert_admin"
   ON public.achievements
   FOR INSERT TO authenticated
   WITH CHECK (private.is_admin());
 
+DROP POLICY IF EXISTS "achievements_update_admin" ON public.achievements;
 CREATE POLICY "achievements_update_admin"
   ON public.achievements
   FOR UPDATE TO authenticated
   USING (private.is_admin())
   WITH CHECK (private.is_admin());
 
+DROP POLICY IF EXISTS "achievements_delete_admin" ON public.achievements;
 CREATE POLICY "achievements_delete_admin"
   ON public.achievements
   FOR DELETE TO authenticated
@@ -802,19 +820,23 @@ CREATE TABLE IF NOT EXISTS public.faculty (
 ALTER TABLE public.faculty ENABLE ROW LEVEL SECURITY;
 
 -- Public read: faculty directory is intentionally public (anon + authenticated)
+DROP POLICY IF EXISTS "faculty_select_public" ON public.faculty;
 CREATE POLICY "faculty_select_public" ON public.faculty
   FOR SELECT TO anon, authenticated
   USING (TRUE);
 
+DROP POLICY IF EXISTS "faculty_insert_admin" ON public.faculty;
 CREATE POLICY "faculty_insert_admin" ON public.faculty
   FOR INSERT TO authenticated
   WITH CHECK (private.is_admin());
 
+DROP POLICY IF EXISTS "faculty_update_admin" ON public.faculty;
 CREATE POLICY "faculty_update_admin" ON public.faculty
   FOR UPDATE TO authenticated
   USING (private.is_admin())
   WITH CHECK (private.is_admin());
 
+DROP POLICY IF EXISTS "faculty_delete_admin" ON public.faculty;
 CREATE POLICY "faculty_delete_admin" ON public.faculty
   FOR DELETE TO authenticated
   USING (private.is_admin());
@@ -906,5 +928,12 @@ END $$;
 DROP POLICY IF EXISTS "profiles_student_lookup_by_regno" ON public.profiles;
 
 -- Revoke and drop get_student_email_by_regno to prevent enumeration of student emails
-REVOKE ALL ON FUNCTION public.get_student_email_by_regno(text) FROM PUBLIC, anon, authenticated;
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON p.pronamespace = n.oid
+             WHERE n.nspname = 'public' AND p.proname = 'get_student_email_by_regno') THEN
+    EXECUTE 'REVOKE ALL ON FUNCTION public.get_student_email_by_regno(text) FROM PUBLIC, anon, authenticated';
+    EXECUTE 'DROP FUNCTION IF EXISTS public.get_student_email_by_regno(text) CASCADE';
+  END IF;
+END $$;
 DROP FUNCTION IF EXISTS public.get_student_email_by_regno(text) CASCADE;
