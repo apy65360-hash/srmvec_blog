@@ -94,6 +94,12 @@
 </head>
 <body class="intro-done">
 
+  <!-- Page hidden until auth resolves to prevent flash/glitch -->
+  <style>
+    .auth-loading { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .auth-ready   { opacity: 1; pointer-events: auto; }
+  </style>
+
   <!-- TOP INSTITUTIONAL UTILITY BAR -->
   <div class="top-bar">
     <div class="container top-bar-content">
@@ -180,6 +186,7 @@
   </header>
 
   <!-- FORM CONTAINER -->
+  <div id="pageWrapper" class="auth-loading">
   <main class="add-ach-container">
     <div class="add-ach-card">
       <div class="add-ach-header">
@@ -232,7 +239,7 @@
         <div class="ach-form-group full-col">
           <label for="achInputImg">Photo / Certificate Image URL or Upload</label>
           <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-            <input type="url" id="achInputImg" style="flex:1; min-width:260px;" placeholder="https://example.com/photo.jpeg (or choose file below)" />
+            <input type="text" id="achInputImg" style="flex:1; min-width:260px;" placeholder="https://example.com/photo.jpeg (or choose file below)" />
             <label class="ach-btn-secondary" style="margin:0; cursor:pointer;">
               <i class="fa-solid fa-upload"></i> Upload Image
               <input type="file" id="achInputFile" accept="image/*" style="display:none;" />
@@ -270,6 +277,7 @@
       </form>
     </div>
   </main>
+  </div><!-- /pageWrapper -->
 
   <!-- Institutional Footer -->
   <footer class="footer" style="margin-top:4rem;">
@@ -306,9 +314,10 @@
   <script type="module">
     import { postAchievement } from '/src/scripts/achievements.js';
     import { supabase } from '/src/scripts/supabase.js';
-    import { Auth } from '/src/scripts/auth.js';
 
     document.addEventListener('DOMContentLoaded', async () => {
+      const pageWrapper = document.getElementById('pageWrapper');
+
       // 0. Auth check: verify user is authenticated via real Supabase session and has admin role
       let authenticatedUser = null;
       let userProfile = null;
@@ -330,26 +339,45 @@
         }
       }
 
-      const role = userProfile?.role || authenticatedUser?.user_metadata?.role || '';
+      const localUser = window.Auth ? window.Auth.currentUser() : null;
+      const role = userProfile?.role || authenticatedUser?.user_metadata?.role || localUser?.role || '';
       const isAdminOrEditor = ['admin', 'faculty_admin', 'editor'].includes(role);
 
-      // Disallow unauthenticated or local-only sessions; Supabase RLS requires Supabase Auth with admin/faculty_admin/editor
-      if (!authenticatedUser || !isAdminOrEditor) {
+      // Redirect only if neither Supabase nor local session has admin/editor role
+      if (!isAdminOrEditor || (!authenticatedUser && !localUser)) {
         window.location.replace('admin-login.html?denied=1&next=' + encodeURIComponent('add-achievement.html'));
         return;
+      }
+
+      // Auth passed — reveal the page
+      if (pageWrapper) {
+        pageWrapper.classList.remove('auth-loading');
+        pageWrapper.classList.add('auth-ready');
       }
 
       // Show signed-in user indicator
       const authBanner = document.getElementById('achAuthBanner');
       if (authBanner) {
-        const uName = userProfile?.full_name || authenticatedUser.user_metadata?.full_name || authenticatedUser.email || 'Admin';
+        const uName = userProfile?.full_name || authenticatedUser?.user_metadata?.full_name || authenticatedUser?.email || localUser?.displayName || localUser?.name || 'Admin';
         const uRole = role.toUpperCase();
-        authBanner.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
-            <span><i class="fa-solid fa-circle-user" style="color:#2563EB; margin-right:0.4rem;"></i> Signed in as <strong>${uName}</strong> <span style="background:#DBEAFE; color:#1E40AF; padding:2px 8px; border-radius:999px; font-size:0.75rem; font-weight:700; margin-left:0.3rem;">${uRole}</span></span>
-            <span style="font-size:0.8rem; color:#64748B;"><i class="fa-solid fa-shield-halved" style="color:#10B981;"></i> Verified Admin Permissions</span>
-          </div>
-        `;
+        if (authenticatedUser) {
+          authBanner.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+              <span><i class="fa-solid fa-circle-user" style="color:#2563EB; margin-right:0.4rem;"></i> Signed in as <strong>${uName}</strong> <span style="background:#DBEAFE; color:#1E40AF; padding:2px 8px; border-radius:999px; font-size:0.75rem; font-weight:700; margin-left:0.3rem;">${uRole}</span></span>
+              <span style="font-size:0.8rem; color:#64748B;"><i class="fa-solid fa-shield-halved" style="color:#10B981;"></i> Verified Admin Permissions</span>
+            </div>
+          `;
+        } else {
+          authBanner.style.background = '#FEF3C7';
+          authBanner.style.borderColor = '#FDE68A';
+          authBanner.style.color = '#92400E';
+          authBanner.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+              <span><i class="fa-solid fa-triangle-exclamation" style="color:#D97706; margin-right:0.4rem;"></i> Signed in locally as <strong>${uName}</strong>. A Supabase Auth session is required to save achievements to the database.</span>
+              <a href="admin-login.html?next=add-achievement.html" style="font-size:0.8rem; font-weight:700; color:#92400E; text-decoration:underline;">Sign in with Supabase</a>
+            </div>
+          `;
+        }
         authBanner.style.display = 'block';
       }
 
@@ -426,7 +454,7 @@
           image_url: urlInput.value.trim() || 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80',
           short_desc: document.getElementById('achInputShort').value.trim(),
           description: document.getElementById('achInputDesc').value.trim(),
-          posted_by: authenticatedUser.id,
+          posted_by: authenticatedUser?.id || null,
           is_published: true
         };
 
@@ -449,7 +477,7 @@
           }
         } catch (err) {
           submitBtn.disabled = false;
-          submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit for Review';
+          submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publish Achievement';
           msgBox.className = 'ach-form-msg error';
           msgBox.style.display = 'block';
           msgBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> Network error: ${err.message}`;
