@@ -15,7 +15,7 @@ async function withTimeout(promise, ms = 3500) {
   ]);
 }
 
-// ── Fetch latest N published achievements ─────────────────────────────────────
+// ── Fetch latest N published achievements (most recently uploaded first) ──────
 export async function fetchLatestAchievements(limit = 3) {
   if (!supabase) return [];
   try {
@@ -24,6 +24,7 @@ export async function fetchLatestAchievements(limit = 3) {
         .from('achievements')
         .select('*')
         .eq('is_published', true)
+        .order('created_at', { ascending: false })
         .order('achievement_date', { ascending: false })
         .limit(limit)
     );
@@ -44,6 +45,7 @@ export async function fetchAllAchievements() {
         .from('achievements')
         .select('*')
         .eq('is_published', true)
+        .order('created_at', { ascending: false })
         .order('achievement_date', { ascending: false })
     );
     if (error) { console.warn('[achievements] fetchAll warning:', error.message); return []; }
