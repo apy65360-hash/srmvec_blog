@@ -93,7 +93,19 @@ ALTER TABLE public.profiles
   ADD COLUMN IF NOT EXISTS register_number TEXT,
   ADD COLUMN IF NOT EXISTS must_change_password BOOLEAN,
   ADD COLUMN IF NOT EXISTS department TEXT,
-  ADD COLUMN IF NOT EXISTS permissions JSONB;
+  ADD COLUMN IF NOT EXISTS permissions JSONB,
+  ADD COLUMN IF NOT EXISTS status TEXT;
+
+UPDATE public.profiles
+  SET status = 'pending'
+  WHERE role IN ('teacher', 'faculty') AND status IS NULL;
+
+ALTER TABLE public.profiles
+  DROP CONSTRAINT IF EXISTS profiles_status_check;
+
+ALTER TABLE public.profiles
+  ADD CONSTRAINT profiles_status_check
+  CHECK (status IS NULL OR status IN ('pending', 'approved', 'rejected'));
 
 UPDATE public.profiles 
   SET must_change_password = FALSE 
@@ -904,6 +916,44 @@ $$;
 REVOKE ALL ON FUNCTION public.achievements_set_updated_at() FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.faculty_set_updated_at() FROM PUBLIC, anon, authenticated;
 
+CREATE OR REPLACE FUNCTION public.admin_set_faculty_status(p_target_id UUID, p_status TEXT)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+DECLARE
+  v_updated public.profiles;
+BEGIN
+  IF NOT private.is_admin() THEN
+    RAISE EXCEPTION 'Access denied: administrator role required';
+  END IF;
+
+  IF p_status NOT IN ('pending', 'approved', 'rejected') THEN
+    RAISE EXCEPTION 'Invalid faculty status';
+  END IF;
+
+  UPDATE public.profiles
+  SET status = p_status,
+      updated_at = NOW()
+  WHERE id = p_target_id
+    AND role IN ('teacher', 'faculty')
+  RETURNING * INTO v_updated;
+
+  IF v_updated.id IS NULL THEN
+    RAISE EXCEPTION 'Faculty profile not found';
+  END IF;
+
+  RETURN jsonb_build_object(
+    'id', v_updated.id,
+    'status', v_updated.status
+  );
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.admin_set_faculty_status(UUID, TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.admin_set_faculty_status(UUID, TEXT) TO authenticated;
+
 -- Drop legacy functions flagged by the security advisor as callable by anon/authenticated.
 -- These were created in earlier migrations and are superseded by trigger-based auth lifecycle.
 DO $$
@@ -920,13 +970,6 @@ BEGIN
              WHERE n.nspname = 'public' AND p.proname = 'verify_student_name') THEN
     EXECUTE 'REVOKE ALL ON FUNCTION public.verify_student_name(text, text) FROM PUBLIC, anon, authenticated';
     EXECUTE 'DROP FUNCTION IF EXISTS public.verify_student_name(text, text) CASCADE';
-  END IF;
-
-  -- admin_set_faculty_status: superseded by direct admin RLS policies on profiles
-  IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON p.pronamespace = n.oid
-             WHERE n.nspname = 'public' AND p.proname = 'admin_set_faculty_status') THEN
-    EXECUTE 'REVOKE ALL ON FUNCTION public.admin_set_faculty_status(uuid, text) FROM PUBLIC, anon, authenticated';
-    EXECUTE 'DROP FUNCTION IF EXISTS public.admin_set_faculty_status(uuid, text) CASCADE';
   END IF;
 
   -- rls_auto_enable: Supabase internal helper, safe to drop
