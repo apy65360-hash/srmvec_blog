@@ -332,6 +332,7 @@
       postAchievement,
       deleteAchievement
     } from '/src/scripts/achievements.js';
+    import { supabase } from '/src/scripts/supabase.js';
 
     // ── Department Achievement Records (from achievement pics) ──────────────
     const SEED_ACHIEVEMENTS = [
@@ -585,15 +586,43 @@
     }
 
     // ── Auth Check for Admin Post Form ────────────────────────────────────
-    function checkAuth() {
-      const postWrap = document.getElementById('achPostFormWrap');
-      const actionRow = document.getElementById('adminActionRow');
-      const profile = window.userProfile;
-      const user = window.currentUser;
+    let currentAdminUser = null;
 
-      const canPost = user && profile && ['admin', 'faculty_admin', 'editor', 'teacher'].includes(profile.role);
-      if (canPost && actionRow) {
-        actionRow.style.display = 'flex';
+    async function checkAuth() {
+      const actionRow = document.getElementById('adminActionRow');
+      if (!supabase) return;
+
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error || !session?.user) {
+          if (actionRow) actionRow.style.display = 'none';
+          currentAdminUser = null;
+          return;
+        }
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('id, email, full_name, role')
+          .eq('id', session.user.id)
+          .maybeSingle();
+
+        const role = profile?.role || session.user.user_metadata?.role || '';
+        const canPost = ['admin', 'faculty_admin', 'editor'].includes(role);
+
+        if (canPost && actionRow) {
+          currentAdminUser = {
+            id: session.user.id,
+            email: session.user.email,
+            name: profile?.full_name || session.user.user_metadata?.full_name || session.user.email,
+            role: role
+          };
+          actionRow.style.display = 'flex';
+        } else {
+          if (actionRow) actionRow.style.display = 'none';
+          currentAdminUser = null;
+        }
+      } catch (err) {
+        console.warn('[achievements] checkAuth error:', err);
       }
     }
 
@@ -687,7 +716,12 @@
       });
 
       // Auth trigger
-      setTimeout(checkAuth, 600);
+      checkAuth();
+      if (supabase?.auth?.onAuthStateChange) {
+        supabase.auth.onAuthStateChange(() => {
+          checkAuth();
+        });
+      }
       window.addEventListener('authStateChanged', checkAuth);
 
       // Admin open post form
@@ -725,6 +759,7 @@
             image_url: document.getElementById('achInputImg').value.trim() || 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80',
             short_desc: document.getElementById('achInputShort').value.trim(),
             description: document.getElementById('achInputDesc').value.trim(),
+            posted_by: currentAdminUser?.id || null,
             is_published: true
           };
 

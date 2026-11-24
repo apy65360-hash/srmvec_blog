@@ -309,40 +309,45 @@
     import { Auth } from '/src/scripts/auth.js';
 
     document.addEventListener('DOMContentLoaded', async () => {
-      // 0. Auth check: verify user is authenticated (Supabase or Auth session)
+      // 0. Auth check: verify user is authenticated via real Supabase session and has admin role
       let authenticatedUser = null;
+      let userProfile = null;
+
       if (supabase) {
         try {
-          const { data } = await supabase.auth.getSession();
-          if (data?.session?.user) {
-            authenticatedUser = data.session.user;
+          const { data: { session }, error } = await supabase.auth.getSession();
+          if (!error && session?.user) {
+            authenticatedUser = session.user;
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('id, email, full_name, role')
+              .eq('id', session.user.id)
+              .maybeSingle();
+            userProfile = profile;
           }
         } catch (e) {
           console.warn('Session lookup notice:', e);
         }
       }
-      if (!authenticatedUser && window.Auth) {
-        const local = window.Auth.currentUser();
-        if (local) {
-          authenticatedUser = local;
-        }
-      }
 
-      // If unauthenticated, redirect to portal login with return destination
-      if (!authenticatedUser) {
-        window.location.replace('login.html?next=' + encodeURIComponent('add-achievement.html'));
+      const role = userProfile?.role || authenticatedUser?.user_metadata?.role || '';
+      const isAdminOrEditor = ['admin', 'faculty_admin', 'editor'].includes(role);
+
+      // Disallow unauthenticated or local-only sessions; Supabase RLS requires Supabase Auth with admin/faculty_admin/editor
+      if (!authenticatedUser || !isAdminOrEditor) {
+        window.location.replace('admin-login.html?denied=1&next=' + encodeURIComponent('add-achievement.html'));
         return;
       }
 
       // Show signed-in user indicator
       const authBanner = document.getElementById('achAuthBanner');
       if (authBanner) {
-        const uName = authenticatedUser.user_metadata?.full_name || authenticatedUser.name || authenticatedUser.displayName || authenticatedUser.email || 'Member';
-        const uRole = (authenticatedUser.user_metadata?.role || authenticatedUser.role || 'Member').toUpperCase();
+        const uName = userProfile?.full_name || authenticatedUser.user_metadata?.full_name || authenticatedUser.email || 'Admin';
+        const uRole = role.toUpperCase();
         authBanner.innerHTML = `
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
             <span><i class="fa-solid fa-circle-user" style="color:#2563EB; margin-right:0.4rem;"></i> Signed in as <strong>${uName}</strong> <span style="background:#DBEAFE; color:#1E40AF; padding:2px 8px; border-radius:999px; font-size:0.75rem; font-weight:700; margin-left:0.3rem;">${uRole}</span></span>
-            <span style="font-size:0.8rem; color:#64748B;"><i class="fa-solid fa-shield-halved" style="color:#10B981;"></i> Submissions are verified by faculty</span>
+            <span style="font-size:0.8rem; color:#64748B;"><i class="fa-solid fa-shield-halved" style="color:#10B981;"></i> Verified Admin Permissions</span>
           </div>
         `;
         authBanner.style.display = 'block';
@@ -421,22 +426,23 @@
           image_url: urlInput.value.trim() || 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80',
           short_desc: document.getElementById('achInputShort').value.trim(),
           description: document.getElementById('achInputDesc').value.trim(),
-          is_published: false
+          posted_by: authenticatedUser.id,
+          is_published: true
         };
 
         try {
           const res = await postAchievement(newAch);
           submitBtn.disabled = false;
-          submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit for Review';
+          submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publish Achievement';
 
           if (res && res.error) {
             msgBox.className = 'ach-form-msg error';
             msgBox.style.display = 'block';
-            msgBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> Error submitting: ${res.error}`;
+            msgBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> Error publishing: ${res.error}`;
           } else {
             msgBox.className = 'ach-form-msg success';
             msgBox.style.display = 'block';
-            msgBox.innerHTML = `🎉 <strong>Achievement submitted successfully!</strong> It has been queued for faculty review. Once approved, it will be published live to the <a href="achievements.html" style="color:inherit;font-weight:700;text-decoration:underline;">Achievements Corner</a> and Home Page slider.`;
+            msgBox.innerHTML = `🎉 <strong>Achievement published successfully!</strong> It is now live on the <a href="achievements.html" style="color:inherit;font-weight:700;text-decoration:underline;">Achievements Corner</a> and Home Page slider.`;
             form.reset();
             previewBox.style.display = 'none';
             dateInput.value = new Date().toISOString().split('T')[0];
