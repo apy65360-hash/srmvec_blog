@@ -203,6 +203,41 @@
     .card-poster-wrap:hover img {
       transform: scale(1.05);
     }
+    .event-card-admin-bar {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 6px;
+      z-index: 25;
+    }
+    .event-admin-btn {
+      background: rgba(15, 23, 42, 0.88);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(6px);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+      transition: all 0.2s ease;
+    }
+    .event-admin-btn:hover {
+      transform: translateY(-2px);
+    }
+    .event-admin-btn.btn-edit-event:hover {
+      background: #2563EB;
+      border-color: #2563EB;
+    }
+    .event-admin-btn.btn-del-event:hover {
+      background: #DC2626;
+      border-color: #DC2626;
+    }
     .poster-zoom-overlay {
       position: absolute;
       inset: 0;
@@ -620,10 +655,15 @@
   <!-- Main Content Container -->
   <main class="container" style="padding-top: 1.5rem;">
 
-    <!-- Sort Notice Bar -->
-    <div class="sort-info-bar">
-      <span><i class="fa-solid fa-calendar-check"></i> Events are ordered by <strong>First Registration Closing Date</strong> (Earliest closing event displayed first).</span>
-      <span id="totalEventsCount">Showing 7 Events</span>
+    <!-- Sort Notice Bar & Status Filter Pills -->
+    <div class="sort-info-bar" style="flex-wrap:wrap; gap:0.75rem;">
+      <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+        <span><i class="fa-solid fa-calendar-check"></i> Filter:</span>
+        <button type="button" class="event-filter-pill active" id="filterAll" style="background:#2563EB; color:#fff; border:none; padding:0.3rem 0.8rem; border-radius:20px; font-size:0.82rem; font-weight:600; cursor:pointer;">All Events</button>
+        <button type="button" class="event-filter-pill" id="filterUpcoming" style="background:#E2E8F0; color:#334155; border:none; padding:0.3rem 0.8rem; border-radius:20px; font-size:0.82rem; font-weight:600; cursor:pointer;">🟢 Upcoming</button>
+        <button type="button" class="event-filter-pill" id="filterPast" style="background:#E2E8F0; color:#334155; border:none; padding:0.3rem 0.8rem; border-radius:20px; font-size:0.82rem; font-weight:600; cursor:pointer;">⚪ Concluded</button>
+      </div>
+      <span id="totalEventsCount">Showing Events</span>
     </div>
 
     <!-- ═══════════ DETAILED GRID VIEW SECTION ═══════════ -->
@@ -691,6 +731,16 @@
             <button class="btn-action btn-register" style="flex:1;" id="modalBtnRegister"><i class="fa-solid fa-paper-plane"></i> Proceed to Register</button>
             <button class="btn-action btn-view-details" onclick="closeModal('detailsModal')">Close</button>
           </div>
+
+          <!-- ADMIN CONTROLS IN DETAILS MODAL -->
+          <div id="eventModalAdminActions" style="display:none; gap:0.5rem; margin-top:1.25rem; padding-top:1rem; border-top:1px solid #E2E8F0; justify-content:flex-end;">
+            <button class="btn-action" id="modalBtnEditEvent" style="background:#2563EB; color:white; padding:0.5rem 1rem; border-radius:8px; font-size:0.85rem; font-weight:600; cursor:pointer;">
+              <i class="fa-solid fa-pen-to-square"></i> Edit Event
+            </button>
+            <button class="btn-action" id="modalBtnDeleteEvent" style="background:#EF4444; color:white; padding:0.5rem 1rem; border-radius:8px; font-size:0.85rem; font-weight:600; cursor:pointer;">
+              <i class="fa-solid fa-trash"></i> Delete Event
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -737,15 +787,119 @@
     </div>
   </div>
 
+  <!-- ═══════════ EDIT EVENT MODAL (ADMIN ONLY) ═══════════ -->
+  <div class="modal-overlay" id="editEventModal" role="dialog" aria-modal="true">
+    <div class="modal-card" style="max-width:760px; max-height:90vh; overflow-y:auto;">
+      <button class="modal-close-btn" onclick="closeModal('editEventModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div style="padding:1.75rem 2rem;">
+        <h2 style="font-family:'Space Grotesk',sans-serif;margin-bottom:0.25rem;display:flex;align-items:center;gap:0.5rem;color:var(--brand-dark);">
+          <i class="fa-solid fa-pen-to-square" style="color:var(--brand-blue);"></i> Edit Event Details
+        </h2>
+        <p style="color:#64748B;font-size:0.88rem;margin-bottom:1.25rem;">Update event information. Changes will update the Events Board and Home Page Slider immediately.</p>
+
+        <div class="form-message" id="editEventMessage" style="display:none;margin-bottom:1rem;"></div>
+
+        <form id="editEventForm">
+          <input type="hidden" id="editEventId" />
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+            <div>
+              <div class="form-row">
+                <label for="editEventTitle">Event Title *</label>
+                <input class="form-control" type="text" id="editEventTitle" required />
+              </div>
+              <div class="form-row">
+                <label for="editEventCollege">Host Institution *</label>
+                <input class="form-control" type="text" id="editEventCollege" required />
+              </div>
+              <div class="form-row">
+                <label for="editEventDept">Department *</label>
+                <input class="form-control" type="text" id="editEventDept" required />
+              </div>
+              <div class="form-row">
+                <label for="editEventRegClose">Registration Closing Date *</label>
+                <input class="form-control" type="date" id="editEventRegClose" required />
+              </div>
+              <div class="form-row">
+                <label for="editEventDate">Event Date *</label>
+                <input class="form-control" type="text" id="editEventDate" placeholder="e.g. November 20, 2026" required />
+              </div>
+              <div class="form-row">
+                <label for="editEventTime">Event Timings</label>
+                <input class="form-control" type="text" id="editEventTime" placeholder="e.g. 9:00 AM - 4:30 PM" />
+              </div>
+              <div class="form-row">
+                <label for="editEventVenue">Venue Location</label>
+                <input class="form-control" type="text" id="editEventVenue" />
+              </div>
+            </div>
+
+            <div>
+              <div class="form-row">
+                <label for="editEventFee">Registration Fee</label>
+                <input class="form-control" type="text" id="editEventFee" />
+              </div>
+              <div class="form-row">
+                <label for="editEventPrizes">Prizes & Awards</label>
+                <input class="form-control" type="text" id="editEventPrizes" />
+              </div>
+              <div class="form-row">
+                <label for="editEventTech">Technical Events (Comma-separated)</label>
+                <input class="form-control" type="text" id="editEventTech" />
+              </div>
+              <div class="form-row">
+                <label for="editEventNonTech">Non-Technical Events (Comma-separated)</label>
+                <input class="form-control" type="text" id="editEventNonTech" />
+              </div>
+              <div class="form-row">
+                <label for="editEventContact">Contact Details</label>
+                <input class="form-control" type="text" id="editEventContact" />
+              </div>
+              <div class="form-row">
+                <label for="editEventRegUrl">Official Registration Link / URL</label>
+                <input class="form-control" type="url" id="editEventRegUrl" />
+              </div>
+              <div class="form-row">
+                <label for="editEventPoster">Poster Image URL / File</label>
+                <input class="form-control" type="text" id="editEventPoster" placeholder="URL or upload file below" />
+                <div style="margin-top:0.35rem; display:flex; align-items:center; gap:0.5rem;">
+                  <label for="editEventPosterFile" style="font-size:0.8rem; font-weight:600; color:#2563EB; cursor:pointer; margin:0;">
+                    <i class="fa-solid fa-upload"></i> Or Upload New Poster
+                  </label>
+                  <input type="file" id="editEventPosterFile" accept="image/*" style="display:none;" />
+                  <span id="editEventFileNotice" style="font-size:0.75rem; color:#64748B;"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" style="margin-top:0.75rem;">
+            <label for="editEventDescription">Full Event Description</label>
+            <textarea class="form-control" id="editEventDescription" rows="3"></textarea>
+          </div>
+
+          <div style="display:flex;gap:0.75rem;margin-top:1.5rem;padding-top:1rem;border-top:1px solid #E2E8F0;">
+            <button class="btn btn-success" type="submit" style="flex:1;" id="saveEditEventBtn">
+              <i class="fa-solid fa-floppy-disk"></i> Save Event Changes
+            </button>
+            <button class="btn btn-muted" type="button" onclick="closeModal('editEventModal')">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- Centralized Script Import -->
   <script type="module" src="/src/scripts/global-search.js"></script>
   <script type="module">
-    import { EventsStore } from "/src/scripts/events-store.js";
+    import { EventsStore, isEventUpcoming } from "/src/scripts/events-store.js";
+    import { supabase } from "/src/scripts/supabase.js";
 
     let currentEvents = [];
     let activeIndex = 0;
     let autoPlayTimer = null;
     let isHovering = false;
+    let isAdmin = false;
+    let currentEventModalId = null;
 
     const detailedGrid = document.getElementById("eventsDetailedGrid");
     const carouselTrack = document.getElementById("carouselTrack");
@@ -760,11 +914,89 @@
     const gridSection = document.getElementById("detailedGridSection");
     const sliderSection = document.getElementById("sliderViewSection");
 
-    function init() {
+    async function checkAdminAuth() {
+      let wasAdmin = isAdmin;
+      isAdmin = false;
+      const allowedRoles = ['admin', 'faculty_admin', 'editor', 'teacher', 'faculty', 'super_admin'];
+
+      // 1. Supabase check
+      if (supabase) {
+        try {
+          const { data: { session }, error } = await supabase.auth.getSession();
+          if (!error && session?.user) {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('id, email, full_name, role')
+              .eq('id', session.user.id)
+              .maybeSingle();
+
+            const role = String(profile?.role || session.user.user_metadata?.role || '').toLowerCase().trim();
+            if (allowedRoles.includes(role)) {
+              isAdmin = true;
+            }
+          }
+        } catch (err) {
+          console.warn('[event1] checkAdminAuth Supabase error:', err);
+        }
+      }
+
+      // 2. Fallback to local Auth
+      if (!isAdmin) {
+        try {
+          const localUser = window.Auth ? window.Auth.currentUser() : (window.BlogDB ? window.BlogDB.getCurrentUser() : null);
+          const localRole = String(localUser?.role || localUser?.user?.role || '').toLowerCase().trim();
+          if (localUser && allowedRoles.includes(localRole)) {
+            isAdmin = true;
+          } else {
+            const raw = sessionStorage.getItem('srmvec_portal_session') || sessionStorage.getItem('srmvec_current_user') || localStorage.getItem('cse_auth_user');
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              const r = String(parsed?.role || parsed?.user?.role || '').toLowerCase().trim();
+              if (allowedRoles.includes(r)) {
+                isAdmin = true;
+              }
+            }
+          }
+        } catch (e) {}
+      }
+
+      const modalActions = document.getElementById("eventModalAdminActions");
+      if (modalActions) {
+        modalActions.style.display = isAdmin ? "flex" : "none";
+      }
+
+      if (wasAdmin !== isAdmin) {
+        renderGrid(currentEvents);
+      }
+    }
+
+    async function init() {
       currentEvents = EventsStore.getEvents();
       document.getElementById("totalEventsCount").textContent = `Showing ${currentEvents.length} Events`;
       renderGrid(currentEvents);
       renderSlider(currentEvents);
+
+      // Check admin status
+      await checkAdminAuth();
+      if (supabase?.auth?.onAuthStateChange) {
+        supabase.auth.onAuthStateChange(() => {
+          checkAdminAuth();
+        });
+      }
+      window.addEventListener("authStateChanged", checkAdminAuth);
+
+      // Sync custom events from Supabase so all users (non-admins too) see them
+      EventsStore.syncFromSupabase().then(() => {
+        const refreshed = EventsStore.getEvents();
+        if (refreshed.length !== currentEvents.length ||
+            refreshed.some((e, i) => e.id !== (currentEvents[i] && currentEvents[i].id))) {
+          currentEvents = refreshed;
+          document.getElementById("totalEventsCount").textContent = `Showing ${currentEvents.length} Events`;
+          renderGrid(currentEvents);
+          renderSlider(currentEvents);
+        }
+      }).catch(() => {});
+
 
       // Check URL for specific eventId parameter
       const urlParams = new URLSearchParams(window.location.search);
@@ -785,7 +1017,10 @@
 
       events.forEach(evt => {
         const diffDays = (new Date(evt.regCloseDate) - new Date()) / (1000 * 60 * 60 * 24);
-        const isClosingSoon = diffDays >= 0 && diffDays <= 7;
+        const isClosingSoon = evt.isUpcoming && diffDays >= 0 && diffDays <= 7;
+        const statusBadge = evt.isUpcoming 
+          ? `<div class="reg-closing-badge ${isClosingSoon ? 'closing-soon' : ''}"><i class="fa-solid fa-clock"></i> Reg Closes: ${evt.regCloseFormatted}</div>`
+          : `<div class="reg-closing-badge" style="background:#475569;border-color:#64748B;"><i class="fa-solid fa-flag-checkered"></i> Concluded</div>`;
         const card = document.createElement("article");
         card.className = "event-detail-card";
         card.id = `card-${evt.id}`;
@@ -793,9 +1028,17 @@
           <div class="card-poster-wrap" onclick="openDetailsModal('${evt.id}')">
             <img src="${evt.poster}" alt="${evt.title} Poster" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800&auto=format&fit=crop'" />
             <div class="poster-zoom-overlay"><i class="fa-solid fa-expand"></i> View Details</div>
-            <div class="reg-closing-badge ${isClosingSoon ? 'closing-soon' : ''}">
-              <i class="fa-solid fa-clock"></i> Reg Closes: ${evt.regCloseFormatted}
-            </div>
+            ${statusBadge}
+            ${isAdmin ? `
+              <div class="event-card-admin-bar">
+                <button type="button" class="event-admin-btn btn-edit-event" onclick="event.stopPropagation(); openEditEventModal('${evt.id}')" title="Edit Event">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
+                <button type="button" class="event-admin-btn btn-del-event" onclick="event.stopPropagation(); handleDeleteEvent('${evt.id}')" title="Delete Event">
+                  <i class="fa-solid fa-trash"></i> Delete
+                </button>
+              </div>
+            ` : ''}
           </div>
           <div class="card-body">
             <div>
@@ -864,12 +1107,14 @@
     }
 
     function advance() {
+      if (currentEvents.length === 0) return;
       activeIndex = (activeIndex + 1) % currentEvents.length;
       updateSliderPosition();
       startAutoPlay();
     }
 
     function goBack() {
+      if (currentEvents.length === 0) return;
       activeIndex = (activeIndex - 1 + currentEvents.length) % currentEvents.length;
       updateSliderPosition();
       startAutoPlay();
@@ -908,25 +1153,73 @@
       startAutoPlay();
     });
 
-    // Search Filter
-    searchInput.addEventListener("input", (e) => {
-      const term = e.target.value.toLowerCase().trim();
-      const filtered = EventsStore.getEvents().filter(evt => {
-        return evt.title.toLowerCase().includes(term) ||
-               evt.college.toLowerCase().includes(term) ||
-               evt.venue.toLowerCase().includes(term) ||
-               evt.techEvents.some(t => t.toLowerCase().includes(term)) ||
-               evt.nonTechEvents.some(nt => nt.toLowerCase().includes(term));
+    // Event Filtering (Search & Status)
+    let currentStatusFilter = "all";
+
+    function applyEventFilters() {
+      const term = (searchInput?.value || "").toLowerCase().trim();
+      let all = EventsStore.getEvents();
+
+      if (currentStatusFilter === "upcoming") {
+        all = all.filter(e => e.isUpcoming);
+      } else if (currentStatusFilter === "past") {
+        all = all.filter(e => !e.isUpcoming);
+      }
+
+      if (term) {
+        all = all.filter(evt => {
+          return (evt.title || "").toLowerCase().includes(term) ||
+                 (evt.college || "").toLowerCase().includes(term) ||
+                 (evt.venue || "").toLowerCase().includes(term) ||
+                 (evt.techEvents || []).some(t => t.toLowerCase().includes(term)) ||
+                 (evt.nonTechEvents || []).some(nt => nt.toLowerCase().includes(term));
+        });
+      }
+
+      currentEvents = all;
+      document.getElementById("totalEventsCount").textContent = `Showing ${currentEvents.length} Event${currentEvents.length === 1 ? '' : 's'}`;
+      renderGrid(currentEvents);
+      renderSlider(currentEvents);
+    }
+
+    searchInput?.addEventListener("input", applyEventFilters);
+
+    function setStatusPill(activeId) {
+      ["filterAll", "filterUpcoming", "filterPast"].forEach(id => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        if (id === activeId) {
+          btn.style.background = "#2563EB";
+          btn.style.color = "#FFFFFF";
+          btn.classList.add("active");
+        } else {
+          btn.style.background = "#E2E8F0";
+          btn.style.color = "#334155";
+          btn.classList.remove("active");
+        }
       });
-      currentEvents = filtered;
-      document.getElementById("totalEventsCount").textContent = `Showing ${filtered.length} Events`;
-      renderGrid(filtered);
-      renderSlider(filtered);
+    }
+
+    document.getElementById("filterAll")?.addEventListener("click", () => {
+      currentStatusFilter = "all";
+      setStatusPill("filterAll");
+      applyEventFilters();
+    });
+
+    document.getElementById("filterUpcoming")?.addEventListener("click", () => {
+      currentStatusFilter = "upcoming";
+      setStatusPill("filterUpcoming");
+      applyEventFilters();
+    });
+
+    document.getElementById("filterPast")?.addEventListener("click", () => {
+      currentStatusFilter = "past";
+      setStatusPill("filterPast");
+      applyEventFilters();
     });
 
     // Global Modal Trigger Helper Functions
     window.openDetailsModal = function(id) {
-      // If embedded in iframe (e.g. on home page index.html), redirect top window to event1.html?eventId=id
       if (window.top !== window) {
         window.top.location.href = "event1.html?eventId=" + id;
         return;
@@ -934,6 +1227,8 @@
 
       const evt = EventsStore.getEventById(id);
       if (!evt) return;
+
+      currentEventModalId = evt.id;
 
       document.getElementById("modalPosterImg").src = evt.poster;
       document.getElementById("modalCollege").textContent = evt.college;
@@ -953,6 +1248,11 @@
       const nonTechContainer = document.getElementById("modalNonTechTags");
       nonTechContainer.innerHTML = evt.nonTechEvents.map(nt => `<span class="event-tag">${nt}</span>`).join("");
 
+      const modalActions = document.getElementById("eventModalAdminActions");
+      if (modalActions) {
+        modalActions.style.display = isAdmin ? "flex" : "none";
+      }
+
       document.getElementById("modalBtnRegister").onclick = () => {
         closeModal('detailsModal');
         openRegisterModal(id);
@@ -960,6 +1260,20 @@
 
       document.getElementById("detailsModal").classList.add("active");
     };
+
+    // Modal Admin Edit & Delete buttons
+    document.getElementById("modalBtnEditEvent")?.addEventListener("click", () => {
+      if (currentEventModalId) {
+        closeModal("detailsModal");
+        openEditEventModal(currentEventModalId);
+      }
+    });
+
+    document.getElementById("modalBtnDeleteEvent")?.addEventListener("click", () => {
+      if (currentEventModalId) {
+        handleDeleteEvent(currentEventModalId);
+      }
+    });
 
     window.openRegisterModal = function(id) {
       if (window.top !== window) {
@@ -981,8 +1295,145 @@
     };
 
     window.closeModal = function(modalId) {
-      document.getElementById(modalId).classList.remove("active");
+      document.getElementById(modalId)?.classList.remove("active");
     };
+
+    // ── Edit Event Modal & Handlers ─────────────────────────────────────
+    window.openEditEventModal = function(id) {
+      const evt = EventsStore.getEventById(id);
+      if (!evt) return;
+
+      document.getElementById("editEventId").value = evt.id;
+      document.getElementById("editEventTitle").value = evt.title || "";
+      document.getElementById("editEventCollege").value = evt.college || "";
+      document.getElementById("editEventDept").value = evt.dept || "";
+      document.getElementById("editEventRegClose").value = evt.regCloseDate || "";
+      document.getElementById("editEventDate").value = evt.date || "";
+      document.getElementById("editEventTime").value = evt.time || "";
+      document.getElementById("editEventVenue").value = evt.venue || "";
+      document.getElementById("editEventFee").value = evt.fee || "";
+      document.getElementById("editEventPrizes").value = evt.prizes || "";
+      document.getElementById("editEventTech").value = Array.isArray(evt.techEvents) ? evt.techEvents.join(", ") : (evt.techEvents || "");
+      document.getElementById("editEventNonTech").value = Array.isArray(evt.nonTechEvents) ? evt.nonTechEvents.join(", ") : (evt.nonTechEvents || "");
+      document.getElementById("editEventContact").value = evt.contact || "";
+      document.getElementById("editEventRegUrl").value = evt.regUrl || "";
+      document.getElementById("editEventPoster").value = evt.poster || "";
+      document.getElementById("editEventDescription").value = evt.description || "";
+
+      const msgBox = document.getElementById("editEventMessage");
+      if (msgBox) {
+        msgBox.style.display = "none";
+        msgBox.textContent = "";
+      }
+      const fileNotice = document.getElementById("editEventFileNotice");
+      if (fileNotice) fileNotice.textContent = "";
+
+      document.getElementById("editEventModal").classList.add("active");
+    };
+
+    window.handleDeleteEvent = function(id) {
+      const evt = EventsStore.getEventById(id);
+      const title = evt ? evt.title : "this event";
+
+      if (!confirm(`Are you sure you want to delete "${title}"?\n\nThis will remove it from the Events Board, Home Page Slider, and website records.`)) {
+        return;
+      }
+
+      EventsStore.deleteEvent(id);
+      currentEvents = EventsStore.getEvents();
+      document.getElementById("totalEventsCount").textContent = `Showing ${currentEvents.length} Events`;
+      renderGrid(currentEvents);
+      renderSlider(currentEvents);
+      if (currentEventModalId && String(currentEventModalId) === String(id)) {
+        closeModal("detailsModal");
+      }
+    };
+
+    // Poster file upload for Edit Event modal
+    const editPosterFileInput = document.getElementById("editEventPosterFile");
+    const editPosterInput = document.getElementById("editEventPoster");
+    const editFileNotice = document.getElementById("editEventFileNotice");
+    if (editPosterFileInput && editPosterInput) {
+      editPosterFileInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            editPosterInput.value = evt.target.result;
+            if (editFileNotice) editFileNotice.textContent = `Selected: ${file.name}`;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // Submit Edit Event Form
+    document.getElementById("editEventForm")?.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const id = document.getElementById("editEventId").value;
+      const msgBox = document.getElementById("editEventMessage");
+      const saveBtn = document.getElementById("saveEditEventBtn");
+
+      const updatedData = {
+        title: document.getElementById("editEventTitle").value.trim(),
+        college: document.getElementById("editEventCollege").value.trim(),
+        dept: document.getElementById("editEventDept").value.trim(),
+        regCloseDate: document.getElementById("editEventRegClose").value,
+        date: document.getElementById("editEventDate").value.trim(),
+        time: document.getElementById("editEventTime").value.trim(),
+        venue: document.getElementById("editEventVenue").value.trim(),
+        fee: document.getElementById("editEventFee").value.trim(),
+        prizes: document.getElementById("editEventPrizes").value.trim(),
+        techEvents: document.getElementById("editEventTech").value.trim(),
+        nonTechEvents: document.getElementById("editEventNonTech").value.trim(),
+        contact: document.getElementById("editEventContact").value.trim(),
+        regUrl: document.getElementById("editEventRegUrl").value.trim(),
+        poster: document.getElementById("editEventPoster").value.trim() || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800&auto=format&fit=crop",
+        description: document.getElementById("editEventDescription").value.trim()
+      };
+
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+      try {
+        EventsStore.updateEvent(id, updatedData);
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Event Changes';
+
+        currentEvents = EventsStore.getEvents();
+        document.getElementById("totalEventsCount").textContent = `Showing ${currentEvents.length} Events`;
+        renderGrid(currentEvents);
+        renderSlider(currentEvents);
+        closeModal("editEventModal");
+
+        if (currentEventModalId && String(currentEventModalId) === String(id)) {
+          openDetailsModal(id);
+        }
+      } catch (err) {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Event Changes';
+        if (msgBox) {
+          msgBox.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> <strong>Error:</strong> ${err.message}`;
+          msgBox.className = "form-message is-visible error";
+          msgBox.style.display = "block";
+        }
+      }
+    });
+
+    function reloadEvents() {
+      currentEvents = EventsStore.getEvents();
+      document.getElementById("totalEventsCount").textContent = `Showing ${currentEvents.length} Events`;
+      renderGrid(currentEvents);
+      renderSlider(currentEvents);
+    }
+
+    // Live update listeners
+    window.addEventListener("storage", (e) => {
+      if (e.key === "srmvec_events_last_update" || e.key === "srmvec_custom_events" || e.key === "srmvec_event_overrides" || e.key === "srmvec_deleted_event_ids") {
+        reloadEvents();
+      }
+    });
+    window.addEventListener("srmvec:events-updated", reloadEvents);
 
     function highlightAndOpenEvent(id) {
       const targetCard = document.getElementById(`card-${id}`);
@@ -994,8 +1445,8 @@
       openDetailsModal(id);
     }
 
-    // Handle Form Submit
-    document.getElementById("eventRegistrationForm").addEventListener("submit", (e) => {
+    // Handle Registration Form Submit
+    document.getElementById("eventRegistrationForm")?.addEventListener("submit", (e) => {
       e.preventDefault();
       const name = document.getElementById("regStudentName").value;
       alert(`Registration Successful!\nThank you, ${name}. Your registration request has been submitted for this event.`);

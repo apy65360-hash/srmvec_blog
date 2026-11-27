@@ -670,6 +670,15 @@ const Auth = {
             .from('profiles').select('*').eq('id', data.user.id).maybeSingle();
 
           const role = profile?.role || data.user.user_metadata?.role || 'teacher';
+
+          if (profile && ['teacher', 'faculty'].includes(role) && profile.status !== 'approved') {
+            await window.supabase.auth.signOut().catch(() => {});
+            if (profile.status === 'rejected') {
+              return { error: 'Your faculty account request was rejected. Please contact the administrator.' };
+            }
+            return { error: 'Your faculty account is pending admin approval. Please wait for an administrator to approve your account.' };
+          }
+
           const user = {
             userId: data.user.id,
             id: data.user.id,
@@ -677,6 +686,7 @@ const Auth = {
             displayName: profile?.full_name || data.user.user_metadata?.full_name || cleanEmail,
             username: cleanEmail,
             role,
+            status: profile?.status || 'approved',
             email: cleanEmail,
             permissions: profile?.permissions || {}
           };
@@ -1179,7 +1189,7 @@ const Auth = {
 
   isTeacher() {
     const u = this.currentUser();
-    return u && u.role === "teacher";
+    return u && (u.role === "teacher" || u.role === "faculty");
   },
 
   isStudent() {
@@ -1206,7 +1216,7 @@ const Auth = {
   },
 
   homeFor(role) {
-    if (role === "teacher") { return "dashboard.html"; }
+    if (role === "teacher" || role === "faculty") { return "dashboard.html"; }
     if (role === "admin" || role === "faculty_admin" || role === "editor") { return "admin-corner.html"; }
     return "student-corner.html";
   },
@@ -1236,8 +1246,11 @@ const Auth = {
     }
 
     const isAdminUser = this.isAdmin();
+    const isTeacherUser = this.isTeacher();
     const isAllowed = Array.isArray(allowedRoles) && allowedRoles.length && (
-      allowedRoles.includes(user.role) || (allowedRoles.some(r => ["admin", "faculty_admin", "editor"].includes(r)) && isAdminUser)
+      allowedRoles.includes(user.role) ||
+      (allowedRoles.some(r => ["admin", "faculty_admin", "editor"].includes(r)) && isAdminUser) ||
+      (allowedRoles.some(r => ["teacher", "faculty"].includes(r)) && isTeacherUser)
     );
 
     if (Array.isArray(allowedRoles) && allowedRoles.length && !isAllowed) {

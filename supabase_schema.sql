@@ -427,7 +427,7 @@ CREATE TABLE IF NOT EXISTS public.blogs (
   tags TEXT[] DEFAULT '{}',
   author_name TEXT NOT NULL,
   author_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-  author_role TEXT NOT NULL CHECK (author_role IN ('student', 'teacher', 'admin', 'faculty_admin', 'editor')),
+  author_role TEXT NOT NULL CHECK (author_role IN ('student', 'teacher', 'faculty', 'admin', 'faculty_admin', 'editor')),
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
   is_published BOOLEAN DEFAULT FALSE,
   views INTEGER DEFAULT 0,
@@ -552,14 +552,20 @@ CREATE TRIGGER trg_enforce_blog_author
 
 ALTER TABLE public.blogs ENABLE ROW LEVEL SECURITY;
 
+-- Anonymous-Safe SELECT: Separated public published policy from authenticated admin/owner policy
+-- so anonymous queries NEVER evaluate private.is_admin() (prevents 42501 permission denied for function is_admin)
 DROP POLICY IF EXISTS "blogs_select_policy" ON public.blogs;
-CREATE POLICY "blogs_select_policy" ON public.blogs
-  FOR SELECT USING (
-    (is_published = TRUE AND (status = 'approved' OR status IS NULL))
-    OR
+DROP POLICY IF EXISTS "blogs_select_published" ON public.blogs;
+CREATE POLICY "blogs_select_published" ON public.blogs
+  FOR SELECT TO anon, authenticated
+  USING ((is_published = TRUE OR is_published IS NULL) AND (status = 'approved' OR status IS NULL));
+
+DROP POLICY IF EXISTS "blogs_select_authenticated" ON public.blogs;
+CREATE POLICY "blogs_select_authenticated" ON public.blogs
+  FOR SELECT TO authenticated
+  USING (
     ((SELECT auth.uid()) = author_id)
-    OR
-    private.is_admin()
+    OR private.is_admin()
   );
 
 DROP POLICY IF EXISTS "blogs_insert_authenticated" ON public.blogs;
@@ -616,7 +622,7 @@ CREATE TABLE IF NOT EXISTS public.publications (
   url TEXT,
   author_name TEXT NOT NULL,
   author_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-  author_role TEXT NOT NULL CHECK (author_role IN ('student', 'teacher', 'admin', 'faculty_admin', 'editor')),
+  author_role TEXT NOT NULL CHECK (author_role IN ('student', 'teacher', 'faculty', 'admin', 'faculty_admin', 'editor')),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -749,11 +755,18 @@ ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ 
 
 ALTER TABLE public.achievements ENABLE ROW LEVEL SECURITY;
 
+-- Anonymous-Safe SELECT: Separated public published policy from authenticated admin policy
+-- so anonymous queries NEVER evaluate private.is_admin() (prevents 42501 permission denied for function is_admin)
 DROP POLICY IF EXISTS "achievements_select_published" ON public.achievements;
-CREATE POLICY "achievements_select_published"
-  ON public.achievements
-  FOR SELECT
-  USING (is_published = TRUE OR private.is_admin());
+DROP POLICY IF EXISTS "achievements_select_admin" ON public.achievements;
+
+CREATE POLICY "achievements_select_published" ON public.achievements
+  FOR SELECT TO anon, authenticated
+  USING (is_published = TRUE OR is_published IS NULL);
+
+CREATE POLICY "achievements_select_admin" ON public.achievements
+  FOR SELECT TO authenticated
+  USING (private.is_admin());
 
 DROP POLICY IF EXISTS "achievements_insert_admin" ON public.achievements;
 CREATE POLICY "achievements_insert_admin"
@@ -998,4 +1011,72 @@ BEGIN
     EXECUTE 'DROP FUNCTION IF EXISTS public.get_student_email_by_regno(text) CASCADE';
   END IF;
 END $$;
-DROP FUNCTION IF EXISTS public.get_student_email_by_regno(text) CASCADE;
+
+-- Refresh PostgREST schema cache so newly created RPCs (e.g. admin_set_faculty_status) are immediately available
+NOTIFY pgrst, 'reload schema';
+
+
+-- ═══════════════════════════════════════════════════════════════════════
+-- 13. EVENTS TABLE (Custom events added by admin, persisted for all users)
+-- ═══════════════════════════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS public.events (
+  id              TEXT PRIMARY KEY,
+  numeric_id      BIGINT,
+  title           TEXT NOT NULL,
+  college         TEXT,
+  dept            TEXT,
+  date            TEXT,
+  reg_close_date  TEXT,
+  reg_close_formatted TEXT,
+  time            TEXT,
+  venue           TEXT,
+  fee             TEXT,
+  prizes          TEXT,
+  poster          TEXT,
+  tech_events     TEXT[],
+  non_tech_events TEXT[],
+  contact         TEXT,
+  reg_url         TEXT,
+  description     TEXT,
+  is_deleted      BOOLEAN DEFAULT FALSE,
+  created_by      UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+  created_at      TIMESTAMPTZ DEFAULT NOW(),
+  updated_at      TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.events ENABLE ROW LEVEL SECURITY;
+
+-- Anyone can read non-deleted events
+DROP POLICY IF EXISTS "events_select_public" ON public.events;
+CREATE POLICY "events_select_public" ON public.events
+  FOR SELECT TO anon, authenticated
+  USING (is_deleted = FALSE OR is_deleted IS NULL);
+
+-- Only admins can insert
+DROP POLICY IF EXISTS "events_insert_admin" ON public.events;
+CREATE POLICY "events_insert_admin" ON public.events
+  FOR INSERT TO authenticated
+  WITH CHECK (private.is_admin());
+
+-- Only admins can update
+DROP POLICY IF EXISTS "events_update_admin" ON public.events;
+CREATE POLICY "events_update_admin" ON public.events
+  FOR UPDATE TO authenticated
+  USING (private.is_admin())
+  WITH CHECK (private.is_admin());
+
+-- Only admins can delete (soft-delete via is_deleted flag, or hard delete)
+DROP POLICY IF EXISTS "events_delete_admin" ON public.events;
+CREATE POLICY "events_delete_admin" ON public.events
+  FOR DELETE TO authenticated
+  USING (private.is_admin());
+
+GRANT SELECT ON public.events TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.events TO authenticated;
+
+CREATE INDEX IF NOT EXISTS idx_events_is_deleted ON public.events(is_deleted);
+CREATE INDEX IF NOT EXISTS idx_events_reg_close_date ON public.events(reg_close_date);
+
+NOTIFY pgrst, 'reload schema';
+

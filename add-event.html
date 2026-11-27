@@ -181,17 +181,10 @@
         description: document.getElementById("eventDescription").value.trim()
       };
 
-      // STRICT VALIDATION RULE: Only future/upcoming events are allowed
-      if (!isEventUpcoming(newEventData)) {
-        msgBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <strong>Rule Enforced:</strong> Only future and upcoming events can be added! The specified date has already passed.`;
-        msgBox.className = "form-message is-visible error";
-        return;
-      }
-
       try {
         const publishedEvent = EventsStore.addEvent(newEventData);
 
-        msgBox.innerHTML = `<i class="fa-solid fa-circle-check"></i> Event <strong>"${publishedEvent.title}"</strong> successfully published! It is now live on the <a href="event1.html?eventId=${publishedEvent.id}" style="color:inherit;text-decoration:underline;">Events Board</a> and Home Page Slider.`;
+        msgBox.innerHTML = `<i class="fa-solid fa-circle-check"></i> Event <strong>"${publishedEvent.title}"</strong> successfully published! It is now live on the <a href="event1.html?eventId=${publishedEvent.id}" style="color:inherit;text-decoration:underline;font-weight:700;">Events Board</a> and Home Page Slider.`;
         msgBox.className = "form-message is-visible success";
 
         this.reset();

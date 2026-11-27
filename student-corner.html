@@ -1040,6 +1040,17 @@ function renderAllBlogs() {
       <tbody>${rows}</tbody>
     </table>`;
 }
+
+window.addEventListener('storage', (e) => {
+  if (e.key === 'srmvec_blogs' || e.key === 'srmvec_blogs_last_update') {
+    renderMyBlogs();
+    renderAllBlogs();
+  }
+});
+window.addEventListener('srmvec:blogs-updated', () => {
+  renderMyBlogs();
+  renderAllBlogs();
+});
 </script>
 </body>
 </html>

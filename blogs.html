@@ -465,23 +465,37 @@
     let blogsList = [];
     let filteredBlogs = [];
 
-    async function initBlogsPage() {
-      // Initialize Blog DB
+    async function loadBlogsData() {
       if (window.BlogDB) {
         window.BlogDB.init();
-        
-        // Fetch fresh data async
-        blogsList = await window.BlogDB.fetchBlogsAsync();
-        if (!blogsList || blogsList.length === 0) {
-          blogsList = window.BlogDB.getBlogs();
-        }
+        blogsList = window.BlogDB.getBlogs();
+        // Also trigger async sync if available
+        try {
+          const fresh = await window.BlogDB.fetchBlogsAsync();
+          if (fresh && fresh.length > 0) {
+            blogsList = fresh;
+          }
+        } catch (e) {}
       }
-
       applyFilters();
+    }
+
+    async function initBlogsPage() {
+      await loadBlogsData();
       
       // Hook up UI inputs
-      document.getElementById('blogSearchInput').addEventListener('input', applyFilters);
-      document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+      document.getElementById('blogSearchInput')?.addEventListener('input', applyFilters);
+      document.getElementById('categoryFilter')?.addEventListener('change', applyFilters);
+
+      // Live updates from Admin Corner, Teacher's Corner, or other tabs
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'srmvec_blogs' || e.key === 'srmvec_blogs_last_update') {
+          loadBlogsData();
+        }
+      });
+      window.addEventListener('srmvec:blogs-updated', () => {
+        loadBlogsData();
+      });
     }
 
     function applyFilters() {

@@ -303,23 +303,36 @@
 
     // Fallback events if loaded without module bundler
     const FALLBACK_EVENTS = [
-      { id: "eve-eliteccom-26", title: "ELITECCOM-2026 PROJECT EXPO — 5th National Level Symposium", date: "October 17, 2026", regCloseDate: "2026-10-16", time: "9:00 AM - 5:00 PM", venue: "IETE Chennai Centre, Royapettah", poster: "eventposterimg/eliteccom-2026-project-expo.jpeg" },
-      { id: "eve-anveshan-26", title: "ANVESHAN 2K26 — 24-Hour National Level Hackathon Competition", date: "October 15 & 16, 2026", regCloseDate: "2026-10-16", time: "24-Hour Hackathon", venue: "BGSIT Campus, B G Nagara, Mandya", poster: "eventposterimg/anveshan-2k26-hackathon.jpeg" },
-      { id: "eve-hackaithon-26", title: "SRMVEC HACK-AI-THON '26 — National Generative AI Hackathon", date: "November 06 & 07, 2026", regCloseDate: "2026-11-01", time: "9:00 AM - 6:00 PM", venue: "CSE Department Innovation Labs, SRMVEC", poster: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=800&auto=format&fit=crop" },
-      { id: "eve-cyberstorm-26", title: "CYBERSTORM '26 — National Level Cyber Security & Ethical Hacking Fest", date: "November 20, 2026", regCloseDate: "2026-11-15", time: "9:30 AM - 4:30 PM", venue: "SRMVEC Campus, Kattankulathur", poster: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop" },
-      { id: "eve-cloud-26", title: "CLOUD CONVERGENCE '26 — DevOps & Cloud Architecture Summit", date: "December 04, 2026", regCloseDate: "2026-11-28", time: "10:00 AM - 4:00 PM", venue: "Seminar Hall, New Building, SRMVEC", poster: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop" }
+      { id: "eve-eliteccom-26", title: "ELITECCOM-2026 PROJECT EXPO — 5th National Level Symposium", date: "December 12, 2026", regCloseDate: "2026-12-10", regCloseFormatted: "Dec 10, 2026", time: "9:00 AM - 5:00 PM", venue: "IETE Chennai Centre, Royapettah", poster: "eventposterimg/eliteccom-2026-project-expo.jpeg" },
+      { id: "eve-anveshan-26", title: "ANVESHAN 2K26 — 24-Hour National Level Hackathon Competition", date: "December 18 & 19, 2026", regCloseDate: "2026-12-15", regCloseFormatted: "Dec 15, 2026", time: "24-Hour Hackathon", venue: "BGSIT Campus, B G Nagara, Mandya", poster: "eventposterimg/anveshan-2k26-hackathon.jpeg" },
+      { id: "eve-hackaithon-26", title: "SRMVEC HACK-AI-THON '26 — National Generative AI Hackathon", date: "January 08 & 09, 2027", regCloseDate: "2027-01-05", regCloseFormatted: "Jan 05, 2027", time: "9:00 AM - 6:00 PM", venue: "CSE Department Innovation Labs, SRMVEC", poster: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=800&auto=format&fit=crop" },
+      { id: "eve-cyberstorm-26", title: "CYBERSTORM '26 — National Level Cyber Security & Ethical Hacking Fest", date: "January 22, 2027", regCloseDate: "2027-01-18", regCloseFormatted: "Jan 18, 2027", time: "9:30 AM - 4:30 PM", venue: "SRMVEC Campus, Kattankulathur", poster: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop" },
+      { id: "eve-cloud-26", title: "CLOUD CONVERGENCE '26 — DevOps & Cloud Architecture Summit", date: "February 05, 2027", regCloseDate: "2027-01-30", regCloseFormatted: "Jan 30, 2027", time: "10:00 AM - 4:00 PM", venue: "Seminar Hall, New Building, SRMVEC", poster: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop" }
     ];
 
     let EVENTS = [];
     try {
-      EVENTS = EventsStore.getEvents();
+      EVENTS = EventsStore.getUpcomingEvents();
     } catch (e) {
       EVENTS = (DEFAULT_EVENTS || FALLBACK_EVENTS).filter(evt => isEventUpcoming ? isEventUpcoming(evt) : true);
     }
 
     if (!EVENTS || EVENTS.length === 0) {
-      EVENTS = FALLBACK_EVENTS.filter(evt => isEventUpcoming ? isEventUpcoming(evt) : true);
+      EVENTS = FALLBACK_EVENTS;
     }
+
+    // Background sync from Supabase so homepage slider shows events added by admins on other devices
+    EventsStore.syncFromSupabase().then(() => {
+      try {
+        const refreshed = EventsStore.getUpcomingEvents();
+        if (refreshed && refreshed.length > 0 && refreshed.length !== EVENTS.length) {
+          EVENTS = refreshed;
+          initCarousel();
+        }
+      } catch (_) {}
+    }).catch(() => {});
+
+
 
     let currentIndex = 0;
     let autoPlayTimer = null;
@@ -366,7 +379,7 @@
     function initCarousel() {
       track.innerHTML = "";
       if (EVENTS.length === 0) {
-        track.innerHTML = `<div style="padding:2.5rem;color:#64748B;font-size:1rem;text-align:center;width:100%;">No upcoming events found. Only future events are displayed.</div>`;
+        track.innerHTML = `<div style="padding:2.5rem;color:#64748B;font-size:1rem;text-align:center;width:100%;">No events found.</div>`;
         return;
       }
       EVENTS.forEach(event => track.appendChild(renderPoster(event)));
@@ -417,6 +430,38 @@
     window.addEventListener("resize", updateCarouselPosition);
     initCarousel();
     startAutoPlay();
+
+    function refreshEvents() {
+      try {
+        EVENTS = EventsStore.getUpcomingEvents();
+      } catch (e) {
+        EVENTS = (DEFAULT_EVENTS || FALLBACK_EVENTS).filter(evt => isEventUpcoming ? isEventUpcoming(evt) : true);
+      }
+      if (!EVENTS || EVENTS.length === 0) {
+        EVENTS = EventsStore.getEvents();
+      }
+      currentIndex = 0;
+      initCarousel();
+      startAutoPlay();
+    }
+
+    window.addEventListener("storage", (e) => {
+      if (e.key === "srmvec_events_last_update" || e.key === "srmvec_custom_events" || e.key === "srmvec_event_overrides" || e.key === "srmvec_deleted_event_ids") {
+        refreshEvents();
+      }
+    });
+    window.addEventListener("srmvec:events-updated", refreshEvents);
+    window.addEventListener("message", (e) => {
+      if (e.data && (e.data.type === "srmvec:events-updated" || e.data === "srmvec:events-updated")) {
+        refreshEvents();
+      }
+    });
+
+    try {
+      if (window.top && window.top !== window) {
+        window.top.addEventListener("srmvec:events-updated", refreshEvents);
+      }
+    } catch (e) {}
   </script>
 </body>
 </html>

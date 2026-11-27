@@ -614,6 +614,8 @@ if (params.get('tab') === 'setup' || params.get('tab') === 'signup') {
   setView('signup');
 } else if (params.get('tab') === 'forgot') {
   setView('forgot');
+} else if (params.get('pending') === '1') {
+  showMsg('Your faculty account is pending admin approval. Please wait for an administrator to approve your account.', 'warning');
 }
 
 

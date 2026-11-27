@@ -778,9 +778,12 @@ ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ 
 ALTER TABLE public.achievements ENABLE ROW LEVEL SECURITY;
 
 -- Anonymous-Safe SELECT: Separated public published policy from authenticated admin policy
+DROP POLICY IF EXISTS "achievements_select_published" ON public.achievements;
+DROP POLICY IF EXISTS "achievements_select_admin" ON public.achievements;
+
 CREATE POLICY "achievements_select_published" ON public.achievements
   FOR SELECT TO anon, authenticated
-  USING (is_published = TRUE);
+  USING (is_published = TRUE OR is_published IS NULL);
 
 CREATE POLICY "achievements_select_admin" ON public.achievements
   FOR SELECT TO authenticated
@@ -804,12 +807,12 @@ RETURNS TRIGGER
 LANGUAGE plpgsql
 SECURITY INVOKER
 SET search_path = ''
-AS $
+AS $$
 BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$;
+$$;
 
 REVOKE ALL ON FUNCTION public.achievements_set_updated_at() FROM PUBLIC, anon, authenticated;
 
@@ -820,6 +823,9 @@ CREATE TRIGGER achievements_updated_at
 
 CREATE INDEX IF NOT EXISTS idx_achievements_posted_by ON public.achievements(posted_by);
 CREATE INDEX IF NOT EXISTS idx_achievements_is_published ON public.achievements(is_published);
+
+-- Table-level grants for achievements (required for anon visitors to view showcase)
+GRANT SELECT ON public.achievements TO anon, authenticated;
 
 
 -- ═══════════════════════════════════════════════════════════════════════
@@ -946,7 +952,15 @@ END $$;
 DROP POLICY IF EXISTS "profiles_student_lookup_by_regno" ON public.profiles;
 
 -- Revoke and drop get_student_email_by_regno to prevent enumeration of student emails
-REVOKE ALL ON FUNCTION public.get_student_email_by_regno(text) FROM PUBLIC, anon, authenticated;
-DROP FUNCTION IF EXISTS public.get_student_email_by_regno(text) CASCADE;
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON p.pronamespace = n.oid
+             WHERE n.nspname = 'public' AND p.proname = 'get_student_email_by_regno') THEN
+    EXECUTE 'REVOKE ALL ON FUNCTION public.get_student_email_by_regno(text) FROM PUBLIC, anon, authenticated';
+    EXECUTE 'DROP FUNCTION IF EXISTS public.get_student_email_by_regno(text) CASCADE';
+  END IF;
+END $$;
 
 COMMIT;
+
+NOTIFY pgrst, 'reload schema';

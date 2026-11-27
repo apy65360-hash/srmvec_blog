@@ -16,6 +16,55 @@
   <link rel="stylesheet" href="/src/styles/style.css" />
   <link rel="stylesheet" href="/src/styles/portal.css" />
   <link rel="stylesheet" href="/src/styles/achievements.css" />
+  <style>
+    .ach-card-admin-bar {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 6px;
+      z-index: 25;
+    }
+    .ach-card-admin-btn {
+      background: rgba(15, 23, 42, 0.88);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(6px);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+      transition: all 0.2s ease;
+    }
+    .ach-card-admin-btn:hover {
+      transform: translateY(-2px);
+    }
+    .ach-card-admin-btn.btn-edit-ach:hover {
+      background: #2563EB;
+      border-color: #2563EB;
+    }
+    .ach-card-admin-btn.btn-del-ach:hover {
+      background: #DC2626;
+      border-color: #DC2626;
+    }
+    .admin-edit-modal-dialog {
+      background: #FFFFFF;
+      border-radius: 16px;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.35);
+      position: relative;
+      z-index: 100001;
+      max-width: 680px;
+      width: 95%;
+      margin: 2rem auto;
+      overflow: hidden;
+      border: 1px solid var(--ach-border);
+    }
+  </style>
 </head>
 <body class="intro-done">
 
@@ -285,6 +334,107 @@
             Done
           </button>
         </div>
+
+        <!-- ADMIN CONTROLS IN DETAIL MODAL -->
+        <div class="ach-modal-admin-actions" id="modalAdminActions" style="display:none; justify-content:flex-end; gap:0.5rem; margin-top:1.25rem; padding-top:1rem; border-top:1px solid #E2E8F0;">
+          <button type="button" id="modalEditAchBtn" style="display:inline-flex; align-items:center; gap:0.35rem; padding:0.45rem 0.9rem; font-size:0.82rem; font-weight:600; border-radius:8px; border:1px solid #CBD5E1; background:#F8FAFC; color:#1E293B; cursor:pointer;">
+            <i class="fa-solid fa-pen-to-square" style="color:#2563EB;"></i> Edit Achievement
+          </button>
+          <button type="button" id="modalDeleteAchBtn" style="display:inline-flex; align-items:center; gap:0.35rem; padding:0.45rem 0.9rem; font-size:0.82rem; font-weight:600; border-radius:8px; border:1px solid #FCA5A5; background:#FEF2F2; color:#DC2626; cursor:pointer;">
+            <i class="fa-solid fa-trash" style="color:#DC2626;"></i> Delete Achievement
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       ACHIEVEMENT EDIT MODAL (ADMIN ONLY)
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="ach-detail-modal" id="achEditModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="ach-modal-backdrop" id="achEditModalBackdrop"></div>
+    <div class="admin-edit-modal-dialog">
+      <button class="ach-modal-close" id="achEditModalCloseBtn" aria-label="Close edit dialog" style="top:1.25rem; right:1.25rem;">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div style="padding: 1.5rem 2rem 1.25rem; border-bottom: 1px solid var(--ach-border); background:#F8FAFC;">
+        <h2 style="margin: 0; font-family:'Space Grotesk',sans-serif; font-size:1.35rem; color:var(--ach-navy); display:flex; align-items:center; gap:0.5rem;">
+          <i class="fa-solid fa-pen-to-square" style="color:#2563EB;"></i> Edit Student Achievement
+        </h2>
+        <p style="margin: 0.25rem 0 0; font-size:0.85rem; color:var(--ach-text-muted);">
+          Update honor details. Changes reflect across all website views and the home carousel.
+        </p>
+      </div>
+
+      <div style="padding: 1.5rem 2rem 2rem; max-height: 75vh; overflow-y: auto;">
+        <div class="ach-form-msg" id="achEditFormMsg" style="display:none; margin-bottom:1rem;"></div>
+
+        <form id="achEditForm" class="ach-post-form" style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+          <input type="hidden" id="editAchId" />
+
+          <div class="ach-form-group" style="grid-column: 1 / -1;">
+            <label for="editAchTitle">Achievement Title *</label>
+            <input type="text" id="editAchTitle" required />
+          </div>
+
+          <div class="ach-form-group">
+            <label for="editAchStudent">Student / Team Name *</label>
+            <input type="text" id="editAchStudent" required />
+          </div>
+
+          <div class="ach-form-group">
+            <label for="editAchCategory">Category *</label>
+            <select id="editAchCategory" required>
+              <option value="Technical">Technical</option>
+              <option value="Research">Research</option>
+              <option value="Academic">Academic</option>
+              <option value="Placement">Placement</option>
+              <option value="Sports">Sports</option>
+              <option value="Cultural">Cultural</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="ach-form-group">
+            <label for="editAchDate">Achievement Date *</label>
+            <input type="date" id="editAchDate" required />
+          </div>
+
+          <div class="ach-form-group">
+            <label for="editAchYear">Academic Year</label>
+            <input type="text" id="editAchYear" placeholder="e.g. 2026-27" />
+          </div>
+
+          <div class="ach-form-group" style="grid-column: 1 / -1;">
+            <label for="editAchImg">Image URL</label>
+            <input type="url" id="editAchImg" placeholder="https://..." />
+            <div style="margin-top: 0.4rem; display: flex; align-items: center; gap: 0.5rem;">
+              <label for="editAchFileInput" style="font-size:0.8rem; font-weight:600; color:#2563EB; cursor:pointer; margin:0;">
+                <i class="fa-solid fa-upload"></i> Or Upload New Photo
+              </label>
+              <input type="file" id="editAchFileInput" accept="image/*" style="display:none;" />
+              <span id="editAchFileNotice" style="font-size:0.75rem; color:#64748B;"></span>
+            </div>
+          </div>
+
+          <div class="ach-form-group" style="grid-column: 1 / -1;">
+            <label for="editAchShort">Short Description (for cards) *</label>
+            <input type="text" id="editAchShort" required />
+          </div>
+
+          <div class="ach-form-group" style="grid-column: 1 / -1;">
+            <label for="editAchDesc">Full Story / Description *</label>
+            <textarea id="editAchDesc" rows="4" required></textarea>
+          </div>
+
+          <div style="grid-column: 1 / -1; display:flex; justify-content:flex-end; gap:0.75rem; margin-top:0.75rem; padding-top:1rem; border-top:1px solid #E2E8F0;">
+            <button type="button" class="ach-btn-secondary" id="cancelEditAchBtn">Cancel</button>
+            <button type="submit" class="ach-form-submit" id="saveEditAchBtn" style="background:#2563EB;">
+              <i class="fa-solid fa-floppy-disk"></i> Save Changes
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -330,7 +480,9 @@
       fetchAllAchievements,
       fetchAchievementById,
       postAchievement,
-      deleteAchievement
+      updateAchievement,
+      deleteAchievement,
+      applyAchievementOverrides
     } from '/src/scripts/achievements.js';
     import { supabase } from '/src/scripts/supabase.js';
 
@@ -417,6 +569,9 @@
     let allAchievements = [];
     let currentFilter = 'all';
     let currentSearch = '';
+    let isAdmin = false;
+    let currentAdminUser = null;
+    let currentDetailModalId = null;
 
     // ── Helper functions ──────────────────────────────────────────────────
     function esc(s = '') {
@@ -476,6 +631,16 @@
                   Read Me <i class="fa-solid fa-arrow-right"></i>
                 </button>
               </div>
+              ${isAdmin ? `
+                <div class="ach-card-admin-bar">
+                  <button type="button" class="ach-card-admin-btn btn-edit-ach" data-id="${esc(item.id)}" title="Edit Achievement">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                  </button>
+                  <button type="button" class="ach-card-admin-btn btn-del-ach" data-id="${esc(item.id)}" title="Delete Achievement">
+                    <i class="fa-solid fa-trash"></i> Delete
+                  </button>
+                </div>
+              ` : ''}
             </div>
             <div class="ach-grid-card-body">
               <div class="ach-grid-top-row">
@@ -501,7 +666,7 @@
         `;
       }).join('');
 
-      // Attach click listeners to all buttons
+      // Attach click listeners to Read Me and View Details buttons
       grid.querySelectorAll('.open-detail-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -510,7 +675,26 @@
         });
       });
 
-      // Also whole card click opens modal
+      // Attach click listeners for admin Edit and Delete buttons on cards
+      if (isAdmin) {
+        grid.querySelectorAll('.btn-edit-ach').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = btn.getAttribute('data-id');
+            openEditModal(id);
+          });
+        });
+
+        grid.querySelectorAll('.btn-del-ach').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = btn.getAttribute('data-id');
+            handleDeleteAchievement(id);
+          });
+        });
+      }
+
+      // Also whole card click opens modal (unless clicking a button)
       grid.querySelectorAll('.ach-grid-card').forEach(card => {
         card.addEventListener('click', (e) => {
           if (e.target.closest('button')) return;
@@ -525,6 +709,7 @@
       const item = allAchievements.find(a => String(a.id) === String(id));
       if (!item) return;
 
+      currentDetailModalId = item.id;
       const modal = document.getElementById('achDetailModal');
       const img = document.getElementById('modalImg');
       const catBadge = document.getElementById('modalCategoryBadge');
@@ -534,6 +719,7 @@
       const date = document.getElementById('modalDate');
       const year = document.getElementById('modalYear');
       const yearWrap = document.getElementById('modalYearWrap');
+      const modalAdminActions = document.getElementById('modalAdminActions');
 
       img.src = item.image_url || '/images/achievements/medarzt-tech-heist.jpeg';
       img.alt = item.title;
@@ -550,6 +736,10 @@
         yearWrap.style.display = 'none';
       }
 
+      if (modalAdminActions) {
+        modalAdminActions.style.display = isAdmin ? 'flex' : 'none';
+      }
+
       modal.classList.add('active');
       modal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
@@ -559,12 +749,72 @@
     }
 
     function closeDetailModal() {
+      currentDetailModalId = null;
       const modal = document.getElementById('achDetailModal');
       modal.classList.remove('active');
       modal.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
       if (window.location.hash.startsWith('#achievement-')) {
         window.history.replaceState(null, '', window.location.pathname);
+      }
+    }
+
+    // ── Edit Modal Open / Close / Save ───────────────────────────────────
+    function openEditModal(id) {
+      const item = allAchievements.find(a => String(a.id) === String(id));
+      if (!item) return;
+
+      document.getElementById('editAchId').value = item.id;
+      document.getElementById('editAchTitle').value = item.title || '';
+      document.getElementById('editAchStudent').value = item.student_name || '';
+      document.getElementById('editAchCategory').value = item.category || 'Technical';
+      document.getElementById('editAchDate').value = item.achievement_date || '';
+      document.getElementById('editAchYear').value = item.year || '2026-27';
+      document.getElementById('editAchImg').value = item.image_url || '';
+      document.getElementById('editAchShort').value = item.short_desc || '';
+      document.getElementById('editAchDesc').value = item.description || '';
+      
+      const fileNotice = document.getElementById('editAchFileNotice');
+      if (fileNotice) fileNotice.textContent = '';
+
+      const msgBox = document.getElementById('achEditFormMsg');
+      if (msgBox) {
+        msgBox.style.display = 'none';
+        msgBox.textContent = '';
+      }
+
+      const modal = document.getElementById('achEditModal');
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeEditModal() {
+      const modal = document.getElementById('achEditModal');
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    async function handleDeleteAchievement(id) {
+      const item = allAchievements.find(a => String(a.id) === String(id));
+      const title = item ? item.title : 'this achievement';
+      
+      if (!confirm(`Are you sure you want to delete "${title}"?\n\nThis will remove it from the department records, achievements list, and front page showcase.`)) {
+        return;
+      }
+
+      const res = await deleteAchievement(id);
+      if (res && res.error) {
+        alert('Error deleting achievement: ' + res.error);
+      } else {
+        allAchievements = allAchievements.filter(a => String(a.id) !== String(id));
+        const statTotal = document.getElementById('statTotalAch');
+        if (statTotal) statTotal.textContent = allAchievements.length;
+        renderGrid();
+        if (currentDetailModalId && String(currentDetailModalId) === String(id)) {
+          closeDetailModal();
+        }
       }
     }
 
@@ -585,44 +835,77 @@
       }
     }
 
-    // ── Auth Check for Admin Post Form ────────────────────────────────────
-    let currentAdminUser = null;
-
+    // ── Auth Check for Admin Controls ─────────────────────────────────────
     async function checkAuth() {
       const actionRow = document.getElementById('adminActionRow');
-      if (!supabase) return;
+      let wasAdmin = isAdmin;
+      isAdmin = false;
+      currentAdminUser = null;
 
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error || !session?.user) {
-          if (actionRow) actionRow.style.display = 'none';
-          currentAdminUser = null;
-          return;
+      const allowedRoles = ['admin', 'faculty_admin', 'editor', 'teacher', 'faculty', 'super_admin'];
+
+      // 1. Check Supabase session first
+      if (supabase) {
+        try {
+          const { data: { session }, error } = await supabase.auth.getSession();
+          if (!error && session?.user) {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('id, email, full_name, role')
+              .eq('id', session.user.id)
+              .maybeSingle();
+
+            const role = String(profile?.role || session.user.user_metadata?.role || '').toLowerCase().trim();
+            if (allowedRoles.includes(role)) {
+              isAdmin = true;
+              currentAdminUser = {
+                id: session.user.id,
+                email: session.user.email,
+                name: profile?.full_name || session.user.user_metadata?.full_name || session.user.email,
+                role: role
+              };
+            }
+          }
+        } catch (err) {
+          console.warn('[achievements] checkAuth Supabase error:', err);
         }
+      }
 
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('id, email, full_name, role')
-          .eq('id', session.user.id)
-          .maybeSingle();
+      // 2. Fallback to local session check (window.Auth / sessionStorage / localStorage)
+      if (!isAdmin) {
+        try {
+          const localUser = window.Auth ? window.Auth.currentUser() : (window.BlogDB ? window.BlogDB.getCurrentUser() : null);
+          const localRole = String(localUser?.role || localUser?.user?.role || '').toLowerCase().trim();
+          if (localUser && allowedRoles.includes(localRole)) {
+            isAdmin = true;
+            currentAdminUser = localUser;
+          } else {
+            const raw = sessionStorage.getItem('srmvec_portal_session') || sessionStorage.getItem('srmvec_current_user') || localStorage.getItem('cse_auth_user');
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              const r = String(parsed?.role || parsed?.user?.role || '').toLowerCase().trim();
+              if (allowedRoles.includes(r)) {
+                isAdmin = true;
+                currentAdminUser = parsed;
+              }
+            }
+          }
+        } catch (e) {}
+      }
 
-        const role = profile?.role || session.user.user_metadata?.role || '';
-        const canPost = ['admin', 'faculty_admin', 'editor'].includes(role);
+      if (actionRow) {
+        actionRow.style.display = isAdmin ? 'flex' : 'none';
+      }
 
-        if (canPost && actionRow) {
-          currentAdminUser = {
-            id: session.user.id,
-            email: session.user.email,
-            name: profile?.full_name || session.user.user_metadata?.full_name || session.user.email,
-            role: role
-          };
-          actionRow.style.display = 'flex';
-        } else {
-          if (actionRow) actionRow.style.display = 'none';
-          currentAdminUser = null;
-        }
-      } catch (err) {
-        console.warn('[achievements] checkAuth error:', err);
+      // Update detail modal admin actions visibility if open
+      const modalAdminActions = document.getElementById('modalAdminActions');
+      if (modalAdminActions) {
+        modalAdminActions.style.display = isAdmin ? 'flex' : 'none';
+      }
+
+      // If admin state changed, re-render grid to show/hide edit & delete buttons
+      if (wasAdmin !== isAdmin) {
+        renderGrid();
       }
     }
 
@@ -640,8 +923,9 @@
         });
       }
 
-      // 2. Render seed records instantly so page never gets stuck or delays
-      allAchievements = [...SEED_ACHIEVEMENTS];
+      // 2. Render seed records with overrides instantly
+      const seedList = applyAchievementOverrides(SEED_ACHIEVEMENTS);
+      allAchievements = [...seedList];
       const statTotal = document.getElementById('statTotalAch');
       if (statTotal) statTotal.textContent = allAchievements.length;
       renderGrid();
@@ -655,7 +939,9 @@
           const data = await fetchAllAchievements();
           if (data && data.length > 0) {
             const ids = new Set(data.map(d => String(d.id)));
-            const extraSeeds = SEED_ACHIEVEMENTS.filter(s => !ids.has(String(s.id)));
+            // Apply overrides/deleted filter to extra seeds too so deleted seed
+            // achievements don't reappear after the background Supabase re-fetch
+            const extraSeeds = applyAchievementOverrides(seedList.filter(s => !ids.has(String(s.id))));
             allAchievements = [...data, ...extraSeeds];
             if (statTotal) statTotal.textContent = allAchievements.length;
             renderGrid();
@@ -698,12 +984,34 @@
         });
       }
 
-      // Modal close triggers
+      // Detail Modal close triggers
       document.getElementById('achModalCloseBtn')?.addEventListener('click', closeDetailModal);
       document.getElementById('achModalBackdrop')?.addEventListener('click', closeDetailModal);
       document.getElementById('modalCloseActionBtn')?.addEventListener('click', closeDetailModal);
+
+      // Detail Modal admin button triggers
+      document.getElementById('modalEditAchBtn')?.addEventListener('click', () => {
+        if (currentDetailModalId) {
+          closeDetailModal();
+          openEditModal(currentDetailModalId);
+        }
+      });
+      document.getElementById('modalDeleteAchBtn')?.addEventListener('click', () => {
+        if (currentDetailModalId) {
+          handleDeleteAchievement(currentDetailModalId);
+        }
+      });
+
+      // Edit Modal close triggers
+      document.getElementById('achEditModalCloseBtn')?.addEventListener('click', closeEditModal);
+      document.getElementById('achEditModalBackdrop')?.addEventListener('click', closeEditModal);
+      document.getElementById('cancelEditAchBtn')?.addEventListener('click', closeEditModal);
+
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeDetailModal();
+        if (e.key === 'Escape') {
+          closeDetailModal();
+          closeEditModal();
+        }
       });
 
       // Share button in modal
@@ -715,14 +1023,84 @@
         setTimeout(() => { btn.innerHTML = origText; }, 2000);
       });
 
+      // Photo upload file input for Edit Modal
+      const editFileInput = document.getElementById('editAchFileInput');
+      const editImgInput = document.getElementById('editAchImg');
+      const editFileNotice = document.getElementById('editAchFileNotice');
+      if (editFileInput && editImgInput) {
+        editFileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+              editImgInput.value = evt.target.result;
+              if (editFileNotice) editFileNotice.textContent = `Selected: ${file.name}`;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      // Edit Form Submit
+      const editForm = document.getElementById('achEditForm');
+      if (editForm) {
+        editForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const saveBtn = document.getElementById('saveEditAchBtn');
+          const msgBox = document.getElementById('achEditFormMsg');
+          saveBtn.disabled = true;
+          saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving Changes...';
+
+          const id = document.getElementById('editAchId').value;
+          const updatedAch = {
+            title: document.getElementById('editAchTitle').value.trim(),
+            student_name: document.getElementById('editAchStudent').value.trim(),
+            category: document.getElementById('editAchCategory').value,
+            achievement_date: document.getElementById('editAchDate').value,
+            year: document.getElementById('editAchYear').value.trim() || '2026-27',
+            image_url: document.getElementById('editAchImg').value.trim() || '/images/achievements/medarzt-tech-heist.jpeg',
+            short_desc: document.getElementById('editAchShort').value.trim(),
+            description: document.getElementById('editAchDesc').value.trim()
+          };
+
+          const res = await updateAchievement(id, updatedAch);
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Changes';
+
+          // Update in allAchievements list
+          const idx = allAchievements.findIndex(a => String(a.id) === String(id));
+          if (idx !== -1) {
+            allAchievements[idx] = { ...allAchievements[idx], ...updatedAch };
+          }
+          renderGrid();
+          closeEditModal();
+        });
+      }
+
       // Auth trigger
-      checkAuth();
+      await checkAuth();
       if (supabase?.auth?.onAuthStateChange) {
         supabase.auth.onAuthStateChange(() => {
           checkAuth();
         });
       }
       window.addEventListener('authStateChanged', checkAuth);
+
+      // Listen for updates from other tabs
+      window.addEventListener('srmvec:achievements-updated', () => {
+        const seedList = applyAchievementOverrides(SEED_ACHIEVEMENTS);
+        fetchAllAchievements().then(fresh => {
+          if (fresh && fresh.length > 0) {
+            const ids = new Set(fresh.map(d => String(d.id)));
+            const extraSeeds = seedList.filter(s => !ids.has(String(s.id)));
+            allAchievements = [...fresh, ...extraSeeds];
+          } else {
+            allAchievements = [...seedList];
+          }
+          if (statTotal) statTotal.textContent = allAchievements.length;
+          renderGrid();
+        });
+      });
 
       // Admin open post form
       const openPostBtn = document.getElementById('openPostFormBtn');
@@ -755,7 +1133,7 @@
             student_name: document.getElementById('achInputStudent').value.trim(),
             category: document.getElementById('achInputCategory').value,
             achievement_date: document.getElementById('achInputDate').value,
-            year: document.getElementById('achInputYear').value.trim() || '2025-26',
+            year: document.getElementById('achInputYear').value.trim() || '2026-27',
             image_url: document.getElementById('achInputImg').value.trim() || 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80',
             short_desc: document.getElementById('achInputShort').value.trim(),
             description: document.getElementById('achInputDesc').value.trim(),
@@ -780,6 +1158,7 @@
             // Prepend new item
             const added = res.data || { ...newAch, id: 'ach-' + Date.now() };
             allAchievements.unshift(added);
+            if (statTotal) statTotal.textContent = allAchievements.length;
             renderGrid();
             
             setTimeout(() => {
