@@ -1,13 +1,14 @@
 /* ===================================================
    BLOG DATA STORE — blog-data.js
    Shared localStorage & Supabase Sync CRUD
-   Enforces Student Article Approval & Admin-Only Edits/Deletions
+   Enforces Student Article Approval & Teacher/Admin Publishing
    =================================================== */
 
 const BlogDB = (() => {
 
   const STORAGE_KEY = 'srmvec_blogs';
   const USER_KEY    = 'srmvec_current_user';
+  const SYNC_KEY    = 'srmvec_blogs_last_update';
 
   // ── Sample seed data initialized as approved so public visitors see demo content ──
   const SEED_BLOGS = [
@@ -88,30 +89,100 @@ const BlogDB = (() => {
     }
   ];
 
+  // ── Dispatch live event across windows & iframes ──
+  function notifyBlogsChanged(action, payload) {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(SYNC_KEY, String(Date.now()));
+      }
+    } catch (e) {}
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('srmvec:blogs-updated', { detail: { action, payload } }));
+      try {
+        if (window.top && window.top !== window) {
+          window.top.dispatchEvent(new CustomEvent('srmvec:blogs-updated', { detail: { action, payload } }));
+          window.top.postMessage({ type: 'srmvec:blogs-updated', action, payload }, '*');
+        }
+      } catch (e) {}
+      try {
+        document.querySelectorAll('iframe').forEach(iframe => {
+          iframe.contentWindow?.postMessage({ type: 'srmvec:blogs-updated', action, payload }, '*');
+        });
+      } catch (e) {}
+    }
+  }
+
+  // ── Helper: Resolve current logged in user from all possible auth stores ──
+  function getCurrentUser() {
+    try {
+      const fromSession = JSON.parse(sessionStorage.getItem(USER_KEY));
+      if (fromSession) return fromSession;
+    } catch {}
+    try {
+      const portal = JSON.parse(sessionStorage.getItem('srmvec_portal_session'));
+      if (portal) return portal;
+    } catch {}
+    try {
+      const local = JSON.parse(localStorage.getItem('cse_auth_user'));
+      if (local) return local;
+    } catch {}
+    if (typeof window !== 'undefined' && window.Auth && typeof window.Auth.currentUser === 'function') {
+      const u = window.Auth.currentUser();
+      if (u) return u;
+    }
+    return null;
+  }
+
+  function setCurrentUser(user) {
+    try {
+      sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+    } catch {}
+  }
+
+  function logout() {
+    try {
+      sessionStorage.removeItem(USER_KEY);
+      sessionStorage.removeItem('srmvec_portal_session');
+    } catch {}
+  }
+
   // ── Helper: Admin role check ──
   function checkIsAdmin() {
     const user = getCurrentUser();
     if (!user) return false;
-    return user.role === 'admin' || user.role === 'faculty_admin' || user.role === 'editor';
+    const r = String(user.role || '').toLowerCase().trim();
+    return r === 'admin' || r === 'faculty_admin' || r === 'editor' || r === 'super_admin';
   }
 
   // ── Initialize storage ──
   function init() {
-    if (!localStorage.getItem(STORAGE_KEY)) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_BLOGS));
-    }
+    try {
+      if (typeof localStorage !== 'undefined' && !localStorage.getItem(STORAGE_KEY)) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_BLOGS));
+      }
+    } catch {}
   }
 
   // ── Get all raw blogs ──
   function getAllRawBlogs() {
     init();
     try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    } catch { return []; }
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return stored ? JSON.parse(stored) : SEED_BLOGS;
+    } catch {
+      return SEED_BLOGS;
+    }
   }
 
-  function saveBlogs(blogs) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(blogs));
+  function saveBlogs(blogs, notify = true) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(blogs));
+    } catch (e) {
+      console.warn('Failed to save blogs to localStorage:', e);
+    }
+    if (notify) {
+      notifyBlogsChanged('update', blogs);
+    }
   }
 
   // ── Get ONLY approved & published blogs (for public boards & general users) ──
@@ -126,15 +197,21 @@ const BlogDB = (() => {
     return blogs.filter(b => b.status === 'pending');
   }
 
-  // ── Get author's own blogs (regardless of approval status, so author can track submission status) ──
-  function getAuthorBlogs(authorId) {
+  // ── Get author's own blogs (matches by id, username, or display name) ──
+  function getAuthorBlogs(authorIdentifier) {
     const blogs = getAllRawBlogs();
-    return blogs.filter(b => b.authorId === authorId);
+    if (!authorIdentifier) return [];
+    const idStr = String(authorIdentifier).toLowerCase().trim();
+    return blogs.filter(b => 
+      String(b.authorId || '').toLowerCase() === idStr ||
+      String(b.author || '').toLowerCase() === idStr ||
+      String(b.author || '').toLowerCase().includes(idStr)
+    );
   }
 
-  // ── Async Supabase sync ──
+  // ── Async Supabase sync (Safely merges remote and local) ──
   async function fetchBlogsAsync() {
-    if (window.supabase) {
+    if (typeof window !== 'undefined' && window.supabase) {
       try {
         const { data, error } = await window.supabase
           .from('blogs')
@@ -142,7 +219,8 @@ const BlogDB = (() => {
           .order('created_at', { ascending: false });
 
         if (!error && data && data.length > 0) {
-          const mapped = data.map(b => ({
+          const currentLocal = getAllRawBlogs();
+          const remoteMapped = data.map(b => ({
             id: b.id,
             title: b.title,
             category: b.category,
@@ -157,41 +235,46 @@ const BlogDB = (() => {
             updatedAt: b.updated_at,
             views: b.views || 0
           }));
-          saveBlogs(mapped);
-          return mapped;
+
+          // Merge: remote records + any local records not in remote
+          const remoteIds = new Set(remoteMapped.map(b => String(b.id)));
+          const localOnly = currentLocal.filter(b => !remoteIds.has(String(b.id)));
+          const merged = [...remoteMapped, ...localOnly];
+          saveBlogs(merged, false);
+          return merged.filter(b => b.status === 'approved' || b.is_published === true || !b.status);
         }
       } catch (err) {
         console.warn('Supabase fetch failed, using local cache:', err);
       }
     }
-    return getAllRawBlogs();
+    return getBlogs();
   }
 
   function getBlogById(id) {
-    return getAllRawBlogs().find(b => b.id === id) || null;
+    return getAllRawBlogs().find(b => String(b.id) === String(id)) || null;
   }
 
   // ── CREATE ARTICLE / BLOG POST ──
-  // Students create articles with status 'pending' (requires admin approval)
-  // Admins create articles with status 'approved' directly
+  // Teachers, Faculty, and Admins are published immediately.
+  // Student articles start in 'pending' for admin verification.
   async function createBlog({ title, category, content, tags, author, authorId, role }) {
     const parsedTags = Array.isArray(tags) ? tags : String(tags || '').split(',').map(t => t.trim()).filter(Boolean);
     const currentUser = getCurrentUser();
-    const effectiveAuthorId = authorId || currentUser?.id || currentUser?.userId;
+    const effectiveAuthorId = authorId || currentUser?.userId || currentUser?.id || currentUser?.username || 'anonymous';
     const authorRole = role || currentUser?.role || 'student';
     const isAdminUser = checkIsAdmin();
 
-    // Student articles MUST be approved by admin before publishing
-    const status = isAdminUser ? 'approved' : 'pending';
-    const isPublished = isAdminUser ? true : false;
+    const isFacultyOrAdmin = isAdminUser || authorRole === 'teacher' || authorRole === 'faculty';
+    const status = isFacultyOrAdmin ? 'approved' : 'pending';
+    const isPublished = isFacultyOrAdmin ? true : false;
 
     const newBlog = {
       id: 'blog_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
-      title: title.trim(),
-      category: category.trim(),
-      content: content.trim(),
+      title: (title || '').trim(),
+      category: (category || 'General Tech').trim(),
+      content: (content || '').trim(),
       tags: parsedTags,
-      author: author || currentUser?.displayName || currentUser?.name || 'Anonymous',
+      author: author || currentUser?.displayName || currentUser?.name || 'Faculty Member',
       authorId: effectiveAuthorId,
       role: authorRole,
       status: status,
@@ -203,10 +286,10 @@ const BlogDB = (() => {
 
     const blogs = getAllRawBlogs();
     blogs.unshift(newBlog);
-    saveBlogs(blogs);
+    saveBlogs(blogs, true);
 
     // Sync to Supabase if connected
-    if (window.supabase && currentUser) {
+    if (typeof window !== 'undefined' && window.supabase && currentUser) {
       try {
         const { data, error } = await window.supabase
           .from('blogs')
@@ -216,7 +299,7 @@ const BlogDB = (() => {
             content: newBlog.content,
             tags: newBlog.tags,
             author_name: newBlog.author,
-            author_id: currentUser.id || currentUser.userId,
+            author_id: currentUser.id || currentUser.userId || effectiveAuthorId,
             author_role: newBlog.role,
             status: status,
             is_published: isPublished
@@ -227,13 +310,14 @@ const BlogDB = (() => {
         if (!error && data) {
           newBlog.id = data.id;
           blogs[0].id = data.id;
-          saveBlogs(blogs);
+          saveBlogs(blogs, false);
         }
       } catch (e) {
         console.warn('Supabase insert failed:', e);
       }
     }
 
+    notifyBlogsChanged('create', newBlog);
     return newBlog;
   }
 
@@ -244,15 +328,15 @@ const BlogDB = (() => {
     }
 
     const blogs = getAllRawBlogs();
-    const idx = blogs.findIndex(b => b.id === id);
+    const idx = blogs.findIndex(b => String(b.id) === String(id));
     if (idx === -1) return null;
 
     blogs[idx].status = 'approved';
     blogs[idx].is_published = true;
     blogs[idx].updatedAt = new Date().toISOString();
-    saveBlogs(blogs);
+    saveBlogs(blogs, true);
 
-    if (window.supabase) {
+    if (typeof window !== 'undefined' && window.supabase) {
       try {
         await window.supabase
           .from('blogs')
@@ -267,6 +351,7 @@ const BlogDB = (() => {
       }
     }
 
+    notifyBlogsChanged('approve', blogs[idx]);
     return blogs[idx];
   }
 
@@ -277,15 +362,15 @@ const BlogDB = (() => {
     }
 
     const blogs = getAllRawBlogs();
-    const idx = blogs.findIndex(b => b.id === id);
+    const idx = blogs.findIndex(b => String(b.id) === String(id));
     if (idx === -1) return null;
 
     blogs[idx].status = 'rejected';
     blogs[idx].is_published = false;
     blogs[idx].updatedAt = new Date().toISOString();
-    saveBlogs(blogs);
+    saveBlogs(blogs, true);
 
-    if (window.supabase) {
+    if (typeof window !== 'undefined' && window.supabase) {
       try {
         await window.supabase
           .from('blogs')
@@ -300,28 +385,41 @@ const BlogDB = (() => {
       }
     }
 
+    notifyBlogsChanged('reject', blogs[idx]);
     return blogs[idx];
   }
 
-  // ── UPDATE BLOG (STRICT ADMIN ONLY) ──
+  // ── UPDATE BLOG (Admin OR Author) ──
   async function updateBlog(id, updates) {
-    if (!checkIsAdmin()) {
-      alert('Security Alert: Only administrators are authorized to edit data.');
-      return { error: 'Permission denied: Only administrators can edit data.' };
-    }
+    const user = getCurrentUser();
+    const isAdmin = checkIsAdmin();
 
     const blogs = getAllRawBlogs();
-    const idx = blogs.findIndex(b => b.id === id);
+    const idx = blogs.findIndex(b => String(b.id) === String(id));
     if (idx === -1) return null;
+
+    const b = blogs[idx];
+    const isAuthor = user && (
+      String(user.id || '') === String(b.authorId || '') ||
+      String(user.userId || '') === String(b.authorId || '') ||
+      String(user.username || '').toLowerCase() === String(b.authorId || '').toLowerCase() ||
+      String(user.displayName || '').toLowerCase() === String(b.author || '').toLowerCase() ||
+      String(user.name || '').toLowerCase() === String(b.author || '').toLowerCase()
+    );
+
+    if (!isAdmin && !isAuthor) {
+      alert('Security Alert: You are not authorized to edit this article.');
+      return { error: 'Permission denied: You are not authorized to edit this article.' };
+    }
 
     blogs[idx] = {
       ...blogs[idx],
       ...updates,
       updatedAt: new Date().toISOString()
     };
-    saveBlogs(blogs);
+    saveBlogs(blogs, true);
 
-    if (window.supabase) {
+    if (typeof window !== 'undefined' && window.supabase) {
       try {
         await window.supabase
           .from('blogs')
@@ -338,22 +436,37 @@ const BlogDB = (() => {
       }
     }
 
+    notifyBlogsChanged('update', blogs[idx]);
     return blogs[idx];
   }
 
-  // ── DELETE BLOG (STRICT ADMIN ONLY) ──
+  // ── DELETE BLOG (Admin OR Author) ──
   async function deleteBlog(id) {
-    if (!checkIsAdmin()) {
-      alert('Security Alert: Only administrators are authorized to delete data.');
+    const user = getCurrentUser();
+    const isAdmin = checkIsAdmin();
+
+    const blogs = getAllRawBlogs();
+    const idx = blogs.findIndex(b => String(b.id) === String(id));
+    if (idx === -1) return false;
+
+    const b = blogs[idx];
+    const isAuthor = user && (
+      String(user.id || '') === String(b.authorId || '') ||
+      String(user.userId || '') === String(b.authorId || '') ||
+      String(user.username || '').toLowerCase() === String(b.authorId || '').toLowerCase() ||
+      String(user.displayName || '').toLowerCase() === String(b.author || '').toLowerCase() ||
+      String(user.name || '').toLowerCase() === String(b.author || '').toLowerCase()
+    );
+
+    if (!isAdmin && !isAuthor) {
+      alert('Security Alert: You are not authorized to delete this article.');
       return false;
     }
 
-    const blogs = getAllRawBlogs();
-    const filtered = blogs.filter(b => b.id !== id);
-    if (filtered.length === blogs.length) return false;
-    saveBlogs(filtered);
+    const removed = blogs.splice(idx, 1);
+    saveBlogs(blogs, true);
 
-    if (window.supabase) {
+    if (typeof window !== 'undefined' && window.supabase) {
       try {
         await window.supabase
           .from('blogs')
@@ -364,17 +477,18 @@ const BlogDB = (() => {
       }
     }
 
+    notifyBlogsChanged('delete', removed[0]);
     return true;
   }
 
   function incrementViews(id) {
     const blogs = getAllRawBlogs();
-    const idx = blogs.findIndex(b => b.id === id);
+    const idx = blogs.findIndex(b => String(b.id) === String(id));
     if (idx !== -1) {
       blogs[idx].views = (blogs[idx].views || 0) + 1;
-      saveBlogs(blogs);
+      saveBlogs(blogs, false);
 
-      if (window.supabase) {
+      if (typeof window !== 'undefined' && window.supabase) {
         window.supabase
           .from('blogs')
           .update({ views: blogs[idx].views })
@@ -392,28 +506,12 @@ const BlogDB = (() => {
       .slice(0, max);
   }
 
-  // ── USER SESSION ──
-  function getCurrentUser() {
-    try {
-      return JSON.parse(sessionStorage.getItem(USER_KEY)) || null;
-    } catch { return null; }
-  }
-
-  function setCurrentUser(user) {
-    sessionStorage.setItem(USER_KEY, JSON.stringify(user));
-  }
-
-  function logout() {
-    sessionStorage.removeItem(USER_KEY);
-    sessionStorage.removeItem('srmvec_portal_session');
-  }
-
   // ── Authentication Check ──
   function authenticate(username, password, expectedRole) {
     if (expectedRole === 'admin' || expectedRole === 'faculty_admin' || expectedRole === 'editor') {
       return null;
     }
-    const directory = window.PortalUsers;
+    const directory = typeof window !== 'undefined' ? window.PortalUsers : null;
     if (!directory) return null;
     let user = null;
     if (expectedRole === 'teacher') {
@@ -436,7 +534,9 @@ const BlogDB = (() => {
   }
 
   function formatDate(isoStr) {
+    if (!isoStr) return '';
     const d = new Date(isoStr);
+    if (isNaN(d.getTime())) return isoStr;
     return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
@@ -474,8 +574,13 @@ const BlogDB = (() => {
     authenticate,
     formatDate,
     truncate,
-    checkIsAdmin
+    checkIsAdmin,
+    notifyBlogsChanged
   };
 })();
 
-window.BlogDB = BlogDB;
+if (typeof window !== 'undefined') {
+  window.BlogDB = BlogDB;
+}
+
+export default BlogDB;

@@ -8,6 +8,14 @@
 .env.local
 .env.development.local
 .env.production.local
+.envrc
+
+# Private keys and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
 
 # Sensitive script containing credentials / local testing helpers
 src/scripts/test-admin-auth.js

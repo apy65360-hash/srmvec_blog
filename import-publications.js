@@ -2,8 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = 'https://ixoddnwmhifjrhzonkuj.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4b2RkbndtaGlmanJoem9ua3VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3NzQ3MTksImV4cCI6MjEwMjM1MDcxOX0.6jBpiEVVU7q4dRJxKAwVtzzpe3DsfoCFKhqUIuNubSs';
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY;
+
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  throw new Error('Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in the environment.');
+}
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 

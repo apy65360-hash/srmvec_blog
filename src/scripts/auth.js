@@ -349,25 +349,39 @@ const Auth = {
       type: 'forgot',
       email: cleanEmail,
       name: facultyAccount?.name || 'Faculty Member',
+      designation: facultyAccount?.designation || 'Faculty',
       otp: generatedOtp,
-      expiresAt: Date.now() + 10 * 60 * 1000
+      expiresAt: Date.now() + 15 * 60 * 1000
     };
     try {
       sessionStorage.setItem('srmvec_faculty_pending_otp', JSON.stringify(sessionPayload));
+      localStorage.setItem('srmvec_pending_reset_otp_' + cleanEmail, JSON.stringify(sessionPayload));
     } catch (e) {}
+
+    const origin = (typeof location !== 'undefined' && location.origin) ? location.origin : '';
+    const resetPageUrl = origin + '/reset-password.html?email=' + encodeURIComponent(cleanEmail);
+    const resetDirectUrl = origin + '/reset-password.html?email=' + encodeURIComponent(cleanEmail) + '&code=' + generatedOtp;
 
     // Dispatch via Supabase if possible
     if (window.supabase) {
       try {
-        await window.supabase.auth.signInWithOtp({ email: cleanEmail }).catch(() => {});
+        await window.supabase.auth.signInWithOtp({
+          email: cleanEmail,
+          options: {
+            emailRedirectTo: resetDirectUrl
+          }
+        }).catch(() => {});
       } catch (e) {}
     }
 
     return {
       success: true,
       email: cleanEmail,
-      message: 'A password reset verification code has been sent to ' + cleanEmail + '. Check your official college inbox.',
-      devCode: generatedOtp
+      otp: generatedOtp,
+      devCode: generatedOtp,
+      resetLink: resetDirectUrl,
+      resetPageUrl: resetPageUrl,
+      message: 'A password reset verification code has been sent to ' + cleanEmail + '. Check your official college inbox.'
     };
   },
 
@@ -382,10 +396,11 @@ const Auth = {
       return { error: 'Invalid verification code.' };
     }
 
-    // 1. Check local session OTP
+    // 1. Check local session OTP or cross-tab localStorage
     let pending = null;
     try {
-      const raw = sessionStorage.getItem('srmvec_faculty_pending_otp');
+      const raw = sessionStorage.getItem('srmvec_faculty_pending_otp') ||
+                  localStorage.getItem('srmvec_pending_reset_otp_' + cleanEmail);
       if (raw) pending = JSON.parse(raw);
     } catch (e) {}
 
@@ -417,11 +432,12 @@ const Auth = {
       return { error: 'Invalid verification code.' };
     }
 
-    // Mark verified in session
+    // Mark verified in session and localStorage
     if (pending) {
       pending.verified = true;
       try {
         sessionStorage.setItem('srmvec_faculty_pending_otp', JSON.stringify(pending));
+        localStorage.setItem('srmvec_pending_reset_otp_' + cleanEmail, JSON.stringify(pending));
       } catch (e) {}
     }
 
@@ -443,10 +459,11 @@ const Auth = {
       return { error: validation.error };
     }
 
-    // Check verified status in session
+    // Check verified status in session or localStorage
     let pending = null;
     try {
-      const raw = sessionStorage.getItem('srmvec_faculty_pending_otp');
+      const raw = sessionStorage.getItem('srmvec_faculty_pending_otp') ||
+                  localStorage.getItem('srmvec_pending_reset_otp_' + cleanEmail);
       if (raw) pending = JSON.parse(raw);
     } catch (e) {}
 
@@ -454,7 +471,7 @@ const Auth = {
       return { error: 'Security verification missing. Please request and verify your email OTP first.' };
     }
 
-    const facultyName = pending.name;
+    const facultyName = pending.name || 'Faculty Member';
     const facultyDesig = pending.designation || 'Faculty';
 
     // 1. Save / Update in PortalUsers local persistence
@@ -500,9 +517,10 @@ const Auth = {
       }
     }
 
-    // Clear pending session
+    // Clear pending session & cross-tab storage
     try {
       sessionStorage.removeItem('srmvec_faculty_pending_otp');
+      localStorage.removeItem('srmvec_pending_reset_otp_' + cleanEmail);
     } catch (e) {}
 
     // Auto-login faculty into session
@@ -521,17 +539,112 @@ const Auth = {
 
     return {
       success: true,
+      user,
       session: this.startSession(user),
       message: 'Account password configured successfully!'
     };
   },
 
   /**
-   * Faculty Login (Returning staff): Official Email + Password.
-   * Strict validation:
-   * 1. Must end with @srmvalliammai.ac.in
-   * 2. Only authorized roster accounts with verified password are allowed
+   * Direct Login with Verification Code (without resetting password).
    */
+  async loginFacultyWithOtp(email, otp) {
+    const cleanEmail = String(email || '').trim().toLowerCase();
+    const cleanOtp = String(otp || '').trim();
+
+    if (!cleanEmail) {
+      return { error: 'Please enter your official mail id.' };
+    }
+    if (!cleanOtp) {
+      return { error: 'Please enter the 6-digit verification code.' };
+    }
+
+    const vRes = await this.verifyFacultyOtp(cleanEmail, cleanOtp);
+    if (vRes?.error) {
+      return { error: vRes.error };
+    }
+
+    let facultyAccount = null;
+    if (window.PortalUsers) {
+      facultyAccount = window.PortalUsers.getFacultyAccountByEmail(cleanEmail);
+    }
+
+    let pending = null;
+    try {
+      const raw = sessionStorage.getItem('srmvec_faculty_pending_otp') ||
+                  localStorage.getItem('srmvec_pending_reset_otp_' + cleanEmail);
+      if (raw) pending = JSON.parse(raw);
+    } catch (e) {}
+
+    const facultyName = facultyAccount?.name || pending?.name || 'Faculty Member';
+    const facultyDesig = facultyAccount?.designation || pending?.designation || 'Faculty';
+    const userRole = (facultyName.includes('Vanathi') || facultyDesig.includes('Head')) ? 'faculty_admin' : 'teacher';
+
+    const user = {
+      userId: facultyAccount?.userId || 'faculty_' + Date.now(),
+      id: facultyAccount?.id || facultyAccount?.code || 'CSE_FACULTY',
+      name: facultyName,
+      displayName: facultyName,
+      username: cleanEmail,
+      role: userRole,
+      email: cleanEmail,
+      designation: facultyDesig,
+      permissions: {}
+    };
+
+    try {
+      sessionStorage.removeItem('srmvec_faculty_pending_otp');
+      localStorage.removeItem('srmvec_pending_reset_otp_' + cleanEmail);
+    } catch (e) {}
+
+    const session = this.startSession(user);
+    return {
+      success: true,
+      user,
+      session,
+      message: 'Signed in successfully via verification code!'
+    };
+  },
+
+  /**
+   * Reset password with verification code on the dedicated reset password page.
+   * Directly automates password update and logs the user in immediately.
+   */
+  async resetPasswordWithOtp(email, otp, newPassword) {
+    const cleanEmail = String(email || '').trim().toLowerCase();
+    const cleanOtp = String(otp || '').trim();
+
+    if (!cleanEmail) {
+      return { error: 'Please enter your registered mail id.' };
+    }
+    if (!cleanOtp || cleanOtp.length < 6) {
+      return { error: 'Please enter a valid 6-digit verification code.' };
+    }
+    if (!newPassword || newPassword.length < 8) {
+      return { error: 'New password must be at least 8 characters long.' };
+    }
+
+    // 1. Verify OTP first
+    const vRes = await this.verifyFacultyOtp(cleanEmail, cleanOtp);
+    if (vRes?.error) {
+      return { error: vRes.error };
+    }
+
+    // 2. Automate setting new password directly and starting session
+    const setupRes = await this.completeFacultyPasswordSetup(cleanEmail, newPassword);
+    if (setupRes?.error) {
+      return { error: setupRes.error };
+    }
+
+    return {
+      success: true,
+      user: setupRes.user || setupRes.session?.user,
+      session: setupRes.session,
+      redirect: 'admin-corner.html',
+      message: 'Password reset successfully! Logging you in automatically…'
+    };
+  },
+
   async loginTeacher(email, password) {
     const cleanEmail = String(email || '').trim().toLowerCase();
     const cleanPw = String(password || '').trim();
@@ -557,6 +670,15 @@ const Auth = {
             .from('profiles').select('*').eq('id', data.user.id).maybeSingle();
 
           const role = profile?.role || data.user.user_metadata?.role || 'teacher';
+
+          if (profile && ['teacher', 'faculty'].includes(role) && profile.status !== 'approved') {
+            await window.supabase.auth.signOut().catch(() => {});
+            if (profile.status === 'rejected') {
+              return { error: 'Your faculty account request was rejected. Please contact the administrator.' };
+            }
+            return { error: 'Your faculty account is pending admin approval. Please wait for an administrator to approve your account.' };
+          }
+
           const user = {
             userId: data.user.id,
             id: data.user.id,
@@ -564,6 +686,7 @@ const Auth = {
             displayName: profile?.full_name || data.user.user_metadata?.full_name || cleanEmail,
             username: cleanEmail,
             role,
+            status: profile?.status || 'approved',
             email: cleanEmail,
             permissions: profile?.permissions || {}
           };
@@ -1080,7 +1203,7 @@ const Auth = {
 
   isTeacher() {
     const u = this.currentUser();
-    return u && u.role === "teacher";
+    return u && (u.role === "teacher" || u.role === "faculty");
   },
 
   isStudent() {
@@ -1107,7 +1230,7 @@ const Auth = {
   },
 
   homeFor(role) {
-    if (role === "teacher") { return "dashboard.html"; }
+    if (role === "teacher" || role === "faculty") { return "dashboard.html"; }
     if (role === "admin" || role === "faculty_admin" || role === "editor") { return "admin-corner.html"; }
     return "student-corner.html";
   },
@@ -1137,8 +1260,11 @@ const Auth = {
     }
 
     const isAdminUser = this.isAdmin();
+    const isTeacherUser = this.isTeacher();
     const isAllowed = Array.isArray(allowedRoles) && allowedRoles.length && (
-      allowedRoles.includes(user.role) || (allowedRoles.some(r => ["admin", "faculty_admin", "editor"].includes(r)) && isAdminUser)
+      allowedRoles.includes(user.role) ||
+      (allowedRoles.some(r => ["admin", "faculty_admin", "editor"].includes(r)) && isAdminUser) ||
+      (allowedRoles.some(r => ["teacher", "faculty"].includes(r)) && isTeacherUser)
     );
 
     if (Array.isArray(allowedRoles) && allowedRoles.length && !isAllowed) {
@@ -1153,6 +1279,7 @@ const Auth = {
    * Hides restricted links (Manage Faculty, Data Dashboard, Admin Corner) when not logged in as Admin.
    */
   updateAdminDropdowns() {
+    if (typeof document === 'undefined') return;
     const isAdmin = this.isAdmin();
 
     // Select all dropdown menus that contain Admin Corner or links to admin pages

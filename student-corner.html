@@ -829,6 +829,12 @@ document.getElementById('btnForgot').addEventListener('click', async function ()
     document.getElementById('forgotMaskedEmail').textContent = result.maskedEmail;
     document.getElementById('forgotFormWrap').style.display = 'none';
     document.getElementById('forgotDone').style.display = 'block';
+    // Update the reset page link with email pre-filled
+    const studentResetLink = document.getElementById('studentResetPageLink');
+    if (studentResetLink) {
+      const resetUrl = 'reset-password.html?email=' + encodeURIComponent(inputVal.includes('@') ? inputVal.trim().toLowerCase() : '') + '&next=student-corner.html&role=student';
+      studentResetLink.href = resetUrl;
+    }
 
   } catch (err) {
     showMsg('Invalid Register Number.', 'error');
@@ -1014,6 +1020,17 @@ function renderAllBlogs() {
       <tbody>${rows}</tbody>
     </table>`;
 }
+
+window.addEventListener('storage', (e) => {
+  if (e.key === 'srmvec_blogs' || e.key === 'srmvec_blogs_last_update') {
+    renderMyBlogs();
+    renderAllBlogs();
+  }
+});
+window.addEventListener('srmvec:blogs-updated', () => {
+  renderMyBlogs();
+  renderAllBlogs();
+});
 </script>
 </body>
 </html>

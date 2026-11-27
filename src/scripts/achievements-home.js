@@ -9,7 +9,7 @@
  * • Prev / Next button handlers + dot indicators
  */
 
-import { fetchLatestAchievements, postAchievement } from './achievements.js';
+import { fetchLatestAchievements, postAchievement, applyAchievementOverrides } from './achievements.js';
 
 // ── Department Achievement Records (from achievement pics) ──────────────
 const SAMPLE_ACHIEVEMENTS = [
@@ -240,19 +240,31 @@ function renderCarousel(data) {
 
 // ── Boot ─────────────────────────────────────────────────────────────────────
 export async function initAchievementsHome() {
-  let data = [];
+  let dbData = [];
   try {
-    data = await fetchLatestAchievements(3);
+    dbData = await fetchLatestAchievements(3);
   } catch (err) {
     console.warn('[achievements-home] Supabase fetch failed:', err);
   }
 
-  // Fall back to sample data if empty
-  if (!data || data.length === 0) {
-    data = SAMPLE_ACHIEVEMENTS;
+  // Always keep 3 achievements on the home slider:
+  // Most recently uploaded from Supabase first, padded with SAMPLE_ACHIEVEMENTS if fewer than 3
+  const combined = [...(dbData || [])];
+  const seenIds = new Set(combined.map(item => String(item.id)));
+  const seenTitles = new Set(combined.map(item => String(item.title || '').trim().toLowerCase()));
+
+  const sampleList = applyAchievementOverrides(SAMPLE_ACHIEVEMENTS);
+  for (const sample of sampleList) {
+    if (combined.length >= 3) break;
+    const sampleTitle = String(sample.title || '').trim().toLowerCase();
+    if (!seenIds.has(String(sample.id)) && !seenTitles.has(sampleTitle)) {
+      combined.push(sample);
+      seenIds.add(String(sample.id));
+      seenTitles.add(sampleTitle);
+    }
   }
 
-  renderCarousel(data);
+  renderCarousel(combined.slice(0, 3));
   // Direct navigation to add-achievement.html (matches add-event.html structure)
 }
 
@@ -371,11 +383,12 @@ function setupAddAchievementModal() { return;
   }
 }
 
-// Global listener to update carousel if added from another tab/page
-window.addEventListener('achievementAdded', (e) => {
-  if (e.detail) {
-    achievements.unshift(e.detail);
-    renderCarousel(achievements.slice(0, 3));
+// Global listener to update carousel if added, updated or deleted
+window.addEventListener('achievementAdded', () => initAchievementsHome());
+window.addEventListener('srmvec:achievements-updated', () => initAchievementsHome());
+window.addEventListener('storage', (e) => {
+  if (e.key === 'srmvec_achievements_overrides' || e.key === 'srmvec_achievements_deleted') {
+    initAchievementsHome();
   }
 });
 

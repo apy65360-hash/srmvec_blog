@@ -153,7 +153,12 @@
         const { data: profile } = await window.supabase
           .from('profiles').select('*').eq('id', session.user.id).maybeSingle().catch(() => ({ data: null }));
         const role = profile?.role || session.user.user_metadata?.role || 'teacher';
-        if (role === 'teacher' || role === 'faculty_admin' || role === 'admin' || role === 'editor') {
+        if (['teacher', 'faculty'].includes(role) && profile && profile.status !== 'approved') {
+          await window.supabase.auth.signOut().catch(() => {});
+          location.replace('teacher-login.html?pending=1');
+          return;
+        }
+        if (role === 'teacher' || role === 'faculty' || role === 'faculty_admin' || role === 'admin' || role === 'editor') {
           currentUser = {
             userId: session.user.id, id: session.user.id,
             name: profile?.full_name || session.user.user_metadata?.full_name || session.user.email,
@@ -171,7 +176,7 @@
 
     // Check local session (Auth)
     const authUser = window.Auth?.currentUser?.();
-    if (authUser && (authUser.role === 'teacher' || authUser.role === 'faculty_admin' || authUser.role === 'admin' || authUser.role === 'editor')) {
+    if (authUser && (authUser.role === 'teacher' || authUser.role === 'faculty' || authUser.role === 'faculty_admin' || authUser.role === 'admin' || authUser.role === 'editor')) {
       currentUser = authUser;
       if (window.BlogDB) window.BlogDB.setCurrentUser(authUser);
       showDashboard();
@@ -233,9 +238,14 @@
   });
 
   function renderMyBlogs() {
-    const allBlogs = BlogDB.getBlogs();
-    const myId = currentUser.userId || currentUser.username;
-    const myBlogs = allBlogs.filter(b => b.authorId === myId);
+    const allBlogs = BlogDB.getAllRawBlogs();
+    const myId = String(currentUser?.userId || currentUser?.username || currentUser?.id || '').toLowerCase();
+    const myName = String(currentUser?.displayName || currentUser?.name || '').toLowerCase();
+    const myBlogs = allBlogs.filter(b => 
+      (b.authorId && String(b.authorId).toLowerCase() === myId) ||
+      (b.author && String(b.author).toLowerCase() === myName) ||
+      (b.role === 'teacher' && myName && String(b.author || '').toLowerCase().includes(myName))
+    );
 
     document.getElementById('myBlogCount').textContent = `${myBlogs.length} post${myBlogs.length !== 1 ? 's' : ''}`;
 
@@ -257,6 +267,7 @@
         <td>
           <div class="action-btns">
             <a href="blog-view.html?id=${b.id}" class="btn btn-ghost btn-sm" target="_blank"><i class="fa-solid fa-eye"></i> View</a>
+            <button class="btn btn-danger btn-sm" onclick="handleDeleteMyBlog('${b.id}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
           </div>
         </td>
       </tr>
@@ -276,6 +287,20 @@
         <tbody>${rows}</tbody>
       </table>`;
   }
+
+  window.handleDeleteMyBlog = async function(id) {
+    if (confirm('Are you sure you want to delete this blog post?')) {
+      await BlogDB.deleteBlog(id);
+      renderMyBlogs();
+    }
+  };
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'srmvec_blogs' || e.key === 'srmvec_blogs_last_update') {
+      renderMyBlogs();
+    }
+  });
+  window.addEventListener('srmvec:blogs-updated', renderMyBlogs);
 </script>
 </body>
 </html>

@@ -302,30 +302,44 @@
       </table>`;
   };
 
-  window.approveFaculty = async function(id) {
+  async function setFacultyStatus(id, status, actionLabel) {
     if (!window.supabase) return;
-    const { data, error } = await window.supabase.rpc('admin_set_faculty_status', {
+    let { data, error } = await window.supabase.rpc('admin_set_faculty_status', {
       p_target_id: id,
-      p_status: 'approved'
+      p_status: status
     });
+
+    // Fallback to direct RLS-protected table update if PostgREST schema cache lacks the RPC
+    if (error && (error.code === 'PGRST202' || /schema cache|Could not find the function/i.test(error.message || ''))) {
+      const fallback = await window.supabase
+        .from('profiles')
+        .update({ status, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .in('role', ['teacher', 'faculty'])
+        .select('id, status')
+        .maybeSingle();
+
+      if (!fallback.error && fallback.data) {
+        data = fallback.data;
+        error = null;
+      } else {
+        error = fallback.error || new Error('Faculty profile not found or insufficient permissions.');
+      }
+    }
+
     if (error || data?.error) {
-      alert('Error approving: ' + (error?.message || data?.error));
+      alert('Error ' + actionLabel + ': ' + (error?.message || data?.error));
       return;
     }
     loadFacultyAccounts();
+  }
+
+  window.approveFaculty = function(id) {
+    return setFacultyStatus(id, 'approved', 'approving');
   };
 
-  window.rejectFaculty = async function(id) {
-    if (!window.supabase) return;
-    const { data, error } = await window.supabase.rpc('admin_set_faculty_status', {
-      p_target_id: id,
-      p_status: 'rejected'
-    });
-    if (error || data?.error) {
-      alert('Error rejecting: ' + (error?.message || data?.error));
-      return;
-    }
-    loadFacultyAccounts();
+  window.rejectFaculty = function(id) {
+    return setFacultyStatus(id, 'rejected', 'rejecting');
   };
 
 
@@ -501,6 +515,17 @@
   document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
     if (pendingDeleteId) { await BlogDB.deleteBlog(pendingDeleteId); pendingDeleteId = null; }
     document.getElementById('confirmOverlay').classList.remove('open');
+    renderStats();
+    renderAllBlogs();
+  });
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'srmvec_blogs' || e.key === 'srmvec_blogs_last_update') {
+      renderStats();
+      renderAllBlogs();
+    }
+  });
+  window.addEventListener('srmvec:blogs-updated', () => {
     renderStats();
     renderAllBlogs();
   });

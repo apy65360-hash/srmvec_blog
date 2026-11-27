@@ -35,7 +35,9 @@ BEGIN
           'Admins delete publications', 'publications_select_public', 'publications_insert_authenticated',
           'publications_update_policy', 'publications_delete_policy',
           'achievements_select_published', 'achievements_insert_admin', 'achievements_update_admin',
-          'achievements_delete_admin'
+          'achievements_delete_admin',
+          'faculty_select_public', 'faculty_insert_admin', 'faculty_update_admin',
+          'faculty_delete_admin'
         )
         OR qual LIKE '%is_admin%'
         OR with_check LIKE '%is_admin%'
@@ -65,7 +67,7 @@ SET search_path = ''
 AS $$
   SELECT EXISTS (
     SELECT 1 FROM public.profiles 
-    WHERE id = (SELECT auth.uid()) AND role IN ('admin', 'faculty_admin')
+    WHERE id = (SELECT auth.uid()) AND role IN ('admin', 'faculty_admin', 'editor')
   );
 $$;
 
@@ -91,7 +93,19 @@ ALTER TABLE public.profiles
   ADD COLUMN IF NOT EXISTS register_number TEXT,
   ADD COLUMN IF NOT EXISTS must_change_password BOOLEAN,
   ADD COLUMN IF NOT EXISTS department TEXT,
-  ADD COLUMN IF NOT EXISTS permissions JSONB;
+  ADD COLUMN IF NOT EXISTS permissions JSONB,
+  ADD COLUMN IF NOT EXISTS status TEXT;
+
+UPDATE public.profiles
+  SET status = 'pending'
+  WHERE role IN ('teacher', 'faculty') AND status IS NULL;
+
+ALTER TABLE public.profiles
+  DROP CONSTRAINT IF EXISTS profiles_status_check;
+
+ALTER TABLE public.profiles
+  ADD CONSTRAINT profiles_status_check
+  CHECK (status IS NULL OR status IN ('pending', 'approved', 'rejected'));
 
 UPDATE public.profiles 
   SET must_change_password = FALSE 
@@ -173,6 +187,9 @@ $$;
 REVOKE ALL ON FUNCTION public.verify_student_name(TEXT, TEXT) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.verify_student_name(TEXT, TEXT) TO anon, authenticated;
 
+-- Table-level grants for profiles
+GRANT SELECT, UPDATE ON public.profiles TO authenticated;
+
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- 3. PROFILES RLS & SENSITIVE COLUMN PROTECTION
@@ -180,15 +197,18 @@ GRANT EXECUTE ON FUNCTION public.verify_student_name(TEXT, TEXT) TO anon, authen
 
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "profiles_select_policy" ON public.profiles;
 CREATE POLICY "profiles_select_policy" ON public.profiles
   FOR SELECT TO authenticated
   USING (id = (SELECT auth.uid()) OR private.is_admin());
 
+DROP POLICY IF EXISTS "profiles_update_owner" ON public.profiles;
 CREATE POLICY "profiles_update_owner" ON public.profiles
   FOR UPDATE TO authenticated
   USING (id = (SELECT auth.uid()))
   WITH CHECK (id = (SELECT auth.uid()));
 
+DROP POLICY IF EXISTS "profiles_update_admin" ON public.profiles;
 CREATE POLICY "profiles_update_admin" ON public.profiles
   FOR UPDATE TO authenticated
   USING (private.is_admin())
@@ -278,6 +298,7 @@ ALTER TABLE public.faculty_whitelist ENABLE ROW LEVEL SECURITY;
 
 DROP FUNCTION IF EXISTS public.check_faculty_whitelist_email(TEXT);
 
+DROP POLICY IF EXISTS "Admins manage faculty whitelist" ON public.faculty_whitelist;
 CREATE POLICY "Admins manage faculty whitelist"
   ON public.faculty_whitelist
   FOR ALL TO authenticated
@@ -448,7 +469,7 @@ CREATE TABLE IF NOT EXISTS public.blogs (
   tags TEXT[] DEFAULT '{}',
   author_name TEXT NOT NULL,
   author_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-  author_role TEXT NOT NULL CHECK (author_role IN ('student', 'teacher', 'admin', 'faculty_admin', 'editor')),
+  author_role TEXT NOT NULL CHECK (author_role IN ('student', 'teacher', 'faculty', 'admin', 'faculty_admin', 'editor')),
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
   is_published BOOLEAN DEFAULT FALSE,
   views INTEGER DEFAULT 0,
@@ -573,15 +594,23 @@ CREATE TRIGGER trg_enforce_blog_author
 
 ALTER TABLE public.blogs ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "blogs_select_policy" ON public.blogs
-  FOR SELECT USING (
-    (is_published = TRUE AND (status = 'approved' OR status IS NULL))
-    OR
+-- Anonymous-Safe SELECT: Separated public published policy from authenticated admin/owner policy
+-- so anonymous queries NEVER evaluate private.is_admin() (prevents 42501 permission denied for function is_admin)
+DROP POLICY IF EXISTS "blogs_select_policy" ON public.blogs;
+DROP POLICY IF EXISTS "blogs_select_published" ON public.blogs;
+CREATE POLICY "blogs_select_published" ON public.blogs
+  FOR SELECT TO anon, authenticated
+  USING ((is_published = TRUE OR is_published IS NULL) AND (status = 'approved' OR status IS NULL));
+
+DROP POLICY IF EXISTS "blogs_select_authenticated" ON public.blogs;
+CREATE POLICY "blogs_select_authenticated" ON public.blogs
+  FOR SELECT TO authenticated
+  USING (
     ((SELECT auth.uid()) = author_id)
-    OR
-    private.is_admin()
+    OR private.is_admin()
   );
 
+DROP POLICY IF EXISTS "blogs_insert_authenticated" ON public.blogs;
 CREATE POLICY "blogs_insert_authenticated" ON public.blogs
   FOR INSERT TO authenticated
   WITH CHECK (
@@ -589,6 +618,7 @@ CREATE POLICY "blogs_insert_authenticated" ON public.blogs
     OR private.is_admin()
   );
 
+DROP POLICY IF EXISTS "blogs_update_policy" ON public.blogs;
 CREATE POLICY "blogs_update_policy" ON public.blogs
   FOR UPDATE TO authenticated
   USING (
@@ -600,6 +630,7 @@ CREATE POLICY "blogs_update_policy" ON public.blogs
     OR private.is_admin()
   );
 
+DROP POLICY IF EXISTS "blogs_delete_policy" ON public.blogs;
 CREATE POLICY "blogs_delete_policy" ON public.blogs
   FOR DELETE TO authenticated
   USING (
@@ -609,6 +640,10 @@ CREATE POLICY "blogs_delete_policy" ON public.blogs
 
 CREATE INDEX IF NOT EXISTS idx_blogs_author_id ON public.blogs(author_id);
 CREATE INDEX IF NOT EXISTS idx_blogs_published_status ON public.blogs(is_published, status);
+
+-- Table-level grants for blogs
+GRANT SELECT ON public.blogs TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.blogs TO authenticated;
 
 
 -- ═══════════════════════════════════════════════════════════════════════
@@ -629,7 +664,7 @@ CREATE TABLE IF NOT EXISTS public.publications (
   url TEXT,
   author_name TEXT NOT NULL,
   author_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-  author_role TEXT NOT NULL CHECK (author_role IN ('student', 'teacher', 'admin', 'faculty_admin', 'editor')),
+  author_role TEXT NOT NULL CHECK (author_role IN ('student', 'teacher', 'faculty', 'admin', 'faculty_admin', 'editor')),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -696,9 +731,11 @@ CREATE TRIGGER trg_enforce_publication_author
 
 ALTER TABLE public.publications ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "publications_select_public" ON public.publications;
 CREATE POLICY "publications_select_public" ON public.publications
   FOR SELECT USING (TRUE);
 
+DROP POLICY IF EXISTS "publications_insert_authenticated" ON public.publications;
 CREATE POLICY "publications_insert_authenticated" ON public.publications
   FOR INSERT TO authenticated
   WITH CHECK (
@@ -706,6 +743,7 @@ CREATE POLICY "publications_insert_authenticated" ON public.publications
     OR private.is_admin()
   );
 
+DROP POLICY IF EXISTS "publications_update_policy" ON public.publications;
 CREATE POLICY "publications_update_policy" ON public.publications
   FOR UPDATE TO authenticated
   USING (
@@ -717,6 +755,7 @@ CREATE POLICY "publications_update_policy" ON public.publications
     OR private.is_admin()
   );
 
+DROP POLICY IF EXISTS "publications_delete_policy" ON public.publications;
 CREATE POLICY "publications_delete_policy" ON public.publications
   FOR DELETE TO authenticated
   USING (
@@ -726,6 +765,10 @@ CREATE POLICY "publications_delete_policy" ON public.publications
 
 CREATE INDEX IF NOT EXISTS idx_publications_author_id ON public.publications(author_id);
 CREATE INDEX IF NOT EXISTS idx_publications_year ON public.publications(year DESC);
+
+-- Table-level grants for publications
+GRANT SELECT ON public.publications TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.publications TO authenticated;
 
 
 -- ═══════════════════════════════════════════════════════════════════════
@@ -754,22 +797,33 @@ ALTER TABLE public.achievements ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ 
 
 ALTER TABLE public.achievements ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "achievements_select_published"
-  ON public.achievements
-  FOR SELECT
-  USING (is_published = TRUE OR private.is_admin());
+-- Anonymous-Safe SELECT: Separated public published policy from authenticated admin policy
+-- so anonymous queries NEVER evaluate private.is_admin() (prevents 42501 permission denied for function is_admin)
+DROP POLICY IF EXISTS "achievements_select_published" ON public.achievements;
+DROP POLICY IF EXISTS "achievements_select_admin" ON public.achievements;
 
+CREATE POLICY "achievements_select_published" ON public.achievements
+  FOR SELECT TO anon, authenticated
+  USING (is_published = TRUE OR is_published IS NULL);
+
+CREATE POLICY "achievements_select_admin" ON public.achievements
+  FOR SELECT TO authenticated
+  USING (private.is_admin());
+
+DROP POLICY IF EXISTS "achievements_insert_admin" ON public.achievements;
 CREATE POLICY "achievements_insert_admin"
   ON public.achievements
   FOR INSERT TO authenticated
   WITH CHECK (private.is_admin());
 
+DROP POLICY IF EXISTS "achievements_update_admin" ON public.achievements;
 CREATE POLICY "achievements_update_admin"
   ON public.achievements
   FOR UPDATE TO authenticated
   USING (private.is_admin())
   WITH CHECK (private.is_admin());
 
+DROP POLICY IF EXISTS "achievements_delete_admin" ON public.achievements;
 CREATE POLICY "achievements_delete_admin"
   ON public.achievements
   FOR DELETE TO authenticated
@@ -796,6 +850,10 @@ CREATE TRIGGER achievements_updated_at
 
 CREATE INDEX IF NOT EXISTS idx_achievements_posted_by ON public.achievements(posted_by);
 CREATE INDEX IF NOT EXISTS idx_achievements_is_published ON public.achievements(is_published);
+
+-- Table-level grants (required in addition to RLS policies)
+GRANT SELECT ON public.achievements TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.achievements TO authenticated;
 
 
 -- ═══════════════════════════════════════════════════════════════════════
@@ -844,19 +902,23 @@ CREATE TABLE IF NOT EXISTS public.faculty (
 ALTER TABLE public.faculty ENABLE ROW LEVEL SECURITY;
 
 -- Public read: faculty directory is intentionally public (anon + authenticated)
+DROP POLICY IF EXISTS "faculty_select_public" ON public.faculty;
 CREATE POLICY "faculty_select_public" ON public.faculty
   FOR SELECT TO anon, authenticated
   USING (TRUE);
 
+DROP POLICY IF EXISTS "faculty_insert_admin" ON public.faculty;
 CREATE POLICY "faculty_insert_admin" ON public.faculty
   FOR INSERT TO authenticated
   WITH CHECK (private.is_admin());
 
+DROP POLICY IF EXISTS "faculty_update_admin" ON public.faculty;
 CREATE POLICY "faculty_update_admin" ON public.faculty
   FOR UPDATE TO authenticated
   USING (private.is_admin())
   WITH CHECK (private.is_admin());
 
+DROP POLICY IF EXISTS "faculty_delete_admin" ON public.faculty;
 CREATE POLICY "faculty_delete_admin" ON public.faculty
   FOR DELETE TO authenticated
   USING (private.is_admin());
@@ -884,6 +946,10 @@ CREATE TRIGGER faculty_updated_at
 CREATE INDEX IF NOT EXISTS idx_faculty_department ON public.faculty(department);
 CREATE INDEX IF NOT EXISTS idx_faculty_email ON public.faculty(email);
 
+-- Table-level grants for faculty
+GRANT SELECT ON public.faculty TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.faculty TO authenticated;
+
 
 -- 11. ADDITIONAL SECURITY HARDENING (Lints 0028/0029 — SECURITY INVOKER & Legacy Cleanup)
 -- ═══════════════════════════════════════════════════════════════════════
@@ -904,6 +970,44 @@ $$;
 
 REVOKE ALL ON FUNCTION public.achievements_set_updated_at() FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.faculty_set_updated_at() FROM PUBLIC, anon, authenticated;
+
+CREATE OR REPLACE FUNCTION public.admin_set_faculty_status(p_target_id UUID, p_status TEXT)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+DECLARE
+  v_updated public.profiles;
+BEGIN
+  IF NOT private.is_admin() THEN
+    RAISE EXCEPTION 'Access denied: administrator role required';
+  END IF;
+
+  IF p_status NOT IN ('pending', 'approved', 'rejected') THEN
+    RAISE EXCEPTION 'Invalid faculty status';
+  END IF;
+
+  UPDATE public.profiles
+  SET status = p_status,
+      updated_at = NOW()
+  WHERE id = p_target_id
+    AND role IN ('teacher', 'faculty')
+  RETURNING * INTO v_updated;
+
+  IF v_updated.id IS NULL THEN
+    RAISE EXCEPTION 'Faculty profile not found';
+  END IF;
+
+  RETURN jsonb_build_object(
+    'id', v_updated.id,
+    'status', v_updated.status
+  );
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.admin_set_faculty_status(UUID, TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.admin_set_faculty_status(UUID, TEXT) TO authenticated;
 
 -- Drop legacy functions flagged by the security advisor as callable by anon/authenticated.
 -- These were created in earlier migrations and are superseded by trigger-based auth lifecycle.
@@ -941,5 +1045,80 @@ END $$;
 DROP POLICY IF EXISTS "profiles_student_lookup_by_regno" ON public.profiles;
 
 -- Revoke and drop get_student_email_by_regno to prevent enumeration of student emails
-REVOKE ALL ON FUNCTION public.get_student_email_by_regno(text) FROM PUBLIC, anon, authenticated;
-DROP FUNCTION IF EXISTS public.get_student_email_by_regno(text) CASCADE;
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON p.pronamespace = n.oid
+             WHERE n.nspname = 'public' AND p.proname = 'get_student_email_by_regno') THEN
+    EXECUTE 'REVOKE ALL ON FUNCTION public.get_student_email_by_regno(text) FROM PUBLIC, anon, authenticated';
+    EXECUTE 'DROP FUNCTION IF EXISTS public.get_student_email_by_regno(text) CASCADE';
+  END IF;
+END $$;
+
+-- Refresh PostgREST schema cache so newly created RPCs (e.g. admin_set_faculty_status) are immediately available
+NOTIFY pgrst, 'reload schema';
+
+
+-- ═══════════════════════════════════════════════════════════════════════
+-- 13. EVENTS TABLE (Custom events added by admin, persisted for all users)
+-- ═══════════════════════════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS public.events (
+  id              TEXT PRIMARY KEY,
+  numeric_id      BIGINT,
+  title           TEXT NOT NULL,
+  college         TEXT,
+  dept            TEXT,
+  date            TEXT,
+  reg_close_date  TEXT,
+  reg_close_formatted TEXT,
+  time            TEXT,
+  venue           TEXT,
+  fee             TEXT,
+  prizes          TEXT,
+  poster          TEXT,
+  tech_events     TEXT[],
+  non_tech_events TEXT[],
+  contact         TEXT,
+  reg_url         TEXT,
+  description     TEXT,
+  is_deleted      BOOLEAN DEFAULT FALSE,
+  created_by      UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+  created_at      TIMESTAMPTZ DEFAULT NOW(),
+  updated_at      TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.events ENABLE ROW LEVEL SECURITY;
+
+-- Anyone can read non-deleted events
+DROP POLICY IF EXISTS "events_select_public" ON public.events;
+CREATE POLICY "events_select_public" ON public.events
+  FOR SELECT TO anon, authenticated
+  USING (is_deleted = FALSE OR is_deleted IS NULL);
+
+-- Only admins can insert
+DROP POLICY IF EXISTS "events_insert_admin" ON public.events;
+CREATE POLICY "events_insert_admin" ON public.events
+  FOR INSERT TO authenticated
+  WITH CHECK (private.is_admin());
+
+-- Only admins can update
+DROP POLICY IF EXISTS "events_update_admin" ON public.events;
+CREATE POLICY "events_update_admin" ON public.events
+  FOR UPDATE TO authenticated
+  USING (private.is_admin())
+  WITH CHECK (private.is_admin());
+
+-- Only admins can delete (soft-delete via is_deleted flag, or hard delete)
+DROP POLICY IF EXISTS "events_delete_admin" ON public.events;
+CREATE POLICY "events_delete_admin" ON public.events
+  FOR DELETE TO authenticated
+  USING (private.is_admin());
+
+GRANT SELECT ON public.events TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.events TO authenticated;
+
+CREATE INDEX IF NOT EXISTS idx_events_is_deleted ON public.events(is_deleted);
+CREATE INDEX IF NOT EXISTS idx_events_reg_close_date ON public.events(reg_close_date);
+
+NOTIFY pgrst, 'reload schema';
+

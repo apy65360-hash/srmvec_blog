@@ -122,6 +122,13 @@
     } else {
       loadBlogView();
     }
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'srmvec_blogs' || e.key === 'srmvec_blogs_last_update') {
+        loadBlogView();
+      }
+    });
+    window.addEventListener('srmvec:blogs-updated', loadBlogView);
   </script>
 </body>
 </html>

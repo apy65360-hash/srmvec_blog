@@ -1,19 +1,48 @@
 // Centralized Event Data Store & Utility Module for SRMVEC CSE Portal
 
 /**
- * Strict Rule: Filter and validate that an event is future/upcoming.
- * Events that have already finished in the past are excluded.
+ * Format YYYY-MM-DD or date strings into readable "MMM DD, YYYY"
+ */
+export function formatEventDate(dateStr) {
+  if (!dateStr) return "Open";
+  const s = String(dateStr).trim();
+  const match = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (match) {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const yr = match[1];
+    const mo = months[parseInt(match[2], 10) - 1] || "Jan";
+    const day = String(parseInt(match[3], 10)).padStart(2, "0");
+    return `${mo} ${day}, ${yr}`;
+  }
+  const parsed = new Date(s);
+  if (!isNaN(parsed.getTime())) {
+    return parsed.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" });
+  }
+  return s;
+}
+
+/**
+ * Validates whether an event is future/upcoming relative to today.
  */
 export function isEventUpcoming(evt) {
   if (!evt) return false;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  // 1. If registration closing date is provided (YYYY-MM-DD), check it
+  // 1. Check registration closing date (YYYY-MM-DD or parseable)
   if (evt.regCloseDate) {
-    const regDate = new Date(evt.regCloseDate + "T23:59:59");
-    if (!isNaN(regDate.getTime())) {
-      if (regDate >= today) return true;
+    const s = String(evt.regCloseDate).trim();
+    const match = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+    if (match) {
+      const regDate = new Date(parseInt(match[1], 10), parseInt(match[2], 10) - 1, parseInt(match[3], 10), 23, 59, 59);
+      if (!isNaN(regDate.getTime())) {
+        return regDate >= today;
+      }
+    }
+    const parsedReg = new Date(s);
+    if (!isNaN(parsedReg.getTime())) {
+      parsedReg.setHours(23, 59, 59, 999);
+      return parsedReg >= today;
     }
   }
 
@@ -26,7 +55,7 @@ export function isEventUpcoming(evt) {
       return parsed >= today;
     }
 
-    // Handle range/formatted date like "October 17, 2026", "October 15 & 16, 2026", "November 06 & 07, 2026"
+    // Handle range/formatted date like "December 18 & 19, 2026", "January 22, 2027"
     const yearMatch = dateStr.match(/\b(20\d\d)\b/);
     if (yearMatch) {
       const yr = parseInt(yearMatch[1], 10);
@@ -57,15 +86,8 @@ export function isEventUpcoming(evt) {
     }
   }
 
-  // 3. If regCloseDate exists and is strictly before today, it's past
-  if (evt.regCloseDate) {
-    const regDate = new Date(evt.regCloseDate + "T23:59:59");
-    if (!isNaN(regDate.getTime())) {
-      return regDate >= today;
-    }
-  }
-
-  return false;
+  // Default to true for newly added custom/upcoming events without strict past dates
+  return true;
 }
 
 const DEFAULT_EVENTS = [
@@ -75,9 +97,9 @@ const DEFAULT_EVENTS = [
     title: "ELITECCOM-2026 PROJECT EXPO — 5th National Level Symposium",
     college: "IETE Chennai Centre (Institution of Electronics & Telecommunication Engineers)",
     dept: "Recent Trends in Electrical, IT, Electronics & Communication and Computers",
-    date: "October 17, 2026",
-    regCloseDate: "2026-10-16",
-    regCloseFormatted: "Oct 16, 2026",
+    date: "December 12, 2026",
+    regCloseDate: "2026-12-10",
+    regCloseFormatted: "Dec 10, 2026",
     time: "9:00 AM - 5:00 PM",
     venue: "IETE Chennai Centre, Peters Road, Royapettah, Chennai - 600 086",
     fee: "₹300 / Team (IETE Members) | ₹450 / Team (Others) [Max 3 Members]",
@@ -95,9 +117,9 @@ const DEFAULT_EVENTS = [
     title: "ANVESHAN 2K26 — 24-Hour National Level Hackathon Competition",
     college: "BGS Institute of Technology, Adichunchanagiri University",
     dept: "Department of Information Science and Engineering",
-    date: "October 15 & 16, 2026",
-    regCloseDate: "2026-10-16",
-    regCloseFormatted: "Oct 16, 2026",
+    date: "December 18 & 19, 2026",
+    regCloseDate: "2026-12-15",
+    regCloseFormatted: "Dec 15, 2026",
     time: "24-Hour Hackathon Competition",
     venue: "BGSIT Campus, B G Nagara, Mandya - 571448",
     fee: "Free to Register (₹2,000 only if shortlisted)",
@@ -115,9 +137,9 @@ const DEFAULT_EVENTS = [
     title: "SRMVEC HACK-AI-THON '26 — National Generative AI Hackathon",
     college: "SRM Valliammai Engineering College",
     dept: "Department of Computer Science and Engineering",
-    date: "November 06 & 07, 2026",
-    regCloseDate: "2026-11-01",
-    regCloseFormatted: "Nov 01, 2026",
+    date: "January 08 & 09, 2027",
+    regCloseDate: "2027-01-05",
+    regCloseFormatted: "Jan 05, 2027",
     time: "9:00 AM - 6:00 PM",
     venue: "CSE Department Innovation Labs & Central Auditorium, SRMVEC",
     fee: "Free Entry for Shortlisted Teams",
@@ -135,9 +157,9 @@ const DEFAULT_EVENTS = [
     title: "CYBERSTORM '26 — National Level Cyber Security & Ethical Hacking Fest",
     college: "SRM Valliammai Engineering College",
     dept: "Department of CSE & Center of Cyber Excellence",
-    date: "November 20, 2026",
-    regCloseDate: "2026-11-15",
-    regCloseFormatted: "Nov 15, 2026",
+    date: "January 22, 2027",
+    regCloseDate: "2027-01-18",
+    regCloseFormatted: "Jan 18, 2027",
     time: "9:30 AM - 4:30 PM",
     venue: "SRMVEC Campus, Kattankulathur, Chennai",
     fee: "₹150 per participant",
@@ -155,9 +177,9 @@ const DEFAULT_EVENTS = [
     title: "CLOUD CONVERGENCE '26 — DevOps & Cloud Architecture Summit",
     college: "SRM Valliammai Engineering College",
     dept: "Department of CSE in association with AWS & Google Cloud Clubs",
-    date: "December 04, 2026",
-    regCloseDate: "2026-11-28",
-    regCloseFormatted: "Nov 28, 2026",
+    date: "February 05, 2027",
+    regCloseDate: "2027-01-30",
+    regCloseFormatted: "Jan 30, 2027",
     time: "10:00 AM - 4:00 PM",
     venue: "Seminar Hall, New Building, SRMVEC",
     fee: "Free Registration",
@@ -172,46 +194,227 @@ const DEFAULT_EVENTS = [
 ];
 
 const STORAGE_KEY = "srmvec_custom_events";
+const OVERRIDES_KEY = "srmvec_event_overrides";
+const DELETED_KEY = "srmvec_deleted_event_ids";
+const SYNC_KEY = "srmvec_events_last_update";
+
+function notifyEventsChanged(action, payload) {
+  try {
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem(SYNC_KEY, String(Date.now()));
+    }
+  } catch (e) {}
+
+  if (typeof window !== "undefined") {
+    // Current window
+    window.dispatchEvent(new CustomEvent("srmvec:events-updated", { detail: { action, payload } }));
+
+    // Top window if inside iframe
+    try {
+      if (window.top && window.top !== window) {
+        window.top.dispatchEvent(new CustomEvent("srmvec:events-updated", { detail: { action, payload } }));
+        window.top.postMessage({ type: "srmvec:events-updated", action, payload }, "*");
+      }
+    } catch (e) {}
+
+    // Child iframes if on top page
+    try {
+      document.querySelectorAll("iframe").forEach(iframe => {
+        try {
+          iframe.contentWindow?.postMessage({ type: "srmvec:events-updated", action, payload }, "*");
+          iframe.contentWindow?.dispatchEvent(new CustomEvent("srmvec:events-updated", { detail: { action, payload } }));
+        } catch (e) {}
+      });
+    } catch (e) {}
+  }
+}
+
+/** Convert a Supabase DB row (snake_case) to our camelCase event shape */
+function dbRowToEvent(row) {
+  return {
+    id: row.id,
+    numericId: row.numeric_id || Date.now(),
+    title: row.title || "Untitled Event",
+    college: row.college || "SRM Valliammai Engineering College",
+    dept: row.dept || "Department of Computer Science & Engineering",
+    date: row.date || "Upcoming",
+    regCloseDate: row.reg_close_date || "2026-12-31",
+    regCloseFormatted: row.reg_close_formatted || formatEventDate(row.reg_close_date),
+    time: row.time || "Full Day",
+    venue: row.venue || "Main Auditorium",
+    fee: row.fee || "Free",
+    prizes: row.prizes || "Certificates & Awards",
+    poster: row.poster || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800&auto=format&fit=crop",
+    techEvents: Array.isArray(row.tech_events) ? row.tech_events : [],
+    nonTechEvents: Array.isArray(row.non_tech_events) ? row.non_tech_events : [],
+    contact: row.contact || "",
+    regUrl: row.reg_url || "#",
+    description: row.description || "",
+    createdAt: row.created_at || new Date().toISOString(),
+    _fromDB: true
+  };
+}
+
+/** Convert our camelCase event shape to a Supabase DB row (snake_case) */
+function eventToDbRow(evt) {
+  return {
+    id: evt.id,
+    numeric_id: evt.numericId || null,
+    title: evt.title,
+    college: evt.college || null,
+    dept: evt.dept || null,
+    date: evt.date || null,
+    reg_close_date: evt.regCloseDate || null,
+    reg_close_formatted: evt.regCloseFormatted || formatEventDate(evt.regCloseDate),
+    time: evt.time || null,
+    venue: evt.venue || null,
+    fee: evt.fee || null,
+    prizes: evt.prizes || null,
+    poster: evt.poster || null,
+    tech_events: Array.isArray(evt.techEvents) ? evt.techEvents : [],
+    non_tech_events: Array.isArray(evt.nonTechEvents) ? evt.nonTechEvents : [],
+    contact: evt.contact || null,
+    reg_url: evt.regUrl || null,
+    description: evt.description || null,
+    is_deleted: false
+  };
+}
 
 export const EventsStore = {
-  getEvents() {
-    let customEvents = [];
+  getOverrides() {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        customEvents = JSON.parse(stored);
-      }
+      const stored = typeof localStorage !== "undefined" ? localStorage.getItem(OVERRIDES_KEY) : null;
+      return stored ? JSON.parse(stored) : {};
     } catch (e) {
-      console.warn("Failed to parse custom events from localStorage:", e);
+      return {};
+    }
+  },
+
+  getDeletedIds() {
+    try {
+      const stored = typeof localStorage !== "undefined" ? localStorage.getItem(DELETED_KEY) : null;
+      return stored ? JSON.parse(stored) : [];
+    } catch (e) {
+      return [];
+    }
+  },
+
+  getCustomEvents() {
+    try {
+      const stored = typeof localStorage !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
+      return stored ? JSON.parse(stored) : [];
+    } catch (e) {
+      return [];
+    }
+  },
+
+  /**
+   * Fetches custom events from Supabase and merges them into localStorage cache.
+   * Call this on page load to make sure all users see admin-added events.
+   * @returns {Promise<void>}
+   */
+  async syncFromSupabase() {
+    const supabase = typeof window !== "undefined" ? window.supabase : null;
+    if (!supabase) return;
+
+    try {
+      const { data, error } = await supabase
+        .from("events")
+        .select("*")
+        .eq("is_deleted", false)
+        .order("reg_close_date", { ascending: true });
+
+      if (error || !data) return;
+
+      if (data.length === 0) return;
+
+      // Build a map of default event IDs so we don't store duplicates
+      const defaultIds = new Set(DEFAULT_EVENTS.map(e => String(e.id)));
+
+      // Convert to camelCase and filter out default events (they are hardcoded)
+      const dbCustomEvents = data
+        .filter(row => !defaultIds.has(String(row.id)))
+        .map(dbRowToEvent);
+
+      // Merge with existing local custom events (prefer DB version)
+      const localCustomEvents = this.getCustomEvents();
+      const dbIds = new Set(dbCustomEvents.map(e => String(e.id)));
+
+      // Keep local-only events (not yet synced to DB, e.g. offline draft)
+      const localOnly = localCustomEvents.filter(e => !dbIds.has(String(e.id)));
+      const merged = [...dbCustomEvents, ...localOnly];
+
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      }
+
+      notifyEventsChanged("sync", { count: merged.length });
+    } catch (err) {
+      console.warn("[EventsStore] syncFromSupabase error:", err);
+    }
+  },
+
+  /**
+   * Retrieves events.
+   * @param {Object} [options]
+   * @param {boolean} [options.onlyUpcoming=false] - If true, only returns future events.
+   * @param {boolean} [options.includePast=true] - If true, returns all active events with .isUpcoming tagged.
+   */
+  getEvents(options = {}) {
+    let customEvents = this.getCustomEvents();
+    const overrides = this.getOverrides();
+    const deletedIds = new Set(this.getDeletedIds().map(String));
+
+    const combined = [...DEFAULT_EVENTS, ...customEvents];
+    
+    // 1. Exclude deleted events and apply any overrides
+    const activeEvents = combined
+      .filter(evt => !deletedIds.has(String(evt.id)) && !deletedIds.has(String(evt.numericId)))
+      .map(evt => {
+        const ov = overrides[String(evt.id)] || overrides[String(evt.numericId)];
+        const merged = ov ? { ...evt, ...ov } : { ...evt };
+        merged.isUpcoming = isEventUpcoming(merged);
+        if (!merged.regCloseFormatted && merged.regCloseDate) {
+          merged.regCloseFormatted = formatEventDate(merged.regCloseDate);
+        }
+        return merged;
+      });
+
+    // 2. Filter if requested
+    let resultEvents = activeEvents;
+    if (options && options.onlyUpcoming) {
+      resultEvents = activeEvents.filter(evt => evt.isUpcoming);
     }
 
-    const allEvents = [...DEFAULT_EVENTS, ...customEvents];
-    
-    // STRICT RULE: Only return future and upcoming events. Past events are removed.
-    const upcomingEvents = allEvents.filter(evt => isEventUpcoming(evt));
-
-    // Sort chronologically by registration closing date (regCloseDate) ASCENDING (earliest closing date first)
-    upcomingEvents.sort((a, b) => {
+    // 3. Sort: upcoming events first (earliest closing date first), then past events
+    resultEvents.sort((a, b) => {
+      if (a.isUpcoming !== b.isUpcoming) {
+        return a.isUpcoming ? -1 : 1; // Upcoming first
+      }
       const dateA = new Date(a.regCloseDate || "9999-12-31");
       const dateB = new Date(b.regCloseDate || "9999-12-31");
-      return dateA - dateB;
+      return a.isUpcoming ? dateA - dateB : dateB - dateA;
     });
 
-    return upcomingEvents;
+    return resultEvents;
+  },
+
+  /**
+   * Convenience getter for sliders / countdowns that only show future events.
+   */
+  getUpcomingEvents() {
+    const upcoming = this.getEvents({ onlyUpcoming: true });
+    // If no events strictly match upcoming, fallback to all active events so slider never breaks
+    return upcoming.length > 0 ? upcoming : this.getEvents();
   },
 
   addEvent(eventData) {
-    // STRICT RULE: We can ONLY add future and upcoming events!
-    if (!isEventUpcoming(eventData)) {
-      throw new Error("Validation Error: Only future and upcoming events can be added. Events that have already finished in the past are not allowed.");
-    }
-
     const customEvents = this.getCustomEvents();
     const newId = "eve-custom-" + Date.now();
     
     const formattedRegClose = eventData.regCloseDate 
-      ? new Date(eventData.regCloseDate).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
-      : "Open";
+      ? formatEventDate(eventData.regCloseDate)
+      : (eventData.regCloseFormatted || "Open");
 
     const newEvent = {
       id: newId,
@@ -227,30 +430,176 @@ export const EventsStore = {
       fee: eventData.fee || "Free",
       prizes: eventData.prizes || "Certificates & Awards",
       poster: eventData.poster || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800&auto=format&fit=crop",
-      techEvents: Array.isArray(eventData.techEvents) ? eventData.techEvents : (eventData.techEvents ? eventData.techEvents.split(",").map(s => s.trim()) : ["Paper Presentation", "Technical Quiz"]),
-      nonTechEvents: Array.isArray(eventData.nonTechEvents) ? eventData.nonTechEvents : (eventData.nonTechEvents ? eventData.nonTechEvents.split(",").map(s => s.trim()) : ["Surprise Event"]),
+      techEvents: Array.isArray(eventData.techEvents) ? eventData.techEvents : (eventData.techEvents ? eventData.techEvents.split(",").map(s => s.trim()).filter(Boolean) : ["Paper Presentation", "Technical Quiz"]),
+      nonTechEvents: Array.isArray(eventData.nonTechEvents) ? eventData.nonTechEvents : (eventData.nonTechEvents ? eventData.nonTechEvents.split(",").map(s => s.trim()).filter(Boolean) : ["Surprise Event"]),
       contact: eventData.contact || "cse.events@srmvalliammai.ac.in",
       regUrl: eventData.regUrl || "#",
-      description: eventData.description || "Exciting upcoming event hosted under CSE Department."
+      description: eventData.description || "Exciting upcoming event hosted under CSE Department.",
+      createdAt: new Date().toISOString()
     };
 
+    // 1. Save to localStorage immediately (instant UI update)
     customEvents.push(newEvent);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(customEvents));
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(customEvents));
+    }
+    notifyEventsChanged("add", newEvent);
+
+    // 2. Persist to Supabase in background (so all users/browsers see it)
+    const supabase = typeof window !== "undefined" ? window.supabase : null;
+    if (supabase) {
+      supabase
+        .from("events")
+        .insert([eventToDbRow(newEvent)])
+        .then(({ error }) => {
+          if (error) {
+            console.warn("[EventsStore] Supabase insert notice:", error.message);
+          }
+        })
+        .catch(err => console.warn("[EventsStore] Supabase insert error:", err));
+    }
+
     return newEvent;
   },
 
-  getCustomEvents() {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : [];
-    } catch (e) {
-      return [];
+  updateEvent(id, updatedData) {
+    let customEvents = this.getCustomEvents();
+    const customIdx = customEvents.findIndex(e => String(e.id) === String(id) || String(e.numericId) === String(id));
+    
+    let formattedRegClose = updatedData.regCloseFormatted;
+    if (updatedData.regCloseDate && !formattedRegClose) {
+      formattedRegClose = formatEventDate(updatedData.regCloseDate);
     }
+
+    const payload = {
+      ...updatedData,
+      ...(formattedRegClose ? { regCloseFormatted: formattedRegClose } : {}),
+      techEvents: Array.isArray(updatedData.techEvents)
+        ? updatedData.techEvents
+        : (updatedData.techEvents ? updatedData.techEvents.split(",").map(s => s.trim()).filter(Boolean) : undefined),
+      nonTechEvents: Array.isArray(updatedData.nonTechEvents)
+        ? updatedData.nonTechEvents
+        : (updatedData.nonTechEvents ? updatedData.nonTechEvents.split(",").map(s => s.trim()).filter(Boolean) : undefined),
+      updatedAt: new Date().toISOString()
+    };
+
+    // Clean undefined fields
+    Object.keys(payload).forEach(k => payload[k] === undefined && delete payload[k]);
+
+    let finalEvent = null;
+
+    if (customIdx !== -1) {
+      customEvents[customIdx] = { ...customEvents[customIdx], ...payload };
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(customEvents));
+      }
+      finalEvent = customEvents[customIdx];
+    } else {
+      // Store in overrides for default events
+      const overrides = this.getOverrides();
+      overrides[String(id)] = { ...(overrides[String(id)] || {}), ...payload };
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem(OVERRIDES_KEY, JSON.stringify(overrides));
+      }
+      finalEvent = { id, ...payload };
+    }
+
+    // Persist update to Supabase in background
+    const supabase = typeof window !== "undefined" ? window.supabase : null;
+    if (supabase && finalEvent) {
+      const dbUpdate = {
+        ...(updatedData.title !== undefined ? { title: updatedData.title } : {}),
+        ...(updatedData.college !== undefined ? { college: updatedData.college } : {}),
+        ...(updatedData.dept !== undefined ? { dept: updatedData.dept } : {}),
+        ...(updatedData.date !== undefined ? { date: updatedData.date } : {}),
+        ...(updatedData.regCloseDate !== undefined ? { reg_close_date: updatedData.regCloseDate } : {}),
+        ...(formattedRegClose ? { reg_close_formatted: formattedRegClose } : {}),
+        ...(updatedData.time !== undefined ? { time: updatedData.time } : {}),
+        ...(updatedData.venue !== undefined ? { venue: updatedData.venue } : {}),
+        ...(updatedData.fee !== undefined ? { fee: updatedData.fee } : {}),
+        ...(updatedData.prizes !== undefined ? { prizes: updatedData.prizes } : {}),
+        ...(updatedData.poster !== undefined ? { poster: updatedData.poster } : {}),
+        ...(payload.techEvents !== undefined ? { tech_events: payload.techEvents } : {}),
+        ...(payload.nonTechEvents !== undefined ? { non_tech_events: payload.nonTechEvents } : {}),
+        ...(updatedData.contact !== undefined ? { contact: updatedData.contact } : {}),
+        ...(updatedData.regUrl !== undefined ? { reg_url: updatedData.regUrl } : {}),
+        ...(updatedData.description !== undefined ? { description: updatedData.description } : {}),
+        updated_at: new Date().toISOString()
+      };
+
+      supabase
+        .from("events")
+        .update(dbUpdate)
+        .eq("id", String(id))
+        .then(({ error }) => {
+          if (error) console.warn("[EventsStore] Supabase update notice:", error.message);
+        })
+        .catch(err => console.warn("[EventsStore] Supabase update error:", err));
+    }
+
+    notifyEventsChanged("update", { id, data: finalEvent });
+    return finalEvent;
+  },
+
+  deleteEvent(id) {
+    let customEvents = this.getCustomEvents();
+    const initialLen = customEvents.length;
+    customEvents = customEvents.filter(e => String(e.id) !== String(id) && String(e.numericId) !== String(id));
+    if (customEvents.length !== initialLen && typeof localStorage !== "undefined") {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(customEvents));
+    }
+
+    // Always add to deleted list to guarantee default and custom events stay removed
+    const deletedIds = this.getDeletedIds();
+    if (!deletedIds.includes(String(id))) {
+      deletedIds.push(String(id));
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem(DELETED_KEY, JSON.stringify(deletedIds));
+      }
+    }
+
+    // Clean overrides if any
+    const overrides = this.getOverrides();
+    if (overrides[String(id)]) {
+      delete overrides[String(id)];
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem(OVERRIDES_KEY, JSON.stringify(overrides));
+      }
+    }
+
+    // Persist deletion to Supabase in background (soft-delete via is_deleted flag)
+    const supabase = typeof window !== "undefined" ? window.supabase : null;
+    if (supabase) {
+      supabase
+        .from("events")
+        .update({ is_deleted: true, updated_at: new Date().toISOString() })
+        .eq("id", String(id))
+        .then(({ error }) => {
+          if (error) {
+            // If update failed (e.g. row not in DB — it's a default event), that's fine
+            console.warn("[EventsStore] Supabase soft-delete notice:", error.message);
+          }
+        })
+        .catch(err => console.warn("[EventsStore] Supabase delete error:", err));
+    }
+
+    notifyEventsChanged("delete", { id });
+    return true;
   },
 
   getEventById(id) {
     const events = this.getEvents();
-    return events.find(e => String(e.id) === String(id) || String(e.numericId) === String(id));
+    let found = events.find(e => String(e.id) === String(id) || String(e.numericId) === String(id));
+    if (!found) {
+      const overrides = this.getOverrides();
+      const raw = [...DEFAULT_EVENTS, ...this.getCustomEvents()];
+      const base = raw.find(e => String(e.id) === String(id) || String(e.numericId) === String(id));
+      if (base) {
+        const ov = overrides[String(base.id)] || overrides[String(base.numericId)];
+        found = ov ? { ...base, ...ov } : base;
+      }
+    }
+    return found;
   }
 };
 
